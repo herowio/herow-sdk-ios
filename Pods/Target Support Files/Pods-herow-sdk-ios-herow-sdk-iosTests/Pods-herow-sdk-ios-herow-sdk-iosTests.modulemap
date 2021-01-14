@@ -1,0 +1,6 @@
+framework module Pods_herow_sdk_ios_herow_sdk_iosTests {
+  umbrella header "Pods-herow-sdk-ios-herow-sdk-iosTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

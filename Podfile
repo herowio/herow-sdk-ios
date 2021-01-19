@@ -6,9 +6,13 @@ target 'herow-sdk-ios' do
   use_frameworks!
 
   # Pods for herow-sdk-ios
-
+   pod 'CocoaLumberjack/Swift', '3.5.3'
+    pod "PromiseKit", '6.8.4'
+    pod 'SwiftLint'
   target 'herow-sdk-iosTests' do
     # Pods for testing
   end
+
+
 
 end

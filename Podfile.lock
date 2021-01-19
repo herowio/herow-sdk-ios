@@ -1,3 +1,34 @@
-PODFILE CHECKSUM: f6954534bb435d677fe70590020bec7373b0a8ab
+PODS:
+  - CocoaLumberjack/Core (3.5.3)
+  - CocoaLumberjack/Swift (3.5.3):
+    - CocoaLumberjack/Core
+  - PromiseKit (6.8.4):
+    - PromiseKit/CorePromise (= 6.8.4)
+    - PromiseKit/Foundation (= 6.8.4)
+    - PromiseKit/UIKit (= 6.8.4)
+  - PromiseKit/CorePromise (6.8.4)
+  - PromiseKit/Foundation (6.8.4):
+    - PromiseKit/CorePromise
+  - PromiseKit/UIKit (6.8.4):
+    - PromiseKit/CorePromise
+  - SwiftLint (0.42.0)
+
+DEPENDENCIES:
+  - CocoaLumberjack/Swift (= 3.5.3)
+  - PromiseKit (= 6.8.4)
+  - SwiftLint
+
+SPEC REPOS:
+  trunk:
+    - CocoaLumberjack
+    - PromiseKit
+    - SwiftLint
+
+SPEC CHECKSUMS:
+  CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
+  PromiseKit: 51794a832647e7b819336dc2279039ce9f1cc49b
+  SwiftLint: 4fa9579c63416865179bc416f0a92d55f009600d
+
+PODFILE CHECKSUM: 1d925b87c1528ca9be286cfc4a08708b4694e268
 
 COCOAPODS: 1.9.3

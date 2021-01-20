@@ -16,7 +16,7 @@ private enum Method: String {
 
 protocol APIWorkerProtocol {
     associatedtype ResponseType
-    func getData(completion: @escaping (ResponseType?, NetworkError?) -> Void)
+    func getData(endPoint: EndPoint , completion: @escaping (ResponseType?, NetworkError?) -> Void)
 }
 
 internal class APIWorker<T: Decodable>: APIWorkerProtocol {
@@ -26,22 +26,29 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     private var sessionCfg: URLSessionConfiguration
     private var currentTask: URLSessionDataTask?
     private let baseURL: String
-    private let endPoint: String
+    private let endPoint: EndPoint
     var headers: [String:String]?
     
-    internal init(urlType: URLType, endPoint: EndPoint) {
+    internal init(urlType: URLType, endPoint: EndPoint = .undefined) {
         self.baseURL = urlType.rawValue
-        self.endPoint = endPoint.rawValue
+        self.endPoint = endPoint
         self.sessionCfg = URLSessionConfiguration.default
         self.sessionCfg.timeoutIntervalForRequest = 10.0
         self.session = URLSession(configuration: sessionCfg)
     }
-    private func buildURL() -> String {
-        return baseURL + endPoint
+    private func buildURL(endPoint: EndPoint) -> String {
+        var realEndPoint = endPoint
+
+        switch endPoint {
+        case.undefined:
+            realEndPoint = self.endPoint
+        default: break
+        }
+        return baseURL + realEndPoint.value
     }
 
-    private func get<ResponseType:Decodable>( _ type: ResponseType.Type, callback: ((Result<ResponseType, Error>) -> Void)?) {
-        doMethod(type, method: .get, callback: callback)
+    private func get<ResponseType:Decodable>( _ type: ResponseType.Type, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?) {
+        doMethod(type, method: .get,endPoint: endPoint, callback: callback)
     }
 
     private func post<ResponseType:Decodable>( _ type: ResponseType.Type, param: Data?, callback: ((Result<ResponseType, Error>) -> Void)?) {
@@ -52,7 +59,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         doMethod(type, method: .put ,param: param, callback: callback)
     }
 
-    private  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, callback: ((Result<ResponseType, Error>) -> Void)?)  {
+    private  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?)  {
 
         let completion: (Result<ResponseType, Error>) -> Void = {result in
             callback?(result)
@@ -62,16 +69,13 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         if let task = currentTask {
             task.cancel()
         }
-        guard let url = URL(string: buildURL()) else {
+        guard let url = URL(string: buildURL(endPoint: endPoint)) else {
             completion(Result.failure(NetworkError.badUrl))
             return
         }
         var request = URLRequest(url: url)
-        if let headers = self.headers {
-            for (key, value) in headers {
-                request.setValue(value, forHTTPHeaderField: key)
-            }
-        }
+
+        request.allHTTPHeaderFields = headers
         request.httpMethod = method.rawValue
         if let param = param {
             request.httpBody = param
@@ -108,10 +112,10 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         currentTask?.resume()
     }
 
-   internal func getData(completion: @escaping (ResponseType?, NetworkError?) -> Void) {
+    internal func getData(endPoint: EndPoint = .undefined, completion: @escaping (ResponseType?, NetworkError?) -> Void) {
         var data: ResponseType?
         var netWorkError: NetworkError? = nil
-        self.get(ResponseType.self) { (result) in
+        self.get(ResponseType.self, endPoint: endPoint) { (result) in
             switch result {
             case .success(let response):
                 data = response
@@ -123,30 +127,30 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     }
 
     internal func postData(param: Data? = nil,completion: @escaping (ResponseType?, NetworkError?) -> Void) {
-         var data: ResponseType?
-         var netWorkError: NetworkError? = nil
-         self.post(ResponseType.self, param: param) { (result) in
-             switch result {
-             case .success(let response):
-                 data = response
-             case .failure(let error):
-                 netWorkError = error as? NetworkError
-             }
-             completion(data, netWorkError)
-         }
-     }
+        var data: ResponseType?
+        var netWorkError: NetworkError? = nil
+        self.post(ResponseType.self, param: param) { (result) in
+            switch result {
+            case .success(let response):
+                data = response
+            case .failure(let error):
+                netWorkError = error as? NetworkError
+            }
+            completion(data, netWorkError)
+        }
+    }
 
     internal func putData(param: Data? = nil,completion: @escaping (ResponseType?, NetworkError?) -> Void) {
-         var data: ResponseType?
-         var netWorkError: NetworkError? = nil
-         self.put(ResponseType.self, param: param) { (result) in
-             switch result {
-             case .success(let response):
-                 data = response
-             case .failure(let error):
-                 netWorkError = error as? NetworkError
-             }
-             completion(data, netWorkError)
-         }
-     }
+        var data: ResponseType?
+        var netWorkError: NetworkError? = nil
+        self.put(ResponseType.self, param: param) { (result) in
+            switch result {
+            case .success(let response):
+                data = response
+            case .failure(let error):
+                netWorkError = error as? NetworkError
+            }
+            completion(data, netWorkError)
+        }
+    }
 }

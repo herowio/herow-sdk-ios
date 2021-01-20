@@ -8,15 +8,17 @@
 
 import Foundation
 import Network
+import UIKit
 
-@available(iOS 12.0, *)
 public class DeviceUtils {
+    @available(iOS 12.0, *)
     public static var isAirplaneModeActive = AtomicBoolean()
 
     /**
      * WARNING If airplane mode and wifi is active then path.availableInterfaces is not empty, because it's returning [en0]
      * @see: https://stackoverflow.com/questions/4804398/detect-airplane-mode-on-ios?noredirect=1&lq=1
      */
+    @available(iOS 12.0, *)
     public static func startAirplaneModeMonitoring() {
         let monitor = NWPathMonitor()
         monitor.pathUpdateHandler = { path in
@@ -27,5 +29,9 @@ public class DeviceUtils {
             }
         }
         monitor.start(queue: DispatchQueue.global(qos: .background))
+    }
+
+    static func deviceID() -> String? {
+        return UIDevice.current.identifierForVendor?.uuidString
     }
 }

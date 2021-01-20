@@ -31,7 +31,21 @@ public  struct SDKCredential {
 }
 
 public struct APIConfig: Codable {
+    let cacheInterval: Int64
+    let configInterval: Int64
+    let enabled: Bool
 
+    public func encode() -> Data? {
+         let encoder = JSONEncoder()
+        return try? encoder.encode(self)
+     }
+     static public func decode(data: Data) -> APIConfig? {
+         let decoder = JSONDecoder()
+         guard let token = try? decoder.decode(APIConfig.self, from: data) else {
+                 return nil
+             }
+         return token
+     }
 }
 
 public struct APIToken: Codable {
@@ -53,8 +67,22 @@ public struct APIToken: Codable {
     }
 }
 
-public struct APIUSerInfo: Codable {
+public struct APIUserInfo: Codable {
+    let herowId: String
+    let modifiedDate: Int64
 
+    public func encode() -> Data? {
+        let encoder = JSONEncoder()
+        return try? encoder.encode(self)
+    }
+    
+    static public func decode(data: Data) -> APIUserInfo? {
+        let decoder = JSONDecoder()
+        guard let token = try? decoder.decode(APIUserInfo.self, from: data) else {
+            return nil
+        }
+        return token
+    }
 }
 
 public struct User {
@@ -68,6 +96,26 @@ public struct User {
         self.company = company
 
     }
+}
+
+public struct UserInfo: Codable {
+    var adId: String?
+    var adStatus: Bool
+    var customId: String?
+    var lang: String
+    var offset: Int64 = 3600000
+    var optins: [Optin]
+
+    
+}
+
+public struct Optin: Codable {
+    var type: String
+    var value: Bool
+}
+
+public struct APICache: Codable {
+
 }
 
 

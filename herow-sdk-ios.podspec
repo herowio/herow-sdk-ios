@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
 	s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
 
 	# ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-	s.source_files =  'herow-sdk-ios', 'herow-sdk-ios/**/**/*.swift'
+	s.source_files =  'herow-sdk-ios', 'herow-sdk-ios/**/*.swift'
 
 	# ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 	s.frameworks = 'UIKit', 'Foundation', 'SystemConfiguration'

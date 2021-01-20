@@ -10,13 +10,15 @@ import Foundation
 @objc public class HerowInitializer: NSObject {
    public static let instance = HerowInitializer()
     private var apiManager: APIManager?
-
+    private var netWorkDataHolder: NetworkDataStorageProtocol
+    private var dataHolder: DataHolder
     private override init() {
-
+        dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
+        netWorkDataHolder = NetworkDataStorage(dataHolder: dataHolder)
     }
 
     @objc public func configPlatform(_ platform: String) -> HerowInitializer {
-        self.apiManager = APIManager(plateform: platform , dataHolder: DataHolderUserDefaults(suiteName: "HerowInitializer"))
+        self.apiManager = APIManager(plateform: platform , netWorkDataStorage: netWorkDataHolder)
         return self
     }
 
@@ -27,8 +29,9 @@ import Foundation
 
 
     @objc public func synchronize() {
-        self.apiManager?.getAndSaveToken(completion: { (token, error) in
-            print (" token request: \(String(describing: token)) error: \(String(describing: error))")
+        self.apiManager?.getUserInfo(completion: { _,_ in
+            self.apiManager?.getConfig()
         })
+
     }
 }

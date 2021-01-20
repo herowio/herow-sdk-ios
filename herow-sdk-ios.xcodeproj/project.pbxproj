@@ -17,21 +17,15 @@
 		6D0747EA25B72FFB005E08F8 /* Place.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07479E25B72FF9005E08F8 /* Place.swift */; };
 		6D0747EB25B72FFB005E08F8 /* LocationWithContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07479F25B72FF9005E08F8 /* LocationWithContext.swift */; };
 		6D0747EC25B72FFB005E08F8 /* WifiUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A125B72FF9005E08F8 /* WifiUtils.swift */; };
-		6D0747ED25B72FFB005E08F8 /* NSURLSession+PromiseUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A225B72FF9005E08F8 /* NSURLSession+PromiseUtils.swift */; };
 		6D0747EE25B72FFB005E08F8 /* StringUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A325B72FF9005E08F8 /* StringUtils.swift */; };
 		6D0747EF25B72FFB005E08F8 /* LocationServicesEnabled.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A525B72FF9005E08F8 /* LocationServicesEnabled.swift */; };
 		6D0747F025B72FFB005E08F8 /* LocationManagerCoreLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A625B72FF9005E08F8 /* LocationManagerCoreLocation.swift */; };
 		6D0747F125B72FFB005E08F8 /* LocationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A725B72FF9005E08F8 /* LocationDispatcher.swift */; };
-		6D0747F225B72FFB005E08F8 /* AskLocationPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A825B72FF9005E08F8 /* AskLocationPermission.swift */; };
 		6D0747F325B72FFB005E08F8 /* CodableCoordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A925B72FF9005E08F8 /* CodableCoordinates.swift */; };
 		6D0747F425B72FFB005E08F8 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747AA25B72FF9005E08F8 /* LocationManager.swift */; };
-		6D0747F525B72FFB005E08F8 /* ProviderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747AC25B72FF9005E08F8 /* ProviderStatus.swift */; };
-		6D0747F625B72FFB005E08F8 /* ErrorProviderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747AD25B72FF9005E08F8 /* ErrorProviderInfo.swift */; };
-		6D0747F725B72FFB005E08F8 /* ErrorProviderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747AE25B72FFA005E08F8 /* ErrorProviderDelegate.swift */; };
 		6D0747F825B72FFB005E08F8 /* AtomicBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747AF25B72FFA005E08F8 /* AtomicBoolean.swift */; };
 		6D0747F925B72FFB005E08F8 /* MotionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B125B72FFA005E08F8 /* MotionRequestDelegate.swift */; };
 		6D0747FA25B72FFB005E08F8 /* MotionActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B225B72FFA005E08F8 /* MotionActivityManager.swift */; };
-		6D0747FB25B72FFB005E08F8 /* PermissionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B425B72FFA005E08F8 /* PermissionHelper.swift */; };
 		6D0747FC25B72FFB005E08F8 /* TimeProviderRelative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B625B72FFA005E08F8 /* TimeProviderRelative.swift */; };
 		6D0747FD25B72FFB005E08F8 /* TimeProviderForTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B725B72FFA005E08F8 /* TimeProviderForTests.swift */; };
 		6D0747FE25B72FFB005E08F8 /* TimeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B825B72FFA005E08F8 /* TimeProvider.swift */; };
@@ -57,7 +51,6 @@
 		6D07481225B72FFB005E08F8 /* NSDictionary+merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D025B72FFA005E08F8 /* NSDictionary+merge.swift */; };
 		6D07481325B72FFB005E08F8 /* CLLocation+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D125B72FFA005E08F8 /* CLLocation+Codable.swift */; };
 		6D07481425B72FFB005E08F8 /* Dictionary+merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D225B72FFA005E08F8 /* Dictionary+merge.swift */; };
-		6D07481525B72FFB005E08F8 /* TestCommonObjet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D325B72FFA005E08F8 /* TestCommonObjet.swift */; };
 		6D07481625B72FFB005E08F8 /* ContentValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D525B72FFA005E08F8 /* ContentValues.swift */; };
 		6D07481725B72FFB005E08F8 /* SQLiteDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D625B72FFA005E08F8 /* SQLiteDatabase.swift */; };
 		6D07481825B72FFB005E08F8 /* Cursor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D725B72FFA005E08F8 /* Cursor.swift */; };
@@ -66,12 +59,13 @@
 		6D07481B25B72FFB005E08F8 /* SQLiteOpenHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747DA25B72FFA005E08F8 /* SQLiteOpenHelper.swift */; };
 		6D07481C25B72FFB005E08F8 /* ConnectivityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747DE25B72FFA005E08F8 /* ConnectivityType.swift */; };
 		6D07481D25B72FFB005E08F8 /* RadioAccessTechnology.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747DF25B72FFA005E08F8 /* RadioAccessTechnology.swift */; };
-		6D07481E25B72FFB005E08F8 /* HttpStatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747E025B72FFA005E08F8 /* HttpStatusCode.swift */; };
 		6D07481F25B72FFB005E08F8 /* ConnexionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747E125B72FFB005E08F8 /* ConnexionConstants.swift */; };
-		6D07482025B72FFB005E08F8 /* TestConnexionObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747E225B72FFB005E08F8 /* TestConnexionObject.swift */; };
 		6D07482125B72FFB005E08F8 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747E425B72FFB005E08F8 /* APIModels.swift */; };
 		6D07482225B72FFB005E08F8 /* APIWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747E525B72FFB005E08F8 /* APIWorker.swift */; };
 		6D07482325B72FFB005E08F8 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747E625B72FFB005E08F8 /* APIManager.swift */; };
+		6D07487E25B8489F005E08F8 /* RequestHeaderCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07487D25B8489E005E08F8 /* RequestHeaderCreator.swift */; };
+		6D0748B525B885D3005E08F8 /* NetworkDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748B425B885D3005E08F8 /* NetworkDataStorage.swift */; };
+		6D0748BF25B88701005E08F8 /* HttpStatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748BE25B88701005E08F8 /* HttpStatusCode.swift */; };
 		CD2B7EC885859C45C04FFBE2 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCFB268E5261E2728BEFAA55 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -100,21 +94,15 @@
 		6D07479E25B72FF9005E08F8 /* Place.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Place.swift; sourceTree = "<group>"; };
 		6D07479F25B72FF9005E08F8 /* LocationWithContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationWithContext.swift; sourceTree = "<group>"; };
 		6D0747A125B72FF9005E08F8 /* WifiUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WifiUtils.swift; sourceTree = "<group>"; };
-		6D0747A225B72FF9005E08F8 /* NSURLSession+PromiseUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURLSession+PromiseUtils.swift"; sourceTree = "<group>"; };
 		6D0747A325B72FF9005E08F8 /* StringUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringUtils.swift; sourceTree = "<group>"; };
 		6D0747A525B72FF9005E08F8 /* LocationServicesEnabled.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationServicesEnabled.swift; sourceTree = "<group>"; };
 		6D0747A625B72FF9005E08F8 /* LocationManagerCoreLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManagerCoreLocation.swift; sourceTree = "<group>"; };
 		6D0747A725B72FF9005E08F8 /* LocationDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationDispatcher.swift; sourceTree = "<group>"; };
-		6D0747A825B72FF9005E08F8 /* AskLocationPermission.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskLocationPermission.swift; sourceTree = "<group>"; };
 		6D0747A925B72FF9005E08F8 /* CodableCoordinates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodableCoordinates.swift; sourceTree = "<group>"; };
 		6D0747AA25B72FF9005E08F8 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
-		6D0747AC25B72FF9005E08F8 /* ProviderStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProviderStatus.swift; sourceTree = "<group>"; };
-		6D0747AD25B72FF9005E08F8 /* ErrorProviderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorProviderInfo.swift; sourceTree = "<group>"; };
-		6D0747AE25B72FFA005E08F8 /* ErrorProviderDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorProviderDelegate.swift; sourceTree = "<group>"; };
 		6D0747AF25B72FFA005E08F8 /* AtomicBoolean.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicBoolean.swift; sourceTree = "<group>"; };
 		6D0747B125B72FFA005E08F8 /* MotionRequestDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionRequestDelegate.swift; sourceTree = "<group>"; };
 		6D0747B225B72FFA005E08F8 /* MotionActivityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionActivityManager.swift; sourceTree = "<group>"; };
-		6D0747B425B72FFA005E08F8 /* PermissionHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermissionHelper.swift; sourceTree = "<group>"; };
 		6D0747B625B72FFA005E08F8 /* TimeProviderRelative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeProviderRelative.swift; sourceTree = "<group>"; };
 		6D0747B725B72FFA005E08F8 /* TimeProviderForTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeProviderForTests.swift; sourceTree = "<group>"; };
 		6D0747B825B72FFA005E08F8 /* TimeProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeProvider.swift; sourceTree = "<group>"; };
@@ -140,7 +128,6 @@
 		6D0747D025B72FFA005E08F8 /* NSDictionary+merge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDictionary+merge.swift"; sourceTree = "<group>"; };
 		6D0747D125B72FFA005E08F8 /* CLLocation+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocation+Codable.swift"; sourceTree = "<group>"; };
 		6D0747D225B72FFA005E08F8 /* Dictionary+merge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+merge.swift"; sourceTree = "<group>"; };
-		6D0747D325B72FFA005E08F8 /* TestCommonObjet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestCommonObjet.swift; sourceTree = "<group>"; };
 		6D0747D525B72FFA005E08F8 /* ContentValues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentValues.swift; sourceTree = "<group>"; };
 		6D0747D625B72FFA005E08F8 /* SQLiteDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteDatabase.swift; sourceTree = "<group>"; };
 		6D0747D725B72FFA005E08F8 /* Cursor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cursor.swift; sourceTree = "<group>"; };
@@ -149,12 +136,13 @@
 		6D0747DA25B72FFA005E08F8 /* SQLiteOpenHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteOpenHelper.swift; sourceTree = "<group>"; };
 		6D0747DE25B72FFA005E08F8 /* ConnectivityType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectivityType.swift; sourceTree = "<group>"; };
 		6D0747DF25B72FFA005E08F8 /* RadioAccessTechnology.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioAccessTechnology.swift; sourceTree = "<group>"; };
-		6D0747E025B72FFA005E08F8 /* HttpStatusCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpStatusCode.swift; sourceTree = "<group>"; };
 		6D0747E125B72FFB005E08F8 /* ConnexionConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnexionConstants.swift; sourceTree = "<group>"; };
-		6D0747E225B72FFB005E08F8 /* TestConnexionObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConnexionObject.swift; sourceTree = "<group>"; };
 		6D0747E425B72FFB005E08F8 /* APIModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
 		6D0747E525B72FFB005E08F8 /* APIWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIWorker.swift; sourceTree = "<group>"; };
 		6D0747E625B72FFB005E08F8 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		6D07487D25B8489E005E08F8 /* RequestHeaderCreator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHeaderCreator.swift; sourceTree = "<group>"; };
+		6D0748B425B885D3005E08F8 /* NetworkDataStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkDataStorage.swift; sourceTree = "<group>"; };
+		6D0748BE25B88701005E08F8 /* HttpStatusCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpStatusCode.swift; sourceTree = "<group>"; };
 		70D6E1BB5934E95FE1ED5E29 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7C87A025C325737EFD18EAA5 /* Pods-herow-sdk-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.release.xcconfig"; sourceTree = "<group>"; };
 		F970141740093E7FF0CAF6FD /* Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -237,7 +225,6 @@
 				6D07479B25B72FF9005E08F8 /* content */,
 				6D0747A025B72FF9005E08F8 /* utils */,
 				6D0747CF25B72FFA005E08F8 /* extensions */,
-				6D0747D325B72FFA005E08F8 /* TestCommonObjet.swift */,
 				6D0747D425B72FFA005E08F8 /* db */,
 				6D0747DB25B72FFA005E08F8 /* callback */,
 			);
@@ -259,13 +246,10 @@
 			isa = PBXGroup;
 			children = (
 				6D0747A125B72FF9005E08F8 /* WifiUtils.swift */,
-				6D0747A225B72FF9005E08F8 /* NSURLSession+PromiseUtils.swift */,
 				6D0747A325B72FF9005E08F8 /* StringUtils.swift */,
 				6D0747A425B72FF9005E08F8 /* location */,
-				6D0747AB25B72FF9005E08F8 /* provider */,
 				6D0747AF25B72FFA005E08F8 /* AtomicBoolean.swift */,
 				6D0747B025B72FFA005E08F8 /* motion */,
-				6D0747B325B72FFA005E08F8 /* permissions */,
 				6D0747B525B72FFA005E08F8 /* time */,
 				6D0747BA25B72FFA005E08F8 /* ResetDelegate.swift */,
 				6D0747BB25B72FFA005E08F8 /* BackgroundTaskManager.swift */,
@@ -290,21 +274,10 @@
 				6D0747A525B72FF9005E08F8 /* LocationServicesEnabled.swift */,
 				6D0747A625B72FF9005E08F8 /* LocationManagerCoreLocation.swift */,
 				6D0747A725B72FF9005E08F8 /* LocationDispatcher.swift */,
-				6D0747A825B72FF9005E08F8 /* AskLocationPermission.swift */,
 				6D0747A925B72FF9005E08F8 /* CodableCoordinates.swift */,
 				6D0747AA25B72FF9005E08F8 /* LocationManager.swift */,
 			);
 			path = location;
-			sourceTree = "<group>";
-		};
-		6D0747AB25B72FF9005E08F8 /* provider */ = {
-			isa = PBXGroup;
-			children = (
-				6D0747AC25B72FF9005E08F8 /* ProviderStatus.swift */,
-				6D0747AD25B72FF9005E08F8 /* ErrorProviderInfo.swift */,
-				6D0747AE25B72FFA005E08F8 /* ErrorProviderDelegate.swift */,
-			);
-			path = provider;
 			sourceTree = "<group>";
 		};
 		6D0747B025B72FFA005E08F8 /* motion */ = {
@@ -314,14 +287,6 @@
 				6D0747B225B72FFA005E08F8 /* MotionActivityManager.swift */,
 			);
 			path = motion;
-			sourceTree = "<group>";
-		};
-		6D0747B325B72FFA005E08F8 /* permissions */ = {
-			isa = PBXGroup;
-			children = (
-				6D0747B425B72FFA005E08F8 /* PermissionHelper.swift */,
-			);
-			path = permissions;
 			sourceTree = "<group>";
 		};
 		6D0747B525B72FFA005E08F8 /* time */ = {
@@ -399,7 +364,6 @@
 			children = (
 				6D0747DD25B72FFA005E08F8 /* network */,
 				6D0747E125B72FFB005E08F8 /* ConnexionConstants.swift */,
-				6D0747E225B72FFB005E08F8 /* TestConnexionObject.swift */,
 				6D0747E325B72FFB005E08F8 /* APIService */,
 			);
 			path = connexion;
@@ -410,7 +374,6 @@
 			children = (
 				6D0747DE25B72FFA005E08F8 /* ConnectivityType.swift */,
 				6D0747DF25B72FFA005E08F8 /* RadioAccessTechnology.swift */,
-				6D0747E025B72FFA005E08F8 /* HttpStatusCode.swift */,
 			);
 			path = network;
 			sourceTree = "<group>";
@@ -418,6 +381,9 @@
 		6D0747E325B72FFB005E08F8 /* APIService */ = {
 			isa = PBXGroup;
 			children = (
+				6D07487D25B8489E005E08F8 /* RequestHeaderCreator.swift */,
+				6D0748BE25B88701005E08F8 /* HttpStatusCode.swift */,
+				6D0748B425B885D3005E08F8 /* NetworkDataStorage.swift */,
 				6D0747E425B72FFB005E08F8 /* APIModels.swift */,
 				6D0747E525B72FFB005E08F8 /* APIWorker.swift */,
 				6D0747E625B72FFB005E08F8 /* APIManager.swift */,
@@ -627,28 +593,24 @@
 				6D07480B25B72FFB005E08F8 /* DataHolderUpdater.swift in Sources */,
 				6D0747EC25B72FFB005E08F8 /* WifiUtils.swift in Sources */,
 				6D0747E825B72FFB005E08F8 /* PlaceLocation.swift in Sources */,
-				6D07481E25B72FFB005E08F8 /* HttpStatusCode.swift in Sources */,
+				6D0748BF25B88701005E08F8 /* HttpStatusCode.swift in Sources */,
 				6D07480725B72FFB005E08F8 /* WeakContainer.swift in Sources */,
 				6D0747FD25B72FFB005E08F8 /* TimeProviderForTests.swift in Sources */,
 				6D07480925B72FFB005E08F8 /* BatteryUtils.swift in Sources */,
 				6D07480325B72FFB005E08F8 /* DeviceUtils.swift in Sources */,
+				6D0748B525B885D3005E08F8 /* NetworkDataStorage.swift in Sources */,
 				6D07481C25B72FFB005E08F8 /* ConnectivityType.swift in Sources */,
-				6D0747F625B72FFB005E08F8 /* ErrorProviderInfo.swift in Sources */,
 				6D0747F925B72FFB005E08F8 /* MotionRequestDelegate.swift in Sources */,
-				6D07482025B72FFB005E08F8 /* TestConnexionObject.swift in Sources */,
 				6D07482325B72FFB005E08F8 /* APIManager.swift in Sources */,
 				6D07481425B72FFB005E08F8 /* Dictionary+merge.swift in Sources */,
 				6D0747F025B72FFB005E08F8 /* LocationManagerCoreLocation.swift in Sources */,
-				6D0747F525B72FFB005E08F8 /* ProviderStatus.swift in Sources */,
 				6D07481125B72FFB005E08F8 /* AnyEncodable.swift in Sources */,
-				6D0747ED25B72FFB005E08F8 /* NSURLSession+PromiseUtils.swift in Sources */,
 				6D0747F825B72FFB005E08F8 /* AtomicBoolean.swift in Sources */,
 				6D07480D25B72FFB005E08F8 /* GenericHolder.swift in Sources */,
 				6D07481A25B72FFB005E08F8 /* DbHelper.swift in Sources */,
 				6D07481B25B72FFB005E08F8 /* SQLiteOpenHelper.swift in Sources */,
 				6D0747EF25B72FFB005E08F8 /* LocationServicesEnabled.swift in Sources */,
 				6D07481D25B72FFB005E08F8 /* RadioAccessTechnology.swift in Sources */,
-				6D0747FB25B72FFB005E08F8 /* PermissionHelper.swift in Sources */,
 				6D07480E25B72FFB005E08F8 /* FileUtils.swift in Sources */,
 				6D07480125B72FFB005E08F8 /* BackgroundTaskManager.swift in Sources */,
 				6D0747E725B72FFB005E08F8 /* HerowInitializer.swift in Sources */,
@@ -671,7 +633,7 @@
 				6D07480425B72FFB005E08F8 /* AppStateDelegate.swift in Sources */,
 				6D07481325B72FFB005E08F8 /* CLLocation+Codable.swift in Sources */,
 				6D0747EA25B72FFB005E08F8 /* Place.swift in Sources */,
-				6D07481525B72FFB005E08F8 /* TestCommonObjet.swift in Sources */,
+				6D07487E25B8489F005E08F8 /* RequestHeaderCreator.swift in Sources */,
 				6D07481F25B72FFB005E08F8 /* ConnexionConstants.swift in Sources */,
 				6D07480025B72FFB005E08F8 /* ResetDelegate.swift in Sources */,
 				6D07481625B72FFB005E08F8 /* ContentValues.swift in Sources */,
@@ -679,8 +641,6 @@
 				6D07480C25B72FFB005E08F8 /* DataHolderUserDefaults.swift in Sources */,
 				6D0747F125B72FFB005E08F8 /* LocationDispatcher.swift in Sources */,
 				6D07481225B72FFB005E08F8 /* NSDictionary+merge.swift in Sources */,
-				6D0747F225B72FFB005E08F8 /* AskLocationPermission.swift in Sources */,
-				6D0747F725B72FFB005E08F8 /* ErrorProviderDelegate.swift in Sources */,
 				6D07482125B72FFB005E08F8 /* APIModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import PromiseKit
 
 public class FileUtils {
     private static let filename = "connectplace-settings"
@@ -53,41 +52,6 @@ public class FileUtils {
         try FileManager.default.removeItem(at: documentUrl)
     }
 
-    public static func loadFromFile(directory: FileManager.SearchPathDirectory, fileName: String) -> Promise<Data> {
-        return Promise<Data> { seal in
-            do {
-                let finalDocument = try generateDocumentPath(directory: directory, fileName: fileName)
-                if try finalDocument.checkResourceIsReachable() {
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        do {
-                            let data = try Data(contentsOf: finalDocument)
-                            seal.fulfill(data)
-                        } catch {
-                            seal.reject(error)
-                        }
-                    }
-                }
-            } catch {
-                seal.reject(error)
-            }
-        }
-    }
-
-    public static func saveToFile(directory: FileManager.SearchPathDirectory,
-                                  fileName: String, data: Data) -> Promise<Data> {
-        return Promise<Data> { seal in
-            DispatchQueue.global(qos: .userInitiated).async {
-                do {
-                    let finalDocument: URL = try generateDocumentPath(directory: directory, fileName: fileName)
-                    try data.write(to: finalDocument, options: Data.WritingOptions.atomic)
-                    seal.fulfill((data))
-                } catch {
-                    seal.reject(error)
-                }
-            }
-        }
-    }
-
     public static func migrateFile(_ fileName: String, fromDirectory source: FileManager.SearchPathDirectory, toDirectory target: FileManager.SearchPathDirectory) {
         let fileManager = FileManager.default
         let sourceUrl =  fileManager.urls(for: source, in: .userDomainMask).first!
@@ -104,12 +68,7 @@ public class FileUtils {
         }
     }
 
-    public static func saveUnbackedFileToApplicationSupportFolder(fileName: String, data: Data) -> Promise<Data> {
-        self.createAppSupportDirectoryIfNeeded()
-        return self.saveToFile(directory: .applicationSupportDirectory, fileName: fileName, data: data).get { data -> Void in
-            self.markFileAsExcludedFromBackup(directory: .applicationSupportDirectory, fileName: fileName)
-        }
-    }
+  
 
     public static func markFileAsExcludedFromBackup(directory: FileManager.SearchPathDirectory, fileName: String) {
         do {

@@ -1,0 +1,22 @@
+name: CI
+
+on: 
+  push:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+jobs:
+  build:
+
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@master
+    - name: add platform_secrets 
+      env:
+          PLATFORM_SECRETS: ${{ secrets.PLATFORM_SECRETS }}
+      run: echo $PLATFORM_SECRETS > /herow-sdk-ios/connexion/platform-secrets.plist;pwd
+    - name: Start xcodebuild test
+      run: |
+          xcodebuild clean test -workspace herow-sdk-ios.workspace -scheme herow-sdk-ios -destination "platform=iOS Simulator,name=iPhone 11 Pro"

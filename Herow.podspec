@@ -1,11 +1,10 @@
-# Ios-connectplace-common
-
 Pod::Spec.new do |s|
 	# ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-	s.name         = "herow-sdk-ios"
+	s.name         = "Herow"
 	s.version      = "0.1-SNAPSHOT"
 	s.summary      = "herow-sdk-ios: an assets of classes and interfaces "
 	s.homepage     = "http://www.herow.io/"
+    s.module_name  = 'Herow'
 
 	# ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 	s.license      = {
@@ -23,20 +22,40 @@ Pod::Spec.new do |s|
 
 	# ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 	s.source       = { :git => "./", :branch => "master" }
-	s.vendored_frameworks = 'herow-sdk-ios.framework'
+	s.vendored_frameworks = 'Herow.framework'
 	s.ios.deployment_target = '11.0'
 	s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
 
 	# ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-	s.source_files =  'herow-sdk-ios', 'herow-sdk-ios/**/*.swift'
+  	s.default_subspecs = 'Core'
 
 	# ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-	s.frameworks = 'UIKit', 'Foundation', 'SystemConfiguration'
-	s.dependency 'CocoaLumberjack/Swift', '3.5.3'
-	s.dependency 'PromiseKit', '6.8.4'
-	s.dependency 'PromiseKit/Foundation', '6.8.4'
 	s.dependency 'SwiftLint'
 
 	# ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 	s.requires_arc = true
+	
+	
+    s.subspec 'Core' do |ss|
+    	ss.ios.source_files = 'herow-sdk-ios/common/**/*.swift'
+  		ss.ios.frameworks = 'UIKit', 'Foundation', 'SystemConfiguration'
+		ss.ios.dependency 'CocoaLumberjack/Swift', '3.5.3'
+  		ss.ios.dependency 'PromiseKit', '6.8.4'
+		ss.ios.dependency 'PromiseKit/Foundation', '6.8.4'
+  		ss.ios.deployment_target = '11.0'	  
+    end
+
+    s.subspec 'Connection' do |ss|
+    	ss.ios.source_files = 'herow-sdk-ios/connection/**/*.swift'
+		ss.ios.dependency 'Herow/Core'
+  		ss.ios.deployment_target = '11.0'	  
+    end
+
+    s.subspec 'Detection' do |ss|
+    	ss.ios.source_files = 'herow-sdk-ios/detection/**/*.swift'
+  		ss.ios.frameworks = 'CoreLocation'
+		ss.ios.dependency 'Herow/Connection'
+  		ss.ios.deployment_target = '11.0'
+    end
+	
 end

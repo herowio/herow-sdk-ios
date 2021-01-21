@@ -18,4 +18,4 @@ jobs:
       run: cd herow-sdk-ios/connexion ;echo $PLATFORM_SECRETS > platform-secrets.plist
     - name: Start xcodebuild test
       run: |
-          xcodebuild clean test -workspace herow-sdk-ios.workspace -scheme herow-sdk-ios -destination "platform=iOS Simulator,name=iPhone 11 Pro"
+          xcodebuild clean test -workspace herow-sdk-ios.xcworkspace -scheme herow-sdk-ios -destination "platform=iOS Simulator,name=iPhone 11 Pro"

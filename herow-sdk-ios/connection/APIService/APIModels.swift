@@ -7,18 +7,13 @@
 
 import Foundation
 
-enum PlatForm {
+enum Platform {
     case prod
     case preprod
 
     var credentials: SDKCredential {
-            switch self {
-                case .prod:
-                    return SDKCredential(clientId: "95634158622", clientSecret: "X33ohuSqX6kjI7ijDa91P4DZJVAmmHZe", redirectURI: "https://m.herow.io")
-                case .preprod:
-                    return SDKCredential(clientId: "65238409552", clientSecret: "Vq3p1nXx1NQal1di10IfkC4yLsd0KAM6", redirectURI: "https://m-preprod.herow.io")
-            }
-        }
+        return SDKCredential(self)
+    }
 }
 
 
@@ -28,6 +23,27 @@ public  struct SDKCredential {
     let clientId: String
     let clientSecret: String
     let redirectURI: String
+
+    init(_ platform:Platform) {
+        if let bundle = Bundle(identifier: "io.herow.sdk.herow-sdk-ios"),
+           let path = bundle.path(forResource: "platform-secrets", ofType: "plist"),
+           let dict = NSDictionary(contentsOfFile: path) as? [String: [String:String]]  {
+            var platformKey = ""
+            switch platform {
+            case .preprod:
+                platformKey = "preprod"
+            default:
+                platformKey = "prod"
+            }
+            clientId = dict[platformKey]?["clientId"] ?? ""
+            clientSecret = dict[platformKey]?["clientSecret"] ?? ""
+            redirectURI = dict[platformKey]?["redirectURI"] ?? ""
+        } else {
+            clientId =  ""
+            clientSecret = ""
+            redirectURI = ""
+        }
+    }
 }
 
 public struct APIConfig: Codable {
@@ -36,16 +52,16 @@ public struct APIConfig: Codable {
     let enabled: Bool
 
     public func encode() -> Data? {
-         let encoder = JSONEncoder()
+        let encoder = JSONEncoder()
         return try? encoder.encode(self)
-     }
-     static public func decode(data: Data) -> APIConfig? {
-         let decoder = JSONDecoder()
-         guard let token = try? decoder.decode(APIConfig.self, from: data) else {
-                 return nil
-             }
-         return token
-     }
+    }
+    static public func decode(data: Data) -> APIConfig? {
+        let decoder = JSONDecoder()
+        guard let token = try? decoder.decode(APIConfig.self, from: data) else {
+            return nil
+        }
+        return token
+    }
 }
 
 public struct APIToken: Codable {
@@ -53,16 +69,16 @@ public struct APIToken: Codable {
     let expiresIn: Int64
     var expirationDate: Date?
 
-   public func encode() -> Data? {
+    public func encode() -> Data? {
         let encoder = JSONEncoder()
-       return try? encoder.encode(self)
+        return try? encoder.encode(self)
     }
 
     static public func decode(data: Data) -> APIToken? {
         let decoder = JSONDecoder()
         guard let token = try? decoder.decode(APIToken.self, from: data) else {
-                return nil
-            }
+            return nil
+        }
         return token
     }
 }

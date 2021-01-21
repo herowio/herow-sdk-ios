@@ -53,7 +53,7 @@ public class APIManager: NSObject {
     let userInfogWorker: APIWorker<APIUserInfo>
     let cacheWorker: APIWorker<APICache>
     let netWorkDataStorage: NetworkDataStorageProtocol
-    var platform: PlatForm = .prod
+    var platform: Platform = .prod
     var user: User?
 
      init(plateform: String, netWorkDataStorage: NetworkDataStorageProtocol) {

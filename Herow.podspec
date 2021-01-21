@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
 	s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
 
 	# ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  	s.default_subspecs = 'Core'
+  	s.default_subspecs = 'Detection'
 
 	# ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 	s.dependency 'SwiftLint'
@@ -40,8 +40,6 @@ Pod::Spec.new do |s|
     	ss.ios.source_files = 'herow-sdk-ios/common/**/*.swift'
   		ss.ios.frameworks = 'UIKit', 'Foundation', 'SystemConfiguration'
 		ss.ios.dependency 'CocoaLumberjack/Swift', '3.5.3'
-  		ss.ios.dependency 'PromiseKit', '6.8.4'
-		ss.ios.dependency 'PromiseKit/Foundation', '6.8.4'
   		ss.ios.deployment_target = '11.0'	  
     end
 

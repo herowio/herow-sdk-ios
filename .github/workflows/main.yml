@@ -3,7 +3,6 @@ name: CI
 on: 
   push:
     branches:
-      - main
       - develop
   workflow_dispatch:
 jobs:
@@ -12,7 +11,7 @@ jobs:
     runs-on: macOS-latest
     
     steps:
-    - uses: actions/checkout@master
+    - uses: actions/checkout@develop
     - name: add platform_secrets 
       env:
           PLATFORM_SECRETS: ${{ secrets.PLATFORM_SECRETS }}

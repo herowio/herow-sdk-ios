@@ -88,3 +88,5 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+herow-sdk-ios/.DS_Store
+herow-sdk-ios/connexion/.DS_Store

@@ -8,9 +8,10 @@
 
 import Foundation
 import UIKit
-@objc public class AppStateDetector: NSObject, AppStateDelegate {
 
-    var appStateDelegates: [WeakContainer<AppStateDelegate>]
+@objc(HerowAppStateDetector) public class AppStateDetector: NSObject, AppStateDelegate {
+
+    var appStateDelegates: [AppStateDelegate]
     var isOnBackground: Bool
 
     public override init() {
@@ -25,7 +26,7 @@ import UIKit
     }
 
     public func registerAppStateDelegate(appStateDelegate: AppStateDelegate) {
-        appStateDelegates.append(  WeakContainer(value: appStateDelegate))
+        appStateDelegates.append(appStateDelegate)
         if isOnBackground {
             appStateDelegate.onAppInBackground()
         } else {
@@ -34,17 +35,20 @@ import UIKit
     }
 
     public func unregisterAppStateDelegate(appStateDelegate: AppStateDelegate) {
-        appStateDelegates = appStateDelegates.filter {
-            $0.get() !== appStateDelegate
-        }
+        appStateDelegates = appStateDelegates.filter({ (delegate: AppStateDelegate) -> Bool in
+            return delegate !== appStateDelegate
+        })
+        /*if let index = appStateDelegates.index(of: appStateDelegate) {
+            appStateDelegates.remove(at: index)
+        }*/
     }
-    
+
     public func onAppInForeground() {
         if isOnBackground {
             GlobalLogger.shared.debug("appStateDetector - inForeground")
             isOnBackground = false
             for delegate in appStateDelegates {
-                delegate.get()?.onAppInForeground()
+                delegate.onAppInForeground()
             }
         }
     }
@@ -54,8 +58,15 @@ import UIKit
             GlobalLogger.shared.debug("appStateDetector - inBackground")
             isOnBackground = true
             for delegate in appStateDelegates {
-                delegate.get()?.onAppInBackground()
+                delegate.onAppInBackground()
             }
+        }
+    }
+
+    public func onAppTerminated() {
+        onAppInBackground()
+        for delegate in appStateDelegates {
+            delegate.onAppTerminated?()
         }
     }
 }
@@ -67,12 +78,17 @@ extension AppStateDetector {
                                                name: UIApplication.willResignActiveNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(onAppInBackground),
+                                               selector: #selector(onAppTerminated),
                                                name: UIApplication.willTerminateNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(onAppInForeground),
                                                name: UIApplication.didBecomeActiveNotification,
+                                               object: nil)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onAppInBackground),
+                                               name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
     }
 
@@ -85,6 +101,9 @@ extension AppStateDetector {
                                                   object: nil)
         NotificationCenter.default.removeObserver(self,
                                                   name: UIApplication.didBecomeActiveNotification,
+                                                  object: nil)
+        NotificationCenter.default.removeObserver(self,
+                                                  name: UIApplication.didEnterBackgroundNotification,
                                                   object: nil)
     }
 }

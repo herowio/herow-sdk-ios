@@ -66,6 +66,10 @@
 		6D07487E25B8489F005E08F8 /* RequestHeaderCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07487D25B8489E005E08F8 /* RequestHeaderCreator.swift */; };
 		6D0748B525B885D3005E08F8 /* NetworkDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748B425B885D3005E08F8 /* NetworkDataStorage.swift */; };
 		6D0748BF25B88701005E08F8 /* HttpStatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748BE25B88701005E08F8 /* HttpStatusCode.swift */; };
+		6D0748C425B89465005E08F8 /* UserInfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748C325B89465005E08F8 /* UserInfoManager.swift */; };
+		6D0748CB25B992F8005E08F8 /* PermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748CA25B992F8005E08F8 /* PermissionsManager.swift */; };
+		6D0748D225B9957F005E08F8 /* UserInfoManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748D125B9957F005E08F8 /* UserInfoManagerProtocol.swift */; };
+		6D0748D825B9AEC0005E08F8 /* platform-secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D0748D725B9AEC0005E08F8 /* platform-secrets.plist */; };
 		CD2B7EC885859C45C04FFBE2 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCFB268E5261E2728BEFAA55 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -143,6 +147,10 @@
 		6D07487D25B8489E005E08F8 /* RequestHeaderCreator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHeaderCreator.swift; sourceTree = "<group>"; };
 		6D0748B425B885D3005E08F8 /* NetworkDataStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkDataStorage.swift; sourceTree = "<group>"; };
 		6D0748BE25B88701005E08F8 /* HttpStatusCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpStatusCode.swift; sourceTree = "<group>"; };
+		6D0748C325B89465005E08F8 /* UserInfoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoManager.swift; sourceTree = "<group>"; };
+		6D0748CA25B992F8005E08F8 /* PermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsManager.swift; sourceTree = "<group>"; };
+		6D0748D125B9957F005E08F8 /* UserInfoManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoManagerProtocol.swift; sourceTree = "<group>"; };
+		6D0748D725B9AEC0005E08F8 /* platform-secrets.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "platform-secrets.plist"; sourceTree = "<group>"; };
 		70D6E1BB5934E95FE1ED5E29 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7C87A025C325737EFD18EAA5 /* Pods-herow-sdk-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.release.xcconfig"; sourceTree = "<group>"; };
 		F970141740093E7FF0CAF6FD /* Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -246,6 +254,8 @@
 			isa = PBXGroup;
 			children = (
 				6D0747A125B72FF9005E08F8 /* WifiUtils.swift */,
+				6D0748D025B99556005E08F8 /* Interfaces */,
+				6D0748C925B992C2005E08F8 /* Permissions */,
 				6D0747A325B72FF9005E08F8 /* StringUtils.swift */,
 				6D0747A425B72FF9005E08F8 /* location */,
 				6D0747AF25B72FFA005E08F8 /* AtomicBoolean.swift */,
@@ -362,8 +372,9 @@
 		6D0747DC25B72FFA005E08F8 /* connexion */ = {
 			isa = PBXGroup;
 			children = (
+				6D0748D725B9AEC0005E08F8 /* platform-secrets.plist */,
+				6D0748C225B8943C005E08F8 /* userInfo */,
 				6D0747DD25B72FFA005E08F8 /* network */,
-				6D0747E125B72FFB005E08F8 /* ConnexionConstants.swift */,
 				6D0747E325B72FFB005E08F8 /* APIService */,
 			);
 			path = connexion;
@@ -381,6 +392,7 @@
 		6D0747E325B72FFB005E08F8 /* APIService */ = {
 			isa = PBXGroup;
 			children = (
+				6D0747E125B72FFB005E08F8 /* ConnexionConstants.swift */,
 				6D07487D25B8489E005E08F8 /* RequestHeaderCreator.swift */,
 				6D0748BE25B88701005E08F8 /* HttpStatusCode.swift */,
 				6D0748B425B885D3005E08F8 /* NetworkDataStorage.swift */,
@@ -389,6 +401,30 @@
 				6D0747E625B72FFB005E08F8 /* APIManager.swift */,
 			);
 			path = APIService;
+			sourceTree = "<group>";
+		};
+		6D0748C225B8943C005E08F8 /* userInfo */ = {
+			isa = PBXGroup;
+			children = (
+				6D0748C325B89465005E08F8 /* UserInfoManager.swift */,
+			);
+			path = userInfo;
+			sourceTree = "<group>";
+		};
+		6D0748C925B992C2005E08F8 /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				6D0748CA25B992F8005E08F8 /* PermissionsManager.swift */,
+			);
+			path = Permissions;
+			sourceTree = "<group>";
+		};
+		6D0748D025B99556005E08F8 /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				6D0748D125B9957F005E08F8 /* UserInfoManagerProtocol.swift */,
+			);
+			path = Interfaces;
 			sourceTree = "<group>";
 		};
 		C79A3FE13FE93F0EB30BECA2 /* Pods */ = {
@@ -506,6 +542,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D0748D825B9AEC0005E08F8 /* platform-secrets.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -601,8 +638,10 @@
 				6D0748B525B885D3005E08F8 /* NetworkDataStorage.swift in Sources */,
 				6D07481C25B72FFB005E08F8 /* ConnectivityType.swift in Sources */,
 				6D0747F925B72FFB005E08F8 /* MotionRequestDelegate.swift in Sources */,
+				6D0748C425B89465005E08F8 /* UserInfoManager.swift in Sources */,
 				6D07482325B72FFB005E08F8 /* APIManager.swift in Sources */,
 				6D07481425B72FFB005E08F8 /* Dictionary+merge.swift in Sources */,
+				6D0748CB25B992F8005E08F8 /* PermissionsManager.swift in Sources */,
 				6D0747F025B72FFB005E08F8 /* LocationManagerCoreLocation.swift in Sources */,
 				6D07481125B72FFB005E08F8 /* AnyEncodable.swift in Sources */,
 				6D0747F825B72FFB005E08F8 /* AtomicBoolean.swift in Sources */,
@@ -627,6 +666,7 @@
 				6D07480825B72FFB005E08F8 /* ChargingStatus.swift in Sources */,
 				6D07481725B72FFB005E08F8 /* SQLiteDatabase.swift in Sources */,
 				6D07481825B72FFB005E08F8 /* Cursor.swift in Sources */,
+				6D0748D225B9957F005E08F8 /* UserInfoManagerProtocol.swift in Sources */,
 				6D07480F25B72FFB005E08F8 /* OpenUrlUtils.swift in Sources */,
 				6D0747FC25B72FFB005E08F8 /* TimeProviderRelative.swift in Sources */,
 				6D07481925B72FFB005E08F8 /* SQLiteDatatype.swift in Sources */,

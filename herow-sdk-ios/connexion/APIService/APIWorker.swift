@@ -17,6 +17,8 @@ private enum Method: String {
 protocol APIWorkerProtocol {
     associatedtype ResponseType
     func getData(endPoint: EndPoint , completion: @escaping (ResponseType?, NetworkError?) -> Void)
+    func postData(param: Data?, completion: @escaping (ResponseType?, NetworkError?) -> Void)
+    func putData(param: Data?, completion: @escaping (ResponseType?, NetworkError?) -> Void)
 }
 
 internal class APIWorker<T: Decodable>: APIWorkerProtocol {
@@ -36,9 +38,9 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         self.sessionCfg.timeoutIntervalForRequest = 10.0
         self.session = URLSession(configuration: sessionCfg)
     }
+    
     private func buildURL(endPoint: EndPoint) -> String {
         var realEndPoint = endPoint
-
         switch endPoint {
         case.undefined:
             realEndPoint = self.endPoint

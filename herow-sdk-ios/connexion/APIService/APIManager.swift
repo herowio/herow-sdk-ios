@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: Enums
 public enum NetworkError: Error {
     case badUrl
     case invalidStatusCode
@@ -14,7 +15,6 @@ public enum NetworkError: Error {
     case invalidResponse
     case noData
     case serialization
-
 }
 
 public enum URLType: String {
@@ -43,9 +43,9 @@ public enum EndPoint {
             return ""
         }
     }
-
 }
 
+// MARK: APIManager
 public class APIManager: NSObject {
 
     let tokenWorker: APIWorker<APIToken>
@@ -83,9 +83,7 @@ public class APIManager: NSObject {
         let encodeResult = parts.joined(separator: "&")
         return encodeResult.data(using: String.Encoding.utf8)!
     }
-
-    
-
+    // MARK: token
     private func getTokenIfNeeded(completion:  @escaping ()->()) {
         if self.netWorkDataStorage.tokenIsExpired() {
             GlobalLogger.shared.debug("APIManager - token expired")
@@ -118,6 +116,7 @@ public class APIManager: NSObject {
         tokenWorker.postData(param: tokenParam(user), completion: completion)
     }
 
+    // MARK: Config
     public func getConfig(completion: ( (APIConfig?, NetworkError?) -> Void)? = nil) {
         getTokenIfNeeded {
             self.configWorker.headers = RequestHeaderCreator.createHeaders(token: self.netWorkDataStorage.getToken()?.accessToken,herowId: self.netWorkDataStorage.getUserInfo()?.herowId)
@@ -131,7 +130,7 @@ public class APIManager: NSObject {
             }
         }
     }
-
+    // MARK: USerInfo
     public func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)? = nil) {
         getTokenIfNeeded {
             self.userInfogWorker.headers = RequestHeaderCreator.createHeaders(token: self.netWorkDataStorage.getToken()?.accessToken)
@@ -145,13 +144,13 @@ public class APIManager: NSObject {
         }
     }
 
-
+    // MARK: Cache
     public func getCache(geoHash: String, completion: @escaping (APICache?, NetworkError?) -> Void) {
         cacheWorker.headers = RequestHeaderCreator.createHeaders(token: self.netWorkDataStorage.getToken()?.accessToken)
         cacheWorker.getData(endPoint: .cache(geoHash), completion: completion)
     }
 
-
+    // MARK: Params
     private func tokenParam(_ user: User) -> Data {
 
         let params = [Parameters.username: user.login,
@@ -178,7 +177,4 @@ public class APIManager: NSObject {
         }
         return result
     }
-
-
-
 }

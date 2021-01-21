@@ -89,12 +89,10 @@ public struct User {
     let login: String
     let password: String
     public let company: String?
-
     public init(login: String, password: String, company: String? = nil) {
         self.login = login
         self.password = password
         self.company = company
-
     }
 }
 
@@ -103,10 +101,8 @@ public struct UserInfo: Codable {
     var adStatus: Bool
     var customId: String?
     var lang: String
-    var offset: Int64 = 3600000
+    var offset: Int64 = 3600
     var optins: [Optin]
-
-    
 }
 
 public struct Optin: Codable {

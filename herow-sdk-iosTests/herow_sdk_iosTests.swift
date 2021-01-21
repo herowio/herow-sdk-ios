@@ -30,4 +30,22 @@ class herow_sdk_iosTests: XCTestCase {
         }
     }
 
+    func testCredentials() throws {
+        let bundleBeingTested = Bundle(identifier: "io.herow.sdk.herow-sdk-ios")!
+        ////If your plist contain root as Dictionary
+
+        guard let path = bundleBeingTested.path(forResource: "platform-secrets", ofType: "plist"), let dict = NSDictionary(contentsOfFile: path) as? [String: [String:String]] else {
+            XCTAssertTrue(false)
+            return
+        }
+        XCTAssertNotNil(dict["prod"]?["client_id"])
+        XCTAssertNotNil(dict["preprod"]?["client_id"])
+        XCTAssertNotNil(dict["prod"]?["client_secret"])
+        XCTAssertNotNil(dict["preprod"]?["redirect_uri"])
+        XCTAssertNotNil(dict["prod"]?["client_secret"])
+        XCTAssertNotNil(dict["preprod"]?["redirect_uri"])
+
+
+    }
+
 }

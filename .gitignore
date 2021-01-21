@@ -88,3 +88,4 @@ fastlane/test_output
 # https://github.com/johnno1962/injectionforxcode
 
 iOSInjectionProject/
+herow-sdk-ios/connexion/platform-secrets.plist

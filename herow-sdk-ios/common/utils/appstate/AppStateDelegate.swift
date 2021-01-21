@@ -8,10 +8,13 @@
 
 import Foundation
 
+import Foundation
+
 @objc(CPAppStateDelegate) public protocol AppStateDelegate: class {
     /// Notify when the application enters in foreground
-    func onAppInForeground()
-
+    @objc func onAppInForeground()
     /// Notify when the application enters in background
-    func onAppInBackground()
+    @objc func onAppInBackground()
+    /// Notify when the application willTerminate
+    @objc optional func onAppTerminated()
 }

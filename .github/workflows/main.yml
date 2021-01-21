@@ -16,7 +16,7 @@ jobs:
     - name: add platform_secrets 
       env:
           PLATFORM_SECRETS: ${{ secrets.PLATFORM_SECRETS }}
-      run: cd connexion ;echo $PLATFORM_SECRETS > platform-secrets.plist
+      run: cd herow-sdk-ios/connexion ;echo $PLATFORM_SECRETS > platform-secrets.plist
     - name: Start xcodebuild test
       run: |
           xcodebuild clean test -workspace herow-sdk-ios.workspace -scheme herow-sdk-ios -destination "platform=iOS Simulator,name=iPhone 11 Pro"

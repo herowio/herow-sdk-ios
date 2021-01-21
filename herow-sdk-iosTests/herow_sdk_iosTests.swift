@@ -35,9 +35,11 @@ class herow_sdk_iosTests: XCTestCase {
         ////If your plist contain root as Dictionary
 
         guard let path = bundleBeingTested.path(forResource: "platform-secrets", ofType: "plist"), let dict = NSDictionary(contentsOfFile: path) as? [String: [String:String]] else {
+            print("no file")
             XCTAssertTrue(false)
             return
         }
+        print("file exists")
         XCTAssertNotNil(dict["prod"]?["client_id"])
         XCTAssertNotNil(dict["preprod"]?["client_id"])
         XCTAssertNotNil(dict["prod"]?["client_secret"])

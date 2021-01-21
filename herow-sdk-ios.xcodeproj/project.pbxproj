@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		258D73F449DB20BC2644D000 /* Pods_herow_sdk_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */; };
+		6B9A5F4B25B9D17500AAC673 /* UserInfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F4A25B9D17500AAC673 /* UserInfoManager.swift */; };
+		6B9A5F5725B9D2A500AAC673 /* ConnexionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5625B9D2A500AAC673 /* ConnexionConstants.swift */; };
+		6B9A5F6025B9D36600AAC673 /* APIWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5A25B9D36600AAC673 /* APIWorker.swift */; };
+		6B9A5F6125B9D36600AAC673 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5B25B9D36600AAC673 /* APIManager.swift */; };
+		6B9A5F6225B9D36600AAC673 /* HttpStatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5C25B9D36600AAC673 /* HttpStatusCode.swift */; };
+		6B9A5F6325B9D36600AAC673 /* RequestHeaderCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5D25B9D36600AAC673 /* RequestHeaderCreator.swift */; };
+		6B9A5F6425B9D36600AAC673 /* NetworkDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5E25B9D36600AAC673 /* NetworkDataStorage.swift */; };
+		6B9A5F6525B9D36600AAC673 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5F25B9D36600AAC673 /* APIModels.swift */; };
 		6D07420525B079EC005E08F8 /* herow_sdk_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D0741FB25B079EC005E08F8 /* herow_sdk_ios.framework */; };
 		6D07420A25B079EC005E08F8 /* herow_sdk_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07420925B079EC005E08F8 /* herow_sdk_iosTests.swift */; };
 		6D07420C25B079EC005E08F8 /* herow_sdk_ios.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D0741FE25B079EC005E08F8 /* herow_sdk_ios.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -59,13 +67,9 @@
 		6D07481B25B72FFB005E08F8 /* SQLiteOpenHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747DA25B72FFA005E08F8 /* SQLiteOpenHelper.swift */; };
 		6D07481C25B72FFB005E08F8 /* ConnectivityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747DE25B72FFA005E08F8 /* ConnectivityType.swift */; };
 		6D07481D25B72FFB005E08F8 /* RadioAccessTechnology.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747DF25B72FFA005E08F8 /* RadioAccessTechnology.swift */; };
-		6D07481F25B72FFB005E08F8 /* ConnexionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747E125B72FFB005E08F8 /* ConnexionConstants.swift */; };
-		6D07482125B72FFB005E08F8 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747E425B72FFB005E08F8 /* APIModels.swift */; };
-		6D07482225B72FFB005E08F8 /* APIWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747E525B72FFB005E08F8 /* APIWorker.swift */; };
-		6D07482325B72FFB005E08F8 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747E625B72FFB005E08F8 /* APIManager.swift */; };
-		6D07487E25B8489F005E08F8 /* RequestHeaderCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07487D25B8489E005E08F8 /* RequestHeaderCreator.swift */; };
-		6D0748B525B885D3005E08F8 /* NetworkDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748B425B885D3005E08F8 /* NetworkDataStorage.swift */; };
-		6D0748BF25B88701005E08F8 /* HttpStatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748BE25B88701005E08F8 /* HttpStatusCode.swift */; };
+		6D0748CB25B992F8005E08F8 /* PermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748CA25B992F8005E08F8 /* PermissionsManager.swift */; };
+		6D0748D225B9957F005E08F8 /* UserInfoManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748D125B9957F005E08F8 /* UserInfoManagerProtocol.swift */; };
+		6D0748D825B9AEC0005E08F8 /* platform-secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D0748D725B9AEC0005E08F8 /* platform-secrets.plist */; };
 		CD2B7EC885859C45C04FFBE2 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCFB268E5261E2728BEFAA55 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -82,6 +86,14 @@
 /* Begin PBXFileReference section */
 		0730100D3BE129FE6E23B242 /* Pods-herow-sdk-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.debug.xcconfig"; sourceTree = "<group>"; };
 		26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_herow_sdk_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6B9A5F4A25B9D17500AAC673 /* UserInfoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoManager.swift; sourceTree = "<group>"; };
+		6B9A5F5625B9D2A500AAC673 /* ConnexionConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnexionConstants.swift; sourceTree = "<group>"; };
+		6B9A5F5A25B9D36600AAC673 /* APIWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIWorker.swift; sourceTree = "<group>"; };
+		6B9A5F5B25B9D36600AAC673 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		6B9A5F5C25B9D36600AAC673 /* HttpStatusCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpStatusCode.swift; sourceTree = "<group>"; };
+		6B9A5F5D25B9D36600AAC673 /* RequestHeaderCreator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHeaderCreator.swift; sourceTree = "<group>"; };
+		6B9A5F5E25B9D36600AAC673 /* NetworkDataStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkDataStorage.swift; sourceTree = "<group>"; };
+		6B9A5F5F25B9D36600AAC673 /* APIModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
 		6D0741FB25B079EC005E08F8 /* herow_sdk_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = herow_sdk_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D0741FE25B079EC005E08F8 /* herow_sdk_ios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = herow_sdk_ios.h; sourceTree = "<group>"; };
 		6D0741FF25B079EC005E08F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -136,13 +148,9 @@
 		6D0747DA25B72FFA005E08F8 /* SQLiteOpenHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteOpenHelper.swift; sourceTree = "<group>"; };
 		6D0747DE25B72FFA005E08F8 /* ConnectivityType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectivityType.swift; sourceTree = "<group>"; };
 		6D0747DF25B72FFA005E08F8 /* RadioAccessTechnology.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioAccessTechnology.swift; sourceTree = "<group>"; };
-		6D0747E125B72FFB005E08F8 /* ConnexionConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnexionConstants.swift; sourceTree = "<group>"; };
-		6D0747E425B72FFB005E08F8 /* APIModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
-		6D0747E525B72FFB005E08F8 /* APIWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIWorker.swift; sourceTree = "<group>"; };
-		6D0747E625B72FFB005E08F8 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
-		6D07487D25B8489E005E08F8 /* RequestHeaderCreator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHeaderCreator.swift; sourceTree = "<group>"; };
-		6D0748B425B885D3005E08F8 /* NetworkDataStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkDataStorage.swift; sourceTree = "<group>"; };
-		6D0748BE25B88701005E08F8 /* HttpStatusCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpStatusCode.swift; sourceTree = "<group>"; };
+		6D0748CA25B992F8005E08F8 /* PermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsManager.swift; sourceTree = "<group>"; };
+		6D0748D125B9957F005E08F8 /* UserInfoManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoManagerProtocol.swift; sourceTree = "<group>"; };
+		6D0748D725B9AEC0005E08F8 /* platform-secrets.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "platform-secrets.plist"; sourceTree = "<group>"; };
 		70D6E1BB5934E95FE1ED5E29 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7C87A025C325737EFD18EAA5 /* Pods-herow-sdk-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.release.xcconfig"; sourceTree = "<group>"; };
 		F970141740093E7FF0CAF6FD /* Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -170,6 +178,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6B9A5F4925B9D17500AAC673 /* userInfo */ = {
+			isa = PBXGroup;
+			children = (
+				6B9A5F4A25B9D17500AAC673 /* UserInfoManager.swift */,
+			);
+			path = userInfo;
+			sourceTree = "<group>";
+		};
+		6B9A5F5525B9D2A500AAC673 /* APIService */ = {
+			isa = PBXGroup;
+			children = (
+				6B9A5F5B25B9D36600AAC673 /* APIManager.swift */,
+				6B9A5F5F25B9D36600AAC673 /* APIModels.swift */,
+				6B9A5F5A25B9D36600AAC673 /* APIWorker.swift */,
+				6B9A5F5C25B9D36600AAC673 /* HttpStatusCode.swift */,
+				6B9A5F5E25B9D36600AAC673 /* NetworkDataStorage.swift */,
+				6B9A5F5D25B9D36600AAC673 /* RequestHeaderCreator.swift */,
+				6B9A5F5625B9D2A500AAC673 /* ConnexionConstants.swift */,
+			);
+			path = APIService;
+			sourceTree = "<group>";
+		};
 		6D0741F125B079EC005E08F8 = {
 			isa = PBXGroup;
 			children = (
@@ -246,6 +276,8 @@
 			isa = PBXGroup;
 			children = (
 				6D0747A125B72FF9005E08F8 /* WifiUtils.swift */,
+				6D0748D025B99556005E08F8 /* Interfaces */,
+				6D0748C925B992C2005E08F8 /* Permissions */,
 				6D0747A325B72FF9005E08F8 /* StringUtils.swift */,
 				6D0747A425B72FF9005E08F8 /* location */,
 				6D0747AF25B72FFA005E08F8 /* AtomicBoolean.swift */,
@@ -362,9 +394,10 @@
 		6D0747DC25B72FFA005E08F8 /* connection */ = {
 			isa = PBXGroup;
 			children = (
+				6B9A5F4925B9D17500AAC673 /* userInfo */,
+				6D0748D725B9AEC0005E08F8 /* platform-secrets.plist */,
 				6D0747DD25B72FFA005E08F8 /* network */,
-				6D0747E125B72FFB005E08F8 /* ConnexionConstants.swift */,
-				6D0747E325B72FFB005E08F8 /* APIService */,
+				6B9A5F5525B9D2A500AAC673 /* APIService */,
 			);
 			path = connection;
 			sourceTree = "<group>";
@@ -378,17 +411,20 @@
 			path = network;
 			sourceTree = "<group>";
 		};
-		6D0747E325B72FFB005E08F8 /* APIService */ = {
+		6D0748C925B992C2005E08F8 /* Permissions */ = {
 			isa = PBXGroup;
 			children = (
-				6D07487D25B8489E005E08F8 /* RequestHeaderCreator.swift */,
-				6D0748BE25B88701005E08F8 /* HttpStatusCode.swift */,
-				6D0748B425B885D3005E08F8 /* NetworkDataStorage.swift */,
-				6D0747E425B72FFB005E08F8 /* APIModels.swift */,
-				6D0747E525B72FFB005E08F8 /* APIWorker.swift */,
-				6D0747E625B72FFB005E08F8 /* APIManager.swift */,
+				6D0748CA25B992F8005E08F8 /* PermissionsManager.swift */,
 			);
-			path = APIService;
+			path = Permissions;
+			sourceTree = "<group>";
+		};
+		6D0748D025B99556005E08F8 /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				6D0748D125B9957F005E08F8 /* UserInfoManagerProtocol.swift */,
+			);
+			path = Interfaces;
 			sourceTree = "<group>";
 		};
 		C79A3FE13FE93F0EB30BECA2 /* Pods */ = {
@@ -506,6 +542,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6D0748D825B9AEC0005E08F8 /* platform-secrets.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,21 +630,21 @@
 				6D07480B25B72FFB005E08F8 /* DataHolderUpdater.swift in Sources */,
 				6D0747EC25B72FFB005E08F8 /* WifiUtils.swift in Sources */,
 				6D0747E825B72FFB005E08F8 /* PlaceLocation.swift in Sources */,
-				6D0748BF25B88701005E08F8 /* HttpStatusCode.swift in Sources */,
 				6D07480725B72FFB005E08F8 /* WeakContainer.swift in Sources */,
 				6D0747FD25B72FFB005E08F8 /* TimeProviderForTests.swift in Sources */,
 				6D07480925B72FFB005E08F8 /* BatteryUtils.swift in Sources */,
 				6D07480325B72FFB005E08F8 /* DeviceUtils.swift in Sources */,
-				6D0748B525B885D3005E08F8 /* NetworkDataStorage.swift in Sources */,
 				6D07481C25B72FFB005E08F8 /* ConnectivityType.swift in Sources */,
 				6D0747F925B72FFB005E08F8 /* MotionRequestDelegate.swift in Sources */,
-				6D07482325B72FFB005E08F8 /* APIManager.swift in Sources */,
 				6D07481425B72FFB005E08F8 /* Dictionary+merge.swift in Sources */,
+				6D0748CB25B992F8005E08F8 /* PermissionsManager.swift in Sources */,
 				6D0747F025B72FFB005E08F8 /* LocationManagerCoreLocation.swift in Sources */,
+				6B9A5F6325B9D36600AAC673 /* RequestHeaderCreator.swift in Sources */,
 				6D07481125B72FFB005E08F8 /* AnyEncodable.swift in Sources */,
 				6D0747F825B72FFB005E08F8 /* AtomicBoolean.swift in Sources */,
 				6D07480D25B72FFB005E08F8 /* GenericHolder.swift in Sources */,
 				6D07481A25B72FFB005E08F8 /* DbHelper.swift in Sources */,
+				6B9A5F6025B9D36600AAC673 /* APIWorker.swift in Sources */,
 				6D07481B25B72FFB005E08F8 /* SQLiteOpenHelper.swift in Sources */,
 				6D0747EF25B72FFB005E08F8 /* LocationServicesEnabled.swift in Sources */,
 				6D07481D25B72FFB005E08F8 /* RadioAccessTechnology.swift in Sources */,
@@ -618,30 +655,33 @@
 				6D0747EE25B72FFB005E08F8 /* StringUtils.swift in Sources */,
 				6D0747FE25B72FFB005E08F8 /* TimeProvider.swift in Sources */,
 				6D0747E925B72FFB005E08F8 /* PlaceContent.swift in Sources */,
-				6D07482225B72FFB005E08F8 /* APIWorker.swift in Sources */,
+				6B9A5F6125B9D36600AAC673 /* APIManager.swift in Sources */,
+				6B9A5F6425B9D36600AAC673 /* NetworkDataStorage.swift in Sources */,
 				6D07480525B72FFB005E08F8 /* AppStateDetector.swift in Sources */,
+				6B9A5F4B25B9D17500AAC673 /* UserInfoManager.swift in Sources */,
 				6D07480225B72FFB005E08F8 /* GlobalLogger.swift in Sources */,
 				6D0747EB25B72FFB005E08F8 /* LocationWithContext.swift in Sources */,
+				6B9A5F5725B9D2A500AAC673 /* ConnexionConstants.swift in Sources */,
+				6B9A5F6525B9D36600AAC673 /* APIModels.swift in Sources */,
 				6D0747FF25B72FFB005E08F8 /* TimeProviderAbsolute.swift in Sources */,
 				6D0747F425B72FFB005E08F8 /* LocationManager.swift in Sources */,
 				6D07480825B72FFB005E08F8 /* ChargingStatus.swift in Sources */,
 				6D07481725B72FFB005E08F8 /* SQLiteDatabase.swift in Sources */,
 				6D07481825B72FFB005E08F8 /* Cursor.swift in Sources */,
+				6D0748D225B9957F005E08F8 /* UserInfoManagerProtocol.swift in Sources */,
 				6D07480F25B72FFB005E08F8 /* OpenUrlUtils.swift in Sources */,
 				6D0747FC25B72FFB005E08F8 /* TimeProviderRelative.swift in Sources */,
+				6B9A5F6225B9D36600AAC673 /* HttpStatusCode.swift in Sources */,
 				6D07481925B72FFB005E08F8 /* SQLiteDatatype.swift in Sources */,
 				6D07480425B72FFB005E08F8 /* AppStateDelegate.swift in Sources */,
 				6D07481325B72FFB005E08F8 /* CLLocation+Codable.swift in Sources */,
 				6D0747EA25B72FFB005E08F8 /* Place.swift in Sources */,
-				6D07487E25B8489F005E08F8 /* RequestHeaderCreator.swift in Sources */,
-				6D07481F25B72FFB005E08F8 /* ConnexionConstants.swift in Sources */,
 				6D07480025B72FFB005E08F8 /* ResetDelegate.swift in Sources */,
 				6D07481625B72FFB005E08F8 /* ContentValues.swift in Sources */,
 				6D07481025B72FFB005E08F8 /* DispatchQueueUtils.swift in Sources */,
 				6D07480C25B72FFB005E08F8 /* DataHolderUserDefaults.swift in Sources */,
 				6D0747F125B72FFB005E08F8 /* LocationDispatcher.swift in Sources */,
 				6D07481225B72FFB005E08F8 /* NSDictionary+merge.swift in Sources */,
-				6D07482125B72FFB005E08F8 /* APIModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

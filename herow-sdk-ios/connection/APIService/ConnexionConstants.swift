@@ -11,6 +11,7 @@ class ConnexionConstant {
     static let tokenKey: String = "TOKEN_KEY"
     static let userInfoKey: String = "USERINFO_KEY"
     static let configKey: String = "CONFIG_KEY"
+    static let configDateKey: String = "CONFIG_DATE_KEY"
 }
 
 public struct Headers {

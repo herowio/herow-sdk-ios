@@ -101,6 +101,8 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 }
                 do {
                     let decoder = JSONDecoder()
+                    let jsonResponse = String(decoding: data, as: UTF8.self)
+                    GlobalLogger.shared.debug("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
                     let responseObject  = try decoder.decode(type, from: data)
                     completion(Result.success(responseObject))
 

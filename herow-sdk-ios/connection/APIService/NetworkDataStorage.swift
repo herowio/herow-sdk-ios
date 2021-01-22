@@ -15,6 +15,7 @@ public protocol NetworkDataStorageProtocol {
     func getUserInfo() -> APIUserInfo?
     func getConfig() -> APIConfig?
     func tokenIsExpired() -> Bool
+    func shouldGetConfig() -> Bool
 
 }
 public class NetworkDataStorage: NetworkDataStorageProtocol {
@@ -81,11 +82,24 @@ public class NetworkDataStorage: NetworkDataStorageProtocol {
         return config
     }
 
+    private func getLastConfigDate() -> Date? {
+        return dataHolder.getDate(key: ConnexionConstant.configDateKey)
+    }
+
     public func saveConfig(_ config: APIConfig) {
         guard let data = config.encode() else {
             return
         }
+        dataHolder.putDate(key: ConnexionConstant.configDateKey, value: Date())
         dataHolder.putData(key: ConnexionConstant.configKey, value: data)
         dataHolder.apply()
+    }
+
+    public func shouldGetConfig() -> Bool {
+        if let config = getConfig(), let lastDate = getLastConfigDate() {
+            let timeInterval = TimeInterval(config.configInterval) / 1000
+            return lastDate.addingTimeInterval(timeInterval) < Date()
+        }
+        return true
     }
 }

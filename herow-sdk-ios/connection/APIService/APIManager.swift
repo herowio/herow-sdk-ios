@@ -90,6 +90,32 @@ public class APIManager: NSObject, APIManagerProtocol {
         }
     }
 
+    private func getConfigIfNeeded(completion:  @escaping ()->()) {
+        if self.netWorkDataStorage.shouldGetConfig() {
+            GlobalLogger.shared.debug("APIManager - should getConfig")
+
+            self.getConfig(completion: {_,_ in
+                completion()
+            })
+        }else {
+            GlobalLogger.shared.debug("APIManager - getConfig not expired")
+            completion()
+        }
+    }
+
+    public func getUserInfoIfNeeded(completion:  @escaping ()->()) {
+        if self.netWorkDataStorage.getUserInfo() == nil {
+            GlobalLogger.shared.debug("APIManager - should getUserInfo")
+
+            self.getUserInfo(completion: {_,_ in
+                completion()
+            })
+        }else {
+            GlobalLogger.shared.debug("APIManager - userInfos exists")
+            completion()
+        }
+    }
+
     private func getAndSaveToken( completion: @escaping (APIToken?, NetworkError?) -> Void) {
         getToken() { token, error in
             var tempToken = token
@@ -120,7 +146,7 @@ public class APIManager: NSObject, APIManagerProtocol {
     }
 
     public func getConfig(completion: ( (APIConfig?, NetworkError?) -> Void)? = nil) {
-        getTokenIfNeeded {
+        getUserInfoIfNeeded() {
             self.configWorker.headers = RequestHeaderCreator.createHeaders(token: self.netWorkDataStorage.getToken()?.accessToken,herowId: self.netWorkDataStorage.getUserInfo()?.herowId)
             self.configWorker.getData() {
                 config, error in
@@ -132,6 +158,7 @@ public class APIManager: NSObject, APIManagerProtocol {
             }
         }
     }
+
 
     public func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)? = nil) {
         getTokenIfNeeded {
@@ -146,8 +173,8 @@ public class APIManager: NSObject, APIManagerProtocol {
         }
     }
 
-    public func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)?) {
-        getTokenIfNeeded {
+    public func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)? = nil) {
+        getConfigIfNeeded  {
             self.cacheWorker.headers = RequestHeaderCreator.createHeaders(token:self.netWorkDataStorage.getToken()?.accessToken)
             self.cacheWorker.getData(endPoint: .cache(geoHash)) { cache, error in
                 GlobalLogger.shared.debug("APIManager - cache request: \(String(describing: cache)) error: \(String(describing: error))")

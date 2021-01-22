@@ -10,9 +10,31 @@ import Foundation
 enum Platform {
     case prod
     case preprod
-
     var credentials: SDKCredential {
         return SDKCredential(self)
+    }
+}
+
+public struct ConnectionInfo {
+    var platform = Platform.prod
+    mutating func updatePlateform(_ platform: String) {
+        switch platform {
+        case "preprod":
+            self.platform = Platform.preprod
+        default:
+            self.platform = Platform.prod
+        }
+    }
+
+    public func getUrlType() -> URLType {
+        var urlType: URLType = .prod
+        switch self.platform {
+        case .preprod:
+            urlType = .preprod
+        case .prod:
+            urlType = .preprod
+        }
+        return urlType
     }
 }
 
@@ -25,7 +47,7 @@ public  struct SDKCredential {
     let redirectURI: String
 
     init(_ platform:Platform) {
-        if let bundle = Bundle(identifier: "io.herow.sdk.herow-sdk-ios"),
+        if let bundle = Bundle(identifier: "org.cocoapods.Herow"),
            let path = bundle.path(forResource: "platform-secrets", ofType: "plist"),
            let dict = NSDictionary(contentsOfFile: path) as? [String: [String:String]]  {
             var platformKey = ""
@@ -35,9 +57,9 @@ public  struct SDKCredential {
             default:
                 platformKey = "prod"
             }
-            clientId = dict[platformKey]?["clientId"] ?? ""
-            clientSecret = dict[platformKey]?["clientSecret"] ?? ""
-            redirectURI = dict[platformKey]?["redirectURI"] ?? ""
+            clientId = dict[platformKey]?["client_id"] ?? ""
+            clientSecret = dict[platformKey]?["client_secret"] ?? ""
+            redirectURI = dict[platformKey]?["redirect_uri"] ?? ""
         } else {
             clientId =  ""
             clientSecret = ""

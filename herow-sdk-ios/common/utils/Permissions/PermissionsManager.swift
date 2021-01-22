@@ -8,7 +8,10 @@
 import Foundation
 import CoreLocation
 import AppTrackingTransparency
-@objc class PermissionsManager: NSObject  {
+protocol PermissionsManagerProtocol {
+    func requestIDFA(completion: (()->())?)
+}
+@objc class PermissionsManager: NSObject, PermissionsManagerProtocol  {
     let userInfoManager: UserInfoManagerProtocol
     let dataHolder: DataHolder
 

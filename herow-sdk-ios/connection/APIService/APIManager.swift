@@ -14,7 +14,6 @@ public enum NetworkError: Error {
     case invalidResponse
     case noData
     case serialization
-
 }
 
 public enum URLType: String {
@@ -43,32 +42,27 @@ public enum EndPoint {
             return ""
         }
     }
-
 }
 
-public class APIManager: NSObject {
+protocol APIManagerProtocol {
+     func getConfig(completion: ( (APIConfig?, NetworkError?) -> Void)?)
+     func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)?)
+     func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)?)
+}
+
+public class APIManager: NSObject, APIManagerProtocol {
 
     let tokenWorker: APIWorker<APIToken>
     let configWorker: APIWorker<APIConfig>
     let userInfogWorker: APIWorker<APIUserInfo>
     let cacheWorker: APIWorker<APICache>
     let netWorkDataStorage: NetworkDataStorageProtocol
-    var platform: Platform = .prod
+    private  var connectInfo: ConnectionInfo
     var user: User?
-
-     init(plateform: String, netWorkDataStorage: NetworkDataStorageProtocol) {
-
+     init(connectInfo: ConnectionInfo, netWorkDataStorage: NetworkDataStorageProtocol) {
         self.netWorkDataStorage = netWorkDataStorage
-        var urlType: URLType = .prod
-        switch plateform {
-        case "preprod":
-            self.platform = .preprod
-            urlType = .preprod
-        case "prod":
-            self.platform = .prod
-        default:
-            assertionFailure("bad plateform configuratuion")
-        }
+        self.connectInfo = connectInfo
+        let urlType = self.connectInfo.getUrlType()
         self.tokenWorker = APIWorker<APIToken>(urlType: urlType, endPoint: .token)
         self.configWorker = APIWorker<APIConfig>(urlType: urlType, endPoint: .config)
         self.userInfogWorker = APIWorker<APIUserInfo>(urlType: urlType, endPoint: .userInfo)
@@ -83,8 +77,6 @@ public class APIManager: NSObject {
         let encodeResult = parts.joined(separator: "&")
         return encodeResult.data(using: String.Encoding.utf8)!
     }
-
-    
 
     private func getTokenIfNeeded(completion:  @escaping ()->()) {
         if self.netWorkDataStorage.tokenIsExpired() {
@@ -118,6 +110,15 @@ public class APIManager: NSObject {
         tokenWorker.postData(param: tokenParam(user), completion: completion)
     }
 
+    public func configure(connectInfo: ConnectionInfo) {
+        let urlType = connectInfo.getUrlType()
+        self.connectInfo = connectInfo
+        self.tokenWorker.setUrlType(urlType)
+        self.configWorker.setUrlType(urlType)
+        self.userInfogWorker .setUrlType(urlType)
+        self.cacheWorker .setUrlType(urlType)
+    }
+
     public func getConfig(completion: ( (APIConfig?, NetworkError?) -> Void)? = nil) {
         getTokenIfNeeded {
             self.configWorker.headers = RequestHeaderCreator.createHeaders(token: self.netWorkDataStorage.getToken()?.accessToken,herowId: self.netWorkDataStorage.getUserInfo()?.herowId)
@@ -127,7 +128,7 @@ public class APIManager: NSObject {
                     self.netWorkDataStorage.saveConfig(config)
                 }
                 GlobalLogger.shared.debug("APIManager - config request: \(String(describing: config)) error: \(String(describing: error))")
-                completion?(config,error)
+                completion?(config, error)
             }
         }
     }
@@ -140,27 +141,31 @@ public class APIManager: NSObject {
                     self.netWorkDataStorage.saveUserInfo(userInfo)
                 }
                 GlobalLogger.shared.debug("APIManager - userInfo request: \(String(describing: userInfo)) error: \(String(describing: error))")
-                completion?(userInfo,error)
+                completion?(userInfo, error)
             }
         }
     }
 
+    public func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)?) {
+        getTokenIfNeeded {
+            self.cacheWorker.headers = RequestHeaderCreator.createHeaders(token:self.netWorkDataStorage.getToken()?.accessToken)
+            self.cacheWorker.getData(endPoint: .cache(geoHash)) { cache, error in
+                GlobalLogger.shared.debug("APIManager - cache request: \(String(describing: cache)) error: \(String(describing: error))")
+                completion?(cache, error)
 
-    public func getCache(geoHash: String, completion: @escaping (APICache?, NetworkError?) -> Void) {
-        cacheWorker.headers = RequestHeaderCreator.createHeaders(token: self.netWorkDataStorage.getToken()?.accessToken)
-        cacheWorker.getData(endPoint: .cache(geoHash), completion: completion)
+            }
+        }
     }
-
 
     private func tokenParam(_ user: User) -> Data {
 
+        let credentials = self.connectInfo.platform.credentials
         let params = [Parameters.username: user.login,
                          Parameters.password: user.password,
-                         Parameters.clientId: platform.credentials.clientId,
-                         Parameters.clientSecret: platform.credentials.clientSecret,
-                         Parameters.redirectUri: platform.credentials.redirectURI,
+                         Parameters.clientId:  credentials.clientId,
+                         Parameters.clientSecret: credentials.clientSecret,
+                         Parameters.redirectUri: credentials.redirectURI,
                          Parameters.grantType : "password"]
-
         return self.encodeFormParams(dictionary: params)
     }
 
@@ -178,7 +183,4 @@ public class APIManager: NSObject {
         }
         return result
     }
-
-
-
 }

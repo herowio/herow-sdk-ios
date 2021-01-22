@@ -20,4 +20,12 @@ class UserInfoManager: UserInfoManagerProtocol {
     static let locationStatusKey: String = "com.herow.sdk.user.location.status"
     static let accuracyStatusKey: String = "com.herow.sdk.user.accuracy.status"
     static let notificationStatusKey: String = "com.herow.sdk.user.notification.status"
+
+    var apiManager: APIManagerProtocol
+
+
+    init(apiManager: APIManagerProtocol) {
+        self.apiManager = apiManager
+
+    }
 }

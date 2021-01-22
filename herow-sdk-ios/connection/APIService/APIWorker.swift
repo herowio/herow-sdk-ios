@@ -25,7 +25,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     private var session: URLSession
     private var sessionCfg: URLSessionConfiguration
     private var currentTask: URLSessionDataTask?
-    private let baseURL: String
+    private var baseURL: String
     private let endPoint: EndPoint
     var headers: [String:String]?
     
@@ -36,6 +36,11 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         self.sessionCfg.timeoutIntervalForRequest = 10.0
         self.session = URLSession(configuration: sessionCfg)
     }
+
+    public func setUrlType(_ urlType: URLType) {
+        self.baseURL = urlType.rawValue
+    }
+
     private func buildURL(endPoint: EndPoint) -> String {
         var realEndPoint = endPoint
 

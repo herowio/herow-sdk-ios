@@ -69,25 +69,12 @@ public protocol LocationManager {
     /// - Parameter region: a beacon region to stop monitoring
     func stopMonitoring(region: CLRegion)
 
-    /// To start ranging in this region
-    ///
-    /// - Parameter region: a beacon region
-    func startRangingBeacons(region: CLBeaconRegion)
-
-    /// To stop ranging in this region
-    ///
-    /// - Parameter region: a beacon region
-    func stopRangingBeacons(region: CLBeaconRegion)
 
     /// To get the list of regions currently monitored by the Manager
     ///
     /// - Returns: the monitored regions
     func getMonitoredRegions() -> Set<CLRegion>
 
-    /// To get the list of regions used to filter the ranging result
-    ///
-    /// - Returns: the ranged regions
-    func getRangedRegions() -> Set<CLRegion>
 
     /*
      *  startMonitoringSignificantLocationChanges
@@ -149,6 +136,11 @@ public protocol LocationManager {
     func registerClickAndCollectListener(listener: ClickAndConnectListener)
 
     func unregisterClickAndCollectListener(listener: ClickAndConnectListener)
+
+    func registerDetectionListener(listener: DetectionEngineListener)
+
+    func unregisterDetectionListener(listener: DetectionEngineListener)
+    
     func updateClickAndCollectState()
 }
 

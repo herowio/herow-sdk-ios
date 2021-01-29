@@ -1,5 +1,5 @@
 //
-//  NetworkUtils.swift
+//  HerowDataUtils.swift
 //  ConnectPlaceCommon
 //
 //  Created by Ludovic Vimont on 13/02/2018.

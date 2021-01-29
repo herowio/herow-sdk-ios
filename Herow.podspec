@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 	# ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 	s.name         = "Herow"
-	s.version      = "0.1-SNAPSHOT"
+	s.version      = "7.0-SNAPSHOT"
 	s.summary      = "herow-sdk-ios: an assets of classes and interfaces "
 	s.homepage     = "http://www.herow.io/"
     s.module_name  = 'Herow'
@@ -39,7 +39,7 @@ Pod::Spec.new do |s|
     s.subspec 'Core' do |ss|
     	ss.ios.source_files = 'herow-sdk-ios/common/**/*.swift'
   		ss.ios.frameworks = 'UIKit', 'Foundation', 'SystemConfiguration'
-		ss.ios.dependency 'CocoaLumberjack/Swift', '3.5.3'
+		ss.ios.dependency 'CocoaLumberjack/Swift', '3.6.2 '
   		ss.ios.deployment_target = '11.0'	  
     end
 
@@ -47,7 +47,7 @@ Pod::Spec.new do |s|
     	ss.ios.source_files = 'herow-sdk-ios/connection/**/*.swift'
 		ss.ios.dependency 'Herow/Core'
   		ss.ios.deployment_target = '11.0'	
-  		ss.ios.resources = 'herow-sdk-ios/connection/**/*.plist '
+  		ss.ios.resources = 'herow-sdk-ios/connection/**/*.plist', 'herow-sdk-ios/connection/**/*.xcdatamodeld'
     end
 
     s.subspec 'Detection' do |ss|

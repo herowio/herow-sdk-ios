@@ -38,17 +38,15 @@ public struct ConnectionInfo {
     }
 }
 
-
-
-public  struct SDKCredential {
+public  class SDKCredential {
 
     let clientId: String
     let clientSecret: String
     let redirectURI: String
 
     init(_ platform:Platform) {
-        if let bundle = Bundle(identifier: "org.cocoapods.Herow"),
-           let path = bundle.path(forResource: "platform-secrets", ofType: "plist"),
+        let bundle = Bundle(for: Self.self)
+            if let path = bundle.path(forResource: "platform-secrets", ofType: "plist"),
            let dict = NSDictionary(contentsOfFile: path) as? [String: [String:String]]  {
             var platformKey = ""
             switch platform {
@@ -116,10 +114,10 @@ public struct APIUserInfo: Codable {
     
     static public func decode(data: Data) -> APIUserInfo? {
         let decoder = JSONDecoder()
-        guard let token = try? decoder.decode(APIUserInfo.self, from: data) else {
+        guard let data = try? decoder.decode(APIUserInfo.self, from: data) else {
             return nil
         }
-        return token
+        return data
     }
 }
 
@@ -139,12 +137,11 @@ public struct User {
 public struct UserInfo: Codable {
     var adId: String?
     var adStatus: Bool
+    var herowId: String?
     var customId: String?
     var lang: String
     var offset: Int64 = 3600000
     var optins: [Optin]
-
-    
 }
 
 public struct Optin: Codable {
@@ -153,8 +150,22 @@ public struct Optin: Codable {
 }
 
 public struct APICache: Codable {
+    var zones: [APIZone]
+    var campaigns: [APICampaign]?
+    var pois: [APIPoi]?
 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,5 +1,5 @@
 //
-//  ConnexionConstants.swift
+//  HerowConstantss.swift
 //  herow-sdk-ios
 //
 //  Created by Damien on 19/01/2021.
@@ -7,11 +7,27 @@
 
 import Foundation
 
-class ConnexionConstant {
-    static let tokenKey: String = "TOKEN_KEY"
-    static let userInfoKey: String = "USERINFO_KEY"
-    static let configKey: String = "CONFIG_KEY"
-    static let configDateKey: String = "CONFIG_DATE_KEY"
+class HerowConstants {
+    static let tokenKey: String = "com.herow.sdk.connection.token"
+    static let userInfoKey: String = "com.herow.sdk.connection.userInfo"
+    static let userInfoStatusKey: String = "com.herow.sdk.connection.userInfo.status"
+    static let cacheDateKey: String = "com.herow.sdk.connection.cache.date"
+    static let configKey: String = "com.herow.sdk.connection.config"
+    static let configDateKey: String = "com.herow.sdk.connection.config.date"
+    static let geoHashKey: String = "com.herow.sdk.connection.cache.geoHash"
+    static let lastCacheModifiedDateKey: String = "com.herow.sdk.connection.cache.lastModifiedDate"
+    static let lastCacheFetchDateKey: String = "com.herow.sdk.connection.cache.fetchDate"
+
+    static let customIdKey: String = "com.herow.sdk.user.customid"
+    static let idfvKey: String = "com.herow.sdk.user.idfv"
+    static let idfaKey: String = "com.herow.sdk.user.idfa"
+    static let herowIdKey: String = "com.herow.sdk.user.herowid"
+    static let langKey: String = "com.herow.sdk.user.lang"
+    static let utcOffsetKey: String = "com.herow.sdk.user.utc.offset"
+    static let herowIdStatusKey: String = "com.herow.sdk.user.herowid.status"
+    static let locationStatusKey: String = "com.herow.sdk.user.location.status"
+    static let accuracyStatusKey: String = "com.herow.sdk.user.accuracy.status"
+    static let notificationStatusKey: String = "com.herow.sdk.user.notification.status"
 }
 
 public struct Headers {

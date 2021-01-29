@@ -21,7 +21,7 @@ public enum ConnectivityType: Int {
      */
     case MOBILE_2G = 1
     /**
-     * For 3g HSDPA, HSPAP(HSPA+) are main network type which are under 3g Network.
+     * For 3g HSDPA, HSPAP(HSPA+) are main network type which are under 3g HerowData.
      * But from other constants also it will 3g like HSPA,HSDPA etc which are in 3g case.
      * Some cases are added after  testing(real) in device with 3g enable data and speed also matters to
      * decide 3g network type. (@see: https://en.wikipedia.org/wiki/4G#Data_rate_comparison)

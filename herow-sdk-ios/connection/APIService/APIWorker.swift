@@ -27,13 +27,14 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     private var currentTask: URLSessionDataTask?
     private var baseURL: String
     private let endPoint: EndPoint
+    private let decoder = JSONDecoder()
     var headers: [String:String]?
-    
+    var responseHeaders: [AnyHashable: Any]?
     internal init(urlType: URLType, endPoint: EndPoint = .undefined) {
         self.baseURL = urlType.rawValue
         self.endPoint = endPoint
         self.sessionCfg = URLSessionConfiguration.default
-        self.sessionCfg.timeoutIntervalForRequest = 10.0
+        self.sessionCfg.timeoutIntervalForRequest = 30.0
         self.session = URLSession(configuration: sessionCfg)
     }
 
@@ -100,10 +101,10 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                     return
                 }
                 do {
-                    let decoder = JSONDecoder()
-                    let jsonResponse = String(decoding: data, as: UTF8.self)
-                    GlobalLogger.shared.debug("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
-                    let responseObject  = try decoder.decode(type, from: data)
+                    self.responseHeaders = response.allHeaderFields
+                    let jsonResponse = (String(decoding: data, as: UTF8.self))
+                    print("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
+                    let responseObject  = try self.decoder.decode(type, from: data)
                     completion(Result.success(responseObject))
 
                 } catch {

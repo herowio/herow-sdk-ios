@@ -8,14 +8,13 @@
 
 import Foundation
 import UIKit
+@objc public class AppStateDetector: NSObject, AppStateDelegate {
 
-@objc(HerowAppStateDetector) public class AppStateDetector: NSObject, AppStateDelegate {
-
-    var appStateDelegates: [AppStateDelegate]
+    var appStateDelegates: [WeakContainer<AppStateDelegate>]
     var isOnBackground: Bool
 
     public override init() {
-        appStateDelegates = []
+        appStateDelegates = [WeakContainer<AppStateDelegate>]()
         isOnBackground = true
         super.init()
         self.listenForAppStateChanges()
@@ -26,7 +25,7 @@ import UIKit
     }
 
     public func registerAppStateDelegate(appStateDelegate: AppStateDelegate) {
-        appStateDelegates.append(appStateDelegate)
+        appStateDelegates.append(WeakContainer(value: appStateDelegate))
         if isOnBackground {
             appStateDelegate.onAppInBackground()
         } else {
@@ -35,12 +34,9 @@ import UIKit
     }
 
     public func unregisterAppStateDelegate(appStateDelegate: AppStateDelegate) {
-        appStateDelegates = appStateDelegates.filter({ (delegate: AppStateDelegate) -> Bool in
-            return delegate !== appStateDelegate
+        appStateDelegates = appStateDelegates.filter({ (delegate: WeakContainer<AppStateDelegate>) -> Bool in
+            return delegate.get() !== appStateDelegate
         })
-        /*if let index = appStateDelegates.index(of: appStateDelegate) {
-            appStateDelegates.remove(at: index)
-        }*/
     }
 
     public func onAppInForeground() {
@@ -48,7 +44,7 @@ import UIKit
             GlobalLogger.shared.debug("appStateDetector - inForeground")
             isOnBackground = false
             for delegate in appStateDelegates {
-                delegate.onAppInForeground()
+                delegate.get()?.onAppInForeground()
             }
         }
     }
@@ -58,7 +54,7 @@ import UIKit
             GlobalLogger.shared.debug("appStateDetector - inBackground")
             isOnBackground = true
             for delegate in appStateDelegates {
-                delegate.onAppInBackground()
+                delegate.get()?.onAppInBackground()
             }
         }
     }
@@ -66,7 +62,7 @@ import UIKit
     public func onAppTerminated() {
         onAppInBackground()
         for delegate in appStateDelegates {
-            delegate.onAppTerminated?()
+            delegate.get()?.onAppTerminated?()
         }
     }
 }
@@ -90,6 +86,9 @@ extension AppStateDetector {
                                                selector: #selector(onAppInBackground),
                                                name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
+
+
+
     }
 
     internal func unlistenForAppStateChanges() {

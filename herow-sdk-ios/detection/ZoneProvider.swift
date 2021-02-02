@@ -56,11 +56,14 @@ extension CLLocationCoordinate2D: Codable {
  class ZoneEventGenerator {
     static let keyZoneEventHistory = "com.connecthings.keyZoneEventHistory"
     var dataHolder = DataHolderUserDefaults(suiteName: "ZoneEventGenerator")
-    var zoneEventListenerList: [ZoneventListener] = [ZoneventListener]()
+    var eventDisPatcher: EventDispatcher
+
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()
-   // var eventList: [ZoneEvent]?
-    var visitList: [ZoneInfo]?
+
+    init(eventDisPatcher: EventDispatcher) {
+        self.eventDisPatcher = eventDisPatcher
+    }
 
     private func getPlaceHistory() -> [ZoneInfo] {
 
@@ -79,9 +82,7 @@ extension CLLocationCoordinate2D: Codable {
         }
     }
 
-    public func registerListener(_ listener: ZoneventListener) {
-        zoneEventListenerList.append(listener)
-    }
+
 
      func computeEvents(forZones: SelectionContainer) {
         let now = Date().timeIntervalSince1970
@@ -112,22 +113,12 @@ extension CLLocationCoordinate2D: Codable {
             info.exitLocation = currentLocation?.coordinate
             info.exitTime = now
         }
-
-        visitList = exits
+        eventDisPatcher.post(event: .GEOFENCE_ENTER, infos: entries)
+        eventDisPatcher.post(event: .GEOFENCE_EXIT, infos: exits)
+        eventDisPatcher.post(event: .ZONE_VISIT, infos: exits)
         GlobalLogger.shared.debug("LiveEventGenerator computeEvents oldZonesIds =\(oldZonesIds.count), entries=\(entries), exits=\(exits)")
 
-       // let entriesEvents = entries.map {
-           // ZoneEvent(timestamp: Date(), hash: $0.hash, eventType: .geofenceEnter, isLive: $0.isLive )
-       // }
-      //  let exitsEvents = exits.map {
-           // ZoneEvent(timestamp: Date(), hash: $0.hash, eventType: .geofenceExit, isLive: $0.isLive )
-       // }
         savePlaceHistory(input)
-       // eventList = entriesEvents + exitsEvents
-       // eventList = eventList?.filter {
-        //    $0.isLive
-       // }
-        notifyDispatchers()
     }
 
     func getOldZoneInfoFor(hash: String) -> ZoneInfo? {
@@ -136,9 +127,6 @@ extension CLLocationCoordinate2D: Codable {
         }.first
     }
 
-    public func notifyDispatchers() {
-
-    }
 
     public func clear() {
         dataHolder.clear()
@@ -146,22 +134,16 @@ extension CLLocationCoordinate2D: Codable {
     }
 }
 class ZoneProvider: DetectionEngineListener, CacheListener {
-    func onCacheUpdate() {
-        if let location = lastLocation{
-            zoneDetectionProcess(location)
-        }
-    }
 
-    func onCacheUpdate(type: CacheUpdate) {
 
-    }
 
 
     var lastLocation: CLLocation?
     let cacheManager: CacheManagerProtocol
-    let zoneEventGenerator = ZoneEventGenerator()
-    init(cacheManager: CacheManagerProtocol) {
+    let zoneEventGenerator: ZoneEventGenerator
+    init(cacheManager: CacheManagerProtocol, eventDisPatcher: EventDispatcher) {
         self.cacheManager = cacheManager
+        self.zoneEventGenerator = ZoneEventGenerator(eventDisPatcher: eventDisPatcher)
     }
 
     func zonesForLocation(_ location: CLLocation) -> [Zone] {
@@ -180,4 +162,16 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
         let container =  SelectionContainer(location: location, zones: entrances)
         zoneEventGenerator.computeEvents(forZones: container)
     }
+
+
+    func onCacheUpdate() {
+        if let location = lastLocation{
+            zoneDetectionProcess(location)
+        }
+    }
+
+    func onCacheUpdate(type: CacheUpdate) {
+
+    }
+
 }

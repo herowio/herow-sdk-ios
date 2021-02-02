@@ -11,6 +11,8 @@ import Foundation
 
 public class HerowDataStorage: HerowDataStorageProtocol {
 
+
+
     let dataHolder: DataHolder
 
     init(dataHolder: DataHolder) {
@@ -179,7 +181,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     public func getHerowId() -> String? {
-       return  dataHolder.getString(key: HerowConstants.herowIdKey)
+        return  getUserInfo()?.herowId
     }
 
     public func setHerowId( _ id: String) {
@@ -196,12 +198,12 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         dataHolder.apply()
     }
 
-    public func getOffset() -> String? {
-       return  dataHolder.getString(key: HerowConstants.langKey)
+    public func getOffset() -> Int? {
+       return  dataHolder.getInt(key: HerowConstants.utcOffsetKey)
     }
 
-    public func setOffset( _ offset: String) {
-        dataHolder.putString(key: HerowConstants.utcOffsetKey, value: offset)
+    public func setOffset( _ offset: Int) {
+        dataHolder.putInt(key: HerowConstants.utcOffsetKey, value: offset)
         dataHolder.apply()
     }
 
@@ -230,6 +232,19 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     public func setNotificationStatus( _ status: String) {
         dataHolder.putString(key: HerowConstants.notificationStatusKey, value: status)
         dataHolder.apply()
+    }
+
+    public func reset() {
+
+        dataHolder.remove(key: HerowConstants.tokenKey)
+        dataHolder.remove(key: HerowConstants.configKey)
+        dataHolder.remove(key: HerowConstants.userInfoKey)
+        dataHolder.remove(key: HerowConstants.lastCacheModifiedDateKey)
+        dataHolder.remove(key: HerowConstants.lastCacheModifiedDateKey)
+        dataHolder.remove(key: HerowConstants.configDateKey)
+        dataHolder.remove(key: HerowConstants.geoHashKey)
+        dataHolder.apply()
+
     }
 
 }

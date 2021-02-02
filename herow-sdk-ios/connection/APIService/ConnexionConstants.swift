@@ -28,6 +28,7 @@ class HerowConstants {
     static let locationStatusKey: String = "com.herow.sdk.user.location.status"
     static let accuracyStatusKey: String = "com.herow.sdk.user.accuracy.status"
     static let notificationStatusKey: String = "com.herow.sdk.user.notification.status"
+    static let userDefaultsName: String = "com.herow.sdk.userDefaultsName"
 }
 
 public struct Headers {

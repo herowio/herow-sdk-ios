@@ -24,8 +24,6 @@ public protocol LocationManager {
 
     var delegate: CLLocationManagerDelegate? { get set }
 
-    var clickAndCollectMode: Bool { get set }
-
     var pausesLocationUpdatesAutomatically: Bool { get set }
 
     var allowsBackgroundLocationUpdates: Bool { get set }
@@ -142,13 +140,16 @@ public protocol LocationManager {
     func unregisterDetectionListener(listener: DetectionEngineListener)
     
     func updateClickAndCollectState()
+
+    func setIsOnClickAndCollect(_ value: Bool)
 }
 
 extension LocationManager {
 
 
     public mutating func  activeClickAndCollectMode( mode : Bool) {
-        clickAndCollectMode = mode
+        setIsOnClickAndCollect(mode)
+        updateClickAndCollectState()
     }
     
     public  mutating func updateBackGroundLocationMode() {

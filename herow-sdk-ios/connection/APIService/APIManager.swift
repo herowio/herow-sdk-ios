@@ -27,6 +27,7 @@ public enum EndPoint {
     case token
     case config
     case userInfo
+    case log
     case cache(_ last : String)
 
     var value: String {
@@ -37,6 +38,8 @@ public enum EndPoint {
             return "/v2/sdk/config"
         case .userInfo:
             return "/v2/sdk/userinfo"
+        case .log:
+            return "/stat/queue"
         case .cache(let last):
             return "/v2/sdk/cache/content/\(last)"
         default:
@@ -60,6 +63,7 @@ protocol APIManagerProtocol:ConfigDispatcher {
     func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)?)
     func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)?)
     func getUserInfoIfNeeded(completion: (() -> Void)?)
+    func pushLog(_ log: Data ,completion: (() -> Void)?)
 }
 
 public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener {
@@ -68,6 +72,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener {
     let configWorker: APIWorker<APIConfig>
     let userInfogWorker: APIWorker<APIUserInfo>
     let cacheWorker: APIWorker<APICache>
+    let logWorker: APIWorker<NoReply>
     let herowDataStorage:HerowDataStorageProtocol
     var currentUserInfo: UserInfo?
     let cacheManager: CacheManagerProtocol
@@ -83,6 +88,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener {
         self.tokenWorker = APIWorker<APIToken>(urlType: urlType, endPoint: .token)
         self.configWorker = APIWorker<APIConfig>(urlType: urlType, endPoint: .config)
         self.userInfogWorker = APIWorker<APIUserInfo>(urlType: urlType, endPoint: .userInfo)
+        self.logWorker = APIWorker<NoReply>(urlType: urlType, endPoint: .log)
         self.cacheWorker = APIWorker<APICache>(urlType: urlType)
     }
 
@@ -184,7 +190,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener {
 
     public func getConfig(completion: ( (APIConfig?, NetworkError?) -> Void)? = nil) {
         getUserInfoIfNeeded() {
-            self.configWorker.headers = RequestHeaderCreator.createHeaders(token: self.herowDataStorage.getToken()?.accessToken,herowId: self.herowDataStorage.getUserInfo()?.herowId)
+            self.configWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login, token: self.herowDataStorage.getToken()?.accessToken,herowId: self.herowDataStorage.getUserInfo()?.herowId)
             self.configWorker.getData() {
                 config, error in
                 if let config = config {
@@ -204,7 +210,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener {
 
     public func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)? = nil) {
         getTokenIfNeeded {
-            self.userInfogWorker.headers = RequestHeaderCreator.createHeaders(token: self.herowDataStorage.getToken()?.accessToken)
+            self.userInfogWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login, token: self.herowDataStorage.getToken()?.accessToken)
             self.userInfogWorker.putData(param:self.userInfoParam()) { userInfo, error in
                 if let userInfo = userInfo {
                     self.herowDataStorage.saveUserInfo(userInfo)
@@ -222,7 +228,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener {
             if self.herowDataStorage.shouldGetCache(for: geoHash) {
                 GlobalLogger.shared.debug("APIManager- SHOULD FETCH CACHE")
 
-                self.cacheWorker.headers = RequestHeaderCreator.createHeaders(token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
+                self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
                 self.cacheWorker.getData(endPoint: .cache(geoHash)) { cache, error in
                     guard let cache = cache else {
                         return
@@ -291,6 +297,24 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener {
     public func onLocationUpdate(_ location: CLLocation) {
         let currentGeoHash = GeoHashHelper.encodeBase32(lat: location.coordinate.latitude, lng: location.coordinate.longitude)[0...3]
         getCache(geoHash: String(currentGeoHash))
+    }
+
+    func pushLog(_ log: Data,completion: (() -> Void)?) {
+        if let json = try? JSONSerialization.jsonObject(with: log, options: .mutableContainers),
+           let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
+            GlobalLogger.shared.debug("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self))")
+        } else {
+            GlobalLogger.shared.debug("json data malformed")
+        }
+
+        authenticationFlow  {
+            self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: self.user?.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
+            self.logWorker.postData(param: log) {
+                response, error in
+                GlobalLogger.shared.debug("APIManager - log response: \(response) error: \(error))")
+            }
+        }
+
     }
 
 }

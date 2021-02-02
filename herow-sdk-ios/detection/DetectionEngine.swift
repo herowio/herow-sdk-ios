@@ -10,12 +10,12 @@ import CoreLocation
 
 @objc public protocol DetectionEngineListener: class {
     func onLocationUpdate(_ location: CLLocation)
+    
 }
 
 
 public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelegate, ConfigListener {
 
-    public var clickAndCollectMode: Bool = false
     var isUpdatingPosition = false
     var isUpdatingSignificantChanges = false
     var isMonitoringRegion = false
@@ -148,7 +148,9 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     public func setIsOnClickAndCollect(_ value: Bool) {
 
-        dataHolder.putBoolean(key: "isLocationMonitoring", value: value)
+            self.dataHolder.putBoolean(key: "isLocationMonitoring", value: value)
+            self.dataHolder.apply()
+
     }
 
     private func setLastClickAndCollectActivationDate(_ value: Date?) {
@@ -156,7 +158,12 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         guard let value = value else {
             return dataHolder.remove(key: "lastClickAndCollectActivationDate")
         }
-        dataHolder.putDate(key: "lastClickAndCollectActivationDate", value: value)
+
+            self.dataHolder.putDate(key: "lastClickAndCollectActivationDate", value: value)
+            self.dataHolder.apply()
+
+
+
     }
 
     private func getLastClickAndCollectActivationDate() -> Date? {
@@ -177,8 +184,10 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     private func checkClickAndCollectMode() -> Bool {
 
         let value = (isMonitoringVisit || isUpdatingPosition || isMonitoringRegion || isUpdatingSignificantChanges) &&   getIsOnClickAndCollect()
-        showsBackgroundLocationIndicator = value
-        setIsOnClickAndCollect(value && checkLastClickAndCollectActivationDate())
+        let result = value && checkLastClickAndCollectActivationDate()
+        showsBackgroundLocationIndicator = result
+            setIsOnClickAndCollect(result)
+
 
         return value
     }
@@ -197,6 +206,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
      public func getIsOnClickAndCollect() -> Bool {
+
+
 
         return dataHolder.getBoolean(key: "isLocationMonitoring")
     }

@@ -20,8 +20,8 @@ protocol UserInfoManagerProtocol: AppStateDelegate {
     func setHerowId( _ id: String)
     func getLang() -> String?
     func setLang( _ lang: String)
-    func getOffset() -> String?
-    func setOffset( _ offset: String)
+    func getOffset() -> Int?
+    func setOffset( _ offset: Int)
     func getLocationStatus() -> String?
     func setLocationStatus( _ status: String)
     func getAccuracyStatus() -> String?
@@ -36,7 +36,7 @@ class UserInfoManager: UserInfoManagerProtocol {
     private var idfa: String?
     private var herowId: String?
     private var lang: String?
-    private var offset: String?
+    private var offset: Int?
     private var locationStatus: String?
     private var accuracyStatus: String?
     private var notificationStatus: String?
@@ -45,7 +45,7 @@ class UserInfoManager: UserInfoManagerProtocol {
     let herowDataHolder: HerowDataStorageProtocol
 
     func getCustomId() -> String? {
-        return customId
+        return herowDataHolder.getCustomId()
     }
 
     func setCustomId(_ customId: String) {
@@ -116,11 +116,11 @@ class UserInfoManager: UserInfoManagerProtocol {
         }
     }
 
-    func getOffset() -> String? {
-        return offset
+    func getOffset() -> Int? {
+        return herowDataHolder.getOffset()
     }
 
-    func setOffset(_ offset: String) {
+    func setOffset(_ offset: Int) {
         if herowDataHolder.getOffset() != offset {
         self.offset = offset
             herowDataHolder.setOffset(offset)
@@ -159,20 +159,32 @@ class UserInfoManager: UserInfoManagerProtocol {
     }
 
     func onAppInForeground() {
-        synchronize()
+      synchronize()
     }
 
     func onAppInBackground() {
-        synchronize()
+       synchronize()
     }
 
     func synchronize() {
+        setLang( Locale.current.languageCode ?? "en")
         let optin = Optin(type:"USER_DATA",value: true)
-        let idfa = getIDFA()
+        let idfa: String?  = getIDFA()
         let idfaStatus = idfa != nil
         let herowId = getHerowId()
+        setOffset(TimeZone.current.secondsFromGMT() * 1000)
         setCustomId("toto")
-        let userInfo = UserInfo(adId:idfa, adStatus:idfaStatus, herowId: herowId, customId:getCustomId(),lang: "eng",offset:3600,optins:[optin])
+
+        let customId: String? = getCustomId()
+        let lang: String = getLang() ?? "en"
+        let offset: Int = getOffset() ?? TimeZone.current.secondsFromGMT() * 1000
+        let userInfo = UserInfo(adId: idfa,
+                                adStatus: idfaStatus,
+                                herowId: herowId,
+                                customId: customId, lang: lang,
+                                offset: offset,
+                                optins:[optin])
+        
         self.apiManager.currentUserInfo = userInfo
         apiManager.getUserInfoIfNeeded(completion: nil)
     }

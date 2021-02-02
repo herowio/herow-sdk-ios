@@ -22,6 +22,7 @@ protocol APIWorkerProtocol {
 internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
     typealias ResponseType = T
+    var shouldHaveResponse = true
     private var session: URLSession
     private var sessionCfg: URLSessionConfiguration
     private var currentTask: URLSessionDataTask?
@@ -72,13 +73,16 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
             self.currentTask = nil
         }
 
-        if let task = currentTask {
-            task.cancel()
+        if currentTask != nil {
+            return
         }
+
+
         guard let url = URL(string: buildURL(endPoint: endPoint)) else {
             completion(Result.failure(NetworkError.badUrl))
             return
         }
+        print("APIWorker - do job for  \(url)")
         var request = URLRequest(url: url)
 
         request.allHTTPHeaderFields = headers
@@ -101,11 +105,19 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                     return
                 }
                 do {
+
                     self.responseHeaders = response.allHeaderFields
                     let jsonResponse = (String(decoding: data, as: UTF8.self))
                     print("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
-                    let responseObject  = try self.decoder.decode(type, from: data)
-                    completion(Result.success(responseObject))
+                    if type != NoReply.self {
+                     let responseObject  = try self.decoder.decode(type, from: data)
+                        completion(Result.success(responseObject))
+                        return
+                    }
+                    let voidResponse = NoReply()
+                    completion(Result.success(voidResponse as! ResponseType))
+
+
 
                 } catch {
                     print(error)
@@ -118,6 +130,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
             }
         })
         currentTask?.resume()
+
     }
 
     internal func getData(endPoint: EndPoint = .undefined, completion: @escaping (ResponseType?, NetworkError?) -> Void) {

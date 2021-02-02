@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreLocation
-@objc public class HerowInitializer: NSObject {
+@objc public class HerowInitializer: NSObject, ResetDelegate {
 
    public static let instance = HerowInitializer()
     private var appStateDetector = AppStateDetector()
@@ -20,12 +20,13 @@ import CoreLocation
     private let cacheManager: CacheManagerProtocol
 
     private let geofenceManager: GeofenceManager
-    private let detectionEngine: DetectionEngine
+    private var detectionEngine: DetectionEngine
     private let zoneProvider: ZoneProvider
-   // private let eventDispatcher: EventDispatcher
+    private let eventDispatcher: EventDispatcher
+    private let analyticsManager: AnalyticsManager
     private override init() {
 
-       // eventDispatcher = EventDispatcher()
+        eventDispatcher = EventDispatcher()
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
@@ -38,10 +39,14 @@ import CoreLocation
         geofenceManager = GeofenceManager(locationManager: detectionEngine, cacheManager: cacheManager)
         cacheManager.registerCacheListener(listener: geofenceManager)
         detectionEngine.registerDetectionListener(listener: geofenceManager)
-        zoneProvider = ZoneProvider(cacheManager: cacheManager)
+        zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: eventDispatcher)
         cacheManager.registerCacheListener(listener: zoneProvider)
         detectionEngine.registerDetectionListener(listener: zoneProvider)
         apiManager.registerConfigListener(listener: detectionEngine)
+        analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
+        detectionEngine.registerDetectionListener(listener: analyticsManager)
+        detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
+        eventDispatcher.registerListener(analyticsManager)
         super.init()
         detectionEngine.registerDetectionListener(listener: apiManager)
     }
@@ -65,6 +70,29 @@ import CoreLocation
         return permissionsManager
     }
 
+    @objc public func reset() {
+     self.herowDataHolder.reset()
+     }
 
+    @objc public func isOnClickAndCollect() -> Bool {
+        return detectionEngine.getIsOnClickAndCollect()
+    }
+
+
+    @objc public func startClickAndCollect() {
+        return detectionEngine.activeClickAndCollectMode(mode: true)
+    }
+
+    @objc public func stopClickAndCollect() {
+        return detectionEngine.activeClickAndCollectMode(mode: false)
+    }
+
+    @objc public func registerClickAndCollectListener(listener: ClickAndConnectListener) {
+        detectionEngine.registerClickAndCollectListener(listener:listener)
+    }
+
+    @objc public func unregisterClickAndCollectListener(listener: ClickAndConnectListener) {
+        detectionEngine.unregisterClickAndCollectListener(listener: listener)
+    }
 
 }

@@ -102,8 +102,8 @@ public struct APICampaign: Campaign, Codable {
         case deleted
         case simpleId
         case name
-        case begin //= "startHour"
-        case end //= "stopHour"
+        case begin
+        case end
         case intervals
         case notification
         case tz

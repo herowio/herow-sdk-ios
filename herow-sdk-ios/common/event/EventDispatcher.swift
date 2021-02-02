@@ -8,33 +8,39 @@
 import Foundation
 
 enum Event: String {
-    case LOCATION_UPDATE
     case GEOFENCE_ENTER
     case GEOFENCE_EXIT
     case ZONE_VISIT
 }
 
 protocol EventListener: class {
-    func didReceivedEvent( _ event: Event)
+    func didReceivedEvent( _ event: Event, infos: [ZoneInfo])
 }
 
 class EventDispatcher {
     static let shared = EventDispatcher()
     private var listeners : [Event : [WeakContainer<EventListener>]] =  [Event: [WeakContainer<EventListener>]]()
-    func listen(_ observer: EventListener, event: Event) {
+
+    func registerListener(_ observer: EventListener, event: Event) {
         if self.listeners[event] == nil {
             self.listeners[event] = [WeakContainer<EventListener>]()
         }
         self.listeners[event]?.append(WeakContainer(value: observer))
     }
 
-    func post(event: Event) {
+    func registerListener(_ observer: EventListener) {
+        registerListener(observer, event: .GEOFENCE_ENTER)
+        registerListener(observer, event: .GEOFENCE_EXIT)
+        registerListener(observer, event: .ZONE_VISIT)
+    }
+
+    func post(event: Event, infos: [ZoneInfo]) {
         guard let listenners = self.listeners[event] else {
             return
         }
         for listener in listenners {
             if let listener = listener.get() {
-                listener.didReceivedEvent(event)
+                listener.didReceivedEvent(event, infos: infos)
             }
         }
     }

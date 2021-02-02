@@ -14,18 +14,18 @@ import CocoaLumberjack
     var loggerFile: DDFileLogger?
 
     private override init() {
-        DDLog.add(DDASLLogger.sharedInstance, with: DDLogLevel.info)
+        DDLog.add(DDOSLogger.sharedInstance, with: DDLogLevel.info)
         super.init()
     }
 
     @objc public func startDebug() {
-        DDLog.remove(DDASLLogger.sharedInstance)
-        DDLog.add(DDASLLogger.sharedInstance, with: DDLogLevel.verbose)
+        DDLog.remove(DDOSLogger.sharedInstance)
+        DDLog.add(DDOSLogger.sharedInstance, with: DDLogLevel.verbose)
     }
 
     @objc public func stopDebug() {
-        DDLog.remove(DDASLLogger.sharedInstance)
-        DDLog.add(DDASLLogger.sharedInstance, with: DDLogLevel.info)
+        DDLog.remove(DDOSLogger.sharedInstance)
+        DDLog.add(DDOSLogger.sharedInstance, with: DDLogLevel.info)
     }
 
     @objc public func startLogInFile() {

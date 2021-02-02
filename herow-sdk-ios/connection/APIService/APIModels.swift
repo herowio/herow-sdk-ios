@@ -140,7 +140,7 @@ public struct UserInfo: Codable {
     var herowId: String?
     var customId: String?
     var lang: String
-    var offset: Int64 = 3600000
+    var offset: Int = 3600000
     var optins: [Optin]
 }
 
@@ -153,6 +153,11 @@ public struct APICache: Codable {
     var zones: [APIZone]
     var campaigns: [APICampaign]?
     var pois: [APIPoi]?
+
+}
+
+struct NoReply: Codable {
+    var response = "OK"
 
 }
 

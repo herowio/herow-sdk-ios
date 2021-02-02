@@ -57,6 +57,10 @@ struct APIZone: Codable, Zone {
         return zone
     }
 
+
+}
+
+extension Encodable {
     public func encode() -> Data? {
         let encoder = JSONEncoder()
         guard let data = try? encoder.encode(self) else {
@@ -65,4 +69,13 @@ struct APIZone: Codable, Zone {
         return data
     }
 
+    public func encodeAsArray() -> Data? {
+        let encoder = JSONEncoder()
+        guard let data = try? encoder.encode([self]) else {
+            return nil
+        }
+        return data
+    }
 }
+
+

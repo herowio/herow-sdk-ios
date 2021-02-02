@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol HerowDataStorageProtocol {
+public protocol HerowDataStorageProtocol: ResetDelegate {
     func saveToken( _ token: APIToken)
     func saveUserInfo( _ userInfo: APIUserInfo)
     func saveConfig( _ config: APIConfig)
@@ -36,8 +36,8 @@ public protocol HerowDataStorageProtocol {
     func setHerowId( _ id: String)
     func getLang() -> String?
     func setLang( _ lang: String)
-    func getOffset() -> String?
-    func setOffset( _ offset: String)
+    func getOffset() -> Int?
+    func setOffset( _ offset: Int)
     func getLocationStatus() -> String?
     func setLocationStatus( _ status: String)
     func getAccuracyStatus() -> String?

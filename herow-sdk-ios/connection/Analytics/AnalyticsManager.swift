@@ -7,33 +7,49 @@
 
 import Foundation
 import CoreLocation
-class AnalyticsManager: EventListener, DetectionEngineListener, ClickAndConnectListener {
+import Foundation
 
+
+class AnalyticsManager: EventListener, DetectionEngineListener, ClickAndConnectListener,AppStateDelegate  {
+
+
+    private var dataStorage: HerowDataStorageProtocol?
     private var  apiManager: APIManagerProtocol
+    private var cacheManager: CacheManagerProtocol
     private var onClickAndCollect = false
-    init(apiManager: APIManagerProtocol) {
+    private var appState: String = "bg"
+    init(apiManager: APIManagerProtocol, cacheManager:  CacheManagerProtocol, dataStorage: HerowDataStorageProtocol?) {
         self.apiManager = apiManager
+        self.cacheManager =  cacheManager
+        self.dataStorage = dataStorage
     }
 
     func didReceivedEvent(_ event: Event, infos: [ZoneInfo]) {
         for info in infos {
-            let data = createlogEvent(event: event, info: info)
+             createlogEvent(event: event, info: info)
         }
     }
 
     func onLocationUpdate(_ location: CLLocation) {
-      let data = createlogContex(location)
+        createlogContex(location)
 
     }
 
-    func createlogContex(_ location: CLLocation) -> Data {
+    func createlogContex(_ location: CLLocation)  {
         GlobalLogger.shared.debug("AnalyticsManager - createlogContex: \(location.coordinate.latitude) \(location.coordinate.longitude)")
-        return Data()
+        let logContext = LogDataContext(appState: appState, location: location, cacheManager: cacheManager, dataStorage:  self.dataStorage, clickAndCollect: onClickAndCollect )
+        if let data = logContext.getData() {
+            apiManager.pushLog(data) {}
+        }
     }
 
-    func createlogEvent( event: Event,  info: ZoneInfo) -> Data {
+    func createlogEvent( event: Event,  info: ZoneInfo)  {
         GlobalLogger.shared.debug("AnalyticsManager - createlogEvent event: \(event) zoneInfo: \(info.hash)")
-        return Data()
+        let logEvent = LogDataEvent(appState: appState, event: event, infos: info, cacheManager: cacheManager, dataStorage:  self.dataStorage)
+        if let data = logEvent.getData() {
+            apiManager.pushLog(data) {}
+        }
+
     }
 
     func didStopClickAndConnect() {
@@ -43,5 +59,14 @@ class AnalyticsManager: EventListener, DetectionEngineListener, ClickAndConnectL
     func didStartClickAndConnect() {
         onClickAndCollect =  true
     }
+
+    func onAppInForeground() {
+        appState = "fg"
+    }
+
+    func onAppInBackground() {
+        appState = "bg"
+    }
+
 
 }

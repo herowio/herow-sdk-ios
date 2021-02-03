@@ -116,6 +116,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     public init(_ locationManager: CLLocationManager) {
         self.locationManager = locationManager
+        self.locationManager.allowsBackgroundLocationUpdates = true
         super.init()
         self.updateClickAndCollectState()
         self.locationManager.delegate = self

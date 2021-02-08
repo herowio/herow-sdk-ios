@@ -115,7 +115,7 @@ extension CLLocationCoordinate2D: Codable {
         }
         eventDisPatcher.post(event: .GEOFENCE_ENTER, infos: entries)
         eventDisPatcher.post(event: .GEOFENCE_EXIT, infos: exits)
-        eventDisPatcher.post(event: .ZONE_VISIT, infos: exits)
+        eventDisPatcher.post(event: .GEOFENCE_VISIT, infos: exits)
         GlobalLogger.shared.debug("LiveEventGenerator computeEvents oldZonesIds =\(oldZonesIds.count), entries=\(entries), exits=\(exits)")
 
         savePlaceHistory(input)

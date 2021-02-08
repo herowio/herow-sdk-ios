@@ -53,6 +53,7 @@ class AnalyticsManager: EventListener, DetectionEngineListener, ClickAndConnectL
     }
 
     func didStopClickAndConnect() {
+        
         onClickAndCollect = false
     }
 
@@ -67,6 +68,5 @@ class AnalyticsManager: EventListener, DetectionEngineListener, ClickAndConnectL
     func onAppInBackground() {
         appState = "bg"
     }
-
 
 }

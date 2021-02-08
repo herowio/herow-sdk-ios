@@ -12,7 +12,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
 
     
     lazy var persistentContainer: NSPersistentContainer = {
-
         let messageKitBundle = Bundle(for: Self.self)
         let modelURL = messageKitBundle.url(forResource: StorageConstants.dataModelName, withExtension: "momd")!
         let managedObjectModel =  NSManagedObjectModel(contentsOf: modelURL)
@@ -22,7 +21,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 fatalError("❌ Loading of store failed:\(err)")
             }
         }
-
         return container
     }()
 
@@ -250,9 +248,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 let recurrenceEnabled = campaignsCoreData.recurrenceEnabled
                 let  notification = N(title: campaignsCoreData.notification.title, description: campaignsCoreData.notification.content)
                 let campaign = C(id: id, company: company, name: name, createdDate: createdDate, modifiedDate: modifiedDate, deleted: deleted, simpleId: simpleId, begin: begin, end: end, realTimeContent: realTimeContent, intervals: intervals, cappings: cappings, triggers: triggers, daysRecurrence: daysRecurrence, recurrenceEnbaled: recurrenceEnabled, tz: tz, notification: notification)
-
                 campaigns.append(campaign)
-
             }
         }
         catch let error as NSError {

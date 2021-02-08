@@ -7,6 +7,8 @@
 
 import Foundation
 import CoreLocation
+
+
 @objc public class HerowInitializer: NSObject, ResetDelegate {
 
    public static let instance = HerowInitializer()
@@ -44,6 +46,7 @@ import CoreLocation
         detectionEngine.registerDetectionListener(listener: zoneProvider)
         apiManager.registerConfigListener(listener: detectionEngine)
         analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
+        appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
         detectionEngine.registerDetectionListener(listener: analyticsManager)
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
         eventDispatcher.registerListener(analyticsManager)
@@ -79,13 +82,15 @@ import CoreLocation
     }
 
 
-    @objc public func startClickAndCollect() {
-        return detectionEngine.activeClickAndCollectMode(mode: true)
+    @objc public func launchClickAndCollect() {
+        self.detectionEngine.setIsOnClickAndCollect(true)
+
     }
 
     @objc public func stopClickAndCollect() {
-        return detectionEngine.activeClickAndCollectMode(mode: false)
+        self.detectionEngine.setIsOnClickAndCollect(false)
     }
+
 
     @objc public func registerClickAndCollectListener(listener: ClickAndConnectListener) {
         detectionEngine.registerClickAndCollectListener(listener:listener)

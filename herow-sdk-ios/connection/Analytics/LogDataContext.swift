@@ -34,7 +34,8 @@ class LogDataContext: LogData {
 
         let logData = LogDataContextStruct(location: location, pois: pois, places: places, appState: self.appState, subtype: self.clickAndCollect ? "CONTEXT_REALTIME" : "CONTEXT", dataStorage: self.dataStorage)
 
-        return  logData.encode()
+        let log = Log(data: logData)
+        return  log.encode()
     }
 }
 

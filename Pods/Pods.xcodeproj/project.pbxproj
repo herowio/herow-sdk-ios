@@ -22,26 +22,27 @@
 		05CA23C43024A74D57C330814E1A8351 /* DDLogMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = D0A1D714A9BC717065A43F50300C6DF6 /* DDLogMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		06FAABF17CA6C7CA051EEDC9C6725D2D /* DDOSLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AF24F68AF90AEB9B07FC9179A297F1E /* DDOSLogger.m */; };
 		096CB0404EF464DC1E8D5F5F5B0A210E /* DDFileLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 9857067177C059FA54BA6217A049D45D /* DDFileLogger.m */; };
+		0E106B5FCBCB1B8CF3921BDF2B1A0566 /* Pods-herow_sdk_ios-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 6F2B35D03B8B8674ED77BD63AC7652F2 /* Pods-herow_sdk_ios-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		104F93F51E9874729C21655508F6D9D9 /* DDASLLogCapture.h in Headers */ = {isa = PBXBuildFile; fileRef = 050B9447DFD43DA55E5F8EC2699C492A /* DDASLLogCapture.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		158337C39C663083CC1858B14F443D05 /* DDAbstractDatabaseLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = C45FE78F69E97ACF6C1A4C9B1033EE0E /* DDAbstractDatabaseLogger.m */; };
 		23F8AF0CCD6932BD129CCB61619ADB3D /* DDASLLogCapture.m in Sources */ = {isa = PBXBuildFile; fileRef = DEE0A4F401E0797A6482823E7D49F287 /* DDASLLogCapture.m */; };
-		25708ED8668CC4EF896E1A07F90752AE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		25951A525FDB265713DACAF9184F4292 /* DDTTYLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = E96C5F0C1EC80607DEBD5B1F98D508C3 /* DDTTYLogger.m */; };
 		3F8D6E16E7F40A3AD3B208ED3BCD6F97 /* DDMultiFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 3813C217E87BDC75B125216469D53A15 /* DDMultiFormatter.m */; };
+		45FB070959D7416F2A7B7B102C483713 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		47771D4F38962FF6D770D8D36E43D021 /* CocoaLumberjack.h in Headers */ = {isa = PBXBuildFile; fileRef = B8096CCDFDA04C8D3A06C8F1426CC2B8 /* CocoaLumberjack.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4BFEB526B40BECA3FC764387763B2083 /* Pods-herow_sdk_ios-herow_sdk_iosTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E9D28D3340AFE46D9E20A616542B1EA2 /* Pods-herow_sdk_ios-herow_sdk_iosTests-dummy.m */; };
 		4CAD49704680286622E12C021FB60917 /* CocoaLumberjack-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 890C662C700C3981267FE2C1BF743853 /* CocoaLumberjack-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4EAC3D69F4903411B1C8A52E8AFE90DD /* DDLegacyMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = C9918BB1929B827993A80142467BEBD5 /* DDLegacyMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		571D67412D63E7B133DC365423BFC3F3 /* DDLog.h in Headers */ = {isa = PBXBuildFile; fileRef = 04EEC9919C690C3348375FAD44F44528 /* DDLog.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5A176CDB39E2631FAEE15AA7C55F4B17 /* DDLog.m in Sources */ = {isa = PBXBuildFile; fileRef = BFA0618E50B5BE0CB0EF47BD249B39C8 /* DDLog.m */; };
-		5A33F0238EB5F1F3DC2A0777B9103411 /* Pods-herow-sdk-ios-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BE1D397F2E3126D091816058F9D5F61 /* Pods-herow-sdk-ios-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5D7CC9550C844923A330315C13B073FF /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		60308ADD6DD13308FED6FD3222F461C7 /* Pods-herow_sdk_ios-herow_sdk_iosTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 949C072820CC447A47B224A2FEB8226E /* Pods-herow_sdk_ios-herow_sdk_iosTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		624EB5C2E3BAE9752E44A6D6ED63C61D /* DDContextFilterLogFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 0B8405A1028199BB2F787396504E5781 /* DDContextFilterLogFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		64BC7E7E7140D22F578EE4059EDDB9F1 /* Pods-herow_sdk_ios-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 12F53FF46164DA86E8620BAF4AAAE5F8 /* Pods-herow_sdk_ios-dummy.m */; };
 		67A4C4A5764636432DC4E24C259A0F7F /* CLIColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 5FBFE7DD033BE87815511EE7F7647A40 /* CLIColor.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A705DACC676BCB94BAFB2979394CEA6 /* DDDispatchQueueLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6BE6BFAC3C359386E4B2886CE2722D47 /* DDDispatchQueueLogFormatter.m */; };
 		7BB947EA62030EB477712B705A7B446F /* SwiftLogLevel.h in Headers */ = {isa = PBXBuildFile; fileRef = 7C993F4804C385F03665727F6D944B8E /* SwiftLogLevel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7D9FD7963BD0891B07B86C1BA858930B /* DDFileLogger+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = C7B68FC1F994F4BB700B8B888F23B44D /* DDFileLogger+Internal.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		83CC221B10D47B704195093BDC414867 /* DDAssert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F38D085F64947247B740EE08B083242 /* DDAssert.swift */; };
-		86C916AE0BBF502E4D12B65858863FBD /* Pods-herow-sdk-ios-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 791228A4F3916E80F8A5C6BE5D106644 /* Pods-herow-sdk-ios-dummy.m */; };
 		89141F0C37E88953C21B8A3A974ECBC7 /* DDFileLogger+Buffering.m in Sources */ = {isa = PBXBuildFile; fileRef = 116ECB346DDE5000B7DAFE5EB3D7FC03 /* DDFileLogger+Buffering.m */; };
 		8A06D2CF5742FD2D42787EF27D59C98A /* DDLoggerNames.m in Sources */ = {isa = PBXBuildFile; fileRef = 201FC4358AAF088A0751B467636385AF /* DDLoggerNames.m */; };
 		940C063BA63E04C26083CA576243D70E /* DDASLLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = E2B402E28658E36BD43C0BEBBB83011B /* DDASLLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -49,9 +50,9 @@
 		A086395C3C4300488EF23AF3D67A9B10 /* DDAbstractDatabaseLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = 89F85CD01796EB67D03A4A2495AD6165 /* DDAbstractDatabaseLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A5E839070BC3DF5291BE4CC48FAB08E6 /* DDFileLogger+Buffering.h in Headers */ = {isa = PBXBuildFile; fileRef = C655DF3494134390E47DA5FDA107DB82 /* DDFileLogger+Buffering.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B25AFA2775DFEC1085D803C9821205FA /* DDLog+LOGV.h in Headers */ = {isa = PBXBuildFile; fileRef = 4882C82E03C09CACEED33441A55BB3B2 /* DDLog+LOGV.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B4E1DD8405551E27D6E6CA151545B447 /* Pods-herow-sdk-ios-herow-sdk-iosTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E417106547476B9C99EF061797072BC9 /* Pods-herow-sdk-ios-herow-sdk-iosTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE6665786223B5428866C62CA97EA3AE /* CLIColor.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C78B3266E741FECE54E9C2B4CF05DA9 /* CLIColor.m */; };
 		C4061CF4C1E403C0F6F3FC8A994A4C42 /* CocoaLumberjack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C11A75976AA0EEBA330C3D951303087 /* CocoaLumberjack.swift */; };
+		C890E12CD103B7C6963170165F962D38 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		CF1A7526B86DBAA3C9ADFCBAED01BB71 /* CocoaLumberjack-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D22B4E4B2CD95A51D83164C1118CBC8 /* CocoaLumberjack-dummy.m */; };
 		D0BD1654DD7AEE81F5F1AD782E61ABD7 /* DDContextFilterLogFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = FBABC50FA2E2F4FA400D01507299B0A7 /* DDContextFilterLogFormatter.m */; };
 		D865950786FDC596321E957342A44D5E /* DDOSLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = D79A743792FAE727A79F0108C168F445 /* DDOSLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -62,32 +63,31 @@
 		F337238E4310A50BDBF50005C88220C0 /* DDLoggerNames.h in Headers */ = {isa = PBXBuildFile; fileRef = E741D90EC51CFA68FEEBF0ACBFAA753E /* DDLoggerNames.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F51013C3D7AD87FBBBBA8AA9A4BE03EC /* DDMultiFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = 85FA061F0A415BB754B329D9D96C8923 /* DDMultiFormatter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FE744FCC324426ADC0BA21A902799C48 /* DDTTYLogger.h in Headers */ = {isa = PBXBuildFile; fileRef = CB764ADC341B1E33F74B2B0942B29FB4 /* DDTTYLogger.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FE89CCB29C420A5A43069E6DECB88336 /* Pods-herow-sdk-ios-herow-sdk-iosTests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = D7DB31BA1802ED3FA79FB299F22A18A4 /* Pods-herow-sdk-ios-herow-sdk-iosTests-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		038D5AF2B7CBC4B72D6E041F0A9396BB /* PBXContainerItemProxy */ = {
+		17CF4C7AC0FEF9835E2AD68AFB9F7C47 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = E95654B155D25890BE8E26081FCA8265;
 			remoteInfo = CocoaLumberjack;
 		};
-		4DD293AB5E9ECF6E7C8992A186A56B8C /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E95654B155D25890BE8E26081FCA8265;
-			remoteInfo = CocoaLumberjack;
-		};
-		57F2388DDB6F3A068855061D9CBB92B1 /* PBXContainerItemProxy */ = {
+		B65C5B87142299A90C9E2E06608BF72B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 52B60EC2A583F24ACBB69C113F5488B9;
 			remoteInfo = SwiftLint;
 		};
-		71F4200354A3C07C67181003382A5DC7 /* PBXContainerItemProxy */ = {
+		B844D52CD86F3559662CFE75670B7964 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E95654B155D25890BE8E26081FCA8265;
+			remoteInfo = CocoaLumberjack;
+		};
+		DB3627F620194CA8B20F88F0C137BFE6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
@@ -99,50 +99,49 @@
 /* Begin PBXFileReference section */
 		04EEC9919C690C3348375FAD44F44528 /* DDLog.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDLog.h; path = Classes/DDLog.h; sourceTree = "<group>"; };
 		050B9447DFD43DA55E5F8EC2699C492A /* DDASLLogCapture.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDASLLogCapture.h; path = Classes/DDASLLogCapture.h; sourceTree = "<group>"; };
-		0871E536E127845CCB00BC17CC490E51 /* Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig"; sourceTree = "<group>"; };
+		086FDEFA19AA8703A42CB4698E506E5E /* Pods_herow_sdk_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_herow_sdk_ios.framework; path = "Pods-herow_sdk_ios.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0B8405A1028199BB2F787396504E5781 /* DDContextFilterLogFormatter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDContextFilterLogFormatter.h; path = Classes/Extensions/DDContextFilterLogFormatter.h; sourceTree = "<group>"; };
+		0FDA69E54E9B30EBF79F3AC95B7C4A71 /* Pods-herow_sdk_ios-herow_sdk_iosTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-herow_sdk_ios-herow_sdk_iosTests-frameworks.sh"; sourceTree = "<group>"; };
 		116ECB346DDE5000B7DAFE5EB3D7FC03 /* DDFileLogger+Buffering.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "DDFileLogger+Buffering.m"; path = "Classes/Extensions/DDFileLogger+Buffering.m"; sourceTree = "<group>"; };
+		12F53FF46164DA86E8620BAF4AAAE5F8 /* Pods-herow_sdk_ios-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-herow_sdk_ios-dummy.m"; sourceTree = "<group>"; };
+		13816862564CDB943463923437A80BCA /* Pods-herow_sdk_ios-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-herow_sdk_ios-Info.plist"; sourceTree = "<group>"; };
 		1936FA2D3108B7323C569AE2FBD3CC90 /* SwiftLint.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SwiftLint.release.xcconfig; sourceTree = "<group>"; };
 		201FC4358AAF088A0751B467636385AF /* DDLoggerNames.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDLoggerNames.m; path = Classes/DDLoggerNames.m; sourceTree = "<group>"; };
-		20714979A8993FF80A53A7D9640B7930 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
-		234EB32D1B9EBF71BB129BBB14973B82 /* Pods-herow-sdk-ios.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-herow-sdk-ios.modulemap"; sourceTree = "<group>"; };
 		25BDCEE29D63A956AB67F3A13624F46B /* CocoaLumberjack.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CocoaLumberjack.release.xcconfig; sourceTree = "<group>"; };
-		262077AC5459E131A760EF86C110EBFC /* Pods-herow-sdk-ios-herow-sdk-iosTests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-herow-sdk-ios-herow-sdk-iosTests-Info.plist"; sourceTree = "<group>"; };
 		2B4EC63A45295EE88230FEE1894DF576 /* CocoaLumberjack-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "CocoaLumberjack-Info.plist"; sourceTree = "<group>"; };
 		2D22B4E4B2CD95A51D83164C1118CBC8 /* CocoaLumberjack-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "CocoaLumberjack-dummy.m"; sourceTree = "<group>"; };
 		33317CF526D150D2C622DFE9DE552902 /* DDDispatchQueueLogFormatter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDDispatchQueueLogFormatter.h; path = Classes/Extensions/DDDispatchQueueLogFormatter.h; sourceTree = "<group>"; };
 		3813C217E87BDC75B125216469D53A15 /* DDMultiFormatter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDMultiFormatter.m; path = Classes/Extensions/DDMultiFormatter.m; sourceTree = "<group>"; };
-		3BE1D397F2E3126D091816058F9D5F61 /* Pods-herow-sdk-ios-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-herow-sdk-ios-umbrella.h"; sourceTree = "<group>"; };
-		3D63A09D6902D50AF82771FC7A937CCE /* Pods-herow-sdk-ios-herow-sdk-iosTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-herow-sdk-ios-herow-sdk-iosTests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		3F628F367EB9C6B74E3AD0CD96F5EDF5 /* DDAssertMacros.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDAssertMacros.h; path = Classes/DDAssertMacros.h; sourceTree = "<group>"; };
-		439C13EEDC77E40D5572E693833F7970 /* Pods_herow_sdk_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_herow_sdk_ios.framework; path = "Pods-herow-sdk-ios.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4882C82E03C09CACEED33441A55BB3B2 /* DDLog+LOGV.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "DDLog+LOGV.h"; path = "Classes/DDLog+LOGV.h"; sourceTree = "<group>"; };
 		4F38D085F64947247B740EE08B083242 /* DDAssert.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DDAssert.swift; path = Classes/DDAssert.swift; sourceTree = "<group>"; };
-		57B66F2CD94F266FDF3FED6F91FB4C80 /* Pods-herow-sdk-ios-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-herow-sdk-ios-Info.plist"; sourceTree = "<group>"; };
+		56ED5BDFDB82463B0EEB7A5F6917DCDA /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_herow_sdk_ios_herow_sdk_iosTests.framework; path = "Pods-herow_sdk_ios-herow_sdk_iosTests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FBFE7DD033BE87815511EE7F7647A40 /* CLIColor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = CLIColor.h; path = Classes/CLI/CLIColor.h; sourceTree = "<group>"; };
-		6191FEFD1A257AE750617725E2623659 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_herow_sdk_ios_herow_sdk_iosTests.framework; path = "Pods-herow-sdk-ios-herow-sdk-iosTests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		62164577C48AC3E9C4378B107277D8D5 /* CocoaLumberjack.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = CocoaLumberjack.modulemap; sourceTree = "<group>"; };
-		6254F16C54A6F28A62C7161CBCB47FD2 /* Pods-herow-sdk-ios-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-herow-sdk-ios-acknowledgements.plist"; sourceTree = "<group>"; };
+		664F8F8D6F3A36C331B84926EE6C6F4A /* Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig"; sourceTree = "<group>"; };
 		69497115C9A60DE05A6048A9F447AC47 /* CocoaLumberjack-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CocoaLumberjack-prefix.pch"; sourceTree = "<group>"; };
+		6B0D19709553DAABDA109362ACBFD347 /* Pods-herow_sdk_ios-herow_sdk_iosTests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-herow_sdk_ios-herow_sdk_iosTests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		6BE6BFAC3C359386E4B2886CE2722D47 /* DDDispatchQueueLogFormatter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDDispatchQueueLogFormatter.m; path = Classes/Extensions/DDDispatchQueueLogFormatter.m; sourceTree = "<group>"; };
-		71661D3CC18065B558803FC7ADAB8D3D /* Pods-herow-sdk-ios-herow-sdk-iosTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-herow-sdk-ios-herow-sdk-iosTests-frameworks.sh"; sourceTree = "<group>"; };
+		6F2B35D03B8B8674ED77BD63AC7652F2 /* Pods-herow_sdk_ios-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-herow_sdk_ios-umbrella.h"; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		791228A4F3916E80F8A5C6BE5D106644 /* Pods-herow-sdk-ios-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-herow-sdk-ios-dummy.m"; sourceTree = "<group>"; };
+		731CCC0047DDDB099897F71C27A631B9 /* Pods-herow_sdk_ios-herow_sdk_iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-herow_sdk_ios-herow_sdk_iosTests.release.xcconfig"; sourceTree = "<group>"; };
 		7AF24F68AF90AEB9B07FC9179A297F1E /* DDOSLogger.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDOSLogger.m; path = Classes/DDOSLogger.m; sourceTree = "<group>"; };
 		7C11A75976AA0EEBA330C3D951303087 /* CocoaLumberjack.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CocoaLumberjack.swift; path = Classes/CocoaLumberjack.swift; sourceTree = "<group>"; };
 		7C993F4804C385F03665727F6D944B8E /* SwiftLogLevel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SwiftLogLevel.h; path = Classes/SwiftLogLevel.h; sourceTree = "<group>"; };
-		80506B18837FFECE5E50726C28CFE3AB /* Pods-herow-sdk-ios-herow-sdk-iosTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-herow-sdk-ios-herow-sdk-iosTests-acknowledgements.plist"; sourceTree = "<group>"; };
 		85FA061F0A415BB754B329D9D96C8923 /* DDMultiFormatter.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDMultiFormatter.h; path = Classes/Extensions/DDMultiFormatter.h; sourceTree = "<group>"; };
+		882B574726F8CBC167AF72D89E647708 /* Pods-herow_sdk_ios-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-herow_sdk_ios-acknowledgements.markdown"; sourceTree = "<group>"; };
 		890C662C700C3981267FE2C1BF743853 /* CocoaLumberjack-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "CocoaLumberjack-umbrella.h"; sourceTree = "<group>"; };
 		89F85CD01796EB67D03A4A2495AD6165 /* DDAbstractDatabaseLogger.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDAbstractDatabaseLogger.h; path = Classes/DDAbstractDatabaseLogger.h; sourceTree = "<group>"; };
+		949C072820CC447A47B224A2FEB8226E /* Pods-herow_sdk_ios-herow_sdk_iosTests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-herow_sdk_ios-herow_sdk_iosTests-umbrella.h"; sourceTree = "<group>"; };
 		9857067177C059FA54BA6217A049D45D /* DDFileLogger.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDFileLogger.m; path = Classes/DDFileLogger.m; sourceTree = "<group>"; };
 		9C78B3266E741FECE54E9C2B4CF05DA9 /* CLIColor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = CLIColor.m; path = Classes/CLI/CLIColor.m; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		A6E9388CA2F00C55AA06A79D2E1C45DB /* Pods-herow_sdk_ios-herow_sdk_iosTests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-herow_sdk_ios-herow_sdk_iosTests.modulemap"; sourceTree = "<group>"; };
+		B0F9ABE1A34AF818B0B0BACA04BF2736 /* Pods-herow_sdk_ios-herow_sdk_iosTests-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-herow_sdk_ios-herow_sdk_iosTests-Info.plist"; sourceTree = "<group>"; };
 		B8096CCDFDA04C8D3A06C8F1426CC2B8 /* CocoaLumberjack.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = CocoaLumberjack.h; path = Classes/CocoaLumberjack.h; sourceTree = "<group>"; };
 		BFA0618E50B5BE0CB0EF47BD249B39C8 /* DDLog.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDLog.m; path = Classes/DDLog.m; sourceTree = "<group>"; };
 		C261436D14052AE3C35F240BCD155CAC /* CocoaLumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = CocoaLumberjack.framework; path = CocoaLumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C45FE78F69E97ACF6C1A4C9B1033EE0E /* DDAbstractDatabaseLogger.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDAbstractDatabaseLogger.m; path = Classes/DDAbstractDatabaseLogger.m; sourceTree = "<group>"; };
-		C46931C2C02CA68F906740CB459E6F33 /* Pods-herow-sdk-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-herow-sdk-ios.release.xcconfig"; sourceTree = "<group>"; };
 		C4E92A03A738AE4FBA638BA017C2833E /* DDASLLogger.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDASLLogger.m; path = Classes/DDASLLogger.m; sourceTree = "<group>"; };
 		C655DF3494134390E47DA5FDA107DB82 /* DDFileLogger+Buffering.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "DDFileLogger+Buffering.h"; path = "Classes/Extensions/DDFileLogger+Buffering.h"; sourceTree = "<group>"; };
 		C7B68FC1F994F4BB700B8B888F23B44D /* DDFileLogger+Internal.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "DDFileLogger+Internal.h"; path = "Classes/DDFileLogger+Internal.h"; sourceTree = "<group>"; };
@@ -151,34 +150,27 @@
 		D0A1D714A9BC717065A43F50300C6DF6 /* DDLogMacros.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDLogMacros.h; path = Classes/DDLogMacros.h; sourceTree = "<group>"; };
 		D4A216A3A2CE07FCF9C07C718DE5AF84 /* SwiftLint.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SwiftLint.debug.xcconfig; sourceTree = "<group>"; };
 		D79A743792FAE727A79F0108C168F445 /* DDOSLogger.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDOSLogger.h; path = Classes/DDOSLogger.h; sourceTree = "<group>"; };
-		D7DB31BA1802ED3FA79FB299F22A18A4 /* Pods-herow-sdk-ios-herow-sdk-iosTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-herow-sdk-ios-herow-sdk-iosTests-dummy.m"; sourceTree = "<group>"; };
+		D88747C673DBFF56B0147F180C145808 /* Pods-herow_sdk_ios-herow_sdk_iosTests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-herow_sdk_ios-herow_sdk_iosTests-acknowledgements.plist"; sourceTree = "<group>"; };
 		DD9D6CC2515A575F4391EDF76FAC034F /* DDFileLogger.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDFileLogger.h; path = Classes/DDFileLogger.h; sourceTree = "<group>"; };
 		DEE0A4F401E0797A6482823E7D49F287 /* DDASLLogCapture.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDASLLogCapture.m; path = Classes/DDASLLogCapture.m; sourceTree = "<group>"; };
 		E1865DE364D02A7C8FE08831FCDE7EEF /* CocoaLumberjack.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = CocoaLumberjack.debug.xcconfig; sourceTree = "<group>"; };
 		E2B402E28658E36BD43C0BEBBB83011B /* DDASLLogger.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDASLLogger.h; path = Classes/DDASLLogger.h; sourceTree = "<group>"; };
-		E417106547476B9C99EF061797072BC9 /* Pods-herow-sdk-ios-herow-sdk-iosTests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-herow-sdk-ios-herow-sdk-iosTests-umbrella.h"; sourceTree = "<group>"; };
+		E6ADC95C597DBCABF90B84E62C29D7F1 /* Pods-herow_sdk_ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-herow_sdk_ios.release.xcconfig"; sourceTree = "<group>"; };
 		E741D90EC51CFA68FEEBF0ACBFAA753E /* DDLoggerNames.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = DDLoggerNames.h; path = Classes/DDLoggerNames.h; sourceTree = "<group>"; };
 		E96C5F0C1EC80607DEBD5B1F98D508C3 /* DDTTYLogger.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDTTYLogger.m; path = Classes/DDTTYLogger.m; sourceTree = "<group>"; };
-		EAD83E2173BA1B61198A256CA4CAE790 /* Pods-herow-sdk-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-herow-sdk-ios.debug.xcconfig"; sourceTree = "<group>"; };
-		F146DD4E4342EAA1919F050C74196714 /* Pods-herow-sdk-ios-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-herow-sdk-ios-acknowledgements.markdown"; sourceTree = "<group>"; };
-		FA3A14BBA844253B396EF030821DC91F /* Pods-herow-sdk-ios-herow-sdk-iosTests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-herow-sdk-ios-herow-sdk-iosTests.modulemap"; sourceTree = "<group>"; };
+		E9D28D3340AFE46D9E20A616542B1EA2 /* Pods-herow_sdk_ios-herow_sdk_iosTests-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-herow_sdk_ios-herow_sdk_iosTests-dummy.m"; sourceTree = "<group>"; };
+		EE002415C0B2C92BA917F62471C0E0DA /* Pods-herow_sdk_ios.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-herow_sdk_ios.modulemap"; sourceTree = "<group>"; };
+		EE46C5E6A9D2A5008A31DAA022CF4751 /* Pods-herow_sdk_ios-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-herow_sdk_ios-acknowledgements.plist"; sourceTree = "<group>"; };
 		FBABC50FA2E2F4FA400D01507299B0A7 /* DDContextFilterLogFormatter.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = DDContextFilterLogFormatter.m; path = Classes/Extensions/DDContextFilterLogFormatter.m; sourceTree = "<group>"; };
+		FC66379AD8A4F2F15E56AAE566ECF1AC /* Pods-herow_sdk_ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-herow_sdk_ios.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		3E61C78672EFA5DA39012EB2B750CA7B /* Frameworks */ = {
+		3EECBEF8BF6377C55DD23D61380B51EF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				25708ED8668CC4EF896E1A07F90752AE /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7D6C7009EFA226CA5AAE2BD6633D6933 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5D7CC9550C844923A330315C13B073FF /* Foundation.framework in Frameworks */,
+				45FB070959D7416F2A7B7B102C483713 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -187,6 +179,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				9EBED57BBC07FCD5CDDD8079F039CCF2 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F094C0AD24F576B8A08E3EFFA50E3BDA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C890E12CD103B7C6963170165F962D38 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,6 +242,23 @@
 			name = Swift;
 			sourceTree = "<group>";
 		};
+		45759F6C68021ADF21819A993B106C9E /* Pods-herow_sdk_ios-herow_sdk_iosTests */ = {
+			isa = PBXGroup;
+			children = (
+				A6E9388CA2F00C55AA06A79D2E1C45DB /* Pods-herow_sdk_ios-herow_sdk_iosTests.modulemap */,
+				6B0D19709553DAABDA109362ACBFD347 /* Pods-herow_sdk_ios-herow_sdk_iosTests-acknowledgements.markdown */,
+				D88747C673DBFF56B0147F180C145808 /* Pods-herow_sdk_ios-herow_sdk_iosTests-acknowledgements.plist */,
+				E9D28D3340AFE46D9E20A616542B1EA2 /* Pods-herow_sdk_ios-herow_sdk_iosTests-dummy.m */,
+				0FDA69E54E9B30EBF79F3AC95B7C4A71 /* Pods-herow_sdk_ios-herow_sdk_iosTests-frameworks.sh */,
+				B0F9ABE1A34AF818B0B0BACA04BF2736 /* Pods-herow_sdk_ios-herow_sdk_iosTests-Info.plist */,
+				949C072820CC447A47B224A2FEB8226E /* Pods-herow_sdk_ios-herow_sdk_iosTests-umbrella.h */,
+				664F8F8D6F3A36C331B84926EE6C6F4A /* Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig */,
+				731CCC0047DDDB099897F71C27A631B9 /* Pods-herow_sdk_ios-herow_sdk_iosTests.release.xcconfig */,
+			);
+			name = "Pods-herow_sdk_ios-herow_sdk_iosTests";
+			path = "Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests";
+			sourceTree = "<group>";
+		};
 		578452D2E740E91742655AC8F1636D1F /* iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -261,23 +278,6 @@
 			path = CocoaLumberjack;
 			sourceTree = "<group>";
 		};
-		7E608B037F43EA55BED1C6DEC6EC5E4A /* Pods-herow-sdk-ios-herow-sdk-iosTests */ = {
-			isa = PBXGroup;
-			children = (
-				FA3A14BBA844253B396EF030821DC91F /* Pods-herow-sdk-ios-herow-sdk-iosTests.modulemap */,
-				3D63A09D6902D50AF82771FC7A937CCE /* Pods-herow-sdk-ios-herow-sdk-iosTests-acknowledgements.markdown */,
-				80506B18837FFECE5E50726C28CFE3AB /* Pods-herow-sdk-ios-herow-sdk-iosTests-acknowledgements.plist */,
-				D7DB31BA1802ED3FA79FB299F22A18A4 /* Pods-herow-sdk-ios-herow-sdk-iosTests-dummy.m */,
-				71661D3CC18065B558803FC7ADAB8D3D /* Pods-herow-sdk-ios-herow-sdk-iosTests-frameworks.sh */,
-				262077AC5459E131A760EF86C110EBFC /* Pods-herow-sdk-ios-herow-sdk-iosTests-Info.plist */,
-				E417106547476B9C99EF061797072BC9 /* Pods-herow-sdk-ios-herow-sdk-iosTests-umbrella.h */,
-				20714979A8993FF80A53A7D9640B7930 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */,
-				0871E536E127845CCB00BC17CC490E51 /* Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig */,
-			);
-			name = "Pods-herow-sdk-ios-herow-sdk-iosTests";
-			path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests";
-			sourceTree = "<group>";
-		};
 		7F2089D23D5E8BBBB25EB89687E49C45 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -293,23 +293,14 @@
 			path = "../Target Support Files/CocoaLumberjack";
 			sourceTree = "<group>";
 		};
-		96C177AA4BB1EBD603726BAAAE38946F /* Products */ = {
+		B6D8258CEA389D42D96C084CB7CE5781 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				C261436D14052AE3C35F240BCD155CAC /* CocoaLumberjack.framework */,
-				439C13EEDC77E40D5572E693833F7970 /* Pods_herow_sdk_ios.framework */,
-				6191FEFD1A257AE750617725E2623659 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */,
+				086FDEFA19AA8703A42CB4698E506E5E /* Pods_herow_sdk_ios.framework */,
+				56ED5BDFDB82463B0EEB7A5F6917DCDA /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		9E1858AC4F27A984CB57F30E7E9D4CB1 /* Targets Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				DE6BF0BC0D87E326515CF6C501DBF18E /* Pods-herow-sdk-ios */,
-				7E608B037F43EA55BED1C6DEC6EC5E4A /* Pods-herow-sdk-ios-herow-sdk-iosTests */,
-			);
-			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
 		C4742C5500EE160A3475AEEDE3557FD9 /* Support Files */ = {
@@ -328,8 +319,8 @@
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
 				F707A111A8AAC94DCE1B9FD7626D47BF /* Pods */,
-				96C177AA4BB1EBD603726BAAAE38946F /* Products */,
-				9E1858AC4F27A984CB57F30E7E9D4CB1 /* Targets Support Files */,
+				B6D8258CEA389D42D96C084CB7CE5781 /* Products */,
+				E4CE7673B3655D728584399F6CF9D924 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -350,20 +341,29 @@
 			path = SwiftLint;
 			sourceTree = "<group>";
 		};
-		DE6BF0BC0D87E326515CF6C501DBF18E /* Pods-herow-sdk-ios */ = {
+		D915028099526A20AE22320C87718760 /* Pods-herow_sdk_ios */ = {
 			isa = PBXGroup;
 			children = (
-				234EB32D1B9EBF71BB129BBB14973B82 /* Pods-herow-sdk-ios.modulemap */,
-				F146DD4E4342EAA1919F050C74196714 /* Pods-herow-sdk-ios-acknowledgements.markdown */,
-				6254F16C54A6F28A62C7161CBCB47FD2 /* Pods-herow-sdk-ios-acknowledgements.plist */,
-				791228A4F3916E80F8A5C6BE5D106644 /* Pods-herow-sdk-ios-dummy.m */,
-				57B66F2CD94F266FDF3FED6F91FB4C80 /* Pods-herow-sdk-ios-Info.plist */,
-				3BE1D397F2E3126D091816058F9D5F61 /* Pods-herow-sdk-ios-umbrella.h */,
-				EAD83E2173BA1B61198A256CA4CAE790 /* Pods-herow-sdk-ios.debug.xcconfig */,
-				C46931C2C02CA68F906740CB459E6F33 /* Pods-herow-sdk-ios.release.xcconfig */,
+				EE002415C0B2C92BA917F62471C0E0DA /* Pods-herow_sdk_ios.modulemap */,
+				882B574726F8CBC167AF72D89E647708 /* Pods-herow_sdk_ios-acknowledgements.markdown */,
+				EE46C5E6A9D2A5008A31DAA022CF4751 /* Pods-herow_sdk_ios-acknowledgements.plist */,
+				12F53FF46164DA86E8620BAF4AAAE5F8 /* Pods-herow_sdk_ios-dummy.m */,
+				13816862564CDB943463923437A80BCA /* Pods-herow_sdk_ios-Info.plist */,
+				6F2B35D03B8B8674ED77BD63AC7652F2 /* Pods-herow_sdk_ios-umbrella.h */,
+				FC66379AD8A4F2F15E56AAE566ECF1AC /* Pods-herow_sdk_ios.debug.xcconfig */,
+				E6ADC95C597DBCABF90B84E62C29D7F1 /* Pods-herow_sdk_ios.release.xcconfig */,
 			);
-			name = "Pods-herow-sdk-ios";
-			path = "Target Support Files/Pods-herow-sdk-ios";
+			name = "Pods-herow_sdk_ios";
+			path = "Target Support Files/Pods-herow_sdk_ios";
+			sourceTree = "<group>";
+		};
+		E4CE7673B3655D728584399F6CF9D924 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				D915028099526A20AE22320C87718760 /* Pods-herow_sdk_ios */,
+				45759F6C68021ADF21819A993B106C9E /* Pods-herow_sdk_ios-herow_sdk_iosTests */,
+			);
+			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
 		F707A111A8AAC94DCE1B9FD7626D47BF /* Pods */ = {
@@ -378,22 +378,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		004CB62A6F8F97697567E8CC8263E0EA /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5A33F0238EB5F1F3DC2A0777B9103411 /* Pods-herow-sdk-ios-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4FB447F1E42215DBF2F037FF2A1A8E92 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B4E1DD8405551E27D6E6CA151545B447 /* Pods-herow-sdk-ios-herow-sdk-iosTests-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		527A3CD1C9784729C14C6753633675BC /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -422,47 +406,63 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6EBFCE0ED6CF2CF3E0CEBD7CA9DEF39C /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0E106B5FCBCB1B8CF3921BDF2B1A0566 /* Pods-herow_sdk_ios-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E78EFC97BA444FF4BDD07E6F2024F295 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60308ADD6DD13308FED6FD3222F461C7 /* Pods-herow_sdk_ios-herow_sdk_iosTests-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		18D9986C384684AFE87D2D9E0C3B93E8 /* Pods-herow-sdk-ios-herow-sdk-iosTests */ = {
+		5352E0A10D7678607A9BD50EF321F048 /* Pods-herow_sdk_ios-herow_sdk_iosTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CFA79CBD963808B63EE77689DCBF9348 /* Build configuration list for PBXNativeTarget "Pods-herow-sdk-ios-herow-sdk-iosTests" */;
+			buildConfigurationList = D40FF76263EC3CC6ACC52E5E8004F78D /* Build configuration list for PBXNativeTarget "Pods-herow_sdk_ios-herow_sdk_iosTests" */;
 			buildPhases = (
-				4FB447F1E42215DBF2F037FF2A1A8E92 /* Headers */,
-				094D8E1238A08AE89707BC4BCC8F65A4 /* Sources */,
-				7D6C7009EFA226CA5AAE2BD6633D6933 /* Frameworks */,
-				390DE6D198E5A516DD5B8CB5B47B0EF8 /* Resources */,
+				E78EFC97BA444FF4BDD07E6F2024F295 /* Headers */,
+				E1C72FC018648F8E0C2939DAEEA753AA /* Sources */,
+				3EECBEF8BF6377C55DD23D61380B51EF /* Frameworks */,
+				11FADF4C4C37616CA355845B1D78A6F1 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				346735C0EBF0B0134CCBC2C898288C2E /* PBXTargetDependency */,
-				25DE086797026CE4E229BEE1EC00D69A /* PBXTargetDependency */,
+				B31A5F8C3DF6B5BE80ECC2AD74230EAA /* PBXTargetDependency */,
+				ED6FE2D6178C6C7EE49586437D613D7D /* PBXTargetDependency */,
 			);
-			name = "Pods-herow-sdk-ios-herow-sdk-iosTests";
-			productName = "Pods-herow-sdk-ios-herow-sdk-iosTests";
-			productReference = 6191FEFD1A257AE750617725E2623659 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */;
+			name = "Pods-herow_sdk_ios-herow_sdk_iosTests";
+			productName = "Pods-herow_sdk_ios-herow_sdk_iosTests";
+			productReference = 56ED5BDFDB82463B0EEB7A5F6917DCDA /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		4937BA0096A6C84E3A3B13325DC2185B /* Pods-herow-sdk-ios */ = {
+		691553AE62FB6EB13DFD36C6ED0B3815 /* Pods-herow_sdk_ios */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 67706315A4FA204ABC1FE2B335AB0AAB /* Build configuration list for PBXNativeTarget "Pods-herow-sdk-ios" */;
+			buildConfigurationList = 066605EFE41ACBB50B6A282890566131 /* Build configuration list for PBXNativeTarget "Pods-herow_sdk_ios" */;
 			buildPhases = (
-				004CB62A6F8F97697567E8CC8263E0EA /* Headers */,
-				8EBED06535514CCF9D86A8D8D0C68F18 /* Sources */,
-				3E61C78672EFA5DA39012EB2B750CA7B /* Frameworks */,
-				431D0CAC02C3B1322202F50798644747 /* Resources */,
+				6EBFCE0ED6CF2CF3E0CEBD7CA9DEF39C /* Headers */,
+				0250CC02B99BEA9C514E1DF75F006083 /* Sources */,
+				F094C0AD24F576B8A08E3EFFA50E3BDA /* Frameworks */,
+				7314AEA87E064BDA1F3B55AD568F5D17 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CAE00FF077015D826DAFAC22466F6662 /* PBXTargetDependency */,
-				2CC51288CFD348BE3229249349B8EFBE /* PBXTargetDependency */,
+				C48FC8804CCE03C499F560B762BFDAD8 /* PBXTargetDependency */,
+				EEA3672191684C3AD2CBBA664044C194 /* PBXTargetDependency */,
 			);
-			name = "Pods-herow-sdk-ios";
-			productName = "Pods-herow-sdk-ios";
-			productReference = 439C13EEDC77E40D5572E693833F7970 /* Pods_herow_sdk_ios.framework */;
+			name = "Pods-herow_sdk_ios";
+			productName = "Pods-herow_sdk_ios";
+			productReference = 086FDEFA19AA8703A42CB4698E506E5E /* Pods_herow_sdk_ios.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		E95654B155D25890BE8E26081FCA8265 /* CocoaLumberjack */ = {
@@ -501,13 +501,13 @@
 				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = 96C177AA4BB1EBD603726BAAAE38946F /* Products */;
+			productRefGroup = B6D8258CEA389D42D96C084CB7CE5781 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				E95654B155D25890BE8E26081FCA8265 /* CocoaLumberjack */,
-				4937BA0096A6C84E3A3B13325DC2185B /* Pods-herow-sdk-ios */,
-				18D9986C384684AFE87D2D9E0C3B93E8 /* Pods-herow-sdk-ios-herow-sdk-iosTests */,
+				691553AE62FB6EB13DFD36C6ED0B3815 /* Pods-herow_sdk_ios */,
+				5352E0A10D7678607A9BD50EF321F048 /* Pods-herow_sdk_ios-herow_sdk_iosTests */,
 				52B60EC2A583F24ACBB69C113F5488B9 /* SwiftLint */,
 			);
 		};
@@ -521,14 +521,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		390DE6D198E5A516DD5B8CB5B47B0EF8 /* Resources */ = {
+		11FADF4C4C37616CA355845B1D78A6F1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		431D0CAC02C3B1322202F50798644747 /* Resources */ = {
+		7314AEA87E064BDA1F3B55AD568F5D17 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -538,19 +538,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		094D8E1238A08AE89707BC4BCC8F65A4 /* Sources */ = {
+		0250CC02B99BEA9C514E1DF75F006083 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FE89CCB29C420A5A43069E6DECB88336 /* Pods-herow-sdk-ios-herow-sdk-iosTests-dummy.m in Sources */,
+				64BC7E7E7140D22F578EE4059EDDB9F1 /* Pods-herow_sdk_ios-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8EBED06535514CCF9D86A8D8D0C68F18 /* Sources */ = {
+		E1C72FC018648F8E0C2939DAEEA753AA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				86C916AE0BBF502E4D12B65858863FBD /* Pods-herow-sdk-ios-dummy.m in Sources */,
+				4BFEB526B40BECA3FC764387763B2083 /* Pods-herow_sdk_ios-herow_sdk_iosTests-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -580,145 +580,33 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		25DE086797026CE4E229BEE1EC00D69A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = SwiftLint;
-			target = 52B60EC2A583F24ACBB69C113F5488B9 /* SwiftLint */;
-			targetProxy = 71F4200354A3C07C67181003382A5DC7 /* PBXContainerItemProxy */;
-		};
-		2CC51288CFD348BE3229249349B8EFBE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = SwiftLint;
-			target = 52B60EC2A583F24ACBB69C113F5488B9 /* SwiftLint */;
-			targetProxy = 57F2388DDB6F3A068855061D9CBB92B1 /* PBXContainerItemProxy */;
-		};
-		346735C0EBF0B0134CCBC2C898288C2E /* PBXTargetDependency */ = {
+		B31A5F8C3DF6B5BE80ECC2AD74230EAA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = CocoaLumberjack;
 			target = E95654B155D25890BE8E26081FCA8265 /* CocoaLumberjack */;
-			targetProxy = 4DD293AB5E9ECF6E7C8992A186A56B8C /* PBXContainerItemProxy */;
+			targetProxy = B844D52CD86F3559662CFE75670B7964 /* PBXContainerItemProxy */;
 		};
-		CAE00FF077015D826DAFAC22466F6662 /* PBXTargetDependency */ = {
+		C48FC8804CCE03C499F560B762BFDAD8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = CocoaLumberjack;
 			target = E95654B155D25890BE8E26081FCA8265 /* CocoaLumberjack */;
-			targetProxy = 038D5AF2B7CBC4B72D6E041F0A9396BB /* PBXContainerItemProxy */;
+			targetProxy = 17CF4C7AC0FEF9835E2AD68AFB9F7C47 /* PBXContainerItemProxy */;
+		};
+		ED6FE2D6178C6C7EE49586437D613D7D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SwiftLint;
+			target = 52B60EC2A583F24ACBB69C113F5488B9 /* SwiftLint */;
+			targetProxy = DB3627F620194CA8B20F88F0C137BFE6 /* PBXContainerItemProxy */;
+		};
+		EEA3672191684C3AD2CBBA664044C194 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SwiftLint;
+			target = 52B60EC2A583F24ACBB69C113F5488B9 /* SwiftLint */;
+			targetProxy = B65C5B87142299A90C9E2E06608BF72B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		12DA514A60D056024EE475CD2B1DCC07 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = C46931C2C02CA68F906740CB459E6F33 /* Pods-herow-sdk-ios.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		4501411158A61005680E9F4007902A22 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = EAD83E2173BA1B61198A256CA4CAE790 /* Pods-herow-sdk-ios.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		5290A8FACB7461CCC6CFCA6EB8E158C3 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 20714979A8993FF80A53A7D9640B7930 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
 		5DCA1C8ECC2A8DB6122194678CC4D2B2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E1865DE364D02A7C8FE08831FCDE7EEF /* CocoaLumberjack.debug.xcconfig */;
@@ -752,44 +640,6 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
-		};
-		76E4959FCD23244FF5658428BF81DB0B /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0871E536E127845CCB00BC17CC490E51 /* Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MODULEMAP_FILE = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
 		};
 		903A0004D3E6651EFD5D2E16214D101B /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -852,6 +702,43 @@
 				SYMROOT = "${SRCROOT}/../build";
 			};
 			name = Release;
+		};
+		96F69018E4EC2C469AF77EC9DE911875 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 664F8F8D6F3A36C331B84926EE6C6F4A /* Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests/Pods-herow_sdk_ios-herow_sdk_iosTests-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests/Pods-herow_sdk_ios-herow_sdk_iosTests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
 		};
 		AD81E62ACCB0B7A923FC8AA288F9921E /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -936,6 +823,81 @@
 			};
 			name = Debug;
 		};
+		C1685A48E53F17EB779234C636D923A2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E6ADC95C597DBCABF90B84E62C29D7F1 /* Pods-herow_sdk_ios.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-herow_sdk_ios/Pods-herow_sdk_ios-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-herow_sdk_ios/Pods-herow_sdk_ios.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		DDE4755BE084E3FF7C80D371779F0A3B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FC66379AD8A4F2F15E56AAE566ECF1AC /* Pods-herow_sdk_ios.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-herow_sdk_ios/Pods-herow_sdk_ios-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-herow_sdk_ios/Pods-herow_sdk_ios.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 		EADD1F50ABC8096A0D6CB18822BB4EE4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D4A216A3A2CE07FCF9C07C718DE5AF84 /* SwiftLint.debug.xcconfig */;
@@ -987,23 +949,61 @@
 			};
 			name = Release;
 		};
+		F4C0A70053FF00445B190EA56DAD0B6B /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 731CCC0047DDDB099897F71C27A631B9 /* Pods-herow_sdk_ios-herow_sdk_iosTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests/Pods-herow_sdk_ios-herow_sdk_iosTests-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests/Pods-herow_sdk_ios-herow_sdk_iosTests.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		066605EFE41ACBB50B6A282890566131 /* Build configuration list for PBXNativeTarget "Pods-herow_sdk_ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DDE4755BE084E3FF7C80D371779F0A3B /* Debug */,
+				C1685A48E53F17EB779234C636D923A2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B4EFE046ACF8F37157F6E322C7FCFC28 /* Debug */,
 				903A0004D3E6651EFD5D2E16214D101B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		67706315A4FA204ABC1FE2B335AB0AAB /* Build configuration list for PBXNativeTarget "Pods-herow-sdk-ios" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4501411158A61005680E9F4007902A22 /* Debug */,
-				12DA514A60D056024EE475CD2B1DCC07 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1017,11 +1017,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CFA79CBD963808B63EE77689DCBF9348 /* Build configuration list for PBXNativeTarget "Pods-herow-sdk-ios-herow-sdk-iosTests" */ = {
+		D40FF76263EC3CC6ACC52E5E8004F78D /* Build configuration list for PBXNativeTarget "Pods-herow_sdk_ios-herow_sdk_iosTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5290A8FACB7461CCC6CFCA6EB8E158C3 /* Debug */,
-				76E4959FCD23244FF5658428BF81DB0B /* Release */,
+				96F69018E4EC2C469AF77EC9DE911875 /* Debug */,
+				F4C0A70053FF00445B190EA56DAD0B6B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

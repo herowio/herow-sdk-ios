@@ -8,6 +8,10 @@
 import Foundation
 import UIKit
 
+
+protocol RequestStatusListener: class {
+    func didReceiveResponse(_ statusCode: Int)
+}
 private enum Method: String {
     case get = "GET"
     case post = "POST"
@@ -29,6 +33,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     private var baseURL: String
     private let endPoint: EndPoint
     private let decoder = JSONDecoder()
+    weak  var  statusCodeListener: RequestStatusListener?
     var headers: [String:String]?
     var responseHeaders: [AnyHashable: Any]?
     internal init(urlType: URLType, endPoint: EndPoint = .undefined) {
@@ -74,7 +79,12 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         }
 
         if currentTask != nil {
-            return
+            switch  self.endPoint {
+            case .log:
+                GlobalLogger.shared.debug("try to send log")
+            default:
+                return
+            }
         }
 
 
@@ -99,7 +109,9 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 completion(Result.failure(NetworkError.invalidResponse))
                 return
             }
-            if (HttpStatusCode.HTTP_OK..<HttpStatusCode.HTTP_MULT_CHOICE) ~= response.statusCode {
+            let statusCode = response.statusCode
+            self.statusCodeListener?.didReceiveResponse(statusCode)
+            if (HttpStatusCode.HTTP_OK..<HttpStatusCode.HTTP_MULT_CHOICE) ~= statusCode {
                 guard let data = data  else {
                     completion(Result.failure(NetworkError.noData))
                     return

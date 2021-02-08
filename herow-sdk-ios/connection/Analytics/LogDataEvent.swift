@@ -20,14 +20,15 @@ class LogDataEvent: LogData {
 
     override func getData() -> Data? {
         let logData = LogDataEventStruct(event: event, infos: infos, appState: appState, dataStorage: dataStorage, cacheManager: cacheManager)
-        return  logData.encode()
+        let log = Log(data: logData)
+        return  log.encode()
     }
 }
 
 class LogDataEventStruct: LogDataStruct {
     let lastLocation: CLLocation?
     var place: NearbyPlace? = nil
-    var duration: TimeInterval = 0
+    var duration: TimeInterval? = nil
 
     init(event: Event, infos: ZoneInfo, appState: String, dataStorage: HerowDataStorageProtocol?,cacheManager: CacheManagerProtocol?)  {
         lastLocation = CLLocationManager().location
@@ -37,6 +38,9 @@ class LogDataEventStruct: LogDataStruct {
             let lng = zone.getLng()
             let center = CLLocation(latitude: lat, longitude: lng)
             let distance = lastLocation?.distance(from: center) ?? 0
+            if event == .GEOFENCE_VISIT ,let entrance = infos.enterTime, let exit = infos.exitTime {
+                self.duration = (exit - entrance) * 1000
+            }
             self.place = NearbyPlace(placeId: zone.getHash(), distance: distance, radius: zone.getRadius(), lat: lat, lng: lng)
         }
 

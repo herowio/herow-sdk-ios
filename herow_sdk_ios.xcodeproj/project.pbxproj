@@ -1,0 +1,1147 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXAggregateTarget section */
+		6D9C213825D180FF0044BC15 /* build */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 6D9C213925D180FF0044BC15 /* Build configuration list for PBXAggregateTarget "build" */;
+			buildPhases = (
+				6D9C213F25D181310044BC15 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = build;
+			productName = build;
+		};
+/* End PBXAggregateTarget section */
+
+/* Begin PBXBuildFile section */
+		258D73F449DB20BC2644D000 /* Pods_herow_sdk_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */; };
+		6B9A5F4B25B9D17500AAC673 /* UserInfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F4A25B9D17500AAC673 /* UserInfoManager.swift */; };
+		6B9A5F5725B9D2A500AAC673 /* ConnexionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5625B9D2A500AAC673 /* ConnexionConstants.swift */; };
+		6B9A5F6025B9D36600AAC673 /* APIWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5A25B9D36600AAC673 /* APIWorker.swift */; };
+		6B9A5F6125B9D36600AAC673 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5B25B9D36600AAC673 /* APIManager.swift */; };
+		6B9A5F6225B9D36600AAC673 /* HttpStatusCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5C25B9D36600AAC673 /* HttpStatusCode.swift */; };
+		6B9A5F6325B9D36600AAC673 /* RequestHeaderCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5D25B9D36600AAC673 /* RequestHeaderCreator.swift */; };
+		6B9A5F6425B9D36600AAC673 /* HerowDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5E25B9D36600AAC673 /* HerowDataStorage.swift */; };
+		6B9A5F6525B9D36600AAC673 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5F25B9D36600AAC673 /* APIModels.swift */; };
+		6D07420525B079EC005E08F8 /* herow_sdk_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D0741FB25B079EC005E08F8 /* herow_sdk_ios.framework */; };
+		6D07420A25B079EC005E08F8 /* herow_sdk_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07420925B079EC005E08F8 /* herow_sdk_iosTests.swift */; };
+		6D07420C25B079EC005E08F8 /* herow_sdk_ios.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D0741FE25B079EC005E08F8 /* herow_sdk_ios.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6D0747E725B72FFB005E08F8 /* HerowInitializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07479925B72FF9005E08F8 /* HerowInitializer.swift */; };
+		6D0747EC25B72FFB005E08F8 /* WifiUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A125B72FF9005E08F8 /* WifiUtils.swift */; };
+		6D0747EE25B72FFB005E08F8 /* StringUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A325B72FF9005E08F8 /* StringUtils.swift */; };
+		6D0747EF25B72FFB005E08F8 /* LocationServicesEnabled.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A525B72FF9005E08F8 /* LocationServicesEnabled.swift */; };
+		6D0747F125B72FFB005E08F8 /* LocationDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A725B72FF9005E08F8 /* LocationDispatcher.swift */; };
+		6D0747F325B72FFB005E08F8 /* CodableCoordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A925B72FF9005E08F8 /* CodableCoordinates.swift */; };
+		6D0747F425B72FFB005E08F8 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747AA25B72FF9005E08F8 /* LocationManager.swift */; };
+		6D0747F825B72FFB005E08F8 /* AtomicBoolean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747AF25B72FFA005E08F8 /* AtomicBoolean.swift */; };
+		6D0747F925B72FFB005E08F8 /* MotionRequestDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B125B72FFA005E08F8 /* MotionRequestDelegate.swift */; };
+		6D0747FA25B72FFB005E08F8 /* MotionActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B225B72FFA005E08F8 /* MotionActivityManager.swift */; };
+		6D0747FC25B72FFB005E08F8 /* TimeProviderRelative.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B625B72FFA005E08F8 /* TimeProviderRelative.swift */; };
+		6D0747FD25B72FFB005E08F8 /* TimeProviderForTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B725B72FFA005E08F8 /* TimeProviderForTests.swift */; };
+		6D0747FE25B72FFB005E08F8 /* TimeProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B825B72FFA005E08F8 /* TimeProvider.swift */; };
+		6D0747FF25B72FFB005E08F8 /* TimeProviderAbsolute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747B925B72FFA005E08F8 /* TimeProviderAbsolute.swift */; };
+		6D07480025B72FFB005E08F8 /* ResetDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747BA25B72FFA005E08F8 /* ResetDelegate.swift */; };
+		6D07480125B72FFB005E08F8 /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747BB25B72FFA005E08F8 /* BackgroundTaskManager.swift */; };
+		6D07480225B72FFB005E08F8 /* GlobalLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747BC25B72FFA005E08F8 /* GlobalLogger.swift */; };
+		6D07480325B72FFB005E08F8 /* DeviceUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747BD25B72FFA005E08F8 /* DeviceUtils.swift */; };
+		6D07480425B72FFB005E08F8 /* AppStateDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747BF25B72FFA005E08F8 /* AppStateDelegate.swift */; };
+		6D07480525B72FFB005E08F8 /* AppStateDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747C025B72FFA005E08F8 /* AppStateDetector.swift */; };
+		6D07480625B72FFB005E08F8 /* MetricsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747C125B72FFA005E08F8 /* MetricsManager.swift */; };
+		6D07480725B72FFB005E08F8 /* WeakContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747C225B72FFA005E08F8 /* WeakContainer.swift */; };
+		6D07480825B72FFB005E08F8 /* ChargingStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747C425B72FFA005E08F8 /* ChargingStatus.swift */; };
+		6D07480925B72FFB005E08F8 /* BatteryUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747C525B72FFA005E08F8 /* BatteryUtils.swift */; };
+		6D07480A25B72FFB005E08F8 /* DataHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747C725B72FFA005E08F8 /* DataHolder.swift */; };
+		6D07480C25B72FFB005E08F8 /* DataHolderUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747C925B72FFA005E08F8 /* DataHolderUserDefaults.swift */; };
+		6D07480D25B72FFB005E08F8 /* GenericHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747CA25B72FFA005E08F8 /* GenericHolder.swift */; };
+		6D07480E25B72FFB005E08F8 /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747CB25B72FFA005E08F8 /* FileUtils.swift */; };
+		6D07480F25B72FFB005E08F8 /* OpenUrlUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747CC25B72FFA005E08F8 /* OpenUrlUtils.swift */; };
+		6D07481025B72FFB005E08F8 /* DispatchQueueUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747CD25B72FFA005E08F8 /* DispatchQueueUtils.swift */; };
+		6D07481125B72FFB005E08F8 /* AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747CE25B72FFA005E08F8 /* AnyEncodable.swift */; };
+		6D07481225B72FFB005E08F8 /* NSDictionary+merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D025B72FFA005E08F8 /* NSDictionary+merge.swift */; };
+		6D07481325B72FFB005E08F8 /* CLLocation+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D125B72FFA005E08F8 /* CLLocation+Codable.swift */; };
+		6D07481425B72FFB005E08F8 /* Dictionary+merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D225B72FFA005E08F8 /* Dictionary+merge.swift */; };
+		6D07481C25B72FFB005E08F8 /* ConnectivityType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747DE25B72FFA005E08F8 /* ConnectivityType.swift */; };
+		6D07481D25B72FFB005E08F8 /* RadioAccessTechnology.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747DF25B72FFA005E08F8 /* RadioAccessTechnology.swift */; };
+		6D0748CB25B992F8005E08F8 /* PermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0748CA25B992F8005E08F8 /* PermissionsManager.swift */; };
+		6D0748D825B9AEC0005E08F8 /* platform-secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6D0748D725B9AEC0005E08F8 /* platform-secrets.plist */; };
+		6D07494225BB035F005E08F8 /* GeoHashHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07494125BB035F005E08F8 /* GeoHashHelper.swift */; };
+		6D33408325C7FC0C0011CBAB /* AnalyticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D33408225C7FC0C0011CBAB /* AnalyticsManager.swift */; };
+		6D33408925C81C700011CBAB /* LogData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D33408825C81C700011CBAB /* LogData.swift */; };
+		6D33408D25C81C920011CBAB /* LogDataContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D33408C25C81C920011CBAB /* LogDataContext.swift */; };
+		6D33409D25C81D110011CBAB /* LogDataEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D33409C25C81D110011CBAB /* LogDataEvent.swift */; };
+		6D3340B225C83B200011CBAB /* AnalyticsUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D3340B125C83B200011CBAB /* AnalyticsUtils.swift */; };
+		6D40A20125BB76810025268E /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A20025BB76810025268E /* EventDispatcher.swift */; };
+		6D40A22325BC07C80025268E /* HerowDataStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */; };
+		6D40A25B25BED02B0025268E /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A25A25BED02B0025268E /* CoreDataManager.swift */; };
+		6D40A26525BED2B60025268E /* StorageConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A26425BED2B60025268E /* StorageConstants.swift */; };
+		6D40A26A25BED3BD0025268E /* HerowDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A26825BED3BD0025268E /* HerowDataModel.xcdatamodeld */; };
+		6D40A26E25BEF4860025268E /* APIZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A26D25BEF4860025268E /* APIZone.swift */; };
+		6D40A27225BEF4AB0025268E /* APICampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A27125BEF4AB0025268E /* APICampaign.swift */; };
+		6D40A27625BEF4D70025268E /* APIAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A27525BEF4D70025268E /* APIAccess.swift */; };
+		6D40A27A25BEF5050025268E /* ApIInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A27925BEF5050025268E /* ApIInterval.swift */; };
+		6D40A27E25BEF5180025268E /* APINotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A27D25BEF5180025268E /* APINotification.swift */; };
+		6D40A28225BEF5410025268E /* APIPoi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A28125BEF5410025268E /* APIPoi.swift */; };
+		6D40A28B25BEF8F80025268E /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A28A25BEF8F80025268E /* CacheManager.swift */; };
+		6D40A29025BEF9730025268E /* DataBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A28F25BEF9730025268E /* DataBase.swift */; };
+		6D40A29725BEFA150025268E /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A29625BEFA150025268E /* Zone.swift */; };
+		6D40A29E25BEFC270025268E /* ZoneCoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A29D25BEFC270025268E /* ZoneCoreData.swift */; };
+		6D79A19825BF69160048CAF0 /* HerowAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A19625BF69160048CAF0 /* HerowAccess.swift */; };
+		6D79A19925BF69160048CAF0 /* HerowZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A19725BF69160048CAF0 /* HerowZone.swift */; };
+		6D79A1B625BF73940048CAF0 /* HerowPoi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1B525BF73940048CAF0 /* HerowPoi.swift */; };
+		6D79A1D425C00BC50048CAF0 /* HerowCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1D325C00BC50048CAF0 /* HerowCampaign.swift */; };
+		6D79A1D825C013700048CAF0 /* HerowInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1D725C013700048CAF0 /* HerowInterval.swift */; };
+		6D79A1DC25C013FE0048CAF0 /* HerowNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1DB25C013FE0048CAF0 /* HerowNotification.swift */; };
+		6D79A1FE25C14F4F0048CAF0 /* ZoneProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1FD25C14F4F0048CAF0 /* ZoneProvider.swift */; };
+		6D79A20225C151CF0048CAF0 /* DetectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A20125C151CF0048CAF0 /* DetectionEngine.swift */; };
+		6D79A20E25C159DE0048CAF0 /* LocationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A20D25C159DE0048CAF0 /* LocationUtils.swift */; };
+		6D79A21225C15B4F0048CAF0 /* GeofenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A21125C15B4F0048CAF0 /* GeofenceManager.swift */; };
+		CD2B7EC885859C45C04FFBE2 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCFB268E5261E2728BEFAA55 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6D07420625B079EC005E08F8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6D0741F225B079EC005E08F8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6D0741FA25B079EC005E08F8;
+			remoteInfo = "herow-sdk-ios";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0730100D3BE129FE6E23B242 /* Pods-herow-sdk-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.debug.xcconfig"; sourceTree = "<group>"; };
+		1024BBFE6DE19EF901929513 /* Pods-herow_sdk_ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow_sdk_ios.debug.xcconfig"; path = "Target Support Files/Pods-herow_sdk_ios/Pods-herow_sdk_ios.debug.xcconfig"; sourceTree = "<group>"; };
+		26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_herow_sdk_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4EB30EA18794317D0CEA8FD7 /* Pods-herow_sdk_ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow_sdk_ios.release.xcconfig"; path = "Target Support Files/Pods-herow_sdk_ios/Pods-herow_sdk_ios.release.xcconfig"; sourceTree = "<group>"; };
+		6B9A5F4A25B9D17500AAC673 /* UserInfoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoManager.swift; sourceTree = "<group>"; };
+		6B9A5F5625B9D2A500AAC673 /* ConnexionConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnexionConstants.swift; sourceTree = "<group>"; };
+		6B9A5F5A25B9D36600AAC673 /* APIWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIWorker.swift; sourceTree = "<group>"; };
+		6B9A5F5B25B9D36600AAC673 /* APIManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
+		6B9A5F5C25B9D36600AAC673 /* HttpStatusCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpStatusCode.swift; sourceTree = "<group>"; };
+		6B9A5F5D25B9D36600AAC673 /* RequestHeaderCreator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHeaderCreator.swift; sourceTree = "<group>"; };
+		6B9A5F5E25B9D36600AAC673 /* HerowDataStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HerowDataStorage.swift; sourceTree = "<group>"; };
+		6B9A5F5F25B9D36600AAC673 /* APIModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
+		6D0741FB25B079EC005E08F8 /* herow_sdk_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = herow_sdk_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D0741FE25B079EC005E08F8 /* herow_sdk_ios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = herow_sdk_ios.h; sourceTree = "<group>"; };
+		6D0741FF25B079EC005E08F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6D07420425B079EC005E08F8 /* herow_sdk_iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = herow_sdk_iosTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D07420925B079EC005E08F8 /* herow_sdk_iosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = herow_sdk_iosTests.swift; sourceTree = "<group>"; };
+		6D07420B25B079EC005E08F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6D07479925B72FF9005E08F8 /* HerowInitializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HerowInitializer.swift; sourceTree = "<group>"; };
+		6D0747A125B72FF9005E08F8 /* WifiUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WifiUtils.swift; sourceTree = "<group>"; };
+		6D0747A325B72FF9005E08F8 /* StringUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringUtils.swift; sourceTree = "<group>"; };
+		6D0747A525B72FF9005E08F8 /* LocationServicesEnabled.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationServicesEnabled.swift; sourceTree = "<group>"; };
+		6D0747A725B72FF9005E08F8 /* LocationDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationDispatcher.swift; sourceTree = "<group>"; };
+		6D0747A925B72FF9005E08F8 /* CodableCoordinates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodableCoordinates.swift; sourceTree = "<group>"; };
+		6D0747AA25B72FF9005E08F8 /* LocationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		6D0747AF25B72FFA005E08F8 /* AtomicBoolean.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicBoolean.swift; sourceTree = "<group>"; };
+		6D0747B125B72FFA005E08F8 /* MotionRequestDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionRequestDelegate.swift; sourceTree = "<group>"; };
+		6D0747B225B72FFA005E08F8 /* MotionActivityManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionActivityManager.swift; sourceTree = "<group>"; };
+		6D0747B625B72FFA005E08F8 /* TimeProviderRelative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeProviderRelative.swift; sourceTree = "<group>"; };
+		6D0747B725B72FFA005E08F8 /* TimeProviderForTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeProviderForTests.swift; sourceTree = "<group>"; };
+		6D0747B825B72FFA005E08F8 /* TimeProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeProvider.swift; sourceTree = "<group>"; };
+		6D0747B925B72FFA005E08F8 /* TimeProviderAbsolute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeProviderAbsolute.swift; sourceTree = "<group>"; };
+		6D0747BA25B72FFA005E08F8 /* ResetDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResetDelegate.swift; sourceTree = "<group>"; };
+		6D0747BB25B72FFA005E08F8 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
+		6D0747BC25B72FFA005E08F8 /* GlobalLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GlobalLogger.swift; sourceTree = "<group>"; };
+		6D0747BD25B72FFA005E08F8 /* DeviceUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceUtils.swift; sourceTree = "<group>"; };
+		6D0747BF25B72FFA005E08F8 /* AppStateDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStateDelegate.swift; sourceTree = "<group>"; };
+		6D0747C025B72FFA005E08F8 /* AppStateDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppStateDetector.swift; sourceTree = "<group>"; };
+		6D0747C125B72FFA005E08F8 /* MetricsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetricsManager.swift; sourceTree = "<group>"; };
+		6D0747C225B72FFA005E08F8 /* WeakContainer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeakContainer.swift; sourceTree = "<group>"; };
+		6D0747C425B72FFA005E08F8 /* ChargingStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChargingStatus.swift; sourceTree = "<group>"; };
+		6D0747C525B72FFA005E08F8 /* BatteryUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BatteryUtils.swift; sourceTree = "<group>"; };
+		6D0747C725B72FFA005E08F8 /* DataHolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataHolder.swift; sourceTree = "<group>"; };
+		6D0747C925B72FFA005E08F8 /* DataHolderUserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataHolderUserDefaults.swift; sourceTree = "<group>"; };
+		6D0747CA25B72FFA005E08F8 /* GenericHolder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GenericHolder.swift; sourceTree = "<group>"; };
+		6D0747CB25B72FFA005E08F8 /* FileUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileUtils.swift; sourceTree = "<group>"; };
+		6D0747CC25B72FFA005E08F8 /* OpenUrlUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenUrlUtils.swift; sourceTree = "<group>"; };
+		6D0747CD25B72FFA005E08F8 /* DispatchQueueUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchQueueUtils.swift; sourceTree = "<group>"; };
+		6D0747CE25B72FFA005E08F8 /* AnyEncodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyEncodable.swift; sourceTree = "<group>"; };
+		6D0747D025B72FFA005E08F8 /* NSDictionary+merge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDictionary+merge.swift"; sourceTree = "<group>"; };
+		6D0747D125B72FFA005E08F8 /* CLLocation+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocation+Codable.swift"; sourceTree = "<group>"; };
+		6D0747D225B72FFA005E08F8 /* Dictionary+merge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+merge.swift"; sourceTree = "<group>"; };
+		6D0747DE25B72FFA005E08F8 /* ConnectivityType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConnectivityType.swift; sourceTree = "<group>"; };
+		6D0747DF25B72FFA005E08F8 /* RadioAccessTechnology.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadioAccessTechnology.swift; sourceTree = "<group>"; };
+		6D0748CA25B992F8005E08F8 /* PermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsManager.swift; sourceTree = "<group>"; };
+		6D0748D725B9AEC0005E08F8 /* platform-secrets.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "platform-secrets.plist"; sourceTree = "<group>"; };
+		6D07494125BB035F005E08F8 /* GeoHashHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoHashHelper.swift; sourceTree = "<group>"; };
+		6D33408225C7FC0C0011CBAB /* AnalyticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsManager.swift; sourceTree = "<group>"; };
+		6D33408825C81C700011CBAB /* LogData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogData.swift; sourceTree = "<group>"; };
+		6D33408C25C81C920011CBAB /* LogDataContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDataContext.swift; sourceTree = "<group>"; };
+		6D33409C25C81D110011CBAB /* LogDataEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDataEvent.swift; sourceTree = "<group>"; };
+		6D3340B125C83B200011CBAB /* AnalyticsUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsUtils.swift; sourceTree = "<group>"; };
+		6D40A20025BB76810025268E /* EventDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDispatcher.swift; sourceTree = "<group>"; };
+		6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowDataStorageProtocol.swift; sourceTree = "<group>"; };
+		6D40A25A25BED02B0025268E /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		6D40A26425BED2B60025268E /* StorageConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageConstants.swift; sourceTree = "<group>"; };
+		6D40A26925BED3BD0025268E /* HerowDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HerowDataModel.xcdatamodel; sourceTree = "<group>"; };
+		6D40A26D25BEF4860025268E /* APIZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIZone.swift; sourceTree = "<group>"; };
+		6D40A27125BEF4AB0025268E /* APICampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICampaign.swift; sourceTree = "<group>"; };
+		6D40A27525BEF4D70025268E /* APIAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIAccess.swift; sourceTree = "<group>"; };
+		6D40A27925BEF5050025268E /* ApIInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApIInterval.swift; sourceTree = "<group>"; };
+		6D40A27D25BEF5180025268E /* APINotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APINotification.swift; sourceTree = "<group>"; };
+		6D40A28125BEF5410025268E /* APIPoi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIPoi.swift; sourceTree = "<group>"; };
+		6D40A28A25BEF8F80025268E /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
+		6D40A28F25BEF9730025268E /* DataBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBase.swift; sourceTree = "<group>"; };
+		6D40A29625BEFA150025268E /* Zone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
+		6D40A29D25BEFC270025268E /* ZoneCoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneCoreData.swift; sourceTree = "<group>"; };
+		6D79A19625BF69160048CAF0 /* HerowAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HerowAccess.swift; sourceTree = "<group>"; };
+		6D79A19725BF69160048CAF0 /* HerowZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HerowZone.swift; sourceTree = "<group>"; };
+		6D79A1B525BF73940048CAF0 /* HerowPoi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowPoi.swift; sourceTree = "<group>"; };
+		6D79A1D325C00BC50048CAF0 /* HerowCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowCampaign.swift; sourceTree = "<group>"; };
+		6D79A1D725C013700048CAF0 /* HerowInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowInterval.swift; sourceTree = "<group>"; };
+		6D79A1DB25C013FE0048CAF0 /* HerowNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowNotification.swift; sourceTree = "<group>"; };
+		6D79A1FD25C14F4F0048CAF0 /* ZoneProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneProvider.swift; sourceTree = "<group>"; };
+		6D79A20125C151CF0048CAF0 /* DetectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionEngine.swift; sourceTree = "<group>"; };
+		6D79A20D25C159DE0048CAF0 /* LocationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUtils.swift; sourceTree = "<group>"; };
+		6D79A21125C15B4F0048CAF0 /* GeofenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeofenceManager.swift; sourceTree = "<group>"; };
+		70D6E1BB5934E95FE1ED5E29 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
+		7C87A025C325737EFD18EAA5 /* Pods-herow-sdk-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.release.xcconfig"; sourceTree = "<group>"; };
+		8ADD333E4F62A7255E26D44E /* Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig"; path = "Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests/Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig"; sourceTree = "<group>"; };
+		D7BFB8223173A766B34EA8B9 /* Pods-herow_sdk_ios-herow_sdk_iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow_sdk_ios-herow_sdk_iosTests.release.xcconfig"; path = "Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests/Pods-herow_sdk_ios-herow_sdk_iosTests.release.xcconfig"; sourceTree = "<group>"; };
+		F970141740093E7FF0CAF6FD /* Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig"; sourceTree = "<group>"; };
+		FCFB268E5261E2728BEFAA55 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_herow_sdk_ios_herow_sdk_iosTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6D0741F825B079EC005E08F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				258D73F449DB20BC2644D000 /* Pods_herow_sdk_ios.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6D07420125B079EC005E08F8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D07420525B079EC005E08F8 /* herow_sdk_ios.framework in Frameworks */,
+				CD2B7EC885859C45C04FFBE2 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		6B9A5F4925B9D17500AAC673 /* userInfo */ = {
+			isa = PBXGroup;
+			children = (
+				6B9A5F4A25B9D17500AAC673 /* UserInfoManager.swift */,
+			);
+			path = userInfo;
+			sourceTree = "<group>";
+		};
+		6B9A5F5525B9D2A500AAC673 /* APIService */ = {
+			isa = PBXGroup;
+			children = (
+				6B9A5F5B25B9D36600AAC673 /* APIManager.swift */,
+				6B9A5F5F25B9D36600AAC673 /* APIModels.swift */,
+				6D40A26D25BEF4860025268E /* APIZone.swift */,
+				6D40A28125BEF5410025268E /* APIPoi.swift */,
+				6D40A27925BEF5050025268E /* ApIInterval.swift */,
+				6D40A27D25BEF5180025268E /* APINotification.swift */,
+				6D40A27125BEF4AB0025268E /* APICampaign.swift */,
+				6D40A27525BEF4D70025268E /* APIAccess.swift */,
+				6B9A5F5A25B9D36600AAC673 /* APIWorker.swift */,
+				6B9A5F5C25B9D36600AAC673 /* HttpStatusCode.swift */,
+				6B9A5F5D25B9D36600AAC673 /* RequestHeaderCreator.swift */,
+				6B9A5F5625B9D2A500AAC673 /* ConnexionConstants.swift */,
+			);
+			path = APIService;
+			sourceTree = "<group>";
+		};
+		6D0741F125B079EC005E08F8 = {
+			isa = PBXGroup;
+			children = (
+				6D0741FD25B079EC005E08F8 /* herow-sdk-ios */,
+				6D07420825B079EC005E08F8 /* herow-sdk-iosTests */,
+				6D0741FC25B079EC005E08F8 /* Products */,
+				C79A3FE13FE93F0EB30BECA2 /* Pods */,
+				CE4A9EE2C678464A3F252E48 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		6D0741FC25B079EC005E08F8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6D0741FB25B079EC005E08F8 /* herow_sdk_ios.framework */,
+				6D07420425B079EC005E08F8 /* herow_sdk_iosTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6D0741FD25B079EC005E08F8 /* herow-sdk-ios */ = {
+			isa = PBXGroup;
+			children = (
+				6D07479A25B72FF9005E08F8 /* common */,
+				6D0747DC25B72FFA005E08F8 /* connection */,
+				6D07479825B72FF9005E08F8 /* detection */,
+				6D0741FE25B079EC005E08F8 /* herow_sdk_ios.h */,
+				6D0741FF25B079EC005E08F8 /* Info.plist */,
+			);
+			path = "herow-sdk-ios";
+			sourceTree = "<group>";
+		};
+		6D07420825B079EC005E08F8 /* herow-sdk-iosTests */ = {
+			isa = PBXGroup;
+			children = (
+				6D07420925B079EC005E08F8 /* herow_sdk_iosTests.swift */,
+				6D07420B25B079EC005E08F8 /* Info.plist */,
+			);
+			path = "herow-sdk-iosTests";
+			sourceTree = "<group>";
+		};
+		6D07479825B72FF9005E08F8 /* detection */ = {
+			isa = PBXGroup;
+			children = (
+				6B9A5F5E25B9D36600AAC673 /* HerowDataStorage.swift */,
+				6D07479925B72FF9005E08F8 /* HerowInitializer.swift */,
+				6D79A1FD25C14F4F0048CAF0 /* ZoneProvider.swift */,
+				6D79A21125C15B4F0048CAF0 /* GeofenceManager.swift */,
+				6D79A20125C151CF0048CAF0 /* DetectionEngine.swift */,
+			);
+			path = detection;
+			sourceTree = "<group>";
+		};
+		6D07479A25B72FF9005E08F8 /* common */ = {
+			isa = PBXGroup;
+			children = (
+				6D40A28E25BEF92C0025268E /* cache */,
+				6D40A1FF25BB766C0025268E /* event */,
+				6D0747A025B72FF9005E08F8 /* utils */,
+				6D0747CF25B72FFA005E08F8 /* extensions */,
+				6D0747DB25B72FFA005E08F8 /* callback */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		6D0747A025B72FF9005E08F8 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				6D0747A125B72FF9005E08F8 /* WifiUtils.swift */,
+				6D0748C925B992C2005E08F8 /* Permissions */,
+				6D0747A325B72FF9005E08F8 /* StringUtils.swift */,
+				6D0747A425B72FF9005E08F8 /* location */,
+				6D0747AF25B72FFA005E08F8 /* AtomicBoolean.swift */,
+				6D0747B025B72FFA005E08F8 /* motion */,
+				6D0747B525B72FFA005E08F8 /* time */,
+				6D0747BA25B72FFA005E08F8 /* ResetDelegate.swift */,
+				6D0747BB25B72FFA005E08F8 /* BackgroundTaskManager.swift */,
+				6D0747BC25B72FFA005E08F8 /* GlobalLogger.swift */,
+				6D0747BD25B72FFA005E08F8 /* DeviceUtils.swift */,
+				6D0747BE25B72FFA005E08F8 /* appstate */,
+				6D0747C125B72FFA005E08F8 /* MetricsManager.swift */,
+				6D0747C225B72FFA005E08F8 /* WeakContainer.swift */,
+				6D0747C325B72FFA005E08F8 /* battery */,
+				6D0747C625B72FFA005E08F8 /* dataholder */,
+				6D0747CB25B72FFA005E08F8 /* FileUtils.swift */,
+				6D0747CC25B72FFA005E08F8 /* OpenUrlUtils.swift */,
+				6D0747CD25B72FFA005E08F8 /* DispatchQueueUtils.swift */,
+				6D0747CE25B72FFA005E08F8 /* AnyEncodable.swift */,
+			);
+			path = utils;
+			sourceTree = "<group>";
+		};
+		6D0747A425B72FF9005E08F8 /* location */ = {
+			isa = PBXGroup;
+			children = (
+				6D0747A525B72FF9005E08F8 /* LocationServicesEnabled.swift */,
+				6D79A20D25C159DE0048CAF0 /* LocationUtils.swift */,
+				6D0747A725B72FF9005E08F8 /* LocationDispatcher.swift */,
+				6D0747A925B72FF9005E08F8 /* CodableCoordinates.swift */,
+				6D0747AA25B72FF9005E08F8 /* LocationManager.swift */,
+				6D07494125BB035F005E08F8 /* GeoHashHelper.swift */,
+			);
+			path = location;
+			sourceTree = "<group>";
+		};
+		6D0747B025B72FFA005E08F8 /* motion */ = {
+			isa = PBXGroup;
+			children = (
+				6D0747B125B72FFA005E08F8 /* MotionRequestDelegate.swift */,
+				6D0747B225B72FFA005E08F8 /* MotionActivityManager.swift */,
+			);
+			path = motion;
+			sourceTree = "<group>";
+		};
+		6D0747B525B72FFA005E08F8 /* time */ = {
+			isa = PBXGroup;
+			children = (
+				6D0747B625B72FFA005E08F8 /* TimeProviderRelative.swift */,
+				6D0747B725B72FFA005E08F8 /* TimeProviderForTests.swift */,
+				6D0747B825B72FFA005E08F8 /* TimeProvider.swift */,
+				6D0747B925B72FFA005E08F8 /* TimeProviderAbsolute.swift */,
+			);
+			path = time;
+			sourceTree = "<group>";
+		};
+		6D0747BE25B72FFA005E08F8 /* appstate */ = {
+			isa = PBXGroup;
+			children = (
+				6D0747BF25B72FFA005E08F8 /* AppStateDelegate.swift */,
+				6D0747C025B72FFA005E08F8 /* AppStateDetector.swift */,
+			);
+			path = appstate;
+			sourceTree = "<group>";
+		};
+		6D0747C325B72FFA005E08F8 /* battery */ = {
+			isa = PBXGroup;
+			children = (
+				6D0747C425B72FFA005E08F8 /* ChargingStatus.swift */,
+				6D0747C525B72FFA005E08F8 /* BatteryUtils.swift */,
+			);
+			path = battery;
+			sourceTree = "<group>";
+		};
+		6D0747C625B72FFA005E08F8 /* dataholder */ = {
+			isa = PBXGroup;
+			children = (
+				6D0747C725B72FFA005E08F8 /* DataHolder.swift */,
+				6D0747C925B72FFA005E08F8 /* DataHolderUserDefaults.swift */,
+				6D0747CA25B72FFA005E08F8 /* GenericHolder.swift */,
+			);
+			path = dataholder;
+			sourceTree = "<group>";
+		};
+		6D0747CF25B72FFA005E08F8 /* extensions */ = {
+			isa = PBXGroup;
+			children = (
+				6D0747D025B72FFA005E08F8 /* NSDictionary+merge.swift */,
+				6D0747D125B72FFA005E08F8 /* CLLocation+Codable.swift */,
+				6D0747D225B72FFA005E08F8 /* Dictionary+merge.swift */,
+			);
+			path = extensions;
+			sourceTree = "<group>";
+		};
+		6D0747DB25B72FFA005E08F8 /* callback */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = callback;
+			sourceTree = "<group>";
+		};
+		6D0747DC25B72FFA005E08F8 /* connection */ = {
+			isa = PBXGroup;
+			children = (
+				6D33408125C7FBE00011CBAB /* Analytics */,
+				6D40A25925BECFC60025268E /* storage */,
+				6B9A5F4925B9D17500AAC673 /* userInfo */,
+				6D0748D725B9AEC0005E08F8 /* platform-secrets.plist */,
+				6D0747DD25B72FFA005E08F8 /* network */,
+				6B9A5F5525B9D2A500AAC673 /* APIService */,
+			);
+			path = connection;
+			sourceTree = "<group>";
+		};
+		6D0747DD25B72FFA005E08F8 /* network */ = {
+			isa = PBXGroup;
+			children = (
+				6D0747DE25B72FFA005E08F8 /* ConnectivityType.swift */,
+				6D0747DF25B72FFA005E08F8 /* RadioAccessTechnology.swift */,
+			);
+			path = network;
+			sourceTree = "<group>";
+		};
+		6D0748C925B992C2005E08F8 /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				6D0748CA25B992F8005E08F8 /* PermissionsManager.swift */,
+			);
+			path = Permissions;
+			sourceTree = "<group>";
+		};
+		6D33408125C7FBE00011CBAB /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				6D33408225C7FC0C0011CBAB /* AnalyticsManager.swift */,
+				6D3340B125C83B200011CBAB /* AnalyticsUtils.swift */,
+				6D33408825C81C700011CBAB /* LogData.swift */,
+				6D33409C25C81D110011CBAB /* LogDataEvent.swift */,
+				6D33408C25C81C920011CBAB /* LogDataContext.swift */,
+			);
+			path = Analytics;
+			sourceTree = "<group>";
+		};
+		6D40A1FF25BB766C0025268E /* event */ = {
+			isa = PBXGroup;
+			children = (
+				6D40A20025BB76810025268E /* EventDispatcher.swift */,
+			);
+			path = event;
+			sourceTree = "<group>";
+		};
+		6D40A25925BECFC60025268E /* storage */ = {
+			isa = PBXGroup;
+			children = (
+				6D79A19525BF69160048CAF0 /* HerowEntities */,
+				6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */,
+				6D40A29C25BEFC140025268E /* CoreDataEntities */,
+				6D40A26825BED3BD0025268E /* HerowDataModel.xcdatamodeld */,
+				6D40A25A25BED02B0025268E /* CoreDataManager.swift */,
+				6D40A26425BED2B60025268E /* StorageConstants.swift */,
+			);
+			path = storage;
+			sourceTree = "<group>";
+		};
+		6D40A28E25BEF92C0025268E /* cache */ = {
+			isa = PBXGroup;
+			children = (
+				6D40A28A25BEF8F80025268E /* CacheManager.swift */,
+				6D40A29525BEF9E00025268E /* objects */,
+				6D40A28F25BEF9730025268E /* DataBase.swift */,
+			);
+			path = cache;
+			sourceTree = "<group>";
+		};
+		6D40A29525BEF9E00025268E /* objects */ = {
+			isa = PBXGroup;
+			children = (
+				6D40A29625BEFA150025268E /* Zone.swift */,
+			);
+			path = objects;
+			sourceTree = "<group>";
+		};
+		6D40A29C25BEFC140025268E /* CoreDataEntities */ = {
+			isa = PBXGroup;
+			children = (
+				6D40A29D25BEFC270025268E /* ZoneCoreData.swift */,
+			);
+			path = CoreDataEntities;
+			sourceTree = "<group>";
+		};
+		6D79A19525BF69160048CAF0 /* HerowEntities */ = {
+			isa = PBXGroup;
+			children = (
+				6D79A19625BF69160048CAF0 /* HerowAccess.swift */,
+				6D79A1B525BF73940048CAF0 /* HerowPoi.swift */,
+				6D79A19725BF69160048CAF0 /* HerowZone.swift */,
+				6D79A1D325C00BC50048CAF0 /* HerowCampaign.swift */,
+				6D79A1D725C013700048CAF0 /* HerowInterval.swift */,
+				6D79A1DB25C013FE0048CAF0 /* HerowNotification.swift */,
+			);
+			path = HerowEntities;
+			sourceTree = "<group>";
+		};
+		C79A3FE13FE93F0EB30BECA2 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0730100D3BE129FE6E23B242 /* Pods-herow-sdk-ios.debug.xcconfig */,
+				7C87A025C325737EFD18EAA5 /* Pods-herow-sdk-ios.release.xcconfig */,
+				70D6E1BB5934E95FE1ED5E29 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */,
+				F970141740093E7FF0CAF6FD /* Pods-herow-sdk-ios-herow-sdk-iosTests.release.xcconfig */,
+				1024BBFE6DE19EF901929513 /* Pods-herow_sdk_ios.debug.xcconfig */,
+				4EB30EA18794317D0CEA8FD7 /* Pods-herow_sdk_ios.release.xcconfig */,
+				8ADD333E4F62A7255E26D44E /* Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig */,
+				D7BFB8223173A766B34EA8B9 /* Pods-herow_sdk_ios-herow_sdk_iosTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		CE4A9EE2C678464A3F252E48 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */,
+				FCFB268E5261E2728BEFAA55 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		6D0741F625B079EC005E08F8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D07420C25B079EC005E08F8 /* herow_sdk_ios.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		6D0741FA25B079EC005E08F8 /* herow_sdk_ios */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D07420F25B079EC005E08F8 /* Build configuration list for PBXNativeTarget "herow_sdk_ios" */;
+			buildPhases = (
+				35B2CCED29C88ADAC94503D9 /* [CP] Check Pods Manifest.lock */,
+				6D0741F625B079EC005E08F8 /* Headers */,
+				6D0741F725B079EC005E08F8 /* Sources */,
+				6D0741F825B079EC005E08F8 /* Frameworks */,
+				6D0741F925B079EC005E08F8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = herow_sdk_ios;
+			productName = "herow-sdk-ios";
+			productReference = 6D0741FB25B079EC005E08F8 /* herow_sdk_ios.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		6D07420325B079EC005E08F8 /* herow_sdk_iosTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6D07421225B079EC005E08F8 /* Build configuration list for PBXNativeTarget "herow_sdk_iosTests" */;
+			buildPhases = (
+				5F4ECEEC2AFBABF32869CCC4 /* [CP] Check Pods Manifest.lock */,
+				6D07420025B079EC005E08F8 /* Sources */,
+				6D07420125B079EC005E08F8 /* Frameworks */,
+				6D07420225B079EC005E08F8 /* Resources */,
+				A36A91260C1C015BF0546098 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6D07420725B079EC005E08F8 /* PBXTargetDependency */,
+			);
+			name = herow_sdk_iosTests;
+			productName = "herow-sdk-iosTests";
+			productReference = 6D07420425B079EC005E08F8 /* herow_sdk_iosTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		6D0741F225B079EC005E08F8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1230;
+				LastUpgradeCheck = 1230;
+				TargetAttributes = {
+					6D0741FA25B079EC005E08F8 = {
+						CreatedOnToolsVersion = 12.3;
+						LastSwiftMigration = 1230;
+					};
+					6D07420325B079EC005E08F8 = {
+						CreatedOnToolsVersion = 12.3;
+					};
+					6D9C213825D180FF0044BC15 = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = 6D0741F525B079EC005E08F8 /* Build configuration list for PBXProject "herow_sdk_ios" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 6D0741F125B079EC005E08F8;
+			productRefGroup = 6D0741FC25B079EC005E08F8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				6D0741FA25B079EC005E08F8 /* herow_sdk_ios */,
+				6D07420325B079EC005E08F8 /* herow_sdk_iosTests */,
+				6D9C213825D180FF0044BC15 /* build */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6D0741F925B079EC005E08F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D0748D825B9AEC0005E08F8 /* platform-secrets.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6D07420225B079EC005E08F8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		35B2CCED29C88ADAC94503D9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-herow_sdk_ios-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5F4ECEEC2AFBABF32869CCC4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-herow_sdk_ios-herow_sdk_iosTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6D9C213F25D181310044BC15 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#https://medium.com/@syshen/create-an-ios-universal-framework-148eb130a46c\n\n######################\n# Options\n######################\n\nREVEAL_ARCHIVE_IN_FINDER=false\n\nWORKSPACE_FILE=herow_sdk_ios.xcworkspace\n\nFRAMEWORK_NAME=\"${PROJECT_NAME}\"\n\nTEMP_FOLDER=\"${HOME}/tempsim\"\n\nTEMP_SIM_LIBRARY_PATH=\"${TEMP_FOLDER}/${FRAMEWORK_NAME}.framework\"\n\nSIMULATOR_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${FRAMEWORK_NAME}.framework\"\n\nDEVICE_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${FRAMEWORK_NAME}.framework\"\n\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\n\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework\"\n\nOBJROOT=\"${OBJROOT}/IntermediateFilesFolder\"\n\nDEPLOY_VERSION=\"7.0.0\"\n\nDSYM_COPY_PATH=\"${HOME}/to_keep/herow-sdk-ios_${DEPLOY_VERSION}/\"\n\n######################\n# Build Frameworks\n######################\n\nxcodebuild -workspace ${WORKSPACE_FILE} -scheme ${PROJECT_NAME} ONLY_ACTIVE_ARCH=NO -sdk iphonesimulator -configuration ${CONFIGURATION} -UseModernBuildSystem=1 ENABLE_BITCODE=YES OTHER_CFLAGS=\"-fembed-bitcode\" BITCODE_GENERATION_MODE=bitcode OBJROOT=\"${OBJROOT}\"  CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\nif test $? -eq 0\nthen\necho \"Success\"\nelse\necho \"Failed\"\nexit 1\nfi\n\nmkdir \"${TEMP_FOLDER}\"\nmkdir \"${TEMP_SIM_LIBRARY_PATH}\"\ncp -r \"${SIMULATOR_LIBRARY_PATH}/\" \"${TEMP_SIM_LIBRARY_PATH}/\"\n\nxcodebuild -workspace ${WORKSPACE_FILE} -scheme ${PROJECT_NAME} ONLY_ACTIVE_ARCH=NO -sdk iphoneos -configuration ${CONFIGURATION} -UseModernBuildSystem=1 ENABLE_BITCODE=YES OTHER_CFLAGS=\"-fembed-bitcode\" BITCODE_GENERATION_MODE=bitcode OBJROOT=\"${OBJROOT}\"  CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\nif test $? -eq 0\nthen\necho \"Success\"\nelse\necho \"Failed\"\nexit 1\nfi\n\n######################\n# Create directory for universal\n######################\n\nrm -rf \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${FRAMEWORK}\"\n\n\n######################\n# Copy files Framework\n######################\n\ncp -r \"${DEVICE_LIBRARY_PATH}/.\" \"${FRAMEWORK}\"\n\n\n######################\n# Make an universal binary\n######################\n\nlipo \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\" \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -create -output \"${FRAMEWORK}/${FRAMEWORK_NAME}\" | echo\n\n# For Swift framework, Swiftmodule needs to be copied in the universal framework\nif [ -d \"${TEMP_SIM_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f ${TEMP_SIM_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\nfi\n\nif [ -d \"${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f ${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\nfi\n\n# For Xcode 10.2, we will need to combine Framework-Swift.h as explained in https://developer.apple.com/documentation/xcode_release_notes/xcode_10_2_release_notes/\n\nTMP_HEADER_FILE=\"temp-header-file\"\nsed -e '$ d'  \"${TEMP_SIM_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" >> $TMP_HEADER_FILE\ntail -n +2  \"${DEVICE_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" >> $TMP_HEADER_FILE\n\nmv $TMP_HEADER_FILE \"${FRAMEWORK}/Headers/${FRAMEWORK_NAME}-Swift.h\" \n\n######################\n# On Release, copy the result to release directory\n######################\nOUTPUT_DIR=\"${PROJECT_DIR}/output\"\n\nrm -rf \"$OUTPUT_DIR\"\nmkdir -p \"$OUTPUT_DIR\"\n\ncp -r \"${FRAMEWORK}\" \"$OUTPUT_DIR\"\n\nif [ ${REVEAL_ARCHIVE_IN_FINDER} = true ]; then\nopen \"${OUTPUT_DIR}/\"\nfi\n\nrm -Rf \"${TEMP_FOLDER}\"\n\nDSYM_PATH=\"${DEVICE_LIBRARY_PATH}.dSYM\"\n\nif [ -e ${DSYM_PATH} ]\nthen\nmkdir -p \"${DSYM_COPY_PATH}\"\ncp -r \"${DSYM_PATH}\" \"${DSYM_COPY_PATH}\"\nelse\necho \"COPY DSYM FAILURE !\\n file ${DSYM_PATH} not found, please ensure that you are not building in Debug mode.\"\nfi\n\nxcodebuild clean\n";
+		};
+		A36A91260C1C015BF0546098 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests/Pods-herow_sdk_ios-herow_sdk_iosTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests/Pods-herow_sdk_ios-herow_sdk_iosTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests/Pods-herow_sdk_ios-herow_sdk_iosTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		6D0741F725B079EC005E08F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D33408D25C81C920011CBAB /* LogDataContext.swift in Sources */,
+				6D0747FA25B72FFB005E08F8 /* MotionActivityManager.swift in Sources */,
+				6D07480625B72FFB005E08F8 /* MetricsManager.swift in Sources */,
+				6D0747F325B72FFB005E08F8 /* CodableCoordinates.swift in Sources */,
+				6D0747EC25B72FFB005E08F8 /* WifiUtils.swift in Sources */,
+				6D07480725B72FFB005E08F8 /* WeakContainer.swift in Sources */,
+				6D40A28B25BEF8F80025268E /* CacheManager.swift in Sources */,
+				6D0747FD25B72FFB005E08F8 /* TimeProviderForTests.swift in Sources */,
+				6D07480925B72FFB005E08F8 /* BatteryUtils.swift in Sources */,
+				6D79A1FE25C14F4F0048CAF0 /* ZoneProvider.swift in Sources */,
+				6D07480325B72FFB005E08F8 /* DeviceUtils.swift in Sources */,
+				6D07481C25B72FFB005E08F8 /* ConnectivityType.swift in Sources */,
+				6D3340B225C83B200011CBAB /* AnalyticsUtils.swift in Sources */,
+				6D0747F925B72FFB005E08F8 /* MotionRequestDelegate.swift in Sources */,
+				6D79A19825BF69160048CAF0 /* HerowAccess.swift in Sources */,
+				6D07481425B72FFB005E08F8 /* Dictionary+merge.swift in Sources */,
+				6D0748CB25B992F8005E08F8 /* PermissionsManager.swift in Sources */,
+				6B9A5F6325B9D36600AAC673 /* RequestHeaderCreator.swift in Sources */,
+				6D79A19925BF69160048CAF0 /* HerowZone.swift in Sources */,
+				6D79A1DC25C013FE0048CAF0 /* HerowNotification.swift in Sources */,
+				6D40A22325BC07C80025268E /* HerowDataStorageProtocol.swift in Sources */,
+				6D40A26A25BED3BD0025268E /* HerowDataModel.xcdatamodeld in Sources */,
+				6D07481125B72FFB005E08F8 /* AnyEncodable.swift in Sources */,
+				6D0747F825B72FFB005E08F8 /* AtomicBoolean.swift in Sources */,
+				6D07480D25B72FFB005E08F8 /* GenericHolder.swift in Sources */,
+				6D79A20E25C159DE0048CAF0 /* LocationUtils.swift in Sources */,
+				6B9A5F6025B9D36600AAC673 /* APIWorker.swift in Sources */,
+				6D0747EF25B72FFB005E08F8 /* LocationServicesEnabled.swift in Sources */,
+				6D79A1D425C00BC50048CAF0 /* HerowCampaign.swift in Sources */,
+				6D07481D25B72FFB005E08F8 /* RadioAccessTechnology.swift in Sources */,
+				6D07480E25B72FFB005E08F8 /* FileUtils.swift in Sources */,
+				6D07480125B72FFB005E08F8 /* BackgroundTaskManager.swift in Sources */,
+				6D0747E725B72FFB005E08F8 /* HerowInitializer.swift in Sources */,
+				6D07480A25B72FFB005E08F8 /* DataHolder.swift in Sources */,
+				6D40A26E25BEF4860025268E /* APIZone.swift in Sources */,
+				6D0747EE25B72FFB005E08F8 /* StringUtils.swift in Sources */,
+				6D79A20225C151CF0048CAF0 /* DetectionEngine.swift in Sources */,
+				6D79A1D825C013700048CAF0 /* HerowInterval.swift in Sources */,
+				6D0747FE25B72FFB005E08F8 /* TimeProvider.swift in Sources */,
+				6B9A5F6125B9D36600AAC673 /* APIManager.swift in Sources */,
+				6D40A27A25BEF5050025268E /* ApIInterval.swift in Sources */,
+				6B9A5F6425B9D36600AAC673 /* HerowDataStorage.swift in Sources */,
+				6D07494225BB035F005E08F8 /* GeoHashHelper.swift in Sources */,
+				6D07480525B72FFB005E08F8 /* AppStateDetector.swift in Sources */,
+				6D33408925C81C700011CBAB /* LogData.swift in Sources */,
+				6B9A5F4B25B9D17500AAC673 /* UserInfoManager.swift in Sources */,
+				6D40A29725BEFA150025268E /* Zone.swift in Sources */,
+				6D07480225B72FFB005E08F8 /* GlobalLogger.swift in Sources */,
+				6D40A29025BEF9730025268E /* DataBase.swift in Sources */,
+				6D79A21225C15B4F0048CAF0 /* GeofenceManager.swift in Sources */,
+				6D40A20125BB76810025268E /* EventDispatcher.swift in Sources */,
+				6D40A26525BED2B60025268E /* StorageConstants.swift in Sources */,
+				6B9A5F5725B9D2A500AAC673 /* ConnexionConstants.swift in Sources */,
+				6D40A27E25BEF5180025268E /* APINotification.swift in Sources */,
+				6B9A5F6525B9D36600AAC673 /* APIModels.swift in Sources */,
+				6D40A28225BEF5410025268E /* APIPoi.swift in Sources */,
+				6D0747FF25B72FFB005E08F8 /* TimeProviderAbsolute.swift in Sources */,
+				6D0747F425B72FFB005E08F8 /* LocationManager.swift in Sources */,
+				6D40A25B25BED02B0025268E /* CoreDataManager.swift in Sources */,
+				6D07480825B72FFB005E08F8 /* ChargingStatus.swift in Sources */,
+				6D07480F25B72FFB005E08F8 /* OpenUrlUtils.swift in Sources */,
+				6D40A27625BEF4D70025268E /* APIAccess.swift in Sources */,
+				6D0747FC25B72FFB005E08F8 /* TimeProviderRelative.swift in Sources */,
+				6B9A5F6225B9D36600AAC673 /* HttpStatusCode.swift in Sources */,
+				6D40A29E25BEFC270025268E /* ZoneCoreData.swift in Sources */,
+				6D33408325C7FC0C0011CBAB /* AnalyticsManager.swift in Sources */,
+				6D79A1B625BF73940048CAF0 /* HerowPoi.swift in Sources */,
+				6D40A27225BEF4AB0025268E /* APICampaign.swift in Sources */,
+				6D07480425B72FFB005E08F8 /* AppStateDelegate.swift in Sources */,
+				6D07481325B72FFB005E08F8 /* CLLocation+Codable.swift in Sources */,
+				6D07480025B72FFB005E08F8 /* ResetDelegate.swift in Sources */,
+				6D33409D25C81D110011CBAB /* LogDataEvent.swift in Sources */,
+				6D07481025B72FFB005E08F8 /* DispatchQueueUtils.swift in Sources */,
+				6D07480C25B72FFB005E08F8 /* DataHolderUserDefaults.swift in Sources */,
+				6D0747F125B72FFB005E08F8 /* LocationDispatcher.swift in Sources */,
+				6D07481225B72FFB005E08F8 /* NSDictionary+merge.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6D07420025B079EC005E08F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D07420A25B079EC005E08F8 /* herow_sdk_iosTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6D07420725B079EC005E08F8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6D0741FA25B079EC005E08F8 /* herow_sdk_ios */;
+			targetProxy = 6D07420625B079EC005E08F8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		6D07420D25B079EC005E08F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_STRICT_ALIASING = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		6D07420E25B079EC005E08F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_STRICT_ALIASING = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		6D07421025B079EC005E08F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1024BBFE6DE19EF901929513 /* Pods-herow_sdk_ios.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 3T67HE76NG;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "herow-sdk-ios/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.herow.sdk.herow-sdk-ios";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6D07421125B079EC005E08F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4EB30EA18794317D0CEA8FD7 /* Pods-herow_sdk_ios.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 3T67HE76NG;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "herow-sdk-ios/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.herow.sdk.herow-sdk-ios";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		6D07421325B079EC005E08F8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8ADD333E4F62A7255E26D44E /* Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3T67HE76NG;
+				INFOPLIST_FILE = "herow-sdk-iosTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.herow.sdk.herow-sdk-iosTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6D07421425B079EC005E08F8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D7BFB8223173A766B34EA8B9 /* Pods-herow_sdk_ios-herow_sdk_iosTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3T67HE76NG;
+				INFOPLIST_FILE = "herow-sdk-iosTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "io.herow.sdk.herow-sdk-iosTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		6D9C213A25D180FF0044BC15 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3T67HE76NG;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		6D9C213B25D180FF0044BC15 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3T67HE76NG;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6D0741F525B079EC005E08F8 /* Build configuration list for PBXProject "herow_sdk_ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D07420D25B079EC005E08F8 /* Debug */,
+				6D07420E25B079EC005E08F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D07420F25B079EC005E08F8 /* Build configuration list for PBXNativeTarget "herow_sdk_ios" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D07421025B079EC005E08F8 /* Debug */,
+				6D07421125B079EC005E08F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D07421225B079EC005E08F8 /* Build configuration list for PBXNativeTarget "herow_sdk_iosTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D07421325B079EC005E08F8 /* Debug */,
+				6D07421425B079EC005E08F8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6D9C213925D180FF0044BC15 /* Build configuration list for PBXAggregateTarget "build" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6D9C213A25D180FF0044BC15 /* Debug */,
+				6D9C213B25D180FF0044BC15 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		6D40A26825BED3BD0025268E /* HerowDataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				6D40A26925BED3BD0025268E /* HerowDataModel.xcdatamodel */,
+			);
+			currentVersion = 6D40A26925BED3BD0025268E /* HerowDataModel.xcdatamodel */;
+			path = HerowDataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = 6D0741F225B079EC005E08F8 /* Project object */;
+}

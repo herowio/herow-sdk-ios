@@ -22,13 +22,13 @@ public struct DecodableLocation: Codable {
 
 extension CLLocation: Encodable {
     enum CodingKeys: String, CodingKey {
-        case latitude
-        case longitude
+        case latitude = "lat"
+        case longitude = "lng"
         case altitude
         case horizontalAccuracy
-        case verticalAccuracy
+       // case verticalAccuracy
         case speed
-        case course
+        //case course
         case timestamp
     }
 
@@ -45,9 +45,9 @@ extension CLLocation: Encodable {
         try container.encode(coordinate.longitude, forKey: .longitude)
         try container.encode(altitude, forKey: .altitude)
         try container.encode(horizontalAccuracy, forKey: .horizontalAccuracy)
-        try container.encode(verticalAccuracy, forKey: .verticalAccuracy)
+       // try container.encode(verticalAccuracy, forKey: .verticalAccuracy)
         try container.encode(speed, forKey: .speed)
-        try container.encode(course, forKey: .course)
+       // try container.encode(course, forKey: .course)
         let timestampMs = timestamp.timeIntervalSince1970 * 1000
         try container.encode(timestampMs, forKey: .timestamp)
     }

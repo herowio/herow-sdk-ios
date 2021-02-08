@@ -23,7 +23,7 @@ class LogData {
 }
 
 class LogDataStruct: Encodable {
-    let t: String = "app_mobile"
+    //let t: String = "app_mobile"
     let phoneId: String
     let appState: String
     let libVersion : String
@@ -48,7 +48,7 @@ class LogDataStruct: Encodable {
     }
 
     enum CodingKeys: String, CodingKey {
-        case t
+      //  case t
         case phoneId = "phone_id"
         case appState = "app_state"
         case libVersion = "lib_version"
@@ -71,9 +71,18 @@ class LogDataStruct: Encodable {
         try container.encode(applicationVersion, forKey: .applicationVersion)
         try container.encode(subtype, forKey: .subtype)
         try container.encode(ua, forKey: .ua)
-        try container.encode(t, forKey: .t)
+       // try container.encode(t, forKey: .t)
     }
 
+}
+
+class Log: Encodable {
+    let t = "app_mobile"
+    var data: LogDataStruct
+
+    init(data: LogDataStruct){
+        self.data = data
+    }
 }
 
 

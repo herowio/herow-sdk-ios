@@ -44,6 +44,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
     }
 
+
     public var location: CLLocation? {
         get {
             return self.locationManager.location
@@ -116,10 +117,14 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     public init(_ locationManager: CLLocationManager) {
         self.locationManager = locationManager
-        self.locationManager.allowsBackgroundLocationUpdates = true
         super.init()
+        initBackgroundCapabilities()
         self.updateClickAndCollectState()
         self.locationManager.delegate = self
+    }
+
+    func initBackgroundCapabilities() {
+        self.locationManager.allowsBackgroundLocationUpdates =  authorizationStatus() != .authorizedAlways ? false : configureBackgroundLocationUpdates()
     }
 
     public func requestAlwaysAuthorization() {
@@ -149,9 +154,15 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     public func setIsOnClickAndCollect(_ value: Bool) {
 
+        if self.getIsOnClickAndCollect() != value {
             self.dataHolder.putBoolean(key: "isLocationMonitoring", value: value)
             self.dataHolder.apply()
-
+            if( authorizationStatus() != .authorizedAlways) {
+                self.locationManager.allowsBackgroundLocationUpdates = value
+            }
+            self.showsBackgroundLocationIndicator = value
+            self.updateClickAndCollectState()
+        }
     }
 
     private func setLastClickAndCollectActivationDate(_ value: Date?) {
@@ -159,12 +170,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         guard let value = value else {
             return dataHolder.remove(key: "lastClickAndCollectActivationDate")
         }
-
             self.dataHolder.putDate(key: "lastClickAndCollectActivationDate", value: value)
             self.dataHolder.apply()
-
-
-
     }
 
     private func getLastClickAndCollectActivationDate() -> Date? {
@@ -186,8 +193,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
         let value = (isMonitoringVisit || isUpdatingPosition || isMonitoringRegion || isUpdatingSignificantChanges) &&   getIsOnClickAndCollect()
         let result = value && checkLastClickAndCollectActivationDate()
-        showsBackgroundLocationIndicator = result
-            setIsOnClickAndCollect(result)
+        setIsOnClickAndCollect(result)
 
 
         return value
@@ -207,9 +213,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
      public func getIsOnClickAndCollect() -> Bool {
-
-
-
         return dataHolder.getBoolean(key: "isLocationMonitoring")
     }
 
@@ -306,12 +309,16 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     private func didStartClickAndCollect() {
+        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         for listener in monitoringListeners {
             listener.get()?.didStartClickAndConnect()
         }
     }
 
     private func didStopClickAndCollect() {
+        stopUpdatingLocation()
+        startUpdatingLocation()
+        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
         for listener in monitoringListeners {
             listener.get()?.didStopClickAndConnect()
         }
@@ -352,10 +359,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         var skip = false
         var distance = 0.0
         if let lastLocation = self.lastLocation {
-
             distance = lastLocation.distance(from: location)
-            skip = distance < 5
-
+            skip = distance < 20 && (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 300
         }
         if skip == false {
             self.lastLocation = location
@@ -406,6 +411,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     func didRecievedConfig(_ config: APIConfig) {
+        
         if config.enabled {
             startWorking()
         } else {

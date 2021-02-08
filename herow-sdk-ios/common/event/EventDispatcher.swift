@@ -10,14 +10,13 @@ import Foundation
 enum Event: String {
     case GEOFENCE_ENTER
     case GEOFENCE_EXIT
-    case ZONE_VISIT
+    case GEOFENCE_VISIT
 }
 
-protocol EventListener: class {
+ protocol EventListener: class {
     func didReceivedEvent( _ event: Event, infos: [ZoneInfo])
 }
-
-class EventDispatcher {
+  class EventDispatcher {
     static let shared = EventDispatcher()
     private var listeners : [Event : [WeakContainer<EventListener>]] =  [Event: [WeakContainer<EventListener>]]()
 
@@ -31,7 +30,7 @@ class EventDispatcher {
     func registerListener(_ observer: EventListener) {
         registerListener(observer, event: .GEOFENCE_ENTER)
         registerListener(observer, event: .GEOFENCE_EXIT)
-        registerListener(observer, event: .ZONE_VISIT)
+        registerListener(observer, event: .GEOFENCE_VISIT)
     }
 
     func post(event: Event, infos: [ZoneInfo]) {

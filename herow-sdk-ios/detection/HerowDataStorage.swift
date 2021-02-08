@@ -13,6 +13,11 @@ public class HerowDataStorage: HerowDataStorageProtocol {
 
 
 
+
+    private var userInfo: APIUserInfo?
+    private var token: APIToken?
+    private var config: APIConfig?
+    private var lastGeoHash: String?
     let dataHolder: DataHolder
 
     init(dataHolder: DataHolder) {
@@ -22,6 +27,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     public func saveToken(_ token: APIToken) {
         var aToken = token
         aToken.expirationDate = Date().addingTimeInterval(TimeInterval(aToken.expiresIn))
+        self.token = aToken
         guard let data = aToken.encode() else {
             return
         }
@@ -31,6 +37,9 @@ public class HerowDataStorage: HerowDataStorageProtocol {
 
     public func getToken() -> APIToken? {
 
+        if let token = self.token {
+            return token
+        }
         guard let data = dataHolder.getData(key: HerowConstants.tokenKey) else {
             return nil
         }
@@ -44,11 +53,16 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         guard let data = userInfo.encode() else {
             return
         }
+        self.userInfo = userInfo
         dataHolder.putData(key: HerowConstants.userInfoKey, value: data)
         dataHolder.apply()
     }
 
     public func getUserInfo() -> APIUserInfo? {
+
+        if let userInfo = self.userInfo {
+            return userInfo
+        }
         guard let data = dataHolder.getData(key: HerowConstants.userInfoKey) else {
             return nil
         }
@@ -62,10 +76,18 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         guard let token = getToken(), let date = token.expirationDate else {
             return true
         }
-        return date < Date()
+        let shouldRefresh = date < Date()
+        if shouldRefresh {
+            self.token = nil
+        }
+        return shouldRefresh
     }
 
     public func getConfig() -> APIConfig? {
+
+        if let config = self.config {
+            return self.config
+        }
         guard let data = dataHolder.getData(key: HerowConstants.configKey) else {
             return nil
         }
@@ -76,6 +98,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     private func getLastConfigDate() -> Date? {
+
         return dataHolder.getDate(key: HerowConstants.configDateKey)
     }
 
@@ -95,16 +118,21 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         guard let data = config.encode() else {
             return
         }
+        self.config = config
         dataHolder.putDate(key: HerowConstants.configDateKey, value: Date())
         dataHolder.putData(key: HerowConstants.configKey, value: data)
         dataHolder.apply()
     }
 
     public func getLastGeoHash() -> String? {
+        if let geoHash = lastGeoHash {
+            return geoHash
+        }
         return dataHolder.getString(key:  HerowConstants.geoHashKey)
     }
 
     public func setLastGeohash(_ hash: String) {
+        lastGeoHash = hash
         dataHolder.putString(key: HerowConstants.geoHashKey, value: hash)
         dataHolder.apply()
     }
@@ -138,6 +166,16 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         let differentHash = hash != savedhash
         let cacheIsNotUptoDate = lastFetchDate < lastCacheModifiedDate
         let shouldFetchNow =  now > lastFetchDate.addingTimeInterval(TimeInterval(cacheInterval / 1000))
+
+        if differentHash {
+            GlobalLogger.shared.debug("CACHE SHOULD BE FETCH BECAUSE OF DIFFERENT HASH")
+        }
+        if cacheIsNotUptoDate {
+            GlobalLogger.shared.debug("CACHE SHOULD BE FETCH BECAUSE OF CACHE IS NOT UP TO DATE")
+        }
+        if shouldFetchNow {
+            GlobalLogger.shared.debug("CACHE SHOULD BE FETCH BECAUSE OF CACHE INTERVAL IS DONE")
+        }
         return differentHash ||
             cacheIsNotUptoDate ||
             shouldFetchNow

@@ -147,23 +147,11 @@ public protocol LocationManager {
 extension LocationManager {
 
 
-    public mutating func  activeClickAndCollectMode( mode : Bool) {
-        setIsOnClickAndCollect(mode)
-        updateClickAndCollectState()
-    }
-    
-    public  mutating func updateBackGroundLocationMode() {
-     let backgroundMode = configureBackgroundLocationUpdates()
-         allowsBackgroundLocationUpdates = backgroundMode
-     //    showsBackgroundLocationIndicator = backgroundMode
-         pausesLocationUpdatesAutomatically = false
-
-     }
 
     public func configureBackgroundLocationUpdates() -> Bool {
          if let array: [String] = Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String] {
              GlobalLogger.shared.info("The location manager is allowed to run in background")
-             return array.contains("location") &&  UserDefaults.standard.bool(forKey: "allowsBackgroundLocationUpdates")
+             return array.contains("location") 
          }
          GlobalLogger.shared.info("The location manager is NOT allowed to run in background")
          return false

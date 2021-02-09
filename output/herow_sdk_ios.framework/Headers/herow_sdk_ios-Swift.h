@@ -409,6 +409,11 @@ SWIFT_CLASS("_TtC13herow_sdk_ios16HerowInitializer")
 - (BOOL)isOnClickAndCollect SWIFT_WARN_UNUSED_RESULT;
 - (void)launchClickAndCollect;
 - (void)stopClickAndCollect;
+- (BOOL)getOptinValue SWIFT_WARN_UNUSED_RESULT;
+- (void)acceptOptin;
+- (void)refusetOptin;
+- (NSString * _Nullable)getCustomId SWIFT_WARN_UNUSED_RESULT;
+- (void)getCustomIdWithCustomId:(NSString * _Nonnull)customId;
 - (void)registerClickAndCollectListenerWithListener:(id <ClickAndConnectListener> _Nonnull)listener;
 - (void)unregisterClickAndCollectListenerWithListener:(id <ClickAndConnectListener> _Nonnull)listener;
 @end
@@ -898,6 +903,11 @@ SWIFT_CLASS("_TtC13herow_sdk_ios16HerowInitializer")
 - (BOOL)isOnClickAndCollect SWIFT_WARN_UNUSED_RESULT;
 - (void)launchClickAndCollect;
 - (void)stopClickAndCollect;
+- (BOOL)getOptinValue SWIFT_WARN_UNUSED_RESULT;
+- (void)acceptOptin;
+- (void)refusetOptin;
+- (NSString * _Nullable)getCustomId SWIFT_WARN_UNUSED_RESULT;
+- (void)getCustomIdWithCustomId:(NSString * _Nonnull)customId;
 - (void)registerClickAndCollectListenerWithListener:(id <ClickAndConnectListener> _Nonnull)listener;
 - (void)unregisterClickAndCollectListenerWithListener:(id <ClickAndConnectListener> _Nonnull)listener;
 @end
@@ -1385,6 +1395,11 @@ SWIFT_CLASS("_TtC13herow_sdk_ios16HerowInitializer")
 - (BOOL)isOnClickAndCollect SWIFT_WARN_UNUSED_RESULT;
 - (void)launchClickAndCollect;
 - (void)stopClickAndCollect;
+- (BOOL)getOptinValue SWIFT_WARN_UNUSED_RESULT;
+- (void)acceptOptin;
+- (void)refusetOptin;
+- (NSString * _Nullable)getCustomId SWIFT_WARN_UNUSED_RESULT;
+- (void)getCustomIdWithCustomId:(NSString * _Nonnull)customId;
 - (void)registerClickAndCollectListenerWithListener:(id <ClickAndConnectListener> _Nonnull)listener;
 - (void)unregisterClickAndCollectListenerWithListener:(id <ClickAndConnectListener> _Nonnull)listener;
 @end

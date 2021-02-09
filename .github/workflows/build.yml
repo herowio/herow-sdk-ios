@@ -17,5 +17,7 @@ jobs:
           xcodebuild -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
     - name: Deploy
       run: |
+         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
+         echo $SDK_VERSION
          pwd; cd output; ls
 

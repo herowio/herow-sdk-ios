@@ -9,6 +9,10 @@ import Foundation
 import AppTrackingTransparency
 import AdSupport
 
+
+protocol UserInfoListener: class {
+    func  onUserInfoUpdate(userInfo: UserInfo)
+}
 protocol UserInfoManagerProtocol: AppStateDelegate {
     func getCustomId() -> String?
     func setCustomId( _ customId: String)
@@ -28,9 +32,13 @@ protocol UserInfoManagerProtocol: AppStateDelegate {
     func setAccuracyStatus( _ status: String)
     func getNotificationStatus() -> String?
     func setNotificationStatus( _ status: String)
+    func getOptin() -> Optin
+    func setOptin( optin: Optin)
 
 }
 class UserInfoManager: UserInfoManagerProtocol {
+
+
     private var customId : String?
     private var idfv: String?
     private var idfa: String?
@@ -41,7 +49,7 @@ class UserInfoManager: UserInfoManagerProtocol {
     private var accuracyStatus: String?
     private var notificationStatus: String?
 
-    var apiManager: APIManagerProtocol
+    weak  var  userInfoListner: UserInfoListener?
     let herowDataHolder: HerowDataStorageProtocol
 
     func getCustomId() -> String? {
@@ -50,9 +58,10 @@ class UserInfoManager: UserInfoManagerProtocol {
 
     func setCustomId(_ customId: String) {
         if herowDataHolder.getCustomId() != customId {
-        self.customId = customId
+            self.customId = customId
             herowDataHolder.setCustomId(customId)
             herowDataHolder.saveUserInfoWaitingForUpdate(true)
+            synchronize()
         }
     }
 
@@ -62,9 +71,10 @@ class UserInfoManager: UserInfoManagerProtocol {
 
     func setIDFV(_ id: String) {
         if herowDataHolder.getIDFV() != id {
-        self.idfv = id
+            self.idfv = id
             herowDataHolder.setIDFV(id)
             herowDataHolder.saveUserInfoWaitingForUpdate(true)
+            synchronize()
         }
     }
 
@@ -86,9 +96,10 @@ class UserInfoManager: UserInfoManagerProtocol {
 
     func setIDFA(_ id: String) {
         if herowDataHolder.getIDFA() != id {
-        self.idfa = id
+            self.idfa = id
             herowDataHolder.setIDFA(id)
             herowDataHolder.saveUserInfoWaitingForUpdate(true)
+            synchronize()
         }
     }
 
@@ -101,6 +112,7 @@ class UserInfoManager: UserInfoManagerProtocol {
         if id !=  herowDataHolder.getUserInfo()?.herowId {
             herowDataHolder.setHerowId(id)
             herowDataHolder.saveUserInfoWaitingForUpdate(true)
+            synchronize()
         }
     }
 
@@ -110,9 +122,10 @@ class UserInfoManager: UserInfoManagerProtocol {
 
     func setLang(_ lang: String) {
         if herowDataHolder.getLang() != lang {
-        self.lang = lang
+            self.lang = lang
             herowDataHolder.setLang(lang)
             herowDataHolder.saveUserInfoWaitingForUpdate(true)
+            synchronize()
         }
     }
 
@@ -122,9 +135,10 @@ class UserInfoManager: UserInfoManagerProtocol {
 
     func setOffset(_ offset: Int) {
         if herowDataHolder.getOffset() != offset {
-        self.offset = offset
+            self.offset = offset
             herowDataHolder.setOffset(offset)
             herowDataHolder.saveUserInfoWaitingForUpdate(true)
+            synchronize()
         }
     }
 
@@ -153,28 +167,42 @@ class UserInfoManager: UserInfoManagerProtocol {
 
     }
 
-    init(apiManager: APIManagerProtocol, herowDataStorage: HerowDataStorageProtocol) {
-        self.apiManager = apiManager
+    func getOptin() -> Optin {
+        return self.herowDataHolder.getOptin()
+    }
+
+    func setOptin(optin: Optin) {
+        if getOptin().value != optin.value {
+            self.herowDataHolder.setOptin(optin: optin)
+            herowDataHolder.saveUserInfoWaitingForUpdate(true)
+            synchronize()
+        }
+    }
+
+    init(listener: UserInfoListener, herowDataStorage: HerowDataStorageProtocol) {
+        self.userInfoListner = listener
         self.herowDataHolder = herowDataStorage
     }
 
     func onAppInForeground() {
-      synchronize()
+        if herowDataHolder.userInfoWaitingForUpdate() {
+            synchronize()
+        }
     }
 
     func onAppInBackground() {
-       synchronize()
+        if herowDataHolder.userInfoWaitingForUpdate() {
+            synchronize()
+        }
     }
 
     func synchronize() {
         setLang( Locale.current.languageCode ?? "en")
-        let optin = Optin(type:"USER_DATA",value: true)
+        let optin = getOptin()
         let idfa: String?  = getIDFA()
         let idfaStatus = idfa != nil
         let herowId = getHerowId()
         setOffset(TimeZone.current.secondsFromGMT() * 1000)
-        setCustomId("toto")
-
         let customId: String? = getCustomId()
         let lang: String = getLang() ?? "en"
         let offset: Int = getOffset() ?? TimeZone.current.secondsFromGMT() * 1000
@@ -185,8 +213,7 @@ class UserInfoManager: UserInfoManagerProtocol {
                                 offset: offset,
                                 optins:[optin])
         
-        self.apiManager.currentUserInfo = userInfo
-        apiManager.getUserInfoIfNeeded(completion: nil)
+        self.userInfoListner?.onUserInfoUpdate(userInfo: userInfo)
     }
 
 }

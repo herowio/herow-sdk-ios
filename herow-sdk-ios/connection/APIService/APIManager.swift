@@ -66,7 +66,7 @@ protocol APIManagerProtocol:ConfigDispatcher {
     func pushLog(_ log: Data ,completion: (() -> Void)?)
 }
 
-public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, RequestStatusListener {
+public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, RequestStatusListener, UserInfoListener {
 
     let tokenWorker: APIWorker<APIToken>
     let configWorker: APIWorker<APIConfig>
@@ -240,6 +240,10 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     // MARK: Cache
     internal func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)? = nil) {
+        if  !herowDataStorage.getOptin().value {
+            GlobalLogger.shared.debug("APIManager- OPTINS ARE FALSE")
+            return
+        }
         authenticationFlow  {
             if self.herowDataStorage.shouldGetCache(for: geoHash) {
                 GlobalLogger.shared.debug("APIManager- SHOULD FETCH CACHE")
@@ -264,6 +268,10 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     }
     // MARK: Logs
     internal func pushLog(_ log: Data,completion: (() -> Void)?) {
+        if  !herowDataStorage.getOptin().value {
+            GlobalLogger.shared.debug("APIManager- OPTINS ARE FALSE")
+            return
+        }
         authenticationFlow  {
             self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: self.user?.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
             self.logWorker.postData(param: log) {
@@ -327,5 +335,12 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     public func onLocationUpdate(_ location: CLLocation) {
         let currentGeoHash = GeoHashHelper.encodeBase32(lat: location.coordinate.latitude, lng: location.coordinate.longitude)[0...3]
         getCache(geoHash: String(currentGeoHash))
+    }
+
+    public func onUserInfoUpdate(userInfo: UserInfo) {
+        self.currentUserInfo = userInfo
+        self.getUserInfoIfNeeded {
+            GlobalLogger.shared.debug("APIManager - userInfo request because update")
+        }
     }
 }

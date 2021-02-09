@@ -34,7 +34,7 @@ import CoreLocation
         connectionInfo = ConnectionInfo()
         cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowInterval, HerowNotification>())
         apiManager = APIManager(connectInfo: connectionInfo, herowDataStorage: herowDataHolder, cacheManager: cacheManager)
-        userInfoManager = UserInfoManager(apiManager: apiManager, herowDataStorage: herowDataHolder)
+        userInfoManager = UserInfoManager(listener: apiManager, herowDataStorage: herowDataHolder)
         permissionsManager = PermissionsManager(userInfoManager: userInfoManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: userInfoManager)
         detectionEngine = DetectionEngine(CLLocationManager())
@@ -53,6 +53,7 @@ import CoreLocation
         super.init()
         detectionEngine.registerDetectionListener(listener: apiManager)
     }
+
 
     @objc public func configPlatform(_ platform: String) -> HerowInitializer {
         connectionInfo.updatePlateform(platform)
@@ -77,6 +78,7 @@ import CoreLocation
      self.herowDataHolder.reset()
      }
 
+    //MARK: CLICKANDCOLLECT  MANAGEMENT
     @objc public func isOnClickAndCollect() -> Bool {
         return detectionEngine.getIsOnClickAndCollect()
     }
@@ -91,7 +93,30 @@ import CoreLocation
         self.detectionEngine.setIsOnClickAndCollect(false)
     }
 
+    //MARK: USERINFO MANAGEMENT
+    @objc public func getOptinValue() -> Bool {
+        return userInfoManager.getOptin().value
+    }
 
+    @objc public func acceptOptin() {
+        self.userInfoManager.setOptin(optin: Optin.optinDataOk)
+
+    }
+
+    @objc public func refusetOptin() {
+        self.userInfoManager.setOptin(optin: Optin.optinDataNotOk)
+
+    }
+
+    @objc public func getCustomId() -> String? {
+        return userInfoManager.getCustomId()
+    }
+
+    @objc public func getCustomId(customId: String) {
+        self.userInfoManager.setCustomId(customId)
+
+    }
+    //MARK: LISTENERS  MANAGEMENT
     @objc public func registerClickAndCollectListener(listener: ClickAndConnectListener) {
         detectionEngine.registerClickAndCollectListener(listener:listener)
     }

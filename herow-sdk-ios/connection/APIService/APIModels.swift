@@ -130,7 +130,6 @@ public struct User {
         self.login = login
         self.password = password
         self.company = company
-
     }
 }
 
@@ -147,6 +146,21 @@ public struct UserInfo: Codable {
 public struct Optin: Codable {
     var type: String
     var value: Bool
+    static var optinDataOk = Optin(type: "USER_DATA", value: true)
+    static var optinDataNotOk = Optin(type: "USER_DATA", value: false)
+
+    public func encode() -> Data? {
+        let encoder = JSONEncoder()
+        return try? encoder.encode(self)
+    }
+
+    static public func decode(data: Data) -> Optin? {
+        let decoder = JSONDecoder()
+        guard let token = try? decoder.decode(Optin.self, from: data) else {
+            return nil
+        }
+        return token
+    }
 }
 
 public struct APICache: Codable {
@@ -158,19 +172,4 @@ public struct APICache: Codable {
 
 struct NoReply: Codable {
     var response = "OK"
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

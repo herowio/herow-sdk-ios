@@ -11,9 +11,6 @@ import Foundation
 
 public class HerowDataStorage: HerowDataStorageProtocol {
 
-
-
-
     private var userInfo: APIUserInfo?
     private var token: APIToken?
     private var config: APIConfig?
@@ -269,6 +266,24 @@ public class HerowDataStorage: HerowDataStorageProtocol {
 
     public func setNotificationStatus( _ status: String) {
         dataHolder.putString(key: HerowConstants.notificationStatusKey, value: status)
+        dataHolder.apply()
+    }
+
+    public func getOptin() -> Optin {
+        guard let data = dataHolder.getData(key: HerowConstants.userDataOptin) else {
+            return Optin.optinDataNotOk
+        }
+        guard let optin = Optin.decode(data: data)  else {
+            return Optin.optinDataNotOk
+        }
+        return optin
+    }
+
+    public func setOptin(optin: Optin) {
+        guard let data = optin.encode() else {
+            return
+        }
+        dataHolder.putData(key: HerowConstants.userDataOptin, value: data)
         dataHolder.apply()
     }
 

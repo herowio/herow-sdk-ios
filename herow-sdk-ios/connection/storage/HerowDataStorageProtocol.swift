@@ -44,5 +44,7 @@ public protocol HerowDataStorageProtocol: ResetDelegate {
     func setAccuracyStatus( _ status: String)
     func getNotificationStatus() -> String?
     func setNotificationStatus( _ status: String)
+    func getOptin() -> Optin
+    func setOptin(optin: Optin)
 
 }

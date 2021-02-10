@@ -20,7 +20,6 @@ jobs:
          SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
          echo $SDK_VERSION
          pwd; cd output; ls
-          - name: Pushes test file
     - name: Pushes to another repository
       uses: cpina/github-action-push-to-another-repository@master
       env:

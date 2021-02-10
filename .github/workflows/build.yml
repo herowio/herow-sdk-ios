@@ -25,7 +25,7 @@ jobs:
          REPO_DIRECTORY=test
          echo $SDK_VERSION
          pwd; cd output; ls;
-         git clone https://user:724a3d0e5b22d77cd03e83b6336b1a711943bd97@github.com/herowio/$REPO_DIRECTORY;
+         git clone https://user:$TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
          cd $REPO_DIRECTORY;
          mkdir -p $SDK_VERSION;
          cd ../..;
@@ -33,7 +33,7 @@ jobs:
          cd output;
          cd $REPO_DIRECTORY;
          git add .;
-         git commit -m "deploy version $SDK_VERSION";;
+         git commit -m "deploy version $SDK_VERSION";
          git push;
          
          

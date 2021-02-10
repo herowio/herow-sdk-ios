@@ -20,4 +20,15 @@ jobs:
          SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
          echo $SDK_VERSION
          pwd; cd output; ls
-
+          - name: Pushes test file
+    - name: Pushes test file
+      uses: dmnemec/copy_file_to_another_repo_action@v1.0.4
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source_file: 'herow_sdk_ios.framework.zip'
+        destination_repo: 'herowio/test'
+        destination_folder: '$SDK_VERSION-snapshot'
+        user_email: 'dfe@herow.io'
+        user_name: 'dfe'
+        commit_message: 'this a test'

@@ -93,4 +93,7 @@ herow-sdk-ios/.DS_Store
 herow-sdk-ios/connection/.DS_Store
 herow-sdk-ios/common/.DS_Store
 herow-sdk-ios/detection/.DS_Store
+herow-sdk-ios/output/*
+herow-sdk-ios/.DS_Store
+
 

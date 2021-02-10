@@ -7,34 +7,6 @@
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6D9C213825D180FF0044BC15"
-               BuildableName = "build"
-               BlueprintName = "build"
-               ReferencedContainer = "container:herow_sdk_ios.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6D0741FA25B079EC005E08F8"
-               BuildableName = "herow_sdk_ios.framework"
-               BlueprintName = "herow_sdk_ios"
-               ReferencedContainer = "container:herow_sdk_ios.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
             buildForTesting = "NO"
             buildForRunning = "YES"
             buildForProfiling = "NO"
@@ -42,9 +14,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6D07420325B079EC005E08F8"
-               BuildableName = "herow_sdk_iosTests.xctest"
-               BlueprintName = "herow_sdk_iosTests"
+               BlueprintIdentifier = "6D9C213825D180FF0044BC15"
+               BuildableName = "build"
+               BlueprintName = "build"
                ReferencedContainer = "container:herow_sdk_ios.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -59,7 +31,7 @@
       </Testables>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"

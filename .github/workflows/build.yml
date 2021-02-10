@@ -19,13 +19,13 @@ jobs:
       run: |
          SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
          echo $SDK_VERSION
-         pwd; cd output; ls
+         pwd; cd output; ls; cd..
     - name: Pushes to another repository
       uses: cpina/github-action-push-to-another-repository@master
       env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-          source-directory: '$SDK_VERSION'
+          source-directory: 'output'
           destination-github-username: 'herow'
           destination-repository-name: 'test'
-          user-email: carles3@pina.cat
+          user-email: dfe@herow.io

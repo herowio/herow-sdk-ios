@@ -21,14 +21,12 @@ jobs:
          echo $SDK_VERSION
          pwd; cd output; ls
           - name: Pushes test file
-    - name: Pushes test file
-      uses: dmnemec/copy_file_to_another_repo_action@v1.0.4
+    - name: Pushes to another repository
+      uses: cpina/github-action-push-to-another-repository@master
       env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source_file: 'herow_sdk_ios.framework.zip'
-        destination_repo: 'herowio/test'
-        destination_folder: '$SDK_VERSION-snapshot'
-        user_email: 'dfe@herow.io'
-        user_name: 'dfe'
-        commit_message: 'this a test'
+          source-directory: '$SDK_VERSION'
+          destination-github-username: 'herow'
+          destination-repository-name: 'test'
+          user-email: carles3@pina.cat

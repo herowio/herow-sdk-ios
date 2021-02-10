@@ -16,16 +16,26 @@ jobs:
           rm -rf output
           xcodebuild -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
     - name: Deploy
-      run: |
-         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
-         echo $SDK_VERSION
-         pwd; cd output; ls; cd ..
-    - name: Pushes to another repository
-      uses: cpina/github-action-push-to-another-repository@master
       env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-          source-directory: 'output'
-          destination-github-username: 'herow'
-          destination-repository-name: 'test'
-          user-email: dfe@herow.io
+      run: |
+         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
+         REPO_DIRECTORY=test
+         echo $SDK_VERSION
+         pwd; cd output; ls;
+         git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
+         cd $REPO_DIRECTORY;
+         mkdir -p $SDK_VERSION;
+         cd ../..;
+         cp -r output/herow_sdk_ios.framework.zip output/test/$SDK_VERSION/herow_sdk_ios.framework.zip;
+         cd output;
+         cd $REPO_DIRECTORY;
+         git add .;
+         git commit -m "deploy version $SDK_VERSION";;
+         git push;
+         
+         
+
+    
+     
+      

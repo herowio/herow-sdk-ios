@@ -12,7 +12,7 @@ jobs:
           PLATFORM_SECRETS: ${{ secrets.PLATFORM_SECRETS }}
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: 
-           pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/connection/platform-secrets.plist;cd  herow-sdk-ios/connexion;ls
+           pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/connection/platform-secrets.plist;
     - name: pod installation
       run: | 
           rm -rf Podfile.lock;

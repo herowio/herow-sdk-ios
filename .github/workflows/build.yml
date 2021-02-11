@@ -23,6 +23,7 @@ jobs:
       run: |
          SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
          REPO_DIRECTORY=test
+         cd output;
          git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
          cd $REPO_DIRECTORY;
          mkdir -p $SDK_VERSION;
@@ -41,6 +42,7 @@ jobs:
       run: |
          SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
          REPO_DIRECTORY=Specs
+         cd output;
          git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
          cd $REPO_DIRECTORY;
          mkdir -p $SDK_VERSION;

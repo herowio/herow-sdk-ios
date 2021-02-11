@@ -48,16 +48,6 @@ jobs:
          SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
          REPO_DIRECTORY=Specs
          cd output;
-         git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
-         cd $REPO_DIRECTORY;
-         mkdir -p $SDK_VERSION;
-         cd ../..;
-         cp -r output/Herow.podspec output/$REPO_DIRECTORY/$SDK_VERSION/Herow.podspec;
-         cd output;
-         cd $REPO_DIRECTORY;
-         git add .;
-         git commit -m "deploy podspecs for $SDK_VERSION";
-         git push;
          pod repo add herowio https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
          pod repo push herowio Herow.podspec
          cd ../..;

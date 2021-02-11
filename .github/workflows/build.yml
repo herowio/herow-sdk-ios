@@ -58,6 +58,8 @@ jobs:
          git add .;
          git commit -m "deploy podspecs for $SDK_VERSION";
          git push;
+         pod repo add herowio https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
+         pod repo push herowio Herow.podspec
          cd ../..;
          
          

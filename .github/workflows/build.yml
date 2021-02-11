@@ -10,14 +10,34 @@ jobs:
     - name: add platform_secrets 
       env:
           PLATFORM_SECRETS: ${{ secrets.PLATFORM_SECRETS }}
-      run: pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/connection/platform-secrets.plist;cd  herow-sdk-ios/connexion;ls
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      run: echo $TOKEN_GITHUB;
+           pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/connection/platform-secrets.plist;cd  herow-sdk-ios/connexion;ls
     - name: Start build
       run: | 
           rm -rf output
           xcodebuild -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
     - name: Deploy
+      env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: |
          SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
+         REPO_DIRECTORY=test
          echo $SDK_VERSION
-         pwd; cd output; ls
+         pwd; cd output; ls;
+         git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
+         cd $REPO_DIRECTORY;
+         mkdir -p $SDK_VERSION;
+         cd ../..;
+         cp -r output/herow_sdk_ios.framework.zip output/test/$SDK_VERSION/herow_sdk_ios.framework.zip;
+         cd output;
+         cd $REPO_DIRECTORY;
+         git add .;
+         git commit -m "deploy version $SDK_VERSION";
+         git push;
+         
+         
 
+    
+     
+      

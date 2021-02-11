@@ -99,3 +99,28 @@ herow-sdk-ios/**/.DS_Store
 herow-sdk-ios/.DS_Store
 
 
+.DS_Store
+output/Herow.podspec
+output/herow_sdk_ios.framework.zip
+output/herow_sdk_ios.framework/Headers/herow_sdk_ios-Swift.h
+output/herow_sdk_ios.framework/Headers/herow_sdk_ios-device-Swift.h
+output/herow_sdk_ios.framework/Headers/herow_sdk_ios-simulator-Swift.h
+output/herow_sdk_ios.framework/Headers/herow_sdk_ios.h
+output/herow_sdk_ios.framework/HerowDataModel.momd/HerowDataModel.mom
+output/herow_sdk_ios.framework/HerowDataModel.momd/VersionInfo.plist
+output/herow_sdk_ios.framework/Info.plist
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/Project/arm64.swiftsourceinfo
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/arm64-apple-ios-simulator.swiftdoc
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/arm64-apple-ios.swiftdoc
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/arm64-apple-ios.swiftmodule
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/arm64.swiftdoc
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/arm64.swiftmodule
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/x86_64-apple-ios-simulator.swiftdoc
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/x86_64-apple-ios-simulator.swiftmodule
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/x86_64.swiftdoc
+output/herow_sdk_ios.framework/Modules/herow_sdk_ios.swiftmodule/x86_64.swiftmodule
+output/herow_sdk_ios.framework/Modules/module.modulemap
+output/herow_sdk_ios.framework/herow_sdk_ios
+output/herow_sdk_ios.framework/platform-secrets.plist

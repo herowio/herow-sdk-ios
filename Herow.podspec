@@ -39,7 +39,7 @@ Pod::Spec.new do |s|
     s.subspec 'Core' do |ss|
         ss.ios.source_files = 'herow-sdk-ios/common/**/*.swift'
         ss.ios.frameworks = 'UIKit', 'Foundation', 'SystemConfiguration'
-        ss.ios.dependency 'CocoaLumberjack/Swift', '3.6.2 '
+        ss.ios.dependency 'CocoaLumberjack/Swift', '3.5.3 '
         ss.ios.deployment_target = '11.0'     
     end
 

@@ -13,6 +13,11 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: 
            pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/connection/platform-secrets.plist;cd  herow-sdk-ios/connexion;ls
+    - name: pod installation
+      run: | 
+          rm -rf Podfile.lock;
+          rm -rf Pods;
+          pod install;
     - name: Start build
       run: | 
           rm -rf output
@@ -53,6 +58,8 @@ jobs:
          git add .;
          git commit -m "deploy podspecs for $SDK_VERSION";
          git push;
+         pod repo add herowio https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
+         pod repo push herowio Herow.podspec
          cd ../..;
          
          

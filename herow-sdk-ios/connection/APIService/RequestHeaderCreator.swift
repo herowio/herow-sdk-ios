@@ -11,6 +11,8 @@ public class RequestHeaderCreator {
     static func createHeaders(sdk: String?,token: String? = nil, herowId: String? = nil) -> [String: String] {
         let infos = AnalyticsInfo()
         var hearders = [ Headers.contentType: Headers.Values.contentTypeJson,
+                        // Headers.charset: Headers.Values.charsetUtf8,
+                       //  Headers.contentEncoding: Headers.Values.gzip,
                          Headers.version: infos.libInfo.version,
                          Headers.deviceId: infos.deviceInfo.deviceId()
         ]

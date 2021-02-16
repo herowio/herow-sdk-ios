@@ -16,9 +16,10 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     private var config: APIConfig?
     private var lastGeoHash: String?
     let dataHolder: DataHolder
-
-    init(dataHolder: DataHolder) {
+    var timeProvider: TimeProvider
+    init(dataHolder: DataHolder, timeProvider: TimeProvider = TimeProviderAbsolute()) {
         self.dataHolder = dataHolder
+        self.timeProvider = timeProvider
     }
     // MARK: Connection methods
     public func saveToken(_ token: APIToken) {
@@ -73,7 +74,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         guard let token = getToken(), let date = token.expirationDate else {
             return true
         }
-        let shouldRefresh = date < Date()
+        let shouldRefresh = date.timeIntervalSince1970 < timeProvider.getTime()
         if shouldRefresh {
             self.token = nil
         }
@@ -83,7 +84,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     public func getConfig() -> APIConfig? {
 
         if let config = self.config {
-            return self.config
+            return config
         }
         guard let data = dataHolder.getData(key: HerowConstants.configKey) else {
             return nil
@@ -116,7 +117,8 @@ public class HerowDataStorage: HerowDataStorageProtocol {
             return
         }
         self.config = config
-        dataHolder.putDate(key: HerowConstants.configDateKey, value: Date())
+        let now = Date(timeIntervalSince1970: timeProvider.getTime())
+        dataHolder.putDate(key: HerowConstants.configDateKey, value:now)
         dataHolder.putData(key: HerowConstants.configKey, value: data)
         dataHolder.apply()
     }
@@ -159,7 +161,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
               let lastFetchDate = getLastCacheFetchDate() else {
             return true
         }
-        let now = Date()
+        let now = Date(timeIntervalSince1970: timeProvider.getTime())
         let differentHash = hash != savedhash
         let cacheIsNotUptoDate = lastFetchDate < lastCacheModifiedDate
         let shouldFetchNow =  now > lastFetchDate.addingTimeInterval(TimeInterval(cacheInterval / 1000))
@@ -181,7 +183,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     public func shouldGetConfig() -> Bool {
         if let config = getConfig(), let lastDate = getLastConfigDate() {
             let timeInterval = TimeInterval(config.configInterval) / 1000
-            return lastDate.addingTimeInterval(timeInterval) < Date()
+            return lastDate.addingTimeInterval(timeInterval).timeIntervalSince1970 < timeProvider.getTime()
         }
         return true
     }
@@ -219,10 +221,6 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         return  getUserInfo()?.herowId
     }
 
-    public func setHerowId( _ id: String) {
-        dataHolder.putString(key: HerowConstants.herowIdKey, value: id)
-        dataHolder.apply()
-    }
 
     public func getLang() -> String? {
        return  dataHolder.getString(key: HerowConstants.langKey)

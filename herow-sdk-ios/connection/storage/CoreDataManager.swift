@@ -263,8 +263,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         let managedContext = context
         let fetchRequest = NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
         do {
-            let  poissCoreData = try managedContext.fetch(fetchRequest)
-            for poiCoreData in poissCoreData {
+            let  poisCoreData = try managedContext.fetch(fetchRequest)
+            for poiCoreData in poisCoreData {
                 let poi: P = P(id: poiCoreData.id, tags: poiCoreData.tags, lat: poiCoreData.lat, lng: poiCoreData.lng)
                 pois.append(poi)
             }

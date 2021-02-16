@@ -18,11 +18,6 @@ class herow_sdk_iosTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
-
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
         self.measure {
@@ -35,11 +30,10 @@ class herow_sdk_iosTests: XCTestCase {
         ////If your plist contain root as Dictionary
 
         guard let path = bundleBeingTested.path(forResource: "platform-secrets", ofType: "plist"), let dict = NSDictionary(contentsOfFile: path) as? [String: [String:String]] else {
-            print("no file")
             XCTAssertTrue(false)
             return
         }
-        print("file exists")
+
         XCTAssertNotNil(dict["prod"]?["client_id"])
         XCTAssertNotNil(dict["preprod"]?["client_id"])
         XCTAssertNotNil(dict["prod"]?["client_secret"])

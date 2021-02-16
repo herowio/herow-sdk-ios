@@ -15,15 +15,19 @@ public enum NetworkError: Error {
     case invalidResponse
     case noData
     case serialization
+    case noOptin
 }
 
 public enum URLType: String {
+    case  badURL = ""
+    case  test = "https://herow-sdk-backend-poc.ew.r.appspot.com"
     case  preprod = "https://m-preprod.herow.io"
     case  prod = "https://m.herow.io"
 }
 
 public enum EndPoint {
     case undefined
+    case test
     case token
     case config
     case userInfo
@@ -78,9 +82,9 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     let cacheManager: CacheManagerProtocol
     let dateFormatter = DateFormatter()
     private var listeners = [WeakContainer<ConfigListener>]()
-    private  var connectInfo: ConnectionInfo
+    private  var connectInfo: ConnectionInfoProtocol
     var user: User?
-    init(connectInfo: ConnectionInfo, herowDataStorage: HerowDataStorageProtocol, cacheManager: CacheManagerProtocol) {
+    init(connectInfo: ConnectionInfoProtocol, herowDataStorage: HerowDataStorageProtocol, cacheManager: CacheManagerProtocol) {
         // setting infos storage
         self.herowDataStorage = herowDataStorage
         self.connectInfo = connectInfo
@@ -136,18 +140,20 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         if self.herowDataStorage.shouldGetConfig() {
             GlobalLogger.shared.debug("APIManager - should get config")
             self.getConfig(completion: {_,_ in
-                completion?()
+
                 if let config = self.herowDataStorage.getConfig() {
                     self.dispatchConfig(config)
                 }
+                completion?()
             })
         } else {
             GlobalLogger.shared.debug("APIManager - config not expired")
             self.getTokenIfNeeded {
-                completion?()
+
                 if let config = self.herowDataStorage.getConfig() {
                     self.dispatchConfig(config)
                 }
+                completion?()
             }
         }
     }
@@ -185,7 +191,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     }
 
 
-    public func configure(connectInfo: ConnectionInfo) {
+    public func configure(connectInfo: ConnectionInfoProtocol) {
         let urlType = connectInfo.getUrlType()
         self.connectInfo = connectInfo
         self.tokenWorker.setUrlType(urlType)
@@ -242,6 +248,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     internal func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)? = nil) {
         if  !herowDataStorage.getOptin().value {
             GlobalLogger.shared.debug("APIManager- OPTINS ARE FALSE")
+            completion?(nil, NetworkError.noOptin)
             return
         }
         authenticationFlow  {
@@ -298,6 +305,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                       Parameters.grantType : "password"]
         return self.encodeFormParams(dictionary: params)
     }
+    
 
     private func userInfoParam() -> Data? {
         var result: Data?

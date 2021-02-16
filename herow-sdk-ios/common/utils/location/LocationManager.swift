@@ -42,6 +42,10 @@ public protocol LocationManager {
     /// To get the authorization status
     ///
     /// - Returns: the current authorization status
+
+    @available (iOS 14, *)
+    func accuracyAuthorizationStatus() -> CLAccuracyAuthorization
+
     func authorizationStatus() -> CLAuthorizationStatus
     /// To get the authorization status string
     ///
@@ -142,6 +146,92 @@ public protocol LocationManager {
     func updateClickAndCollectState()
 
     func setIsOnClickAndCollect(_ value: Bool)
+
+    
+}
+
+extension CLLocationManager: LocationManager {
+    @available(iOS 14.0, *)
+    public func accuracyAuthorizationStatus() -> CLAccuracyAuthorization {
+        self.accuracyAuthorization
+    }
+
+    public func authorizationStatus() -> CLAuthorizationStatus {
+        return CLLocationManager.authorizationStatus()
+    }
+
+    public func startMonitoring(region: CLRegion) {
+        self.startMonitoring(for: region)
+    }
+
+    public  func stopMonitoring(region: CLRegion) {
+        self.stopMonitoring(for: region)
+    }
+
+    public func authorizationStatusString() -> String {
+        switch CLLocationManager.authorizationStatus() {
+        case .authorizedAlways:
+            return "authorizedAlways"
+        case .authorizedWhenInUse:
+            return "authorizedWhenInUse"
+        case .denied:
+            return "denied"
+        case .restricted:
+            return "restricted"
+        case .notDetermined:
+            return "notDetermined"
+        default:
+            return "notDetermined"
+        }
+    }
+    public func accuracyAuthorizationStatusString() -> String {
+        if #available(iOS 14, *) {
+            switch  self.accuracyAuthorization {
+            case .fullAccuracy:
+                return "fullAccuracy"
+            case .reducedAccuracy:
+                return "reducedAccuracy"
+            default:
+                return "notDetermined"
+            }
+        } else {
+            return "fullAccuracy"
+        }
+    }
+
+    public func locationServicesEnabled() -> Bool {
+        return CLLocationManager.locationServicesEnabled()
+    }
+
+    public func getMonitoredRegions() -> Set<CLRegion> {
+        return self.monitoredRegions
+    }
+
+    public func registerClickAndCollectListener(listener: ClickAndConnectListener) {
+
+    }
+
+    public func unregisterClickAndCollectListener(listener: ClickAndConnectListener) {
+
+    }
+
+    public func registerDetectionListener(listener: DetectionEngineListener) {
+
+    }
+
+    public func unregisterDetectionListener(listener: DetectionEngineListener) {
+
+    }
+
+    public func updateClickAndCollectState() {
+
+    }
+
+    public func setIsOnClickAndCollect(_ value: Bool) {
+
+    }
+
+
 }
 
 extension LocationManager {

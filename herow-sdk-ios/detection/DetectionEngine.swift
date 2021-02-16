@@ -22,7 +22,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     var isMonitoringVisit = false
     let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
     let dataHolder =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")
-    let locationManager: CLLocationManager
+    var locationManager: LocationManager
     var lastLocation: CLLocation?
     var monitoringListeners: [WeakContainer<ClickAndConnectListener>] = [WeakContainer<ClickAndConnectListener>]()
     var detectionListners: [WeakContainer<DetectionEngineListener>] = [WeakContainer<DetectionEngineListener>]()
@@ -112,10 +112,10 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     public func getMonitoredRegions() -> Set<CLRegion> {
-        return self.locationManager.monitoredRegions
+        return self.locationManager.getMonitoredRegions()
     }
 
-    public init(_ locationManager: CLLocationManager) {
+    public init(_ locationManager: LocationManager) {
         self.locationManager = locationManager
         super.init()
         initBackgroundCapabilities()
@@ -132,24 +132,11 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     public func authorizationStatus() -> CLAuthorizationStatus {
-        return CLLocationManager.authorizationStatus()
+        return self.locationManager.authorizationStatus()
     }
 
     public func authorizationStatusString() -> String {
-        switch CLLocationManager.authorizationStatus() {
-        case .authorizedAlways:
-            return "authorizedAlways"
-        case .authorizedWhenInUse:
-            return "authorizedWhenInUse"
-        case .denied:
-            return "denied"
-        case .restricted:
-            return "restricted"
-        case .notDetermined:
-            return "notDetermined"
-        default:
-            return "notDetermined"
-        }
+        return self.locationManager.authorizationStatusString()
     }
 
     public func setIsOnClickAndCollect(_ value: Bool) {
@@ -218,40 +205,30 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     @available(iOS 14.0, *)
     public func accuracyAuthorizationStatus() -> CLAccuracyAuthorization {
-        return locationManager.accuracyAuthorization
+        return locationManager.accuracyAuthorizationStatus()
     }
 
     public func accuracyAuthorizationStatusString() -> String {
-        if #available(iOS 14, *) {
-            switch  locationManager.accuracyAuthorization {
-            case .fullAccuracy:
-                return "fullAccuracy"
-            case .reducedAccuracy:
-                return "reducedAccuracy"
-            default:
-                return "notDetermined"
-            }
-        } else {
-            return "fullAccuracy"
-        }
+        return self.locationManager.accuracyAuthorizationStatusString()
+
     }
 
     public func locationServicesEnabled() -> Bool {
-        return CLLocationManager.locationServicesEnabled()
+        return self.locationManager.locationServicesEnabled()
     }
 
     public func startMonitoring(region: CLRegion) {
         GlobalLogger.shared.debug("startMonitoring in ", region.identifier)
         isMonitoringRegion = true
         updateClickAndCollectState()
-        locationManager.startMonitoring(for: region)
+        locationManager.startMonitoring(region: region)
     }
 
     public func stopMonitoring(region: CLRegion) {
         GlobalLogger.shared.debug("stopMonitoring in ", region.identifier)
         isMonitoringRegion = false
         updateClickAndCollectState()
-        locationManager.stopMonitoring(for: region)
+        locationManager.stopMonitoring(region: region)
     }
 
 

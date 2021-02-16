@@ -38,13 +38,14 @@ public struct Headers {
         public static let contentTypeFormUrlEncoded = "application/x-www-form-urlencoded"
         public static let contentTypeJson = "application/json"
         public static let charsetUtf8="UTF-8"
+        public static let gzip="gzip"
     }
 
     public static let charset: String="Charset"
     public static let contentType: String = "Content-Type"
     public static let contentLength: String = "Content-Length"
     public static let ifModifiedSince = "If-Modified-Since"
-
+    public static let contentEncoding = "Content-Encoding"
     public static let authorization: String = "Authorization"
     public static let sdk = "X-SDK"
     public static let version = "X-VERSION"

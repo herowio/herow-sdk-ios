@@ -13,7 +13,7 @@ import AdSupport
 protocol UserInfoListener: class {
     func  onUserInfoUpdate(userInfo: UserInfo)
 }
-protocol UserInfoManagerProtocol: AppStateDelegate {
+protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate {
     func getCustomId() -> String?
     func setCustomId( _ customId: String)
     func getIDFV() -> String?
@@ -37,7 +37,6 @@ protocol UserInfoManagerProtocol: AppStateDelegate {
 
 }
 class UserInfoManager: UserInfoManagerProtocol {
-
 
     private var customId : String?
     private var idfv: String?
@@ -110,7 +109,6 @@ class UserInfoManager: UserInfoManagerProtocol {
 
     func setHerowId(_ id: String) {
         if id !=  herowDataHolder.getUserInfo()?.herowId {
-            herowDataHolder.setHerowId(id)
             herowDataHolder.saveUserInfoWaitingForUpdate(true)
             synchronize()
         }
@@ -214,6 +212,19 @@ class UserInfoManager: UserInfoManagerProtocol {
                                 optins:[optin])
         
         self.userInfoListner?.onUserInfoUpdate(userInfo: userInfo)
+    }
+
+    func reset() {
+        self.customId = nil
+        self.idfv = nil
+        self.idfa = nil
+        self.herowId = nil
+        self.lang = nil
+        self.offset = nil
+        self.locationStatus = nil
+        self.accuracyStatus = nil
+        self.notificationStatus = nil
+        self.herowDataHolder.reset()
     }
 
 }

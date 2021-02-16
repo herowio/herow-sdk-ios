@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Platform {
+public enum Platform {
     case prod
     case preprod
     var credentials: SDKCredential {
@@ -15,9 +15,16 @@ enum Platform {
     }
 }
 
-public struct ConnectionInfo {
-    var platform = Platform.prod
-    mutating func updatePlateform(_ platform: String) {
+
+public protocol ConnectionInfoProtocol {
+    var platform: Platform {get set}
+    func getUrlType() -> URLType
+    mutating func updatePlateform(_ platform: String)
+}
+
+public struct ConnectionInfo: ConnectionInfoProtocol {
+    public var platform = Platform.prod
+    mutating public func updatePlateform(_ platform: String) {
         switch platform {
         case "preprod":
             self.platform = Platform.preprod
@@ -32,7 +39,7 @@ public struct ConnectionInfo {
         case .preprod:
             urlType = .preprod
         case .prod:
-            urlType = .preprod
+            urlType = .prod
         }
         return urlType
     }

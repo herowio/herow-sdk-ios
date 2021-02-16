@@ -12,7 +12,7 @@ import UIKit
 protocol RequestStatusListener: class {
     func didReceiveResponse(_ statusCode: Int)
 }
-private enum Method: String {
+internal enum Method: String {
     case get = "GET"
     case post = "POST"
     case put = "PUT"
@@ -48,7 +48,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         self.baseURL = urlType.rawValue
     }
 
-    private func buildURL(endPoint: EndPoint) -> String {
+    internal func buildURL(endPoint: EndPoint) -> String {
         var realEndPoint = endPoint
 
         switch endPoint {
@@ -59,19 +59,19 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         return baseURL + realEndPoint.value
     }
 
-    private func get<ResponseType:Decodable>( _ type: ResponseType.Type, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?) {
+    internal func get<ResponseType:Decodable>( _ type: ResponseType.Type, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?) {
         doMethod(type, method: .get,endPoint: endPoint, callback: callback)
     }
 
-    private func post<ResponseType:Decodable>( _ type: ResponseType.Type, param: Data?, callback: ((Result<ResponseType, Error>) -> Void)?) {
+    internal func post<ResponseType:Decodable>( _ type: ResponseType.Type, param: Data?, callback: ((Result<ResponseType, Error>) -> Void)?) {
         doMethod(type, method: .post ,param: param, callback: callback)
     }
 
-    private func put<ResponseType:Decodable>( _ type: ResponseType.Type, param: Data?, callback: ((Result<ResponseType, Error>) -> Void)?) {
+    internal func put<ResponseType:Decodable>( _ type: ResponseType.Type, param: Data?, callback: ((Result<ResponseType, Error>) -> Void)?) {
         doMethod(type, method: .put ,param: param, callback: callback)
     }
 
-    private  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?)  {
+    internal  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?)  {
 
         let completion: (Result<ResponseType, Error>) -> Void = {result in
             callback?(result)
@@ -101,8 +101,8 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
             request.httpBody = param
         }
         currentTask = session.dataTask(with: request, completionHandler: { (data, response, error) in
-            if let error = error {
-                completion(Result.failure(error))
+            if let _ = error {
+                completion(Result.failure(NetworkError.badUrl))
                 return
             }
             guard let response = response as? HTTPURLResponse  else {
@@ -128,8 +128,6 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                     }
                     let voidResponse = NoReply()
                     completion(Result.success(voidResponse as! ResponseType))
-
-
 
                 } catch {
                     print(error)

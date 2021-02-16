@@ -16,7 +16,7 @@ import CoreLocation
     private var apiManager: APIManager
     private var herowDataHolder: HerowDataStorageProtocol
     private var dataHolder: DataHolder
-    private var connectionInfo : ConnectionInfo
+    private var connectionInfo : ConnectionInfoProtocol
     private var userInfoManager: UserInfoManagerProtocol
     private var permissionsManager: PermissionsManagerProtocol
     private let cacheManager: CacheManagerProtocol
@@ -26,7 +26,7 @@ import CoreLocation
     private let zoneProvider: ZoneProvider
     private let eventDispatcher: EventDispatcher
     private let analyticsManager: AnalyticsManager
-    private override init() {
+    internal  init(locationManager: LocationManager = CLLocationManager()) {
 
         eventDispatcher = EventDispatcher()
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
@@ -37,7 +37,7 @@ import CoreLocation
         userInfoManager = UserInfoManager(listener: apiManager, herowDataStorage: herowDataHolder)
         permissionsManager = PermissionsManager(userInfoManager: userInfoManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: userInfoManager)
-        detectionEngine = DetectionEngine(CLLocationManager())
+        detectionEngine = DetectionEngine(locationManager)
         geofenceManager = GeofenceManager(locationManager: detectionEngine, cacheManager: cacheManager)
         cacheManager.registerCacheListener(listener: geofenceManager)
         detectionEngine.registerDetectionListener(listener: geofenceManager)
@@ -66,8 +66,10 @@ import CoreLocation
         return self
     }
 
-    @objc public func synchronize() {
-        self.apiManager.getConfigIfNeeded()
+    @objc public func synchronize(completion:(()->())? = nil) {
+        self.apiManager.getConfigIfNeeded {
+            completion?()
+        }
     }
 
     @objc public func getPermissionManager() -> PermissionsManagerProtocol {
@@ -112,7 +114,7 @@ import CoreLocation
         return userInfoManager.getCustomId()
     }
 
-    @objc public func getCustomId(customId: String) {
+    @objc public func setCustomId(customId: String) {
         self.userInfoManager.setCustomId(customId)
 
     }

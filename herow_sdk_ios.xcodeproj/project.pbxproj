@@ -31,7 +31,7 @@
 		6B9A5F6425B9D36600AAC673 /* HerowDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5E25B9D36600AAC673 /* HerowDataStorage.swift */; };
 		6B9A5F6525B9D36600AAC673 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5F25B9D36600AAC673 /* APIModels.swift */; };
 		6D07420525B079EC005E08F8 /* herow_sdk_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D0741FB25B079EC005E08F8 /* herow_sdk_ios.framework */; };
-		6D07420A25B079EC005E08F8 /* herow_sdk_iosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07420925B079EC005E08F8 /* herow_sdk_iosTests.swift */; };
+		6D07420A25B079EC005E08F8 /* CredentialsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07420925B079EC005E08F8 /* CredentialsTests.swift */; };
 		6D07420C25B079EC005E08F8 /* herow_sdk_ios.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D0741FE25B079EC005E08F8 /* herow_sdk_ios.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6D0747E725B72FFB005E08F8 /* HerowInitializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07479925B72FF9005E08F8 /* HerowInitializer.swift */; };
 		6D0747EC25B72FFB005E08F8 /* WifiUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747A125B72FF9005E08F8 /* WifiUtils.swift */; };
@@ -63,7 +63,6 @@
 		6D07480E25B72FFB005E08F8 /* FileUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747CB25B72FFA005E08F8 /* FileUtils.swift */; };
 		6D07480F25B72FFB005E08F8 /* OpenUrlUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747CC25B72FFA005E08F8 /* OpenUrlUtils.swift */; };
 		6D07481025B72FFB005E08F8 /* DispatchQueueUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747CD25B72FFA005E08F8 /* DispatchQueueUtils.swift */; };
-		6D07481125B72FFB005E08F8 /* AnyEncodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747CE25B72FFA005E08F8 /* AnyEncodable.swift */; };
 		6D07481225B72FFB005E08F8 /* NSDictionary+merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D025B72FFA005E08F8 /* NSDictionary+merge.swift */; };
 		6D07481325B72FFB005E08F8 /* CLLocation+Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D125B72FFA005E08F8 /* CLLocation+Codable.swift */; };
 		6D07481425B72FFB005E08F8 /* Dictionary+merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D0747D225B72FFA005E08F8 /* Dictionary+merge.swift */; };
@@ -77,6 +76,9 @@
 		6D33408D25C81C920011CBAB /* LogDataContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D33408C25C81C920011CBAB /* LogDataContext.swift */; };
 		6D33409D25C81D110011CBAB /* LogDataEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D33409C25C81D110011CBAB /* LogDataEvent.swift */; };
 		6D3340B225C83B200011CBAB /* AnalyticsUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D3340B125C83B200011CBAB /* AnalyticsUtils.swift */; };
+		6D39776A25D6B7A4009CF99A /* APIManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D39776925D6B7A4009CF99A /* APIManagerTests.swift */; };
+		6D39776F25DA6E2A009CF99A /* HerowDataStrorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D39776E25DA6E2A009CF99A /* HerowDataStrorageTests.swift */; };
+		6D39777525DBAA72009CF99A /* UserInfoManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D39777425DBAA72009CF99A /* UserInfoManagerTests.swift */; };
 		6D40A20125BB76810025268E /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A20025BB76810025268E /* EventDispatcher.swift */; };
 		6D40A22325BC07C80025268E /* HerowDataStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */; };
 		6D40A25B25BED02B0025268E /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A25A25BED02B0025268E /* CoreDataManager.swift */; };
@@ -92,6 +94,7 @@
 		6D40A29025BEF9730025268E /* DataBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A28F25BEF9730025268E /* DataBase.swift */; };
 		6D40A29725BEFA150025268E /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A29625BEFA150025268E /* Zone.swift */; };
 		6D40A29E25BEFC270025268E /* ZoneCoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A29D25BEFC270025268E /* ZoneCoreData.swift */; };
+		6D47FEBD25DBF6F5006C8A41 /* MockLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D47FEBC25DBF6F5006C8A41 /* MockLocationManager.swift */; };
 		6D79A19825BF69160048CAF0 /* HerowAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A19625BF69160048CAF0 /* HerowAccess.swift */; };
 		6D79A19925BF69160048CAF0 /* HerowZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A19725BF69160048CAF0 /* HerowZone.swift */; };
 		6D79A1B625BF73940048CAF0 /* HerowPoi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1B525BF73940048CAF0 /* HerowPoi.swift */; };
@@ -102,6 +105,8 @@
 		6D79A20225C151CF0048CAF0 /* DetectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A20125C151CF0048CAF0 /* DetectionEngine.swift */; };
 		6D79A20E25C159DE0048CAF0 /* LocationUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A20D25C159DE0048CAF0 /* LocationUtils.swift */; };
 		6D79A21225C15B4F0048CAF0 /* GeofenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A21125C15B4F0048CAF0 /* GeofenceManager.swift */; };
+		6D8775B425D663BF00148DC9 /* APIWorkerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D8775B325D663BF00148DC9 /* APIWorkerTest.swift */; };
+		6DEA69F925DBC3D700DA6AE7 /* HerowInitializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEA69F825DBC3D700DA6AE7 /* HerowInitializerTests.swift */; };
 		CD2B7EC885859C45C04FFBE2 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCFB268E5261E2728BEFAA55 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -132,7 +137,7 @@
 		6D0741FE25B079EC005E08F8 /* herow_sdk_ios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = herow_sdk_ios.h; sourceTree = "<group>"; };
 		6D0741FF25B079EC005E08F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6D07420425B079EC005E08F8 /* herow_sdk_iosTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = herow_sdk_iosTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D07420925B079EC005E08F8 /* herow_sdk_iosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = herow_sdk_iosTests.swift; sourceTree = "<group>"; };
+		6D07420925B079EC005E08F8 /* CredentialsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialsTests.swift; sourceTree = "<group>"; };
 		6D07420B25B079EC005E08F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6D07479925B72FF9005E08F8 /* HerowInitializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HerowInitializer.swift; sourceTree = "<group>"; };
 		6D0747A125B72FF9005E08F8 /* WifiUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WifiUtils.swift; sourceTree = "<group>"; };
@@ -164,7 +169,6 @@
 		6D0747CB25B72FFA005E08F8 /* FileUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileUtils.swift; sourceTree = "<group>"; };
 		6D0747CC25B72FFA005E08F8 /* OpenUrlUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenUrlUtils.swift; sourceTree = "<group>"; };
 		6D0747CD25B72FFA005E08F8 /* DispatchQueueUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DispatchQueueUtils.swift; sourceTree = "<group>"; };
-		6D0747CE25B72FFA005E08F8 /* AnyEncodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyEncodable.swift; sourceTree = "<group>"; };
 		6D0747D025B72FFA005E08F8 /* NSDictionary+merge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDictionary+merge.swift"; sourceTree = "<group>"; };
 		6D0747D125B72FFA005E08F8 /* CLLocation+Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CLLocation+Codable.swift"; sourceTree = "<group>"; };
 		6D0747D225B72FFA005E08F8 /* Dictionary+merge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+merge.swift"; sourceTree = "<group>"; };
@@ -178,6 +182,9 @@
 		6D33408C25C81C920011CBAB /* LogDataContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDataContext.swift; sourceTree = "<group>"; };
 		6D33409C25C81D110011CBAB /* LogDataEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogDataEvent.swift; sourceTree = "<group>"; };
 		6D3340B125C83B200011CBAB /* AnalyticsUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsUtils.swift; sourceTree = "<group>"; };
+		6D39776925D6B7A4009CF99A /* APIManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManagerTests.swift; sourceTree = "<group>"; };
+		6D39776E25DA6E2A009CF99A /* HerowDataStrorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowDataStrorageTests.swift; sourceTree = "<group>"; };
+		6D39777425DBAA72009CF99A /* UserInfoManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoManagerTests.swift; sourceTree = "<group>"; };
 		6D40A20025BB76810025268E /* EventDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDispatcher.swift; sourceTree = "<group>"; };
 		6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowDataStorageProtocol.swift; sourceTree = "<group>"; };
 		6D40A25A25BED02B0025268E /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -193,6 +200,7 @@
 		6D40A28F25BEF9730025268E /* DataBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBase.swift; sourceTree = "<group>"; };
 		6D40A29625BEFA150025268E /* Zone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		6D40A29D25BEFC270025268E /* ZoneCoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneCoreData.swift; sourceTree = "<group>"; };
+		6D47FEBC25DBF6F5006C8A41 /* MockLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationManager.swift; sourceTree = "<group>"; };
 		6D79A19625BF69160048CAF0 /* HerowAccess.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HerowAccess.swift; sourceTree = "<group>"; };
 		6D79A19725BF69160048CAF0 /* HerowZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HerowZone.swift; sourceTree = "<group>"; };
 		6D79A1B525BF73940048CAF0 /* HerowPoi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowPoi.swift; sourceTree = "<group>"; };
@@ -203,6 +211,8 @@
 		6D79A20125C151CF0048CAF0 /* DetectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionEngine.swift; sourceTree = "<group>"; };
 		6D79A20D25C159DE0048CAF0 /* LocationUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationUtils.swift; sourceTree = "<group>"; };
 		6D79A21125C15B4F0048CAF0 /* GeofenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeofenceManager.swift; sourceTree = "<group>"; };
+		6D8775B325D663BF00148DC9 /* APIWorkerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIWorkerTest.swift; sourceTree = "<group>"; };
+		6DEA69F825DBC3D700DA6AE7 /* HerowInitializerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowInitializerTests.swift; sourceTree = "<group>"; };
 		70D6E1BB5934E95FE1ED5E29 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7C87A025C325737EFD18EAA5 /* Pods-herow-sdk-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.release.xcconfig"; sourceTree = "<group>"; };
 		8ADD333E4F62A7255E26D44E /* Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig"; path = "Target Support Files/Pods-herow_sdk_ios-herow_sdk_iosTests/Pods-herow_sdk_ios-herow_sdk_iosTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -294,7 +304,10 @@
 		6D07420825B079EC005E08F8 /* herow-sdk-iosTests */ = {
 			isa = PBXGroup;
 			children = (
-				6D07420925B079EC005E08F8 /* herow_sdk_iosTests.swift */,
+				6D47FEBB25DBF6D1006C8A41 /* utils */,
+				6DEA69F725DBC3BB00DA6AE7 /* Detection */,
+				6D07420925B079EC005E08F8 /* CredentialsTests.swift */,
+				6D8775BB25D663D200148DC9 /* Connection */,
 				6D07420B25B079EC005E08F8 /* Info.plist */,
 			);
 			path = "herow-sdk-iosTests";
@@ -346,7 +359,6 @@
 				6D0747CB25B72FFA005E08F8 /* FileUtils.swift */,
 				6D0747CC25B72FFA005E08F8 /* OpenUrlUtils.swift */,
 				6D0747CD25B72FFA005E08F8 /* DispatchQueueUtils.swift */,
-				6D0747CE25B72FFA005E08F8 /* AnyEncodable.swift */,
 			);
 			path = utils;
 			sourceTree = "<group>";
@@ -471,6 +483,14 @@
 			path = Analytics;
 			sourceTree = "<group>";
 		};
+		6D39777325DAB718009CF99A /* userInfo */ = {
+			isa = PBXGroup;
+			children = (
+				6D39777425DBAA72009CF99A /* UserInfoManagerTests.swift */,
+			);
+			path = userInfo;
+			sourceTree = "<group>";
+		};
 		6D40A1FF25BB766C0025268E /* event */ = {
 			isa = PBXGroup;
 			children = (
@@ -518,6 +538,14 @@
 			path = CoreDataEntities;
 			sourceTree = "<group>";
 		};
+		6D47FEBB25DBF6D1006C8A41 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				6D47FEBC25DBF6F5006C8A41 /* MockLocationManager.swift */,
+			);
+			path = utils;
+			sourceTree = "<group>";
+		};
 		6D79A19525BF69160048CAF0 /* HerowEntities */ = {
 			isa = PBXGroup;
 			children = (
@@ -529,6 +557,33 @@
 				6D79A1DB25C013FE0048CAF0 /* HerowNotification.swift */,
 			);
 			path = HerowEntities;
+			sourceTree = "<group>";
+		};
+		6D8775BB25D663D200148DC9 /* Connection */ = {
+			isa = PBXGroup;
+			children = (
+				6D39777325DAB718009CF99A /* userInfo */,
+				6D39776E25DA6E2A009CF99A /* HerowDataStrorageTests.swift */,
+				6D8775BC25D663DE00148DC9 /* APIService */,
+			);
+			path = Connection;
+			sourceTree = "<group>";
+		};
+		6D8775BC25D663DE00148DC9 /* APIService */ = {
+			isa = PBXGroup;
+			children = (
+				6D8775B325D663BF00148DC9 /* APIWorkerTest.swift */,
+				6D39776925D6B7A4009CF99A /* APIManagerTests.swift */,
+			);
+			path = APIService;
+			sourceTree = "<group>";
+		};
+		6DEA69F725DBC3BB00DA6AE7 /* Detection */ = {
+			isa = PBXGroup;
+			children = (
+				6DEA69F825DBC3D700DA6AE7 /* HerowInitializerTests.swift */,
+			);
+			path = Detection;
 			sourceTree = "<group>";
 		};
 		C79A3FE13FE93F0EB30BECA2 /* Pods */ = {
@@ -727,7 +782,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#https://medium.com/@syshen/create-an-ios-universal-framework-148eb130a46c\n\n######################\n# Options\n######################\n\nREVEAL_ARCHIVE_IN_FINDER=false\n\nWORKSPACE_FILE=herow_sdk_ios.xcworkspace\n\nFRAMEWORK_NAME=\"${PROJECT_NAME}\"\n\nTEMP_FOLDER=\"${HOME}/tempsim\"\n\nTEMP_SIM_LIBRARY_PATH=\"${TEMP_FOLDER}/${FRAMEWORK_NAME}.framework\"\n\nSIMULATOR_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${FRAMEWORK_NAME}.framework\"\n\nDEVICE_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${FRAMEWORK_NAME}.framework\"\n\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\n\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework\"\n\nOBJROOT=\"${OBJROOT}/IntermediateFilesFolder\"\n\nDEPLOY_VERSION=\"7.0.0\"\n\nDSYM_COPY_PATH=\"${HOME}/to_keep/herow-sdk-ios_${DEPLOY_VERSION}/\"\n\n\nrm -rf output\n######################\n# Build Frameworks\n######################\n\nxcodebuild -workspace ${WORKSPACE_FILE} -scheme ${PROJECT_NAME} ONLY_ACTIVE_ARCH=NO -sdk iphonesimulator -configuration ${CONFIGURATION} -UseModernBuildSystem=1 ENABLE_BITCODE=YES OTHER_CFLAGS=\"-fembed-bitcode\" BITCODE_GENERATION_MODE=bitcode OBJROOT=\"${OBJROOT}\"  CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\nif test $? -eq 0\nthen\necho \"Success\"\nelse\necho \"Failed\"\nexit 1\nfi\n\nmkdir \"${TEMP_FOLDER}\"\nmkdir \"${TEMP_SIM_LIBRARY_PATH}\"\ncp -r \"${SIMULATOR_LIBRARY_PATH}/\" \"${TEMP_SIM_LIBRARY_PATH}/\"\n\nxcodebuild -workspace ${WORKSPACE_FILE} -scheme ${PROJECT_NAME} ONLY_ACTIVE_ARCH=NO -sdk iphoneos -configuration ${CONFIGURATION} -UseModernBuildSystem=1 ENABLE_BITCODE=YES OTHER_CFLAGS=\"-fembed-bitcode\"  BITCODE_GENERATION_MODE=bitcode OBJROOT=\"${OBJROOT}\"  CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\nif test $? -eq 0\nthen\necho \"Success\"\nelse\necho \"Failed\"\nexit 1\nfi\n\n######################\n# Create directory for universal\n######################\n\nrm -rf \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${FRAMEWORK}\"\n\n\n######################\n# Copy files Framework\n######################\n\ncp -r \"${DEVICE_LIBRARY_PATH}/.\" \"${FRAMEWORK}\"\n\n\n######################\n# Make an universal binary\n######################\necho \"----------------------------------------------------------------------------------\"\necho \"----------------------------------------------------------------------------------\"\necho \"before\"\nlipo -info \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\"\nlipo -remove arm64 \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -output \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\"\necho \"after\"\nlipo -info \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\"\necho \"----------------------------------------------------------------------------------\"\nlipo -info \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\"\necho \"----------------------------------------------------------------------------------\"\necho \"----------------------------------------------------------------------------------\"\nlipo \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\" \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -create -output \"${FRAMEWORK}/${FRAMEWORK_NAME}\" | echo\necho \"----------------------------------------------------------------------------------\"\necho \"----------------------------------------------------------------------------------\"\n# For Swift framework, Swiftmodule needs to be copied in the universal framework\nif [ -d \"${TEMP_SIM_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f ${TEMP_SIM_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\nfi\n\nif [ -d \"${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f ${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\nfi\n\n# For Xcode 10.2, we will need to combine Framework-Swift.h as explained in https://developer.apple.com/documentation/xcode_release_notes/xcode_10_2_release_notes/\n\ncp -r \"${TEMP_SIM_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" \"${FRAMEWORK}/Headers/${FRAMEWORK_NAME}-simulator-Swift.h\" \n\ncp -r \"${DEVICE_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" \"${FRAMEWORK}/Headers/${FRAMEWORK_NAME}-device-Swift.h\" \nTMP_HEADER_FILE=\"temp-header-file\"\n\n# if use only with simulator\necho '#if TARGET_OS_SIMULATOR' > $TMP_HEADER_FILE\n\n# simulator header \ncat \"${TEMP_SIM_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" >> $TMP_HEADER_FILE\n\n# end of if\necho '#endif' >> $TMP_HEADER_FILE\n\n\n# device header\ncat \"${DEVICE_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" >> $TMP_HEADER_FILE\n\n#sed -e '$ d'  \"${TEMP_SIM_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" >> $TMP_HEADER_FILE\n#tail -n +2  \"${DEVICE_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" >> $TMP_HEADER_FILE\n\nmv $TMP_HEADER_FILE \"${FRAMEWORK}/Headers/${FRAMEWORK_NAME}-Swift.h\" \n\n######################\n# On Release, copy the result to release directory\n######################\nOUTPUT_DIR=\"${PROJECT_DIR}/output\"\n\nrm -rf \"$OUTPUT_DIR\"\nmkdir -p \"$OUTPUT_DIR\"\n\ncp -r \"${FRAMEWORK}\" \"$OUTPUT_DIR\"\n\nif [ ${REVEAL_ARCHIVE_IN_FINDER} = true ]; then\nopen \"${OUTPUT_DIR}/\"\nfi\n\nrm -Rf \"${TEMP_FOLDER}\"\n\nDSYM_PATH=\"${DEVICE_LIBRARY_PATH}.dSYM\"\n\nif [ -e ${DSYM_PATH} ]\nthen\nmkdir -p \"${DSYM_COPY_PATH}\"\ncp -r \"${DSYM_PATH}\" \"${DSYM_COPY_PATH}\"\nelse\necho \"COPY DSYM FAILURE !\\n file ${DSYM_PATH} not found, please ensure that you are not building in Debug mode.\"\nfi\nxcodebuild clean\n\nSDK_VERSION=$(/usr/libexec/PlistBuddy -c \"Print :CFBundleShortVersionString\" herow-sdk-ios/Info.plist)\n\ncd \"$OUTPUT_DIR\"\ncat > Herow.podspec <<-EOF\nPod::Spec.new do |s|\n    s.name         = \"Herow\"\n    s.version      = \"${SDK_VERSION}\"\n     s.summary     = \"herow_sdk_ios: an assets of classes and interfaces \"\n    s.homepage     = \"http://www.herow.io/\"\n    s.module_name  = 'Herow'\n    s.license = { :type => 'Copyright', :text => <<-LICENSE\n                   Copyright 2021\n                   Permission is granted to...\n                  LICENSE\n                }\n    s.author             = { \"herow\" => \"contact@herow.io\" }\n   s.source       = {\n        :http => \"https://github.com/herowio/test/blob/main/${SDK_VERSION}/herow_sdk_ios.framework.zip?raw=true\",\n        :type => \"zip\"\n    }\n    s.frameworks = 'UIKit', 'Foundation', 'SystemConfiguration'\n    s.vendored_frameworks = \"herow_sdk_ios.framework\"\n    s.dependency 'CocoaLumberjack/Swift', '3.5.3'\n    s.ios.deployment_target = '11.0'\n    s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }\n    s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }  \n    s.vendored_frameworks = \"herow_sdk_ios.framework\"\n    s.platform = :ios\n    s.swift_version = \"5.0\"\n    s.ios.deployment_target  = '11.0'\nend\nEOF\necho \"-------------------ARCHs IN RESULT -----------------------------\"\nlipo -info herow_sdk_ios.framework/herow_sdk_ios\nzip -r -X \"herow_sdk_ios.framework.zip\" herow_sdk_ios.framework/*\necho \"----------------------ARTEFACTS---------------------------------\"\npwd \nls\necho \"----------------------------------------------------------------\"\n\n\n\n";
+			shellScript = "#https://medium.com/@syshen/create-an-ios-universal-framework-148eb130a46c\n\n######################\n# Options\n######################\n\nREVEAL_ARCHIVE_IN_FINDER=false\n\nWORKSPACE_FILE=herow_sdk_ios.xcworkspace\n\nFRAMEWORK_NAME=\"${PROJECT_NAME}\"\n\nTEMP_FOLDER=\"${HOME}/tempsim\"\n\nTEMP_SIM_LIBRARY_PATH=\"${TEMP_FOLDER}/${FRAMEWORK_NAME}.framework\"\n\nSIMULATOR_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${FRAMEWORK_NAME}.framework\"\n\nDEVICE_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${FRAMEWORK_NAME}.framework\"\n\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\n\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework\"\n\nOBJROOT=\"${OBJROOT}/IntermediateFilesFolder\"\n\nDEPLOY_VERSION=\"7.0.0\"\n\nDSYM_COPY_PATH=\"${HOME}/to_keep/herow-sdk-ios_${DEPLOY_VERSION}/\"\n\n\nrm -rf output\n######################\n# Build Frameworks\n######################\n\nxcodebuild -workspace ${WORKSPACE_FILE} -scheme ${PROJECT_NAME} ONLY_ACTIVE_ARCH=NO -sdk iphonesimulator -configuration ${CONFIGURATION} -UseModernBuildSystem=1 ENABLE_BITCODE=YES OTHER_CFLAGS=\"-fembed-bitcode\" BITCODE_GENERATION_MODE=bitcode OBJROOT=\"${OBJROOT}\"  CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\nif test $? -eq 0\nthen\necho \"Success\"\nelse\necho \"Failed\"\nexit 1\nfi\n\nmkdir \"${TEMP_FOLDER}\"\nmkdir \"${TEMP_SIM_LIBRARY_PATH}\"\ncp -r \"${SIMULATOR_LIBRARY_PATH}/\" \"${TEMP_SIM_LIBRARY_PATH}/\"\n\nxcodebuild -workspace ${WORKSPACE_FILE} -scheme ${PROJECT_NAME} ONLY_ACTIVE_ARCH=NO -sdk iphoneos -configuration ${CONFIGURATION} -UseModernBuildSystem=1 ENABLE_BITCODE=YES OTHER_CFLAGS=\"-fembed-bitcode\"  BITCODE_GENERATION_MODE=bitcode OBJROOT=\"${OBJROOT}\"  CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\nif test $? -eq 0\nthen\necho \"Success\"\nelse\necho \"Failed\"\nexit 1\nfi\n\n######################\n# Create directory for universal\n######################\n\nrm -rf \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${FRAMEWORK}\"\n\n\n######################\n# Copy files Framework\n######################\n\ncp -r \"${DEVICE_LIBRARY_PATH}/.\" \"${FRAMEWORK}\"\n\n\n######################\n# Make an universal binary\n######################\necho \"----------------------------------------------------------------------------------\"\necho \"----------------------------------------------------------------------------------\"\necho \"before\"\nlipo -info \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\"\nlipo -remove arm64 \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -output \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\"\necho \"after\"\nlipo -info \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\"\necho \"----------------------------------------------------------------------------------\"\nlipo -info \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\"\necho \"----------------------------------------------------------------------------------\"\necho \"----------------------------------------------------------------------------------\"\nlipo \"${TEMP_SIM_LIBRARY_PATH}/${FRAMEWORK_NAME}\" \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -create -output \"${FRAMEWORK}/${FRAMEWORK_NAME}\" | echo\necho \"----------------------------------------------------------------------------------\"\necho \"----------------------------------------------------------------------------------\"\n# For Swift framework, Swiftmodule needs to be copied in the universal framework\nif [ -d \"${TEMP_SIM_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f ${TEMP_SIM_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\nfi\n\nif [ -d \"${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f ${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\nfi\n\n# For Xcode 10.2, we will need to combine Framework-Swift.h as explained in https://developer.apple.com/documentation/xcode_release_notes/xcode_10_2_release_notes/\n\ncp -r \"${TEMP_SIM_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" \"${FRAMEWORK}/Headers/${FRAMEWORK_NAME}-simulator-Swift.h\" \n\ncp -r \"${DEVICE_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" \"${FRAMEWORK}/Headers/${FRAMEWORK_NAME}-device-Swift.h\" \nTMP_HEADER_FILE=\"temp-header-file\"\n\n# if use only with simulator\necho '#if TARGET_OS_SIMULATOR' > $TMP_HEADER_FILE\n\n# simulator header \ncat \"${TEMP_SIM_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" >> $TMP_HEADER_FILE\n\n# end of if\necho '#endif' >> $TMP_HEADER_FILE\n\n\n# device header\ncat \"${DEVICE_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" >> $TMP_HEADER_FILE\n\n#sed -e '$ d'  \"${TEMP_SIM_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" >> $TMP_HEADER_FILE\n#tail -n +2  \"${DEVICE_LIBRARY_PATH}/Headers/${FRAMEWORK_NAME}-Swift.h\" >> $TMP_HEADER_FILE\n\nmv $TMP_HEADER_FILE \"${FRAMEWORK}/Headers/${FRAMEWORK_NAME}-Swift.h\" \n\n######################\n# On Release, copy the result to release directory\n######################\nOUTPUT_DIR=\"${PROJECT_DIR}/output\"\n\nrm -rf \"$OUTPUT_DIR\"\nmkdir -p \"$OUTPUT_DIR\"\n\ncp -r \"${FRAMEWORK}\" \"$OUTPUT_DIR\"\n\nif [ ${REVEAL_ARCHIVE_IN_FINDER} = true ]; then\nopen \"${OUTPUT_DIR}/\"\nfi\n\nrm -Rf \"${TEMP_FOLDER}\"\n\nDSYM_PATH=\"${DEVICE_LIBRARY_PATH}.dSYM\"\n\nif [ -e ${DSYM_PATH} ]\nthen\nmkdir -p \"${DSYM_COPY_PATH}\"\ncp -r \"${DSYM_PATH}\" \"${DSYM_COPY_PATH}\"\nelse\necho \"COPY DSYM FAILURE !\\n file ${DSYM_PATH} not found, please ensure that you are not building in Debug mode.\"\nfi\nxcodebuild clean\n\nSDK_VERSION=$(/usr/libexec/PlistBuddy -c \"Print :CFBundleShortVersionString\" herow-sdk-ios/Info.plist)\n\ncd \"$OUTPUT_DIR\"\ncat > Herow.podspec <<-EOF\nPod::Spec.new do |s|\n    s.name         = \"Herow\"\n    s.version      = \"${SDK_VERSION}\"\n     s.summary     = \"herow_sdk_ios: an assets of classes and interfaces \"\n    s.homepage     = \"http://www.herow.io/\"\n    s.module_name  = 'Herow'\n    s.license = { :type => 'Copyright', :text => <<-LICENSE\n                   Copyright 2021\n                  GNU LESSER GENERAL PUBLIC LICENSE\n                }\n    s.author             = { \"herow\" => \"contact@herow.io\" }\n   s.source       = {\n        :http => \"https://github.com/herowio/test/blob/main/${SDK_VERSION}/herow_sdk_ios.framework.zip?raw=true\",\n        :type => \"zip\"\n    }\n    s.frameworks = 'UIKit', 'Foundation', 'SystemConfiguration'\n    s.vendored_frameworks = \"herow_sdk_ios.framework\"\n    s.dependency 'CocoaLumberjack/Swift', '3.5.3'\n    s.ios.deployment_target = '11.0'\n    s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }\n    s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }  \n    s.vendored_frameworks = \"herow_sdk_ios.framework\"\n    s.platform = :ios\n    s.swift_version = \"5.0\"\n    s.ios.deployment_target  = '11.0'\nend\nEOF\necho \"-------------------ARCHs IN RESULT -----------------------------\"\nlipo -info herow_sdk_ios.framework/herow_sdk_ios\nzip -r -X \"herow_sdk_ios.framework.zip\" herow_sdk_ios.framework/*\necho \"----------------------ARTEFACTS---------------------------------\"\npwd \nls\necho \"----------------------------------------------------------------\"\n\n\n\n";
 		};
 		A36A91260C1C015BF0546098 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -775,7 +830,6 @@
 				6D79A1DC25C013FE0048CAF0 /* HerowNotification.swift in Sources */,
 				6D40A22325BC07C80025268E /* HerowDataStorageProtocol.swift in Sources */,
 				6D40A26A25BED3BD0025268E /* HerowDataModel.xcdatamodeld in Sources */,
-				6D07481125B72FFB005E08F8 /* AnyEncodable.swift in Sources */,
 				6D0747F825B72FFB005E08F8 /* AtomicBoolean.swift in Sources */,
 				6D07480D25B72FFB005E08F8 /* GenericHolder.swift in Sources */,
 				6D79A20E25C159DE0048CAF0 /* LocationUtils.swift in Sources */,
@@ -812,6 +866,7 @@
 				6D0747FF25B72FFB005E08F8 /* TimeProviderAbsolute.swift in Sources */,
 				6D0747F425B72FFB005E08F8 /* LocationManager.swift in Sources */,
 				6D40A25B25BED02B0025268E /* CoreDataManager.swift in Sources */,
+				6D47FEBD25DBF6F5006C8A41 /* MockLocationManager.swift in Sources */,
 				6D07480825B72FFB005E08F8 /* ChargingStatus.swift in Sources */,
 				6D07480F25B72FFB005E08F8 /* OpenUrlUtils.swift in Sources */,
 				6D40A27625BEF4D70025268E /* APIAccess.swift in Sources */,
@@ -836,7 +891,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D07420A25B079EC005E08F8 /* herow_sdk_iosTests.swift in Sources */,
+				6DEA69F925DBC3D700DA6AE7 /* HerowInitializerTests.swift in Sources */,
+				6D39777525DBAA72009CF99A /* UserInfoManagerTests.swift in Sources */,
+				6D39776F25DA6E2A009CF99A /* HerowDataStrorageTests.swift in Sources */,
+				6D8775B425D663BF00148DC9 /* APIWorkerTest.swift in Sources */,
+				6D07420A25B079EC005E08F8 /* CredentialsTests.swift in Sources */,
+				6D39776A25D6B7A4009CF99A /* APIManagerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

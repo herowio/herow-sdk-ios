@@ -108,7 +108,7 @@ struct HerowCampaign: Campaign {
          cappings: [String: Int]?,
          triggers:[String: Int],
          daysRecurrence: [String],
-         recurrenceEnbaled:Bool,
+         recurrenceEnabled:Bool,
          tz:String,
          notification: Notification?) {
 
@@ -126,7 +126,7 @@ struct HerowCampaign: Campaign {
         self.cappings = cappings
         self.triggers = triggers
         self.daysRecurrence = daysRecurrence
-        self.recurrenceEnabled = recurrenceEnbaled
+        self.recurrenceEnabled = recurrenceEnabled
         self.tz = tz
         self.notification = notification
 

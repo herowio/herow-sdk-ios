@@ -49,6 +49,16 @@ class HerowInitializerTests: XCTestCase {
         }
     }
 
+    func testOptin() throws {
+        guard let herowInitializer =  self.herowInitializer else {
+            return }
+        herowInitializer.acceptOptin()
+        XCTAssertTrue(herowInitializer.getOptinValue())
+
+        herowInitializer.refuseOptin()
+        XCTAssertFalse(herowInitializer.getOptinValue())
+    }
+
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
         self.measure {

@@ -105,7 +105,7 @@ import CoreLocation
 
     }
 
-    @objc public func refusetOptin() {
+    @objc public func refuseOptin() {
         self.userInfoManager.setOptin(optin: Optin.optinDataNotOk)
 
     }

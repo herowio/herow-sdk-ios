@@ -69,7 +69,7 @@ class CacheManager: CacheManagerProtocol {
     static let distanceThreshold: CLLocationDistance = 20_000
     static let maxNearByPoiCount: Int = 10
     let db: DataBase
-    private var listeners = [WeakContainer<CacheListener>]()
+    internal var listeners = [WeakContainer<CacheListener>]()
 
     required init(db: DataBase) {
         self.db = db

@@ -105,6 +105,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 campaignCoreData?.name = item.getName()
                 campaignCoreData?.begin = item.getBegin()
                 campaignCoreData?.end = item.getEnd() ?? 0
+                campaignCoreData?.realTimeContent = item.getRealTimeContent()
                 var intervalsCoreData = [IntervalCoreData]()
                 if let intervals = item.getIntervals() {
                     for interval in intervals {
@@ -247,7 +248,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 let tz = campaignsCoreData.tz
                 let recurrenceEnabled = campaignsCoreData.recurrenceEnabled
                 let  notification = N(title: campaignsCoreData.notification.title, description: campaignsCoreData.notification.content)
-                let campaign = C(id: id, company: company, name: name, createdDate: createdDate, modifiedDate: modifiedDate, deleted: deleted, simpleId: simpleId, begin: begin, end: end, realTimeContent: realTimeContent, intervals: intervals, cappings: cappings, triggers: triggers, daysRecurrence: daysRecurrence, recurrenceEnbaled: recurrenceEnabled, tz: tz, notification: notification)
+                let campaign = C(id: id, company: company, name: name, createdDate: createdDate, modifiedDate: modifiedDate, deleted: deleted, simpleId: simpleId, begin: begin, end: end, realTimeContent: realTimeContent, intervals: intervals, cappings: cappings, triggers: triggers, daysRecurrence: daysRecurrence, recurrenceEnabled: recurrenceEnabled, tz: tz, notification: notification)
                 campaigns.append(campaign)
             }
         }

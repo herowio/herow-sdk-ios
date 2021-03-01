@@ -10,7 +10,6 @@ import CoreData
 
 class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Notification>: DataBase {
 
-    
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(for: Self.self)
         let modelURL = messageKitBundle.url(forResource: StorageConstants.dataModelName, withExtension: "momd")!
@@ -65,7 +64,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.PoiCoreDataEntityName,
                                                    in: bgContext)!
-                   // print("create entity \(StorageConstants.PoiCoreDataEntityName)")
                     poiCoreData = PoiCoreData(entity: entity,
                                                 insertInto: bgContext)
                 }
@@ -91,7 +89,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.CampaignCoreDataEntityName,
                                                    in: bgContext)!
-                   // print("create entity \(StorageConstants.CampaignCoreDataEntityName)")
                     campaignCoreData = CampaignCoreData(entity: entity,
                                                 insertInto: bgContext)
                 }
@@ -111,7 +108,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     for interval in intervals {
                          let entity = NSEntityDescription.entity(forEntityName: StorageConstants.IntervalCoreDataEntityName,
                                                                    in: bgContext)!
-                       // print("create entity \(StorageConstants.IntervalCoreDataEntityName)")
                         let intervalCoreData = IntervalCoreData(entity: entity,
                                                                 insertInto: bgContext)
                         intervalCoreData.start = interval.getStart()
@@ -129,7 +125,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 if let notification = item.getNotification() {
                     let entity = NSEntityDescription.entity(forEntityName: StorageConstants.NotificationCoreDataEntityName,
                                                               in: bgContext)!
-                   //print("create entity \(StorageConstants.NotificationCoreDataEntityName)")
                     notificationCoreData = NotificationCoreData(entity: entity,
                                                            insertInto: bgContext)
                     notificationCoreData?.title = notification.getTitle()
@@ -144,7 +139,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         completion?()
     }
 
-
     func saveZonesInBase(items: [Zone], completion: (()->())? = nil) {
         bgContext.performAndWait {
             for item in items {
@@ -157,7 +151,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.ZoneCoreDataEntityName,
                                                    in: bgContext)!
-                    //print("create entity \(StorageConstants.ZoneCoreDataEntityName)")
                     zoneCoreData = ZoneCoreData(entity: entity,
                                                 insertInto: bgContext)
                 }
@@ -167,7 +160,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.AccessCoreDataEntityName,
                                                    in: bgContext)!
-                    //print("create entity \(StorageConstants.AccessCoreDataEntityName)")
                     accessInBase = AccessCoreData(entity: entity,
                                                   insertInto: bgContext)
                 }
@@ -206,7 +198,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 let access = A(id: zoneCoreData.access.id,
                                name: zoneCoreData.access.name,
                                address: zoneCoreData.access.address)
-
                 let liveevent = zoneCoreData.liveEvent
                 let zone: Z = Z(hash: hash, lat:lat, lng: lng, radius: radius, campaigns: campaigns, access: access, liveEvent: liveevent)
                 zones.append(zone)
@@ -217,7 +208,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         }
         return zones
     }
-
 
     func getCampaignsInBase() -> [Campaign] {
         var campaigns = [Campaign]()
@@ -258,7 +248,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         return campaigns
     }
 
-
     func getPoisInBase() -> [Poi] {
         var pois = [Poi]()
         let managedContext = context
@@ -275,7 +264,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         }
         return pois
     }
-
 
     func purgeAllData(completion: (()->())? = nil) {
         let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name })

@@ -68,7 +68,7 @@ class APIManagerTests: XCTestCase, ConfigListener  {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    func testCacheSequenceWithOPtin() throws {
+    func testCacheSequenceWithOptin() throws {
         apiManager?.herowDataStorage.setOptin(optin: Optin.optinDataOk)
         let testExpectation = expectation(description: "testExpectation")
         apiManager?.currentUserInfo = UserInfo(adId: "idfaidfaidfaidfaidfaidfaidfa",
@@ -95,7 +95,7 @@ class APIManagerTests: XCTestCase, ConfigListener  {
         }
     }
 
-        func testCacheSequenceWithoutOPtin() throws {
+        func testCacheSequenceWithoutOptin() throws {
             apiManager?.herowDataStorage.setOptin(optin: Optin.optinDataNotOk)
             let testExpectation = expectation(description: "testExpectation")
             apiManager?.currentUserInfo = UserInfo(adId: "idfaidfaidfaidfaidfaidfaidfa",

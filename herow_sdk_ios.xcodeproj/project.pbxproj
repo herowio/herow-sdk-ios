@@ -104,6 +104,7 @@
 		6D97C26E25DD592E007AC150 /* WifiUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D97C26D25DD592E007AC150 /* WifiUtils.swift */; };
 		6D97C27325DD5958007AC150 /* StringUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D97C27225DD5958007AC150 /* StringUtils.swift */; };
 		6D97C27B25DD5A13007AC150 /* NSDictionary+merge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D97C27A25DD5A13007AC150 /* NSDictionary+merge.swift */; };
+		6D97C28325DE6F7C007AC150 /* ZoneProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D97C28225DE6F7C007AC150 /* ZoneProviderTests.swift */; };
 		6DEA69F925DBC3D700DA6AE7 /* HerowInitializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEA69F825DBC3D700DA6AE7 /* HerowInitializerTests.swift */; };
 		CD2B7EC885859C45C04FFBE2 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCFB268E5261E2728BEFAA55 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */; };
 /* End PBXBuildFile section */
@@ -208,6 +209,7 @@
 		6D97C26D25DD592E007AC150 /* WifiUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WifiUtils.swift; sourceTree = "<group>"; };
 		6D97C27225DD5958007AC150 /* StringUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringUtils.swift; sourceTree = "<group>"; };
 		6D97C27A25DD5A13007AC150 /* NSDictionary+merge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDictionary+merge.swift"; sourceTree = "<group>"; };
+		6D97C28225DE6F7C007AC150 /* ZoneProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneProviderTests.swift; sourceTree = "<group>"; };
 		6DEA69F825DBC3D700DA6AE7 /* HerowInitializerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowInitializerTests.swift; sourceTree = "<group>"; };
 		70D6E1BB5934E95FE1ED5E29 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7C87A025C325737EFD18EAA5 /* Pods-herow-sdk-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.release.xcconfig"; sourceTree = "<group>"; };
@@ -584,6 +586,7 @@
 			isa = PBXGroup;
 			children = (
 				6DEA69F825DBC3D700DA6AE7 /* HerowInitializerTests.swift */,
+				6D97C28225DE6F7C007AC150 /* ZoneProviderTests.swift */,
 			);
 			path = Detection;
 			sourceTree = "<group>";
@@ -894,6 +897,7 @@
 				6D60E6DF25DC26F800AC6291 /* CacheManagerTests.swift in Sources */,
 				6D39777525DBAA72009CF99A /* UserInfoManagerTests.swift in Sources */,
 				6D39776F25DA6E2A009CF99A /* HerowDataStrorageTests.swift in Sources */,
+				6D97C28325DE6F7C007AC150 /* ZoneProviderTests.swift in Sources */,
 				6D8775B425D663BF00148DC9 /* APIWorkerTest.swift in Sources */,
 				6D07420A25B079EC005E08F8 /* CredentialsTests.swift in Sources */,
 				6D39776A25D6B7A4009CF99A /* APIManagerTests.swift in Sources */,

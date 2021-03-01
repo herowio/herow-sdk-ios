@@ -136,7 +136,7 @@ extension CLLocationCoordinate2D: Codable {
 class ZoneProvider: DetectionEngineListener, CacheListener {
 
 
-
+    
 
     var lastLocation: CLLocation?
     let cacheManager: CacheManagerProtocol

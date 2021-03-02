@@ -10,14 +10,14 @@ import Foundation
 import CoreLocation
 
 public struct DecodableLocation: Codable {
-    let latitude: CLLocationDegrees
-    let longitude: CLLocationDegrees
-    let altitude: CLLocationDistance = 0
-    let horizontalAccuracy: CLLocationAccuracy = 0
-    let verticalAccuracy: CLLocationAccuracy = 0
-    let speed: CLLocationSpeed = 0
-    let course: CLLocationDirection = 0
-    let timestamp: Date = Date()
+    var latitude: CLLocationDegrees
+    var longitude: CLLocationDegrees
+    var altitude: CLLocationDistance = 0
+    var horizontalAccuracy: CLLocationAccuracy = 0
+    var verticalAccuracy: CLLocationAccuracy = 0
+    var speed: CLLocationSpeed = 0
+    var course: CLLocationDirection = 0
+    var timestamp: Date = Date()
 }
 
 extension CLLocation: Encodable {
@@ -26,9 +26,7 @@ extension CLLocation: Encodable {
         case longitude = "lng"
         case altitude
         case horizontalAccuracy
-       // case verticalAccuracy
         case speed
-        //case course
         case timestamp
     }
 
@@ -45,9 +43,7 @@ extension CLLocation: Encodable {
         try container.encode(coordinate.longitude, forKey: .longitude)
         try container.encode(altitude, forKey: .altitude)
         try container.encode(horizontalAccuracy, forKey: .horizontalAccuracy)
-       // try container.encode(verticalAccuracy, forKey: .verticalAccuracy)
         try container.encode(speed, forKey: .speed)
-       // try container.encode(course, forKey: .course)
         let timestampMs = timestamp.timeIntervalSince1970 * 1000
         try container.encode(timestampMs, forKey: .timestamp)
     }

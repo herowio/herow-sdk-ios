@@ -44,7 +44,7 @@ class Builder {
 
     }
 
-    private static func createLocations(number : Int, location: CLLocationCoordinate2D,  distance: Double = 100) -> [CLLocationCoordinate2D] {
+     static func createLocations(number : Int, location: CLLocationCoordinate2D,  distance: Double = 100) -> [CLLocationCoordinate2D] {
         var result = [CLLocationCoordinate2D]()
 
         for i in 0...number - 1 {
@@ -54,7 +54,13 @@ class Builder {
         return result
     }
 
-    private static func locationWithBearing(bearingRadians:Double, distanceMeters:Double, origin:CLLocationCoordinate2D) -> CLLocationCoordinate2D {
+    static func locationWithBearing(bearingRadians:Double, distanceMeters:Double, origin:CLLocation) -> CLLocation {
+        let coord = locationWithBearing(bearingRadians: bearingRadians, distanceMeters: distanceMeters, origin: origin.coordinate)
+        return CLLocation(latitude: coord.latitude, longitude: coord.longitude)
+    }
+
+
+     private static func locationWithBearing(bearingRadians:Double, distanceMeters:Double, origin:CLLocationCoordinate2D) -> CLLocationCoordinate2D {
         let distRadians = distanceMeters / (6372797.6) // earth radius in meters
 
         let lat1 = origin.latitude * .pi / 180

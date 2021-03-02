@@ -34,6 +34,7 @@ jobs:
          mkdir -p $SDK_VERSION;
          cd ../..;
          cp -r output/herow_sdk_ios.framework.zip output/$REPO_DIRECTORY/$SDK_VERSION/herow_sdk_ios.framework.zip;
+         cp -r output/herow_sdk_ios.xcframework.zip output/$REPO_DIRECTORY/$SDK_VERSION/herow_sdk_ios.xcframework.zip;
          cd output;
          cd $REPO_DIRECTORY;
          git add .;

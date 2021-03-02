@@ -17,8 +17,8 @@ enum Event: String {
     func didReceivedEvent( _ event: Event, infos: [ZoneInfo])
 }
   class EventDispatcher {
-    static let shared = EventDispatcher()
-    private var listeners : [Event : [WeakContainer<EventListener>]] =  [Event: [WeakContainer<EventListener>]]()
+ 
+    internal var listeners : [Event : [WeakContainer<EventListener>]] =  [Event: [WeakContainer<EventListener>]]()
 
     func registerListener(_ observer: EventListener, event: Event) {
         if self.listeners[event] == nil {

@@ -10,25 +10,33 @@ import CoreLocation
 @testable import herow_sdk_ios
 class ZoneProviderTests: XCTestCase {
 
+    var zoneProvider: ZoneProvider?
+    var coordinatesEntry = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
+    var coordinatesExit = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+
     override func setUpWithError() throws {
        let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowInterval, HerowNotification>())
-        let coordinates = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
-        let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinates, distance: 10000)
+        coordinatesEntry = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
+        let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinatesEntry, distance: 10000)
         let zones = tupple.0
         let campaigns = tupple.1
         cacheManager.saveZones(items: zones, completion: nil)
         cacheManager.saveCampaigns(items: campaigns, completion: nil)
-       let zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: EventDispatcher())
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: EventDispatcher())
     }
 
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testEntry() throws {
+        let selection =  zoneProvider?.zoneDetectionProcess(CLLocation(latitude: coordinatesEntry.latitude, longitude: coordinatesEntry.longitude))
+        XCTAssertTrue(selection?.zones.count == 1)
+    }
+
+    func testExit() throws {
+        let selection =  zoneProvider?.zoneDetectionProcess(CLLocation(latitude: coordinatesExit.latitude, longitude: coordinatesExit.longitude))
+        XCTAssertTrue(selection?.zones.count == 0)
     }
 
     func testPerformanceExample() throws {

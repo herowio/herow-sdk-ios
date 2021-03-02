@@ -13,7 +13,7 @@ public protocol ZoneventListener {
 
 class SelectionContainer {
     let location: CLLocation?
-    let zones: [Zone]
+    internal let zones: [Zone]
 
     init(location: CLLocation?, zones:[Zone]) {
         self.location = location
@@ -135,9 +135,6 @@ extension CLLocationCoordinate2D: Codable {
 }
 class ZoneProvider: DetectionEngineListener, CacheListener {
 
-
-    
-
     var lastLocation: CLLocation?
     let cacheManager: CacheManagerProtocol
     let zoneEventGenerator: ZoneEventGenerator
@@ -154,24 +151,21 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
 
     func onLocationUpdate(_ location: CLLocation) {
         self.lastLocation = location
-        zoneDetectionProcess(location)
+       _ =  zoneDetectionProcess(location)
     }
 
-    func zoneDetectionProcess(_ location: CLLocation) {
+    func zoneDetectionProcess(_ location: CLLocation) -> SelectionContainer{
         let entrances = zonesForLocation(location)
         let container =  SelectionContainer(location: location, zones: entrances)
         zoneEventGenerator.computeEvents(forZones: container)
+        return container
     }
 
 
     func onCacheUpdate() {
-        if let location = lastLocation{
-            zoneDetectionProcess(location)
+        if let location = lastLocation {
+           _ =  zoneDetectionProcess(location)
         }
-    }
-
-    func onCacheUpdate(type: CacheUpdate) {
-
     }
 
 }

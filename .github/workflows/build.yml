@@ -53,6 +53,23 @@ jobs:
          pod repo push herowio Herow.podspec
          cd ../..;
          
+    - name: Deploy xcframework
+      env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      run: |
+         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
+         REPO_DIRECTORY=herow-sdk-swiftPackage
+         cd output;
+         git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
+         cd ../..;
+         cp -r output/Package.swift output/$REPO_DIRECTORY/package.swift ;
+         cd output;
+         cd $REPO_DIRECTORY;
+         git add .;
+         git commit -m "deploy version $SDK_VERSION";
+         git push;
+         cd ../..;
+         
          
          
 

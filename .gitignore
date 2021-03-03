@@ -125,3 +125,4 @@ output/herow_sdk_ios.framework/Modules/module.modulemap
 output/herow_sdk_ios.framework/herow_sdk_ios
 output/herow_sdk_ios.framework/platform-secrets.plist
 output/herow_sdk_ios.xcframework.zip
+output/Package.swift

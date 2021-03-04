@@ -1,8 +1,5 @@
 name: Build and Deploy
 on: 
- push:
-   tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
  workflow_dispatch:
 jobs:
   build:
@@ -25,28 +22,7 @@ jobs:
     - name: Start build
       run: | 
           rm -rf output
-          xcodebuild -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
-    - name: Deploy Binary
-      env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      run: |
-         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
-           echo "RELEASE_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)" >> $GITHUB_ENV
-         REPO_DIRECTORY=test
-         cd output;
-         git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
-         cd $REPO_DIRECTORY;
-         mkdir -p $SDK_VERSION;
-         cd ../..;
-         cp -r output/herow_sdk_ios.framework.zip output/$REPO_DIRECTORY/$SDK_VERSION/herow_sdk_ios.framework.zip;
-         cp -r output/herow_sdk_ios.xcframework.zip output/$REPO_DIRECTORY/$SDK_VERSION/herow_sdk_ios.xcframework.zip;
-         cd output;
-         cd $REPO_DIRECTORY;
-         git add .;
-         git commit -m "deploy version $SDK_VERSION";
-         git push;
-         cd ../..;
-         
+          xcodebuild -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO  
     - name: Deploy podspec
       env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
@@ -58,7 +34,7 @@ jobs:
          pod repo push herowio Herow.podspec
          cd ../..;
          
-    - name: Deploy xcframework
+    - name: Deploy Package.swift
       env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: |

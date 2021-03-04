@@ -76,6 +76,7 @@ jobs:
       id: create_release
       uses: actions/create-release@v1
       env:
+          SDK_VERSION: $(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
           tag_name:  ${{SDK_VERSION}} #${{ github.ref }}

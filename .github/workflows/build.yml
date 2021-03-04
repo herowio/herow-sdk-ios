@@ -12,6 +12,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: 
            pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/connection/platform-secrets.plist;
+           echo "RELEASE_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)" >> $GITHUB_ENV
     - name: pod installation
       run: | 
           rm -rf Podfile.lock;

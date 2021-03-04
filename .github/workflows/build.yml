@@ -29,7 +29,7 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          tag_name:  ${{ env.RELEASE_VERSION }} #${{ github.ref }}
+          tag_name:  v${{ env.RELEASE_VERSION }} #${{ github.ref }}
           release_name: Release ${{ env.RELEASE_VERSION }}
           draft: false
           prerelease: false
@@ -58,7 +58,6 @@ jobs:
       env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: |
-         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
          REPO_DIRECTORY=Specs
          cd output;
          pod repo add herowio https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
@@ -69,7 +68,6 @@ jobs:
       env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: |
-         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
          REPO_DIRECTORY=herow-sdk-swiftPackage
          cd output;
          git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
@@ -77,8 +75,10 @@ jobs:
          cp -r Package.swift $REPO_DIRECTORY/Package.swift ;
          cd $REPO_DIRECTORY;
          git add .;
-         git commit -m "deploy version $SDK_VERSION";
+         git commit -m "deploy version $RELEASE_VERSION";
          git push;
+         $ git tag -a v$RELEASE_VERSION
+         git push origin v$RELEASE_VERSION
          cd ../..;  
    
          

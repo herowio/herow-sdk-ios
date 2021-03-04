@@ -6,27 +6,33 @@
 //
 
 import XCTest
-
+@testable import herow_sdk_ios
 class FileUtilsTests: XCTestCase {
 
-    override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+    var content: String?
+    var data: Data?
+    let fileName: String = "test.test"
+
+    override func setUp() {
+        content = "I love writing/loading content from file with Promise"
+        data = content!.data(using: .utf8)
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    override func tearDown() {
+        try? FileUtils.deleteFile(directory: .documentDirectory, fileName: fileName)
+        super.tearDown()
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-    }
+    func testFile() {
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+        if let url: URL = try? FileUtils.generateDocumentPath(directory: .documentDirectory, fileName: fileName),
+            let documentExists: Bool = try? url.checkResourceIsReachable() {
+            XCTAssertFalse(documentExists)
         }
+        FileUtils.createAppSupportDirectoryIfNeeded()
+        XCTAssertTrue(FileUtils.saveToFileSync( fileName: fileName, data: data!))
+        XCTAssertTrue(FileUtils.deleteFileSync( fileName: fileName))
     }
+
 
 }

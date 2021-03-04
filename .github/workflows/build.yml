@@ -31,7 +31,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: |
          SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
-         echo 'SDK_VERSION='$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)') >> $GITHUB_ENV
+         echo 'SDK_VERSION='$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist) >> $GITHUB_ENV
          REPO_DIRECTORY=test
          cd output;
          git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;

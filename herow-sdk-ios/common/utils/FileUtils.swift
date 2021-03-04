@@ -9,7 +9,7 @@
 import Foundation
 
 public class FileUtils {
-    private static let filename = "connectplace-settings"
+    private static let filename = "herow-settings"
 
     public static func generateDocumentPath(directory: FileManager.SearchPathDirectory, fileName: String)
         throws -> URL {
@@ -17,7 +17,7 @@ public class FileUtils {
             if let documentDirectory: URL = urls.first {
                 return documentDirectory.appendingPathComponent(fileName)
             } else {
-                throw NSError(domain: "com.connecthings.file",
+                throw NSError(domain: "com.herow.file",
                               code: 0,
                               userInfo: [NSLocalizedDescriptionKey: "Folder does not exist"])
             }

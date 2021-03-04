@@ -31,6 +31,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: |
          SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
+         echo 'SDK_VERSION='$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)') >> $GITHUB_ENV
          REPO_DIRECTORY=test
          cd output;
          git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
@@ -71,7 +72,7 @@ jobs:
          git add .;
          git commit -m "deploy version $SDK_VERSION";
          git push;
-         cd ../..;
+         cd ../..;  
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -79,8 +80,8 @@ jobs:
           SDK_VERSION: $(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          tag_name:  ${{ SDK_VERSION }} #${{ github.ref }}
-          release_name: Release ${{ SDK_VERSION }}
+          tag_name:  ${{ env.SDK_VERSION }} #${{ github.ref }}
+          release_name: Release ${{ env.SDK_VERSION }}
           draft: false
           prerelease: false
     - name: Upload Release herow_sdk_ios.framework

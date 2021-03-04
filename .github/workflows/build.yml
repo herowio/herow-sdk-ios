@@ -3,9 +3,7 @@ on:
  workflow_dispatch:
 jobs:
   build:
-
     runs-on: macOS-latest
-    
     steps:
     - uses: actions/checkout@v1
     - name: add platform_secrets 
@@ -23,32 +21,7 @@ jobs:
       run: | 
           rm -rf output
           xcodebuild -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO  
-    - name: Deploy podspec
-      env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      run: |
-         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
-         REPO_DIRECTORY=Specs
-         cd output;
-         pod repo add herowio https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
-         pod repo push herowio Herow.podspec
-         cd ../..;
-         
-    - name: Deploy Package.swift
-      env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      run: |
-         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
-         REPO_DIRECTORY=herow-sdk-swiftPackage
-         cd output;
-         git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
-         pwd;ls;
-         cp -r Package.swift $REPO_DIRECTORY/Package.swift ;
-         cd $REPO_DIRECTORY;
-         git add .;
-         git commit -m "deploy version $SDK_VERSION";
-         git push;
-         cd ../..;  
+    
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -79,6 +52,34 @@ jobs:
           asset_path: output/herow_sdk_ios.xcframework.zip
           asset_name: herow_sdk_ios.xcframework.zip
           asset_content_type: application/zip
+   
+    - name: Deploy podspec
+      env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      run: |
+         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
+         REPO_DIRECTORY=Specs
+         cd output;
+         pod repo add herowio https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
+         pod repo push herowio Herow.podspec
+         cd ../..;
+         
+    - name: Deploy Package.swift
+      env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      run: |
+         SDK_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
+         REPO_DIRECTORY=herow-sdk-swiftPackage
+         cd output;
+         git clone https://user:$API_TOKEN_GITHUB@github.com/herowio/$REPO_DIRECTORY;
+         pwd;ls;
+         cp -r Package.swift $REPO_DIRECTORY/Package.swift ;
+         cd $REPO_DIRECTORY;
+         git add .;
+         git commit -m "deploy version $SDK_VERSION";
+         git push;
+         cd ../..;  
+   
          
          
          

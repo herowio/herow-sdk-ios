@@ -79,8 +79,8 @@ jobs:
           SDK_VERSION: $(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          tag_name:  ${{SDK_VERSION}} #${{ github.ref }}
-          release_name: Release ${{SDK_VERSION}}
+          tag_name:  ${{ SDK_VERSION }} #${{ github.ref }}
+          release_name: Release ${{ SDK_VERSION }}
           draft: false
           prerelease: false
     - name: Upload Release herow_sdk_ios.framework

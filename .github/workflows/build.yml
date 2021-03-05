@@ -77,9 +77,8 @@ jobs:
          git add .;
          git commit -m "deploy version $RELEASE_VERSION";
          git push;
-         git pull --no-commit && git commit -m "Merge";
-         git tag -a "$RELEASE_VERSION";
-         git push origin "$RELEASE_VERSION";
+         git tag  "$RELEASE_VERSION";
+         git push --tags;
          cd ../..;  
    
          

@@ -21,7 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		258D73F449DB20BC2644D000 /* Pods_herow_sdk_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */; };
 		6B9A5F4B25B9D17500AAC673 /* UserInfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F4A25B9D17500AAC673 /* UserInfoManager.swift */; };
 		6B9A5F5725B9D2A500AAC673 /* ConnexionConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5625B9D2A500AAC673 /* ConnexionConstants.swift */; };
 		6B9A5F6025B9D36600AAC673 /* APIWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5A25B9D36600AAC673 /* APIWorker.swift */; };
@@ -107,6 +106,8 @@
 		6D97C28325DE6F7C007AC150 /* ZoneProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D97C28225DE6F7C007AC150 /* ZoneProviderTests.swift */; };
 		6DE7559225F0E57D003C0252 /* GeoHashHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE7559125F0E57D003C0252 /* GeoHashHelperTests.swift */; };
 		6DE7559725F0E6E8003C0252 /* FileUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE7559625F0E6E8003C0252 /* FileUtilsTests.swift */; };
+		6DE7560125F260BC003C0252 /* Pods_herow_sdk_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */; };
+		6DE7560225F260BC003C0252 /* Pods_herow_sdk_ios.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6DEA69F925DBC3D700DA6AE7 /* HerowInitializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEA69F825DBC3D700DA6AE7 /* HerowInitializerTests.swift */; };
 		CD2B7EC885859C45C04FFBE2 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCFB268E5261E2728BEFAA55 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */; };
 /* End PBXBuildFile section */
@@ -120,6 +121,20 @@
 			remoteInfo = "herow-sdk-ios";
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6DE7560325F260BC003C0252 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6DE7560225F260BC003C0252 /* Pods_herow_sdk_ios.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0730100D3BE129FE6E23B242 /* Pods-herow-sdk-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -214,6 +229,8 @@
 		6D97C28225DE6F7C007AC150 /* ZoneProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneProviderTests.swift; sourceTree = "<group>"; };
 		6DE7559125F0E57D003C0252 /* GeoHashHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoHashHelperTests.swift; sourceTree = "<group>"; };
 		6DE7559625F0E6E8003C0252 /* FileUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtilsTests.swift; sourceTree = "<group>"; };
+		6DE755F425F25E13003C0252 /* CocoaLumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DE755F625F26044003C0252 /* CocoaLumberjack.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DEA69F825DBC3D700DA6AE7 /* HerowInitializerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowInitializerTests.swift; sourceTree = "<group>"; };
 		70D6E1BB5934E95FE1ED5E29 /* Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios-herow-sdk-iosTests/Pods-herow-sdk-ios-herow-sdk-iosTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7C87A025C325737EFD18EAA5 /* Pods-herow-sdk-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.release.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.release.xcconfig"; sourceTree = "<group>"; };
@@ -228,7 +245,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				258D73F449DB20BC2644D000 /* Pods_herow_sdk_ios.framework in Frameworks */,
+				6DE7560125F260BC003C0252 /* Pods_herow_sdk_ios.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -615,6 +632,8 @@
 		CE4A9EE2C678464A3F252E48 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6DE755F625F26044003C0252 /* CocoaLumberjack.framework */,
+				6DE755F425F25E13003C0252 /* CocoaLumberjack.framework */,
 				26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */,
 				FCFB268E5261E2728BEFAA55 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */,
 			);
@@ -644,6 +663,7 @@
 				6D0741F725B079EC005E08F8 /* Sources */,
 				6D0741F825B079EC005E08F8 /* Frameworks */,
 				6D0741F925B079EC005E08F8 /* Resources */,
+				6DE7560325F260BC003C0252 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

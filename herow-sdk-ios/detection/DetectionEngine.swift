@@ -218,14 +218,14 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     public func startMonitoring(region: CLRegion) {
-        GlobalLogger.shared.debug("startMonitoring in ", region.identifier)
+        GlobalLogger.shared.debug("startMonitoring in \(region.identifier)")
         isMonitoringRegion = true
         updateClickAndCollectState()
         locationManager.startMonitoring(region: region)
     }
 
     public func stopMonitoring(region: CLRegion) {
-        GlobalLogger.shared.debug("stopMonitoring in ", region.identifier)
+        GlobalLogger.shared.debug("stopMonitoring in \(region.identifier)")
         isMonitoringRegion = false
         updateClickAndCollectState()
         locationManager.stopMonitoring(region: region)

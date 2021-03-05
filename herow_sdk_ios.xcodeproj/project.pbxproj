@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -107,9 +107,6 @@
 		6DE7559225F0E57D003C0252 /* GeoHashHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE7559125F0E57D003C0252 /* GeoHashHelperTests.swift */; };
 		6DE7559725F0E6E8003C0252 /* FileUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE7559625F0E6E8003C0252 /* FileUtilsTests.swift */; };
 		6DE7560225F260BC003C0252 /* Pods_herow_sdk_ios.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		6DE7562525F2684E003C0252 /* CocoaLumberjackSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6DE7562425F2684E003C0252 /* CocoaLumberjackSwift */; };
-		6DE7562725F2684E003C0252 /* CocoaLumberjack in Frameworks */ = {isa = PBXBuildFile; productRef = 6DE7562625F2684E003C0252 /* CocoaLumberjack */; };
-		6DE7562925F2684E003C0252 /* CocoaLumberjackSwiftLogBackend in Frameworks */ = {isa = PBXBuildFile; productRef = 6DE7562825F2684E003C0252 /* CocoaLumberjackSwiftLogBackend */; };
 		6DEA69F925DBC3D700DA6AE7 /* HerowInitializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEA69F825DBC3D700DA6AE7 /* HerowInitializerTests.swift */; };
 		ADD41C17F2FC057D787DB94E /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98CE75511978BFDB67D4D656 /* Pods_herow_sdk_ios_herow_sdk_iosTests.framework */; };
 		D64E720D2AA780E51E4DB862 /* Pods_herow_sdk_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 383EB97210A10B1103E0490A /* Pods_herow_sdk_ios.framework */; };
@@ -249,9 +246,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6DE7562725F2684E003C0252 /* CocoaLumberjack in Frameworks */,
-				6DE7562525F2684E003C0252 /* CocoaLumberjackSwift in Frameworks */,
-				6DE7562925F2684E003C0252 /* CocoaLumberjackSwiftLogBackend in Frameworks */,
 				D64E720D2AA780E51E4DB862 /* Pods_herow_sdk_ios.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -687,9 +681,6 @@
 			);
 			name = herow_sdk_ios;
 			packageProductDependencies = (
-				6DE7562425F2684E003C0252 /* CocoaLumberjackSwift */,
-				6DE7562625F2684E003C0252 /* CocoaLumberjack */,
-				6DE7562825F2684E003C0252 /* CocoaLumberjackSwiftLogBackend */,
 			);
 			productName = "herow-sdk-ios";
 			productReference = 6D0741FB25B079EC005E08F8 /* herow_sdk_ios.framework */;
@@ -745,7 +736,6 @@
 			);
 			mainGroup = 6D0741F125B079EC005E08F8;
 			packageReferences = (
-				6DE7562325F2684E003C0252 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */,
 			);
 			productRefGroup = 6D0741FC25B079EC005E08F8 /* Products */;
 			projectDirPath = "";
@@ -1230,35 +1220,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		6DE7562325F2684E003C0252 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/CocoaLumberjack/CocoaLumberjack.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.7.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		6DE7562425F2684E003C0252 /* CocoaLumberjackSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6DE7562325F2684E003C0252 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwift;
-		};
-		6DE7562625F2684E003C0252 /* CocoaLumberjack */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6DE7562325F2684E003C0252 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjack;
-		};
-		6DE7562825F2684E003C0252 /* CocoaLumberjackSwiftLogBackend */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6DE7562325F2684E003C0252 /* XCRemoteSwiftPackageReference "CocoaLumberjack" */;
-			productName = CocoaLumberjackSwiftLogBackend;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		6D40A26825BED3BD0025268E /* HerowDataModel.xcdatamodeld */ = {

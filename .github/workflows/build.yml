@@ -12,7 +12,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: 
            pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/connection/platform-secrets.plist;
-           echo "RELEASE_VERSION=$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)" >> $GITHUB_ENV
+           echo "RELEASE_VERSION=v$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)" >> $GITHUB_ENV
     - name: pod installation
       run: | 
           rm -rf Podfile.lock;
@@ -29,7 +29,7 @@ jobs:
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          tag_name:  v${{ env.RELEASE_VERSION }} #${{ github.ref }}
+          tag_name:  ${{ env.RELEASE_VERSION }} #${{ github.ref }}
           release_name: Release ${{ env.RELEASE_VERSION }}
           draft: false
           prerelease: false
@@ -77,8 +77,8 @@ jobs:
          git add .;
          git commit -m "deploy version $RELEASE_VERSION";
          git push;
-         $ git tag -a v$RELEASE_VERSION
-         git push origin v$RELEASE_VERSION
+         $ git tag -a $RELEASE_VERSION
+         git push origin $RELEASE_VERSION
          cd ../..;  
    
          

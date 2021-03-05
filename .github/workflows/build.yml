@@ -15,8 +15,9 @@ jobs:
            echo "RELEASE_VERSION=v$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)" >> $GITHUB_ENV
     - name: pod installation
       run: | 
-          rm -rf Podfile.lock;
           rm -rf Pods;
+          rm -rf Podfile.lock;
+          rm -rf herow_sdk_ios.xcworkspace;
           pod install;
     - name: Start build
       run: | 

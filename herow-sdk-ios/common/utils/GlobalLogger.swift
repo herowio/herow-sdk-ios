@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import CocoaLumberjack
+import CocoaLumberjackSwift
 
 @objc public class GlobalLogger: NSObject {
     @objc public static let shared = GlobalLogger()

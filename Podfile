@@ -4,9 +4,8 @@
 target 'herow_sdk_ios' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
-
   # Pods for herow-sdk-ios
-   pod 'CocoaLumberjack/Swift', '3.5.3'
+   #pod 'CocoaLumberjack/Swift', '3.5.3'
    pod 'SwiftLint'
 
   target 'herow_sdk_iosTests' do

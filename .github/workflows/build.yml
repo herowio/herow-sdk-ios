@@ -44,6 +44,26 @@ jobs:
           asset_path: output/herow_sdk_ios.framework.zip
           asset_name: herow_sdk_ios.framework.zip
           asset_content_type: application/zip
+    - name: Upload Release herow_sdk_ios.framework dsym
+      id: upload-framework-dsym
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: output/herow_sdk_ios.framework.dSYM.zip
+          asset_name: herow_sdk_ios.framework.dSYM.zip
+          asset_content_type: application/zip
+    - name: Upload Release herow_sdk_ios.xcframework dsym
+      id: upload-xcframework-dsym
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: output/herow_sdk_ios.xcframework.dSYM.zip
+          asset_name: herow_sdk_ios.xcframework.dSYM.zip
+          asset_content_type: application/zip         
     - name: Upload Release herow_sdk_ios.xcframework
       id: upload-xcframework
       uses: actions/upload-release-asset@v1

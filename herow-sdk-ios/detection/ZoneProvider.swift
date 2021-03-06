@@ -7,9 +7,7 @@
 
 import Foundation
 import CoreData
-public protocol ZoneventListener {
 
-}
 
 class SelectionContainer {
     let location: CLLocation?
@@ -21,14 +19,14 @@ class SelectionContainer {
     }
 }
 
-class ZoneInfo: Codable {
-    public var hash: String
+@objc public class ZoneInfo: NSObject, Codable {
+    public var zoneHash: String
     public var enterTime: TimeInterval? = 0
     public var exitTime: TimeInterval? = 0
     public var enterLocation: CLLocationCoordinate2D?
     public var exitLocation: CLLocationCoordinate2D?
     init(hash: String) {
-        self.hash = hash
+        self.zoneHash = hash
     }
 
 
@@ -92,7 +90,7 @@ extension CLLocationCoordinate2D: Codable {
         let zonesLocationIds = zones.map {
             $0.getHash()
         }
-        let oldZonesIds = getPlaceHistory().map {$0.hash}
+        let oldZonesIds = getPlaceHistory().map {$0.zoneHash}
 
         let input: [ZoneInfo] = zones.map {
             let zoneInfo = getOldZoneInfoFor(hash: $0.getHash())
@@ -103,10 +101,10 @@ extension CLLocationCoordinate2D: Codable {
             return result
         }
         let entries: [ZoneInfo] = input.filter {
-            !oldZonesIds.contains( $0.hash as String )
+            !oldZonesIds.contains( $0.zoneHash as String )
         }
         let exits: [ZoneInfo] = getPlaceHistory().filter {
-            !zonesLocationIds.contains($0.hash)
+            !zonesLocationIds.contains($0.zoneHash)
         }
 
         for info in exits {
@@ -123,7 +121,7 @@ extension CLLocationCoordinate2D: Codable {
 
     func getOldZoneInfoFor(hash: String) -> ZoneInfo? {
         return getPlaceHistory().filter {
-            $0.hash == hash
+            $0.zoneHash == hash
         }.first
     }
 

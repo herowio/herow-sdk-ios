@@ -33,7 +33,7 @@ class LogDataEventStruct: LogDataStruct {
     init(event: Event, infos: ZoneInfo, appState: String, dataStorage: HerowDataStorageProtocol?,cacheManager: CacheManagerProtocol?)  {
         lastLocation = CLLocationManager().location
 
-        if let zone = cacheManager?.getZones(ids: [infos.hash]).first {
+        if let zone = cacheManager?.getZones(ids: [infos.zoneHash]).first {
             let lat = zone.getLat()
             let lng = zone.getLng()
             let center = CLLocation(latitude: lat, longitude: lng)
@@ -44,7 +44,7 @@ class LogDataEventStruct: LogDataStruct {
             self.place = NearbyPlace(placeId: zone.getHash(), distance: distance, radius: zone.getRadius(), lat: lat, lng: lng)
         }
 
-        super.init(appState: appState, subtype: event.rawValue, dataStorage: dataStorage)
+        super.init(appState: appState, subtype: event.toString(), dataStorage: dataStorage)
 
     }
 

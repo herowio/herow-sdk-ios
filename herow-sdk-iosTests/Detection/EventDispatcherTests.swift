@@ -99,13 +99,13 @@ class EventDispatcherTests: XCTestCase {
         eventDispatcher.registerListener(listener1)
         eventDispatcher.post(event: .GEOFENCE_ENTER, infos: [ZoneInfo(hash: "hash")])
         XCTAssertTrue(listener1.event == .GEOFENCE_ENTER)
-        XCTAssertTrue(listener1.infos?.first?.hash == "hash")
+        XCTAssertTrue(listener1.infos?.first?.zoneHash == "hash")
         eventDispatcher.post(event: .GEOFENCE_EXIT, infos: [ZoneInfo(hash: "hash")])
         XCTAssertTrue(listener1.event == .GEOFENCE_EXIT)
-        XCTAssertTrue(listener1.infos?.first?.hash == "hash")
+        XCTAssertTrue(listener1.infos?.first?.zoneHash == "hash")
         eventDispatcher.post(event: .GEOFENCE_VISIT, infos: [ZoneInfo(hash: "hash")])
         XCTAssertTrue(listener1.event == .GEOFENCE_VISIT)
-        XCTAssertTrue(listener1.infos?.first?.hash == "hash")
+        XCTAssertTrue(listener1.infos?.first?.zoneHash == "hash")
     }
 
     func testPerformanceExample() throws {

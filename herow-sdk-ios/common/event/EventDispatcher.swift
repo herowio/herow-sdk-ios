@@ -7,13 +7,24 @@
 //
 import Foundation
 
-enum Event: String {
+@objc public enum Event: Int {
     case GEOFENCE_ENTER
     case GEOFENCE_EXIT
     case GEOFENCE_VISIT
+
+    func toString() -> String {
+        switch self {
+        case .GEOFENCE_EXIT:
+            return "GEOFENCE_EXIT"
+        case .GEOFENCE_ENTER:
+            return "GEOFENCE_ENTER"
+        case .GEOFENCE_VISIT:
+            return "GEOFENCE_VISIT"
+        }
+    }
 }
 
- protocol EventListener: class {
+@objc public protocol   EventListener: class {
     func didReceivedEvent( _ event: Event, infos: [ZoneInfo])
 }
   class EventDispatcher {

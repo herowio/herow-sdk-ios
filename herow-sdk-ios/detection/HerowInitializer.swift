@@ -49,11 +49,15 @@ import CoreLocation
         appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
         detectionEngine.registerDetectionListener(listener: analyticsManager)
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
-        eventDispatcher.registerListener(analyticsManager)
+
         super.init()
+        registerEventListener(listener: analyticsManager)
         detectionEngine.registerDetectionListener(listener: apiManager)
     }
 
+     @objc public func registerEventListener(listener: EventListener) {
+        eventDispatcher.registerListener(listener)
+    }
 
     @objc public func configPlatform(_ platform: String) -> HerowInitializer {
         connectionInfo.updatePlateform(platform)

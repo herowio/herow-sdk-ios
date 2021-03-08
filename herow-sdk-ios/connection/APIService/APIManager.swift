@@ -105,7 +105,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     func didReceiveResponse(_ statusCode: Int) {
         if statusCode == HttpStatusCode.HTTP_TOO_MANY_REQUESTS {
-                // TODO:  save date and retry after delais
+            // TODO:  save date and retry after delais
         }
     }
 
@@ -197,6 +197,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         self.tokenWorker.setUrlType(urlType)
         self.configWorker.setUrlType(urlType)
         self.userInfogWorker .setUrlType(urlType)
+        self.logWorker.setUrlType(urlType)
         self.cacheWorker .setUrlType(urlType)
     }
     // MARK: Token
@@ -224,7 +225,9 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                         }
                     }
                 }
-                GlobalLogger.shared.debug("APIManager - config request: \(String(describing: config)) error: \(String(describing: error))")
+                if error == nil {
+                    GlobalLogger.shared.debug("APIManager - config request: \(String(describing: config)) error: \(String(describing: error))")
+                }
                 completion?(config, error)
             }
         }
@@ -238,7 +241,9 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                 if let userInfo = userInfo {
                     self.herowDataStorage.saveUserInfo(userInfo)
                 }
-                GlobalLogger.shared.debug("APIManager - userInfo request: \(String(describing: userInfo)) error: \(String(describing: error))")
+                if error == nil {
+                    GlobalLogger.shared.debug("APIManager - userInfo request: \(String(describing: userInfo)) error: \(String(describing: error))")
+                }
                 completion?(userInfo, error)
             }
         }
@@ -247,19 +252,19 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     // MARK: Cache
     internal func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)? = nil) {
         if  !herowDataStorage.getOptin().value {
-            GlobalLogger.shared.debug("APIManager- OPTINS ARE FALSE")
+            GlobalLogger.shared.info("APIManager- OPTINS ARE FALSE")
             completion?(nil, NetworkError.noOptin)
             return
         }
         authenticationFlow  {
             if self.herowDataStorage.shouldGetCache(for: geoHash) {
-                GlobalLogger.shared.debug("APIManager- SHOULD FETCH CACHE")
+                GlobalLogger.shared.trace("APIManager- SHOULD FETCH CACHE")
                 self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
                 self.cacheWorker.getData(endPoint: .cache(geoHash)) { cache, error in
                     guard let cache = cache else {
                         return
                     }
-                    GlobalLogger.shared.debug("APIManager- CACHE HAS BEEN FETCHED")
+                    GlobalLogger.shared.trace("APIManager- CACHE HAS BEEN FETCHED")
                     self.herowDataStorage.saveLastCacheFetchDate(Date())
                     self.herowDataStorage.setLastGeohash(geoHash)
                     self.cacheManager.cleanCache()
@@ -269,31 +274,31 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                     completion?(cache, error)
                 }
             } else {
-                GlobalLogger.shared.debug("APIManager- NO NEED TO FETCH CACHE")
+                GlobalLogger.shared.trace("APIManager- NO NEED TO FETCH CACHE")
             }
         }
     }
     // MARK: Logs
     internal func pushLog(_ log: Data,completion: (() -> Void)?) {
         if  !herowDataStorage.getOptin().value {
-            GlobalLogger.shared.debug("APIManager- OPTINS ARE FALSE")
+            GlobalLogger.shared.info("APIManager- OPTINS ARE FALSE")
             return
         }
         authenticationFlow  {
             self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: self.user?.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
             self.logWorker.postData(param: log) {
                 response, error in
-                if let json = try? JSONSerialization.jsonObject(with: log, options: .mutableContainers),
-                   let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                    GlobalLogger.shared.debug("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self))")
-                } else {
-                    GlobalLogger.shared.debug("json data malformed")
+
+                if error == nil {
+                    if let json = try? JSONSerialization.jsonObject(with: log, options: .mutableContainers),
+                       let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
+                        GlobalLogger.shared.trace("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self))")
+                    } 
                 }
-                GlobalLogger.shared.debug("APIManager - log response: \(String(describing: response)) error: \(String(describing: error))")
             }
         }
     }
-// MARK: Params
+    // MARK: Params
     private func tokenParam(_ user: User) -> Data {
         
         let credentials = self.connectInfo.platform.credentials

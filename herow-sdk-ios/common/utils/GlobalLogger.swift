@@ -31,11 +31,11 @@ import Foundation
 }
 
 public enum MessageType: String {
-    case trace
-    case debug
-    case info
-    case warning
-    case error
+    case trace = "🟢 trace"
+    case debug = "🟡 debug"
+    case info = "🔵 info"
+    case warning = "🟠 warning"
+    case error = "🔴 error"
 }
 @objc public class GlobalLogger: NSObject {
     var debug = false
@@ -89,7 +89,7 @@ public enum MessageType: String {
     func format(fileName: String, functionName: String, lineNumber: Int, _ message: Any) -> String {
         var log = "\((fileName as NSString).lastPathComponent) - \(functionName) at line \(lineNumber): "
         log += String(describing:message)
-        log += " - \(BatteryUtils.getCurrentLevel())%"
+        log += " - battery level: \(BatteryUtils.getCurrentLevel())%"
         return log
     }
 
@@ -99,7 +99,9 @@ public enum MessageType: String {
         if let logger = self.logger {
             logger.trace(message)
         } else {
-            log(type.rawValue + " \(message)")
+
+
+            log("[\(type.rawValue.uppercased())]" + " \(message)")
         }
     }
     public func trace(_ message: Any,

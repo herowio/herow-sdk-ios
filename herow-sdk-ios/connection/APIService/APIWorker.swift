@@ -34,7 +34,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     private let endPoint: EndPoint
     private let decoder = JSONDecoder()
     weak  var  statusCodeListener: RequestStatusListener?
-    var headers: [String:String]?
+    var headers = [String:String]()
     var responseHeaders: [AnyHashable: Any]?
     internal init(urlType: URLType, endPoint: EndPoint = .undefined) {
         self.baseURL = urlType.rawValue
@@ -100,12 +100,13 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         if let param = param {
             request.httpBody = param
         }
-        currentTask = session.dataTask(with: request, completionHandler: { (data, response, error) in
+        currentTask = session.dataTask(with: request, completionHandler: { [self] (data, response, error) in
             if let _ = error {
                 completion(Result.failure(NetworkError.badUrl))
                 return
             }
             guard let response = response as? HTTPURLResponse  else {
+                GlobalLogger.shared.error(NetworkError.invalidResponse)
                 completion(Result.failure(NetworkError.invalidResponse))
                 return
             }
@@ -120,7 +121,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
                     self.responseHeaders = response.allHeaderFields
                     let jsonResponse = (String(decoding: data, as: UTF8.self))
-                    print("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
+                    GlobalLogger.shared.debug("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
                     if type != NoReply.self {
                      let responseObject  = try self.decoder.decode(type, from: data)
                         completion(Result.success(responseObject))
@@ -130,11 +131,12 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                     completion(Result.success(voidResponse as! ResponseType))
 
                 } catch {
-                    print(error)
+                    GlobalLogger.shared.error(NetworkError.serialization)
                     completion(Result.failure(NetworkError.serialization))
                     self.currentTask = nil
                 }
             } else {
+                GlobalLogger.shared.error("\(NetworkError.invalidStatusCode) : \(statusCode) headers:\(headers ))")
                 completion(Result.failure(NetworkError.invalidStatusCode))
 
             }

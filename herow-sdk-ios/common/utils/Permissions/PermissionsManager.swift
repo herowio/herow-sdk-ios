@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 import AppTrackingTransparency
-
+import UserNotifications
 @objc public enum LocationPermission: Int {
     case whenInUse
     case always

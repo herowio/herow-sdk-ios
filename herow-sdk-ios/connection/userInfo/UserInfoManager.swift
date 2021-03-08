@@ -48,7 +48,7 @@ class UserInfoManager: UserInfoManagerProtocol {
     private var accuracyStatus: String?
     private var notificationStatus: String?
 
-    weak  var  userInfoListner: UserInfoListener?
+    weak  var  userInfoListener: UserInfoListener?
     let herowDataHolder: HerowDataStorageProtocol
 
     func getCustomId() -> String? {
@@ -111,6 +111,7 @@ class UserInfoManager: UserInfoManagerProtocol {
         if id !=  herowDataHolder.getUserInfo()?.herowId {
             herowDataHolder.saveUserInfoWaitingForUpdate(true)
             synchronize()
+
         }
     }
 
@@ -178,7 +179,7 @@ class UserInfoManager: UserInfoManagerProtocol {
     }
 
     init(listener: UserInfoListener, herowDataStorage: HerowDataStorageProtocol) {
-        self.userInfoListner = listener
+        self.userInfoListener = listener
         self.herowDataHolder = herowDataStorage
     }
 
@@ -199,7 +200,9 @@ class UserInfoManager: UserInfoManagerProtocol {
         let optin = getOptin()
         let idfa: String?  = getIDFA()
         let idfaStatus = idfa != nil
-        let herowId = getHerowId()
+        if  let herowId = getHerowId() {
+        GlobalLogger.shared.registerHerowId(herowId: herowId)
+        }
         setOffset(TimeZone.current.secondsFromGMT() * 1000)
         let customId: String? = getCustomId()
         let lang: String = getLang() ?? "en"
@@ -211,7 +214,7 @@ class UserInfoManager: UserInfoManagerProtocol {
                                 offset: offset,
                                 optins:[optin])
         
-        self.userInfoListner?.onUserInfoUpdate(userInfo: userInfo)
+        self.userInfoListener?.onUserInfoUpdate(userInfo: userInfo)
     }
 
     func reset() {

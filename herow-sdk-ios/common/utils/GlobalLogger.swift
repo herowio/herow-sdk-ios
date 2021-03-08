@@ -28,6 +28,8 @@ import Foundation
     @objc  func warning(_ message: Any )
 
     @objc   func error(_ message: Any )
+
+    @objc func registerHerowId(herowId: String)
 }
 
 public enum MessageType: String {
@@ -38,13 +40,20 @@ public enum MessageType: String {
     case error = "🔴 error"
 }
 @objc public class GlobalLogger: NSObject {
+
+
+
+
     var debug = false
     var debugInFile = false
     @objc public static let shared = GlobalLogger()
 
 
-    weak var logger: LoggerDelegate?
+    var logger: LoggerDelegate?
 
+    @objc public func registerHerowId(herowId: String) {
+        self.logger?.registerHerowId(herowId: herowId)
+    }
 
     @objc public func registerLogger( logger: LoggerDelegate) {
         self.logger = logger
@@ -59,7 +68,7 @@ public enum MessageType: String {
     @objc public func startDebug() {
         debug = true
         if let logger = self.logger {
-            logger.stopDebug()
+            logger.startDebug()
         }
 
     }
@@ -96,12 +105,22 @@ public enum MessageType: String {
 
     private func dispatchMessage(_ message: String , type: MessageType) {
 
+        let display = "[\(type.rawValue.uppercased())]" + " \(message)"
         if let logger = self.logger {
-            logger.trace(message)
+            switch type {
+            case .debug:
+                logger.debug(display)
+            case .trace:
+                logger.trace(display)
+            case .info:
+                logger.info(display)
+            case .warning:
+                logger.warning(display)
+            case .error:
+                logger.error(display)
+            }
         } else {
-
-
-            log("[\(type.rawValue.uppercased())]" + " \(message)")
+            log(display)
         }
     }
     public func trace(_ message: Any,

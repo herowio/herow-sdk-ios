@@ -258,13 +258,13 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
         authenticationFlow  {
             if self.herowDataStorage.shouldGetCache(for: geoHash) {
-                GlobalLogger.shared.trace("APIManager- SHOULD FETCH CACHE")
+                GlobalLogger.shared.verbose("APIManager- SHOULD FETCH CACHE")
                 self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
                 self.cacheWorker.getData(endPoint: .cache(geoHash)) { cache, error in
                     guard let cache = cache else {
                         return
                     }
-                    GlobalLogger.shared.trace("APIManager- CACHE HAS BEEN FETCHED")
+                    GlobalLogger.shared.verbose("APIManager- CACHE HAS BEEN FETCHED")
                     self.herowDataStorage.saveLastCacheFetchDate(Date())
                     self.herowDataStorage.setLastGeohash(geoHash)
                     self.cacheManager.cleanCache()
@@ -274,7 +274,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                     completion?(cache, error)
                 }
             } else {
-                GlobalLogger.shared.trace("APIManager- NO NEED TO FETCH CACHE")
+                GlobalLogger.shared.verbose("APIManager- NO NEED TO FETCH CACHE")
             }
         }
     }
@@ -292,7 +292,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                 if error == nil {
                     if let json = try? JSONSerialization.jsonObject(with: log, options: .mutableContainers),
                        let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                        GlobalLogger.shared.trace("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self))")
+                        GlobalLogger.shared.verbose("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self))")
                     } 
                 }
             }

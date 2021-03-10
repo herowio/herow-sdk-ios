@@ -27,7 +27,7 @@ extension Zone {
     }
 }
 
-protocol Access {
+public protocol Access {
     
     func getId() -> String
     func getName() -> String

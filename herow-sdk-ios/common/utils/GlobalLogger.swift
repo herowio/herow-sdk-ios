@@ -19,7 +19,7 @@ import Foundation
 
     @objc  func stopLogInFile()
 
-    @objc  func trace(_ message: Any )
+    @objc  func verbose(_ message: Any )
 
     @objc  func debug(_ message: Any )
 
@@ -33,9 +33,9 @@ import Foundation
 }
 
 public enum MessageType: String {
-    case trace = "🟢 trace"
-    case debug = "🟡 debug"
-    case info = "🔵 info"
+    case verbose = "🟢 verbose"
+    case debug = "🔵 debug"
+    case info = "🟡 info"
     case warning = "🟠 warning"
     case error = "🔴 error"
 }
@@ -110,8 +110,8 @@ public enum MessageType: String {
             switch type {
             case .debug:
                 logger.debug(display)
-            case .trace:
-                logger.trace(display)
+            case .verbose:
+                logger.verbose(display)
             case .info:
                 logger.info(display)
             case .warning:
@@ -123,13 +123,13 @@ public enum MessageType: String {
             log(display)
         }
     }
-    public func trace(_ message: Any,
+    public func verbose(_ message: Any,
                     fileName: String = #file,
                 functionName: String = #function,
                   lineNumber: Int = #line) {
 
         let message = format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, message)
-        dispatchMessage(message,type: .trace)
+        dispatchMessage(message,type: .verbose)
 
     }
 

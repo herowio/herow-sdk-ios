@@ -30,7 +30,7 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
                                               circleRadiusOfMovingRegion: 150,
                                 distanceFromUserForBorderOfMovingRegion: 100)
     private var currentParametersPosition: Int = 0
-    private let locationManager: LocationManager
+    private var locationManager: LocationManager
     private let cacheManager : CacheManagerProtocol
 
     init(locationManager: LocationManager, cacheManager: CacheManagerProtocol) {
@@ -195,12 +195,22 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
             zones = Array(zones.sorted { (initial, next) -> Bool in
                 return initial.distanceFrom(location: location) < next.distanceFrom(location: location)
                 }.prefix(maxGeoFenceZoneCount))
+
+            if let nearestZone = zones.first {
+                let distance = nearestZone.distanceFrom(location: location)
+                adjustDistanceFilterForDistanceToNearestZone(distance)
+            }
+
         } else {
             zones = [Zone]()
         }
         createPlaceRegions(places: cleanPlaceMonitoredRegions(places: zones))
     }
 
+    private func adjustDistanceFilterForDistanceToNearestZone(_ distance : CLLocationDistance) {
+        locationManager.distanceFilter = max(distance / 10, 5)
+        GlobalLogger.shared.info("GeofenceManager - distanceFilter = \(locationManager.distanceFilter)")
+    }
     func onLocationUpdate(_ location: CLLocation) {
         updateMonitoringFor(location: location)
     }

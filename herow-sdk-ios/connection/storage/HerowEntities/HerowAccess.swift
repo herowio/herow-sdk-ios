@@ -7,23 +7,23 @@
 
 import Foundation
 
-public struct HerowAccess: Access, Codable {
+@objc public class HerowAccess: NSObject, Access, Codable {
     var  id: String
     var  name: String
     var  address: String
 
-    func getId() -> String {
+   public func getId() -> String {
         return id
     }
 
-    func getName() -> String {
+    public func getName() -> String {
         return name
     }
-    func getAddress() -> String {
+    public func getAddress() -> String {
         return address
     }
 
-    init(id: String, name: String, address: String) {
+    required public init(id: String, name: String, address: String) {
         self.id = id
         self.name = name
         self.address = address

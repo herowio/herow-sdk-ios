@@ -287,6 +287,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     private func didStartClickAndCollect() {
         locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        locationManager.distanceFilter = 30
         for listener in monitoringListeners {
             listener.get()?.didStartClickAndConnect()
         }
@@ -296,6 +297,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         stopUpdatingLocation()
         startUpdatingLocation()
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        locationManager.distanceFilter = 100
         for listener in monitoringListeners {
             listener.get()?.didStopClickAndConnect()
         }
@@ -333,6 +335,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     func dispatchLocation(_ location: CLLocation) -> Bool{
 
+    
         var skip = false
         var distance = 0.0
         if let lastLocation = self.lastLocation {

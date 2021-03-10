@@ -55,9 +55,7 @@ import CoreLocation
         detectionEngine.registerDetectionListener(listener: apiManager)
     }
 
-     @objc public func registerEventListener(listener: EventListener) {
-        eventDispatcher.registerListener(listener)
-    }
+
 
     @objc public func configPlatform(_ platform: String) -> HerowInitializer {
         connectionInfo.updatePlateform(platform)
@@ -80,10 +78,14 @@ import CoreLocation
         return permissionsManager
     }
 
+
     @objc public func reset() {
      self.herowDataHolder.reset()
      }
-
+    //MARK: EVENTLISTENERS MANAGEMENT
+    @objc public func registerEventListener(listener: EventListener) {
+       eventDispatcher.registerListener(listener)
+   }
     //MARK: CLICKANDCOLLECT  MANAGEMENT
     @objc public func isOnClickAndCollect() -> Bool {
         return detectionEngine.getIsOnClickAndCollect()
@@ -97,6 +99,14 @@ import CoreLocation
 
     @objc public func stopClickAndCollect() {
         self.detectionEngine.setIsOnClickAndCollect(false)
+    }
+    //MARK: CLICKANDCOLLECTLISTENERS  MANAGEMENT
+    @objc public func registerClickAndCollectListener(listener: ClickAndConnectListener) {
+        detectionEngine.registerClickAndCollectListener(listener:listener)
+    }
+
+    @objc public func unregisterClickAndCollectListener(listener: ClickAndConnectListener) {
+        detectionEngine.unregisterClickAndCollectListener(listener: listener)
     }
 
     //MARK: USERINFO MANAGEMENT
@@ -122,13 +132,13 @@ import CoreLocation
         self.userInfoManager.setCustomId(customId)
 
     }
-    //MARK: LISTENERS  MANAGEMENT
-    @objc public func registerClickAndCollectListener(listener: ClickAndConnectListener) {
-        detectionEngine.registerClickAndCollectListener(listener:listener)
+
+    @objc public func getHerowZoneForId(id: String) -> HerowZone? {
+        guard let zone =  cacheManager.getZones(ids: [id]).first else { return nil }
+        return HerowZone(zone: zone)
     }
 
-    @objc public func unregisterClickAndCollectListener(listener: ClickAndConnectListener) {
-        detectionEngine.unregisterClickAndCollectListener(listener: listener)
-    }
+
+
 
 }

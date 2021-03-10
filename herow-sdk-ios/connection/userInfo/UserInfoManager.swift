@@ -181,6 +181,10 @@ class UserInfoManager: UserInfoManagerProtocol {
     init(listener: UserInfoListener, herowDataStorage: HerowDataStorageProtocol) {
         self.userInfoListener = listener
         self.herowDataHolder = herowDataStorage
+        if  let herowId = getHerowId() {
+            GlobalLogger.shared.registerHerowId(herowId: herowId)
+        }
+
     }
 
     func onAppInForeground() {
@@ -201,7 +205,7 @@ class UserInfoManager: UserInfoManagerProtocol {
         let idfa: String?  = getIDFA()
         let idfaStatus = idfa != nil
         if  let herowId = getHerowId() {
-        GlobalLogger.shared.registerHerowId(herowId: herowId)
+            GlobalLogger.shared.registerHerowId(herowId: herowId)
         }
         setOffset(TimeZone.current.secondsFromGMT() * 1000)
         let customId: String? = getCustomId()

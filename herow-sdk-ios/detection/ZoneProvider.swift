@@ -55,16 +55,21 @@ extension CLLocationCoordinate2D: Codable {
     static let keyZoneEventHistory = "com.connecthings.keyZoneEventHistory"
     var dataHolder = DataHolderUserDefaults(suiteName: "ZoneEventGenerator")
     var eventDisPatcher: EventDispatcher
-
+    let serialQueue = DispatchQueue(label: "ZoneEventGenerator.serial.queue")
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()
-
+    var isComputing = false
+    var history :[ZoneInfo]?
+    var queue = OperationQueue()
     init(eventDisPatcher: EventDispatcher) {
         self.eventDisPatcher = eventDisPatcher
     }
 
     private func getPlaceHistory() -> [ZoneInfo] {
 
+        if let history = self.history {
+            return history
+        }
         guard let data = dataHolder.getData(key: ZoneEventGenerator.keyZoneEventHistory) ,  let zoneInfos = try? decoder.decode([ZoneInfo].self, from: data) else {
             return [ZoneInfo]()
         }
@@ -72,6 +77,7 @@ extension CLLocationCoordinate2D: Codable {
     }
 
     private func savePlaceHistory(_ zoneInfos: [ZoneInfo]) {
+        history = zoneInfos
         if let data = try? encoder.encode(zoneInfos) {
             dataHolder.putData(key: ZoneEventGenerator.keyZoneEventHistory, value: data)
             dataHolder.apply()
@@ -83,40 +89,57 @@ extension CLLocationCoordinate2D: Codable {
 
 
      func computeEvents(forZones: SelectionContainer) {
-        let now = Date().timeIntervalSince1970
-        let zones: [Zone] = forZones.zones
-        let currentLocation = forZones.location
 
-        let zonesLocationIds = zones.map {
-            $0.getHash()
-        }
-        let oldZonesIds = getPlaceHistory().map {$0.zoneHash}
+        let blockOPeration = BlockOperation { [self] in
+            let uuid = UUID().uuidString
+            GlobalLogger.shared.info("ZoneEventGenerator - starts operation: \(uuid)")
+            let now = Date().timeIntervalSince1970
+            let zones: [Zone] = forZones.zones
+            let currentLocation = forZones.location
 
-        let input: [ZoneInfo] = zones.map {
-            let zoneInfo = getOldZoneInfoFor(hash: $0.getHash())
-            let new = ZoneInfo(hash: $0.getHash() )
-            new.enterLocation = currentLocation?.coordinate
-            new.enterTime = now
-            let result = zoneInfo ?? new
-            return result
-        }
-        let entries: [ZoneInfo] = input.filter {
-            !oldZonesIds.contains( $0.zoneHash as String )
-        }
-        let exits: [ZoneInfo] = getPlaceHistory().filter {
-            !zonesLocationIds.contains($0.zoneHash)
-        }
+            let zonesLocationIds = zones.map {
+                $0.getHash()
+            }
+            let oldZonesIds = getPlaceHistory().map {$0.zoneHash}
 
-        for info in exits {
-            info.exitLocation = currentLocation?.coordinate
-            info.exitTime = now
-        }
-        eventDisPatcher.post(event: .GEOFENCE_ENTER, infos: entries)
-        eventDisPatcher.post(event: .GEOFENCE_EXIT, infos: exits)
-        eventDisPatcher.post(event: .GEOFENCE_VISIT, infos: exits)
-        GlobalLogger.shared.debug("LiveEventGenerator computeEvents oldZonesIds =\(oldZonesIds.count), entries=\(entries), exits=\(exits)")
+            let input: [ZoneInfo] = zones.map {
+                let zoneInfo = getOldZoneInfoFor(hash: $0.getHash())
+                let new = ZoneInfo(hash: $0.getHash() )
+                new.enterLocation = currentLocation?.coordinate
+                new.enterTime = now
+                let result = zoneInfo ?? new
+                return result
+            }
+            let entries: [ZoneInfo] = input.filter {
+                !oldZonesIds.contains( $0.zoneHash as String )
+            }
+            let exits: [ZoneInfo] = getPlaceHistory().filter {
+                !zonesLocationIds.contains($0.zoneHash)
+            }
 
-        savePlaceHistory(input)
+            for info in exits {
+                info.exitLocation = currentLocation?.coordinate
+                info.exitTime = now
+            }
+
+            let entriesids = entries.map {
+                return $0.zoneHash
+            }
+            let exitesids = exits.map {
+                return $0.zoneHash
+            }
+            savePlaceHistory(input)
+            GlobalLogger.shared.debug("ZoneEventGenerator computeEvents oldZonesIds =\(oldZonesIds.count), entries=\(entriesids), exits=\(exitesids)")
+                    eventDisPatcher.post(event: .GEOFENCE_ENTER, infos: entries)
+                    eventDisPatcher.post(event: .GEOFENCE_EXIT, infos: exits)
+                    eventDisPatcher.post(event: .GEOFENCE_VISIT, infos: exits)
+
+            GlobalLogger.shared.info("ZoneEventGenerator - ends operation: \(uuid)")
+
+        }
+        queue.maxConcurrentOperationCount = 1
+        queue.addOperation(blockOPeration)
+
     }
 
     func getOldZoneInfoFor(hash: String) -> ZoneInfo? {

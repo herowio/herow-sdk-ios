@@ -36,6 +36,8 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     weak  var  statusCodeListener: RequestStatusListener?
     var headers = [String:String]()
     var responseHeaders: [AnyHashable: Any]?
+
+    private var ready = false
     internal init(urlType: URLType, endPoint: EndPoint = .undefined) {
         self.baseURL = urlType.rawValue
         self.endPoint = endPoint
@@ -46,6 +48,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
     public func setUrlType(_ urlType: URLType) {
         self.baseURL = urlType.rawValue
+        ready = true
     }
 
     internal func buildURL(endPoint: EndPoint) -> String {
@@ -73,26 +76,22 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
     internal  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?)  {
 
+
         let completion: (Result<ResponseType, Error>) -> Void = {result in
             callback?(result)
             self.currentTask = nil
         }
 
-        if currentTask != nil {
-            switch  self.endPoint {
-            case .log:
-                GlobalLogger.shared.debug("try to send log")
-            default:
-                return
-            }
-        }
-
-
         guard let url = URL(string: buildURL(endPoint: endPoint)) else {
             completion(Result.failure(NetworkError.badUrl))
             return
         }
-        print("APIWorker - do job for  \(url)")
+
+        if ready == false {
+            GlobalLogger.shared.warning("APIWorker - \(url) not ready will return without working")
+            return
+        }
+
         var request = URLRequest(url: url)
 
         request.allHTTPHeaderFields = headers
@@ -124,6 +123,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                     GlobalLogger.shared.debug("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
                     if type != NoReply.self {
                      let responseObject  = try self.decoder.decode(type, from: data)
+                        GlobalLogger.shared.verbose("APIWorker - \(url) success : \(statusCode) headers:\(headers )")
                         completion(Result.success(responseObject))
                         return
                     }
@@ -136,7 +136,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                     self.currentTask = nil
                 }
             } else {
-                GlobalLogger.shared.error("\(NetworkError.invalidStatusCode) : \(statusCode) headers:\(headers ))")
+                GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.invalidStatusCode) : \(statusCode) headers:\(headers )")
                 completion(Result.failure(NetworkError.invalidStatusCode))
 
             }

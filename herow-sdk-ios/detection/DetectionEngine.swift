@@ -23,6 +23,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     private let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
     private let dataHolder =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")
     private var locationManager: LocationManager
+    private var locationCount = 0
     internal var lastLocation: CLLocation?
     internal var monitoringListeners: [WeakContainer<ClickAndConnectListener>] = [WeakContainer<ClickAndConnectListener>]()
     internal var detectionListners: [WeakContainer<DetectionEngineListener>] = [WeakContainer<DetectionEngineListener>]()
@@ -340,10 +341,11 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         var distance = 0.0
         if let lastLocation = self.lastLocation {
             distance = lastLocation.distance(from: location)
-            skip = distance < 20 && (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 300
+            skip = distance < 20 && (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 300 && locationCount >= 3
         }
         if skip == false {
             self.lastLocation = location
+            locationCount += 1
             GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance)")
             for listener in  detectionListners {
                 listener.get()?.onLocationUpdate(location)

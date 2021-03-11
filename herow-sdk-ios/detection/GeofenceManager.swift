@@ -197,7 +197,8 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
                 }.prefix(maxGeoFenceZoneCount))
 
             if let nearestZone = zones.first {
-                let distance = nearestZone.distanceFrom(location: location)
+                let distance = max (0, nearestZone.distanceFrom(location: location) - nearestZone.getRadius())
+                GlobalLogger.shared.info("GeofenceManager - distance to nearest zone = \(distance)")
                 adjustDistanceFilterForDistanceToNearestZone(distance)
             }
 
@@ -208,7 +209,20 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
     }
 
     private func adjustDistanceFilterForDistanceToNearestZone(_ distance : CLLocationDistance) {
-        locationManager.distanceFilter = max(distance / 10, 5)
+        let distanceFilter = min(500, max(distance / 10, 5))
+        locationManager.distanceFilter = distanceFilter
+        var desiredAccuracy = kCLLocationAccuracyBest
+        if distance > 1000 {
+            desiredAccuracy = kCLLocationAccuracyKilometer
+        }
+        if distanceFilter < 1000 && distanceFilter > 250 {
+            desiredAccuracy = kCLLocationAccuracyHundredMeters
+        }
+        if distanceFilter < 250 && distanceFilter > 50 {
+            desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        }
+        locationManager.desiredAccuracy = desiredAccuracy
+        GlobalLogger.shared.info("GeofenceManager - desiredAccuracy = \(locationManager.desiredAccuracy)")
         GlobalLogger.shared.info("GeofenceManager - distanceFilter = \(locationManager.distanceFilter)")
     }
     func onLocationUpdate(_ location: CLLocation) {

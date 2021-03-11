@@ -11,7 +11,7 @@ import CoreLocation
 
 @objc public class HerowInitializer: NSObject, ResetDelegate {
 
-   public static let instance = HerowInitializer()
+    public static let instance = HerowInitializer()
     private var appStateDetector = AppStateDetector()
     private var apiManager: APIManager
     private var herowDataHolder: HerowDataStorageProtocol
@@ -38,13 +38,15 @@ import CoreLocation
         permissionsManager = PermissionsManager(userInfoManager: userInfoManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: userInfoManager)
         detectionEngine = DetectionEngine(locationManager)
+        apiManager.registerConfigListener(listener: detectionEngine)
         geofenceManager = GeofenceManager(locationManager: detectionEngine, cacheManager: cacheManager)
         cacheManager.registerCacheListener(listener: geofenceManager)
         detectionEngine.registerDetectionListener(listener: geofenceManager)
         zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: eventDispatcher)
         cacheManager.registerCacheListener(listener: zoneProvider)
+
         detectionEngine.registerDetectionListener(listener: zoneProvider)
-        apiManager.registerConfigListener(listener: detectionEngine)
+
         analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
         appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
         detectionEngine.registerDetectionListener(listener: analyticsManager)

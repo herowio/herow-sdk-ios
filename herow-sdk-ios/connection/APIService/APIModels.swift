@@ -10,6 +10,7 @@ import Foundation
 public enum Platform {
     case prod
     case preprod
+    case test
     var credentials: SDKCredential {
         return SDKCredential(self)
     }
@@ -28,6 +29,8 @@ public struct ConnectionInfo: ConnectionInfoProtocol {
         switch platform {
         case "preprod":
             self.platform = Platform.preprod
+        case "test":
+            self.platform = Platform.test
         default:
             self.platform = Platform.prod
         }
@@ -40,6 +43,8 @@ public struct ConnectionInfo: ConnectionInfoProtocol {
             urlType = .preprod
         case .prod:
             urlType = .prod
+        case .test:
+            urlType = .test
         }
         return urlType
     }

@@ -44,9 +44,7 @@ import CoreLocation
         detectionEngine.registerDetectionListener(listener: geofenceManager)
         zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: eventDispatcher)
         cacheManager.registerCacheListener(listener: zoneProvider)
-
         detectionEngine.registerDetectionListener(listener: zoneProvider)
-
         analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
         appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
         detectionEngine.registerDetectionListener(listener: analyticsManager)

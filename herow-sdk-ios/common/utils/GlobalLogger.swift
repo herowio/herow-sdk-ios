@@ -41,9 +41,6 @@ public enum MessageType: String {
 }
 @objc public class GlobalLogger: NSObject {
 
-
-
-
     var debug = false
     var debugInFile = false
     @objc public static let shared = GlobalLogger()

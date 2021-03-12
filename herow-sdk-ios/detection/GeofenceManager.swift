@@ -187,6 +187,10 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
             updateMonitoringFor(location: lastLocation)
     }
 
+    func willCacheUpdate() {
+
+    }
+
     func updateMonitoringFor(location: CLLocation?) {
         var zones : [Zone]
         if let location = location {
@@ -198,7 +202,7 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
 
             if let nearestZone = zones.first {
                 let distance = max (0, nearestZone.distanceFrom(location: location) - nearestZone.getRadius())
-                GlobalLogger.shared.info("GeofenceManager - distance to nearest zone = \(distance)")
+                GlobalLogger.shared.debug("GeofenceManager - distance to nearest zone = \(distance)")
                 adjustDistanceFilterForDistanceToNearestZone(distance)
             }
 
@@ -215,15 +219,15 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
         if distance > 1000 {
             desiredAccuracy = kCLLocationAccuracyKilometer
         }
-        if distanceFilter < 1000 && distanceFilter > 250 {
+        if distance < 1000 && distance > 250 {
             desiredAccuracy = kCLLocationAccuracyHundredMeters
         }
-        if distanceFilter < 250 && distanceFilter > 50 {
+        if distance < 250 && distance > 50 {
             desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         }
         locationManager.desiredAccuracy = desiredAccuracy
-        GlobalLogger.shared.info("GeofenceManager - desiredAccuracy = \(locationManager.desiredAccuracy)")
-        GlobalLogger.shared.info("GeofenceManager - distanceFilter = \(locationManager.distanceFilter)")
+        GlobalLogger.shared.debug("GeofenceManager - desiredAccuracy = \(locationManager.desiredAccuracy)")
+        GlobalLogger.shared.debug("GeofenceManager - distanceFilter = \(locationManager.distanceFilter)")
     }
     func onLocationUpdate(_ location: CLLocation) {
         updateMonitoringFor(location: location)

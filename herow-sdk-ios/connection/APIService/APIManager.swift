@@ -252,29 +252,31 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     // MARK: Cache
     internal func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)? = nil) {
         if  !herowDataStorage.getOptin().value {
-            GlobalLogger.shared.info("APIManager- OPTINS ARE FALSE")
+            GlobalLogger.shared.verbose("APIManager- OPTINS ARE FALSE")
             completion?(nil, NetworkError.noOptin)
             return
         }
         authenticationFlow  {
             if self.herowDataStorage.shouldGetCache(for: geoHash) {
-                GlobalLogger.shared.verbose("APIManager- SHOULD FETCH CACHE")
+                GlobalLogger.shared.info("APIManager- SHOULD FETCH CACHE")
                 self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
                 self.cacheWorker.getData(endPoint: .cache(geoHash)) { cache, error in
                     guard let cache = cache else {
                         return
                     }
-                    GlobalLogger.shared.verbose("APIManager- CACHE HAS BEEN FETCHED")
+                    GlobalLogger.shared.info("APIManager- CACHE HAS BEEN FETCHED")
                     self.herowDataStorage.saveLastCacheFetchDate(Date())
                     self.herowDataStorage.setLastGeohash(geoHash)
-                    self.cacheManager.cleanCache()
-                    self.cacheManager.save(zones: cache.zones,
-                                           campaigns: cache.campaigns,
-                                           pois: cache.pois, completion: nil)
-                    completion?(cache, error)
+                    self.cacheManager.cleanCache() {
+                        self.cacheManager.save(zones: cache.zones,
+                                               campaigns: cache.campaigns,
+                                               pois: cache.pois, completion: nil)
+                        completion?(cache, error)
+                    }
                 }
             } else {
-                GlobalLogger.shared.verbose("APIManager- NO NEED TO FETCH CACHE")
+                self.cacheManager.didSave()
+                GlobalLogger.shared.info("APIManager- NO NEED TO FETCH CACHE")
             }
         }
     }

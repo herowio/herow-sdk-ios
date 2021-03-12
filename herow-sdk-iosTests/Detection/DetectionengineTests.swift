@@ -80,9 +80,23 @@ class DetectionengineTests: XCTestCase {
         let location1 = CLLocation(latitude: 10, longitude: 10)
         let location2 = Builder.locationWithBearing(bearingRadians: 0, distanceMeters: 10, origin: location1)
         let location3 = Builder.locationWithBearing(bearingRadians: 0, distanceMeters: 30, origin: location2)
-        XCTAssertFalse(detectionEngine.dispatchLocation(location1))
-        XCTAssertTrue(detectionEngine.dispatchLocation(location2))
+        XCTAssertTrue(detectionEngine.dispatchLocation(location1))
+        XCTAssertFalse(detectionEngine.dispatchLocation(location2))
+        XCTAssertTrue(detectionEngine.dispatchLocation(location3))
         XCTAssertFalse(detectionEngine.dispatchLocation(location3))
+        XCTAssertTrue(detectionEngine.dispatchLocation(location2))
+        XCTAssertTrue(detectionEngine.dispatchLocation(location3))
+        XCTAssertFalse(detectionEngine.dispatchLocation(location3))
+        XCTAssertFalse(detectionEngine.dispatchLocation(location3))
+        XCTAssertFalse(detectionEngine.dispatchLocation(location3))
+        XCTAssertTrue(detectionEngine.dispatchLocation(location3))
+        // stop skipping because 3 
+        XCTAssertTrue(detectionEngine.dispatchLocation(location1))
+        XCTAssertFalse(detectionEngine.dispatchLocation(location1))
+        XCTAssertFalse(detectionEngine.dispatchLocation(location1))
+        XCTAssertFalse(detectionEngine.dispatchLocation(location1))
+        // stop skipping because 3
+        XCTAssertTrue(detectionEngine.dispatchLocation(location1))
     }
 
     func testReceiveConfig() throws {

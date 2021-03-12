@@ -274,8 +274,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
     }
 
    private func save() {
-        saveContext(context: context)
-        saveContext(context: bgContext)
+    synchronize()
+      //  saveContext(context: context)
+       // saveContext(context: bgContext)
     }
 
    private func saveContext (context :NSManagedObjectContext) {
@@ -290,5 +291,31 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
             }
         }
     }
+
+    private func synchronize() {
+        guard  bgContext.hasChanges else {
+            GlobalLogger.shared.debug("CoreDataManager - bgContext has no change")
+            return
+        }
+      do {
+        try bgContext.save()
+
+          DispatchQueue.main.async {
+              self.context.performAndWait {
+              do {
+                try self.context.save()
+
+                GlobalLogger.shared.debug("CoreDataManager - Saved to main context")
+              } catch {
+                GlobalLogger.shared.debug("CoreDataManager - Could not synchonize data. \(error), \(error.localizedDescription)")
+              }
+
+          }
+        }
+      } catch {
+        print("Could not synchonize data. \(error), \(error.localizedDescription)")
+      }
+
+     }
 }
 

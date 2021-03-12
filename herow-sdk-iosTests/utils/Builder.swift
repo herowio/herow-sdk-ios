@@ -48,7 +48,7 @@ class Builder {
         var result = [CLLocationCoordinate2D]()
 
         for i in 0...number - 1 {
-            let newlocation = Builder.locationWithBearing(bearingRadians: 0, distanceMeters: distance * Double((i + 1)), origin: location)
+            let newlocation = Builder.locationWithBearing(bearingRadians: 0, distanceMeters: distance * Double(i + 1), origin: location)
             result.append(newlocation )
         }
         return result

@@ -16,6 +16,8 @@ import CoreLocation
 
 public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelegate, ConfigListener {
 
+
+
     internal var isUpdatingPosition = false
     internal var isUpdatingSignificantChanges = false
     internal var isMonitoringRegion = false
@@ -23,7 +25,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     private let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
     private let dataHolder =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")
     private var locationManager: LocationManager
-    private var locationCount = 0
+    private var skipCount = 0
     internal var lastLocation: CLLocation?
     internal var monitoringListeners: [WeakContainer<ClickAndConnectListener>] = [WeakContainer<ClickAndConnectListener>]()
     internal var detectionListners: [WeakContainer<DetectionEngineListener>] = [WeakContainer<DetectionEngineListener>]()
@@ -287,18 +289,14 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     private func didStartClickAndCollect() {
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        locationManager.distanceFilter = 30
+        GlobalLogger.shared.verbose("DetectionEngine - didStartClickAndCollect")
         for listener in monitoringListeners {
             listener.get()?.didStartClickAndConnect()
         }
     }
 
     private func didStopClickAndCollect() {
-        stopUpdatingLocation()
-        startUpdatingLocation()
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        locationManager.distanceFilter = 100
+        GlobalLogger.shared.verbose("DetectionEngine - didStopClickAndCollect")
         for listener in monitoringListeners {
             listener.get()?.didStopClickAndConnect()
         }
@@ -335,25 +333,28 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     func dispatchLocation(_ location: CLLocation) -> Bool{
-
-    
         var skip = false
         var distance = 0.0
+
         if let lastLocation = self.lastLocation {
+            let distanceKO =  lastLocation.distance(from: location) < 20
+            let timeKO = (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 300
             distance = lastLocation.distance(from: location)
-            skip = distance < 20 && (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 300 && locationCount >= 3
+            skip = (distanceKO && timeKO && skipCount < 3)
         }
         if skip == false {
+            skipCount = 0
             self.lastLocation = location
-            locationCount += 1
-            GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance)")
+
+            GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
             for listener in  detectionListners {
                 listener.get()?.onLocationUpdate(location)
             }
         } else {
-            GlobalLogger.shared.debug("DetectionEngine - skip location DISTANCE FROM LAST : \(distance)")
+            skipCount = skipCount + 1
+            GlobalLogger.shared.debug("DetectionEngine - skip location : \(location) DISTANCE FROM LAST : \(distance)")
         }
-        return skip
+        return !skip
     }
 
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -411,4 +412,5 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         self.stopUpdatingLocation()
         self.stopMonitoringSignificantLocationChanges()
     }
+
 }

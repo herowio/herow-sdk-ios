@@ -15,13 +15,16 @@ class ZoneProviderTests: XCTestCase {
     var coordinatesExit = CLLocationCoordinate2D(latitude: 0, longitude: 0)
 
     override func setUpWithError() throws {
+
        let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowInterval, HerowNotification>())
+        cacheManager.cleanCache()
         coordinatesEntry = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
-        let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinatesEntry, distance: 10000)
+        let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinatesEntry, distance: 75)
         let zones = tupple.0
         let campaigns = tupple.1
-        cacheManager.saveZones(items: zones, completion: nil)
-        cacheManager.saveCampaigns(items: campaigns, completion: nil)
+        cacheManager.save(zones: zones, campaigns: campaigns, pois: [], completion: nil)
+       // cacheManager.saveZones(items: zones, completion: nil)
+       // cacheManager.saveCampaigns(items: campaigns, completion: nil)
         zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: EventDispatcher())
     }
 

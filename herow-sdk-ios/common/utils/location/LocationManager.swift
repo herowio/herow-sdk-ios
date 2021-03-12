@@ -240,10 +240,10 @@ extension LocationManager {
 
     public func configureBackgroundLocationUpdates() -> Bool {
          if let array: [String] = Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String] {
-             GlobalLogger.shared.info("The location manager is allowed to run in background")
+             GlobalLogger.shared.debug("The location manager is allowed to run in background")
              return array.contains("location") 
          }
-         GlobalLogger.shared.info("The location manager is NOT allowed to run in background")
+         GlobalLogger.shared.debug("The location manager is NOT allowed to run in background")
          return false
      }
 

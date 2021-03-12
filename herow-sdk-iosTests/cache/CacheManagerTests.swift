@@ -19,6 +19,11 @@ class CacheManagerTests: XCTestCase, CacheListener {
 
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
+
+    func willCacheUpdate() {
+        print("cache will update")
+    }
+    
     func onCacheUpdate() {
         print("cache update")
     }
@@ -123,8 +128,7 @@ class CacheManagerTests: XCTestCase, CacheListener {
         let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinates)
         let zones = tupple.0
         let campaigns = tupple.1
-        cacheManager.saveZones(items: zones, completion: nil)
-        cacheManager.saveCampaigns(items: campaigns, completion: nil)
+        cacheManager.save(zones: zones, campaigns: campaigns, pois: nil, completion: nil)
         XCTAssertTrue(cacheManager.getZones().count == 10)
         XCTAssertTrue(cacheManager.getCampaigns().count == 50)
         for zone in zones {

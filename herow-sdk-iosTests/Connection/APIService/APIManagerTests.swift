@@ -8,28 +8,17 @@
 import XCTest
 @testable import herow_sdk_ios
 
-struct ConnectionInfotest : ConnectionInfoProtocol {
-    var platform: Platform
-
-    func getUrlType() -> URLType {
-        return .test
-    }
-
-    mutating func updatePlateform(_ platform: String) {
-        self.platform = .preprod
-    }
-}
-
 class APIManagerTests: XCTestCase, ConfigListener  {
     func didRecievedConfig(_ config: APIConfig) {
         
     }
 
-    let connectionInfos = ConnectionInfotest(platform: .prod)
+    let connectionInfos = ConnectionInfo(platform: .test)
     var apiManager: APIManager?
 
     override func setUpWithError() throws {
         apiManager = APIManager(connectInfo: connectionInfos, herowDataStorage: HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "Test")), cacheManager: CacheManager(db: CoreDataManager<APIZone, APIAccess, APIPoi, APICampaign, APIInterval, APINotification>()))
+        apiManager?.configure(connectInfo: connectionInfos)
         apiManager?.registerConfigListener(listener: self)
         self.apiManager?.user = User(login: "toto", password: "toto")
         // Put setup code here. This method is called before the invocation of each test method in the class.

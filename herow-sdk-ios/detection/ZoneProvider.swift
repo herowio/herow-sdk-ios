@@ -92,7 +92,7 @@ extension CLLocationCoordinate2D: Codable {
 
         let blockOPeration = BlockOperation { [self] in
             let uuid = UUID().uuidString
-            GlobalLogger.shared.info("ZoneEventGenerator - starts operation: \(uuid)")
+            GlobalLogger.shared.debug("ZoneEventGenerator - starts operation: \(uuid)")
             let now = Date().timeIntervalSince1970
             let zones: [Zone] = forZones.zones
             let currentLocation = forZones.location
@@ -129,12 +129,14 @@ extension CLLocationCoordinate2D: Codable {
                 return $0.zoneHash
             }
             savePlaceHistory(input)
-            GlobalLogger.shared.debug("ZoneEventGenerator computeEvents oldZonesIds =\(oldZonesIds.count), entries=\(entriesids), exits=\(exitesids)")
-                    eventDisPatcher.post(event: .GEOFENCE_ENTER, infos: entries)
-                    eventDisPatcher.post(event: .GEOFENCE_EXIT, infos: exits)
-                    eventDisPatcher.post(event: .GEOFENCE_VISIT, infos: exits)
+            GlobalLogger.shared.verbose("ZoneEventGenerator computeEvents oldZonesIds =\(oldZonesIds.count), entries=\(entriesids), exits=\(exitesids)")
+            DispatchQueue.global().async {
+                eventDisPatcher.post(event: .GEOFENCE_ENTER, infos: entries)
+                eventDisPatcher.post(event: .GEOFENCE_EXIT, infos: exits)
+                eventDisPatcher.post(event: .GEOFENCE_VISIT, infos: exits)
+            }
 
-            GlobalLogger.shared.info("ZoneEventGenerator - ends operation: \(uuid)")
+            GlobalLogger.shared.debug("ZoneEventGenerator - ends operation: \(uuid)")
 
         }
         queue.maxConcurrentOperationCount = 1
@@ -159,6 +161,7 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
     var lastLocation: CLLocation?
     let cacheManager: CacheManagerProtocol
     let zoneEventGenerator: ZoneEventGenerator
+    internal var cacheIsLoaded = false
     init(cacheManager: CacheManagerProtocol, eventDisPatcher: EventDispatcher) {
         self.cacheManager = cacheManager
         self.zoneEventGenerator = ZoneEventGenerator(eventDisPatcher: eventDisPatcher)
@@ -172,7 +175,11 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
 
     func onLocationUpdate(_ location: CLLocation) {
         self.lastLocation = location
-       _ =  zoneDetectionProcess(location)
+        if cacheIsLoaded {
+            _ =  zoneDetectionProcess(location)
+        } else {
+            GlobalLogger.shared.warning("don't process because cache not updated")
+        }
     }
 
     func zoneDetectionProcess(_ location: CLLocation) -> SelectionContainer{
@@ -184,9 +191,16 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
 
 
     func onCacheUpdate() {
+        GlobalLogger.shared.warning("cache updated")
+        cacheIsLoaded = true
         if let location = lastLocation {
            _ =  zoneDetectionProcess(location)
         }
+    }
+
+    func willCacheUpdate() {
+        cacheIsLoaded = false
+        GlobalLogger.shared.warning("cache will update")
     }
 
 }

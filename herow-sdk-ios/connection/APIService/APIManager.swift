@@ -318,7 +318,11 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         var result: Data?
         let encoder = JSONEncoder()
         do {
+
             result = try encoder.encode(currentUserInfo)
+            if let result = result {
+            GlobalLogger.shared.debug("APIManager - userInfo to send: \(String(decoding: result, as: UTF8.self))")
+            }
 
         } catch {
             print("error while encoding userInfo : \(error.localizedDescription)")

@@ -11,16 +11,14 @@ public class RequestHeaderCreator {
     static func createHeaders(sdk: String?,token: String? = nil, herowId: String? = nil) -> [String: String] {
         let infos = AnalyticsInfo()
         var hearders = [ Headers.contentType: Headers.Values.contentTypeJson,
-                        // Headers.charset: Headers.Values.charsetUtf8,
-                       //  Headers.contentEncoding: Headers.Values.gzip,
                          Headers.version: infos.libInfo.version,
                          Headers.deviceId: infos.deviceInfo.deviceId()
         ]
 
-
         if let token = token {
             hearders[Headers.authorization] = "OAuth \(token)"
         }
+
         if let herowId = herowId {
             hearders[Headers.herowId] = herowId
         }
@@ -28,7 +26,6 @@ public class RequestHeaderCreator {
         if let sdk = sdk {
             hearders[Headers.sdk] = sdk
         }
-
         return hearders
     }
 }

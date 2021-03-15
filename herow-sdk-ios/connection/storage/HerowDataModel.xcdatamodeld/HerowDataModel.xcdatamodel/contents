@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20C69" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20D91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="AccessCoreData" representedClassName="AccessCoreData" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="accessZone" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ZoneCoreData" inverseName="access" inverseEntity="ZoneCoreData"/>
     </entity>
     <entity name="CampaignCoreData" representedClassName="CampaignCoreData" syncable="YES">
         <attribute name="begin" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -21,16 +22,18 @@
         <attribute name="simpleId" optional="YES" attributeType="String"/>
         <attribute name="triggers" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String:Int]"/>
         <attribute name="tz" optional="YES" attributeType="String"/>
-        <relationship name="intervals" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IntervalCoreData"/>
-        <relationship name="notification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NotificationCoreData"/>
+        <relationship name="intervals" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="IntervalCoreData" inverseName="campaigns" inverseEntity="IntervalCoreData"/>
+        <relationship name="notification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NotificationCoreData" inverseName="campaigns" inverseEntity="NotificationCoreData"/>
     </entity>
     <entity name="IntervalCoreData" representedClassName="IntervalCoreData" syncable="YES">
         <attribute name="end" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="start" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="campaigns" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CampaignCoreData" inverseName="intervals" inverseEntity="CampaignCoreData"/>
     </entity>
     <entity name="NotificationCoreData" representedClassName="NotificationCoreData" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="campaigns" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CampaignCoreData" inverseName="notification" inverseEntity="CampaignCoreData"/>
     </entity>
     <entity name="PoiCoreData" representedClassName="PoiCoreData" syncable="YES">
         <attribute name="id" optional="YES" attributeType="String"/>
@@ -45,14 +48,14 @@
         <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="radius" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="zoneHash" optional="YES" attributeType="String"/>
-        <relationship name="access" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AccessCoreData"/>
+        <relationship name="access" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="AccessCoreData" inverseName="accessZone" inverseEntity="AccessCoreData"/>
     </entity>
     <elements>
-        <element name="AccessCoreData" positionX="-54" positionY="45" width="128" height="74"/>
+        <element name="AccessCoreData" positionX="-54" positionY="45" width="128" height="89"/>
         <element name="CampaignCoreData" positionX="-36" positionY="63" width="128" height="284"/>
-        <element name="ZoneCoreData" positionX="-63" positionY="-18" width="128" height="14"/>
+        <element name="IntervalCoreData" positionX="-36" positionY="45" width="128" height="74"/>
+        <element name="NotificationCoreData" positionX="-27" positionY="54" width="128" height="74"/>
         <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="14"/>
-        <element name="IntervalCoreData" positionX="-36" positionY="45" width="128" height="59"/>
-        <element name="NotificationCoreData" positionX="-27" positionY="54" width="128" height="59"/>
+        <element name="ZoneCoreData" positionX="-63" positionY="-18" width="128" height="134"/>
     </elements>
 </model>

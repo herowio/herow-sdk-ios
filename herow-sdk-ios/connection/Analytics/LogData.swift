@@ -66,7 +66,6 @@ class LogDataStruct: Encodable {
         try container.encode(subtype, forKey: .subtype)
         try container.encode(ua, forKey: .ua)
     }
-
 }
 
 class Log: Encodable {

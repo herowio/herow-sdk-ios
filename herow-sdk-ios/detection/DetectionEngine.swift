@@ -289,6 +289,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     private func didStartClickAndCollect() {
+        self.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         GlobalLogger.shared.verbose("DetectionEngine - didStartClickAndCollect")
         for listener in monitoringListeners {
             listener.get()?.didStartClickAndConnect()
@@ -296,7 +297,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     private func didStopClickAndCollect() {
-        locationManager.desiredAccuracy = desiredAccuracy
+        self.desiredAccuracy = kCLLocationAccuracyHundredMeters
         GlobalLogger.shared.verbose("DetectionEngine - didStopClickAndCollect")
         for listener in monitoringListeners {
             listener.get()?.didStopClickAndConnect()

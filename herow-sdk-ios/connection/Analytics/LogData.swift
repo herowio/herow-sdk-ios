@@ -23,12 +23,10 @@ class LogData {
 }
 
 class LogDataStruct: Encodable {
-    //let t: String = "app_mobile"
     let phoneId: String
     let appState: String
     let libVersion : String
     let date : TimeInterval
-    var herowId: String?
     let applicationName: String
     let applicationVersion: String
     let subtype: String
@@ -38,7 +36,6 @@ class LogDataStruct: Encodable {
         let analyticsInfos = AnalyticsInfo()
         self.phoneId = analyticsInfos.deviceInfo.deviceId()
         self.appState = appState
-        self.herowId = dataStorage?.getHerowId()
         self.subtype = subtype
         self.libVersion = analyticsInfos.libInfo.version
         self.date = Date().timeIntervalSince1970 * 1000
@@ -48,12 +45,10 @@ class LogDataStruct: Encodable {
     }
 
     enum CodingKeys: String, CodingKey {
-      //  case t
         case phoneId = "phone_id"
         case appState = "app_state"
         case libVersion = "lib_version"
         case date
-        case herowId = "herow_id"
         case applicationName = "application_name"
         case applicationVersion = "application_version"
         case subtype
@@ -66,12 +61,10 @@ class LogDataStruct: Encodable {
         try container.encode(appState, forKey: .appState)
         try container.encode(libVersion, forKey: .libVersion)
         try container.encode(date, forKey: .date)
-        try container.encodeIfPresent(herowId, forKey: .herowId)
         try container.encode(applicationName, forKey: .applicationName)
         try container.encode(applicationVersion, forKey: .applicationVersion)
         try container.encode(subtype, forKey: .subtype)
         try container.encode(ua, forKey: .ua)
-       // try container.encode(t, forKey: .t)
     }
 
 }

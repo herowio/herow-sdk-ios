@@ -296,6 +296,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     private func didStopClickAndCollect() {
+        locationManager.desiredAccuracy = desiredAccuracy
         GlobalLogger.shared.verbose("DetectionEngine - didStopClickAndCollect")
         for listener in monitoringListeners {
             listener.get()?.didStopClickAndConnect()
@@ -343,8 +344,12 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             skip = (distanceKO && timeKO && skipCount < 3)
         }
         if skip == false {
+            if  self.lastLocation == nil {
+                GlobalLogger.shared.debug("DetectionEngine - first location : \(location), accuracy: \(location.horizontalAccuracy)")
+            }
             skipCount = 0
             self.lastLocation = location
+
 
             GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
             for listener in  detectionListners {

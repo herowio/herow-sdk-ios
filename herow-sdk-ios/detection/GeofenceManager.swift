@@ -20,7 +20,9 @@ fileprivate struct MovingGeofenceParameter {
         self.distanceFromUserToRegionBorder = distanceFromUserForBorderOfMovingRegion
     }
 }
-class GeofenceManager: CacheListener, DetectionEngineListener {
+class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListener {
+
+
 
     private let movingRegionBearings: [Double] = [0, 90, 180, 270]
     private let maxGeoFenceZoneCount = 10
@@ -32,10 +34,11 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
     private var currentParametersPosition: Int = 0
     private var locationManager: LocationManager
     private let cacheManager : CacheManagerProtocol
-
-    init(locationManager: LocationManager, cacheManager: CacheManagerProtocol) {
+    private var fuseManager: FuseManager?
+    init(locationManager: LocationManager, cacheManager: CacheManagerProtocol, fuseManager: FuseManager? = nil) {
         self.locationManager = locationManager
         self.cacheManager = cacheManager
+        self.fuseManager = fuseManager
     }
 
     private func startMonitoringRegion(_ region: CLRegion) {
@@ -212,7 +215,9 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
         createPlaceRegions(places: cleanPlaceMonitoredRegions(places: zones))
     }
 
+
     private func adjustDistanceFilterForDistanceToNearestZone(_ distance : CLLocationDistance) {
+
         let distanceFilter = min(500, max(distance / 10, 5))
         locationManager.distanceFilter = distanceFilter
         var desiredAccuracy = kCLLocationAccuracyBest
@@ -229,8 +234,18 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
         GlobalLogger.shared.debug("GeofenceManager - desiredAccuracy = \(locationManager.desiredAccuracy)")
         GlobalLogger.shared.debug("GeofenceManager - distanceFilter = \(locationManager.distanceFilter)")
     }
+
+
     func onLocationUpdate(_ location: CLLocation) {
         updateMonitoringFor(location: location)
+    }
+
+    func onFuseUpdate(_ activated: Bool, location: CLLocation? = nil) {
+        if activated {
+            locationManager.stopUpdatingLocation()
+        } else {
+            locationManager.startUpdatingLocation()
+        }
     }
 
     func reset() {

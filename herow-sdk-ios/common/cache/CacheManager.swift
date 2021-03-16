@@ -16,7 +16,7 @@ enum CacheUpdate {
     case delete
 }
 
-protocol CacheListener: class {
+@objc public protocol CacheListener: class {
     func onCacheUpdate()
     func willCacheUpdate()
 }

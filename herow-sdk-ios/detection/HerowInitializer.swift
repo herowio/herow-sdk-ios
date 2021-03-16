@@ -26,6 +26,7 @@ import CoreLocation
     private let zoneProvider: ZoneProvider
     private let eventDispatcher: EventDispatcher
     private let analyticsManager: AnalyticsManager
+    private let fuseManager: FuseManager
     internal  init(locationManager: LocationManager = CLLocationManager()) {
 
         eventDispatcher = EventDispatcher()
@@ -38,9 +39,11 @@ import CoreLocation
         permissionsManager = PermissionsManager(userInfoManager: userInfoManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: userInfoManager)
         detectionEngine = DetectionEngine(locationManager)
+        fuseManager = FuseManager(dataHolder: dataHolder, timeProvider: TimeProviderAbsolute())
         apiManager.registerConfigListener(listener: detectionEngine)
-        geofenceManager = GeofenceManager(locationManager: detectionEngine, cacheManager: cacheManager)
+        geofenceManager = GeofenceManager(locationManager: detectionEngine, cacheManager: cacheManager, fuseManager: fuseManager)
         cacheManager.registerCacheListener(listener: geofenceManager)
+        detectionEngine.registerDetectionListener(listener: fuseManager)
         detectionEngine.registerDetectionListener(listener: geofenceManager)
         zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: eventDispatcher)
         cacheManager.registerCacheListener(listener: zoneProvider)
@@ -109,6 +112,33 @@ import CoreLocation
         detectionEngine.unregisterClickAndCollectListener(listener: listener)
     }
 
+    //MARK:DETECTIONENGINELISTENERS  MANAGEMENT
+    @objc public func registerDetectionListener(listener: DetectionEngineListener) {
+        detectionEngine.registerDetectionListener(listener:listener)
+    }
+
+    @objc public func unregisterDetectionListener(listener: DetectionEngineListener) {
+        detectionEngine.unregisterDetectionListener(listener: listener)
+    }
+
+    //MARK: FUSEMANAGERLISTENERS  MANAGEMENT
+    @objc public func  registerFuseManagerListener(listener: FuseManagerListener) {
+        fuseManager.registerFuseManagerListener(listener:listener)
+    }
+
+    @objc public func unregisterFuseManagerListener(listener: FuseManagerListener) {
+        fuseManager.unregisterFuseManagerListener(listener: listener)
+    }
+
+    //MARK: CACHELISTENERS  MANAGEMENT
+    @objc public func  registerCacheListener(listener: CacheListener) {
+        cacheManager.registerCacheListener(listener: listener)
+    }
+
+    @objc public func unregisterCacheListener(listener: CacheListener) {
+        cacheManager.unregisterCacheListener(listener: listener)
+    }
+
     //MARK: USERINFO MANAGEMENT
     @objc public func getOptinValue() -> Bool {
         return userInfoManager.getOptin().value
@@ -136,6 +166,12 @@ import CoreLocation
     @objc public func getHerowZoneForId(id: String) -> HerowZone? {
         guard let zone =  cacheManager.getZones(ids: [id]).first else { return nil }
         return HerowZone(zone: zone)
+    }
+
+    @objc public func getHerowZones() -> [HerowZone] {
+        return  cacheManager.getZones().map {
+            HerowZone(zone: $0)
+        }
     }
 
 

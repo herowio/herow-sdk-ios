@@ -22,8 +22,6 @@ fileprivate struct MovingGeofenceParameter {
 }
 class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListener {
 
-
-
     private let movingRegionBearings: [Double] = [0, 90, 180, 270]
     private let maxGeoFenceZoneCount = 10
     internal private(set) var lastLocation: CLLocation?
@@ -117,7 +115,6 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
         GlobalLogger.shared.debug("geofenceMoving - regionsToRemove: \(regionsRecord.regionsToRemove)")
 
         if regionsRecord.update() {
-
             GlobalLogger.shared.debug("geofenceMoving - create new regions")
             createNewMovingGeofences(location: location)
         }
@@ -167,8 +164,6 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
     private func getDistanceFromNearestPlace(location: CLLocation, nearestPlace: Zone) -> CLLocationDistance {
         let placeLocation = CLLocation(latitude: nearestPlace.getLat(), longitude: nearestPlace.getLng())
         return location.distance(from:placeLocation)
-
-
     }
 
     internal func createNewMovingGeofences(location: CLLocation) {

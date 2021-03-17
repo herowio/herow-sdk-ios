@@ -21,7 +21,7 @@ import CoreLocation
     private var permissionsManager: PermissionsManagerProtocol
     private let cacheManager: CacheManagerProtocol
 
-    private let geofenceManager: GeofenceManager
+    internal let geofenceManager: GeofenceManager
     private var detectionEngine: DetectionEngine
     private let zoneProvider: ZoneProvider
     private let eventDispatcher: EventDispatcher
@@ -89,7 +89,7 @@ import CoreLocation
     @objc public func registerEventListener(listener: EventListener) {
        eventDispatcher.registerListener(listener)
    }
-    //MARK: CLICKANDCOLLECT  MANAGEMENT
+    //MARK: CLICKANDCOLLECT MANAGEMENT
     @objc public func isOnClickAndCollect() -> Bool {
         return detectionEngine.getIsOnClickAndCollect()
     }

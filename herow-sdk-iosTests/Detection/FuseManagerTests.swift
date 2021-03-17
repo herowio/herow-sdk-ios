@@ -26,7 +26,7 @@ class FuseManagerTests: XCTestCase {
             XCTAssert(true)
             return
         }
-        for  i in 0...FuseManager.countLimit - 1 {
+        for  _ in 0...FuseManager.countLimit - 1 {
         fuseManager.onLocationUpdate(CLLocation())
             XCTAssertFalse(fuseManager.isActivated())
         }
@@ -40,7 +40,17 @@ class FuseManagerTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    
+    func testRegister() throws {
+        guard let fuseManager = fuseManager else {
+            XCTAssert(true)
+            return
+        }
+        let listener = Listener()
+        fuseManager.registerFuseManagerListener(listener: listener)
+        XCTAssertTrue(fuseManager.listeners.count == 1)
+        fuseManager.unregisterFuseManagerListener(listener: listener)
+        XCTAssertTrue(fuseManager.listeners.count == 0)
+    }
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
@@ -49,4 +59,10 @@ class FuseManagerTests: XCTestCase {
         }
     }
 
+}
+
+class Listener: FuseManagerListener {
+    func onFuseUpdate(_ activated: Bool, location: CLLocation?) {
+
+    }
 }

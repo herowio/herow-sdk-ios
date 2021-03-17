@@ -45,6 +45,10 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
         locationManager.startMonitoring(region: region)
     }
 
+    internal func getMonitoredRegions() -> Set<CLRegion> {
+        return self.locationManager.getMonitoredRegions()
+    }
+
     private func stopMonitoringRegions(_ regions: [CLRegion]) {
         for region in regions {
             locationManager.stopMonitoring(region: region)
@@ -52,19 +56,23 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
     }
 
 
-    private func createPlaceRegions( places: [Zone]) {
+    internal func createPlaceRegions( places: [Zone]) {
         for place in places {
             let placeLocation = CLLocation(latitude: place.getLat(), longitude: place.getLng())
             let region = createRegion(center: placeLocation, radius: place.getRadius(), prefix: "zone",zoneHash: place.getHash())
             startMonitoringRegion(region)
         }
     }
+    
 
-    private func cleanPlaceMonitoredRegions( places: [Zone]) -> [Zone] {
+    internal func cleanPlaceMonitoredRegions( places: [Zone]) -> [Zone] {
         let monitoredRegions = locationManager.getMonitoredRegions()
         let monitoredIds = monitoredRegions.map {getPlaceIdForRegion($0)}
         let idsToKeep = places.map {$0.getHash()}
-        let idsToUnMonitor = monitoredIds.filter {!(idsToKeep.contains($0 as String) || $0.hasPrefix(LocationUtils.regionIdPrefix + ".moving."))}
+        let idsToUnMonitor = monitoredIds.filter {
+            !(idsToKeep.contains($0 as String)) || $0.hasPrefix(LocationUtils.regionIdPrefix + ".moving.")
+            
+        }
         let regionToUnMonitor = monitoredRegions.filter {
             idsToUnMonitor.contains(getPlaceIdForRegion($0))
         }
@@ -75,7 +83,7 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
         return places.filter { !nowMonitoredRegionsIds.contains($0.getHash() as NSString)}
     }
 
-    private  func createRegion(center: CLLocation, radius: CLLocationDistance, prefix: String, zoneHash: String = "") -> CLRegion {
+    internal  func createRegion(center: CLLocation, radius: CLLocationDistance, prefix: String, zoneHash: String = "") -> CLRegion {
         let identifier: String = LocationUtils.regionIdPrefix + "." + prefix + ".\(center.coordinate.latitude).\(center.coordinate.longitude).\(zoneHash)"
         let region = CLCircularRegion(center: center.coordinate, radius: radius, identifier: identifier)
         region.notifyOnExit = true
@@ -163,7 +171,7 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
 
     }
 
-    private func createNewMovingGeofences(location: CLLocation) {
+    internal func createNewMovingGeofences(location: CLLocation) {
         let movingDistance = calculateDistanceFromCenter(parameter: movingGeofenceParameter)
         let radius = calculateRegionRadius(parameter: movingGeofenceParameter)
         for bearing in movingRegionBearings {

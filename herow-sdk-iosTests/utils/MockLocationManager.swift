@@ -9,6 +9,7 @@ import Foundation
 import CoreLocation
 
 class MockLocationManager: LocationManager {
+    var monitoredRegions = Set<CLRegion>()
     var location: CLLocation?
 
     var heading: CLHeading?
@@ -52,15 +53,15 @@ class MockLocationManager: LocationManager {
     }
 
     func startMonitoring(region: CLRegion) {
-
+        monitoredRegions.insert(region)
     }
 
     func stopMonitoring(region: CLRegion) {
-
+        monitoredRegions.remove(region)
     }
 
     func getMonitoredRegions() -> Set<CLRegion> {
-        return  Set<CLRegion>()
+        return  monitoredRegions
     }
 
     func startMonitoringSignificantLocationChanges() {

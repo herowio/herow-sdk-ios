@@ -18,7 +18,7 @@ class FuseManager: DetectionEngineListener, ResetDelegate {
         save()
     }
     static  let timeWindow = Double(5 * 60)
-    static  let countLimit = 10
+    static  let countLimit = 50
     let dateKey = "FuseManagerDateTime"
     let countKey = "FuseManagerCount"
     private var dataHolder: DataHolder
@@ -42,13 +42,12 @@ class FuseManager: DetectionEngineListener, ResetDelegate {
         self.timeProvider = timeProvider
         load()
     }
-    func onLocationUpdate(_ location: CLLocation) {
+    func onLocationUpdate(_ location: CLLocation, from: UpdateType = .undefined) {
         load()
         let now = timeProvider.getTime()
         if locationCount == 0 {
             lastLocationTime = now
         }
-
         if now - lastLocationTime < FuseManager.timeWindow {
             locationCount = locationCount + 1
         } else {

@@ -139,6 +139,15 @@ import CoreLocation
         cacheManager.unregisterCacheListener(listener: listener)
     }
 
+    //MARK: GEOFENCEMANAGERLISTENERS  MANAGEMENT
+    @objc public func  registerGeofenceManagerListener(listener: GeofenceManagerListener) {
+        geofenceManager.registerGeofenceManagerListener(listener: listener)
+    }
+
+    @objc public func unregisterGeofenceManagerListenerr(listener: GeofenceManagerListener) {
+        geofenceManager.unregisterGeofenceManagerListener(listener: listener)
+    }
+
     //MARK: USERINFO MANAGEMENT
     @objc public func getOptinValue() -> Bool {
         return userInfoManager.getOptin().value

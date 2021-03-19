@@ -10,8 +10,10 @@ import CoreLocation
 @testable import herow_sdk_ios
 
 class TestDetectionListener: DetectionEngineListener {
+
+
     var location : CLLocation?
-    func onLocationUpdate(_ location: CLLocation) {
+    func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         self.location = location
     }
 }
@@ -79,7 +81,7 @@ class DetectionengineTests: XCTestCase {
     func testDispatch() throws {
         let location1 = CLLocation(latitude: 10, longitude: 10)
         let location2 = Builder.locationWithBearing(bearingRadians: 0, distanceMeters: 10, origin: location1)
-        let location3 = Builder.locationWithBearing(bearingRadians: 0, distanceMeters: 30, origin: location2)
+        let location3 = Builder.locationWithBearing(bearingRadians: 0, distanceMeters: 40, origin: location2)
         XCTAssertTrue(detectionEngine.dispatchLocation(location1))
         XCTAssertFalse(detectionEngine.dispatchLocation(location2))
         XCTAssertTrue(detectionEngine.dispatchLocation(location3))

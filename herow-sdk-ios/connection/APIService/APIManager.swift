@@ -351,7 +351,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
     }
 
-    public func onLocationUpdate(_ location: CLLocation) {
+   public func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         let currentGeoHash = GeoHashHelper.encodeBase32(lat: location.coordinate.latitude, lng: location.coordinate.longitude)[0...3]
         getCache(geoHash: String(currentGeoHash))
     }

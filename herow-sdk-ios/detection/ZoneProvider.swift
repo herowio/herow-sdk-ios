@@ -173,7 +173,7 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
         }
     }
 
-    func onLocationUpdate(_ location: CLLocation) {
+    func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         self.lastLocation = location
         if cacheIsLoaded {
             _ =  zoneDetectionProcess(location)

@@ -30,7 +30,7 @@ class AnalyticsManager: EventListener, DetectionEngineListener, ClickAndConnectL
         }
     }
 
-    func onLocationUpdate(_ location: CLLocation) {
+    func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         createlogContex(location)
 
     }

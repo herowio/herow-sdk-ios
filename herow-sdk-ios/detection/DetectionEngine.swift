@@ -8,8 +8,13 @@
 import Foundation
 import CoreLocation
 
+@objc public enum UpdateType: Int {
+    case update
+    case geofence
+    case undefined
+}
 @objc public protocol DetectionEngineListener: class {
-    func onLocationUpdate(_ location: CLLocation)
+    func onLocationUpdate(_ location: CLLocation, from: UpdateType)
     
 }
 
@@ -334,12 +339,12 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
     }
 
-    func dispatchLocation(_ location: CLLocation) -> Bool{
+    func dispatchLocation(_ location: CLLocation, from: UpdateType = .undefined) -> Bool{
         var skip = false
         var distance = 0.0
 
         if let lastLocation = self.lastLocation {
-            let distanceKO =  lastLocation.distance(from: location) < 20
+            let distanceKO =  lastLocation.distance(from: location) < 30
             let timeKO = (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 300
             distance = lastLocation.distance(from: location)
             skip = (distanceKO && timeKO && skipCount < 3)
@@ -354,7 +359,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
             GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
             for listener in  detectionListners {
-                listener.get()?.onLocationUpdate(location)
+                listener.get()?.onLocationUpdate(location, from: from)
             }
         } else {
             skipCount = skipCount + 1
@@ -371,14 +376,14 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         if  let location: CLLocation =  locations.last {
             GlobalLogger.shared.debug("didUpdate - last location: \(location.coordinate.latitude),"
                                         + "\(location.coordinate.longitude) - \(location.timestamp)")
-            _ = dispatchLocation(location)
+            _ = dispatchLocation(location, from: .update)
         }
     }
 
     func extractLocationAfterRegionUpdate() {
         if let location = locationManager.location {
             GlobalLogger.shared.debug("extractLocationAfterRegionUpdate - \(location.coordinate.latitude), \(location.coordinate.longitude)")
-            _ = dispatchLocation(location)
+            _ = dispatchLocation(location, from:.geofence)
         }
     }
 

@@ -12,7 +12,7 @@ import UIKit
 
     var appStateDelegates: [WeakContainer<AppStateDelegate>]
     var isOnBackground: Bool
-
+    internal var bgTaskManager = BackgroundTaskManager(app: UIApplication.shared, name: "io.herow.backgroundDetectionTask")
     public override init() {
         appStateDelegates = [WeakContainer<AppStateDelegate>]()
         isOnBackground = true
@@ -50,13 +50,15 @@ import UIKit
     }
 
     public func onAppInBackground() {
+        bgTaskManager.start()
         if !isOnBackground {
             GlobalLogger.shared.debug("appStateDetector - inBackground")
             isOnBackground = true
-            for delegate in appStateDelegates {
+            for delegate in self.appStateDelegates {
                 delegate.get()?.onAppInBackground()
             }
         }
+        bgTaskManager.stop()
     }
 
     public func onAppTerminated() {
@@ -69,6 +71,11 @@ import UIKit
 
 extension AppStateDetector {
     internal func listenForAppStateChanges() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onAppInBackground),
+                                               name: UIApplication.willResignActiveNotification,
+                                               object: nil)
+
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(onAppInBackground),
                                                name: UIApplication.willResignActiveNotification,

@@ -83,30 +83,35 @@ class CacheManagerTests: XCTestCase, CacheListener {
         let testFailExpectation = expectation(description: "testFailExpectation")
         let interval = APIInterval(start: 0, end: 1000)
         let campaign: APICampaign = APICampaign(id: "ggggg",
-                                                 company: "company",
-                                                 name: "name",
-                                                 createdDate: 0,
-                                                 modifiedDate: 0,
-                                                 deleted: false,
-                                                 simpleId: "id",
-                                                 begin: 0,
-                                                 end: nil,
-                                                 realTimeContent: false,
-                                                 intervals: [interval],
-                                                 cappings: nil,
-                                                 triggers: ["exit" : 0],
-                                                 daysRecurrence: [""],
-                                                 recurrenceEnabled: false,
-                                                 tz: "tz",
-                                                 notification: nil)
+                                                company: "company",
+                                                name: "name",
+                                                createdDate: 0,
+                                                modifiedDate: 0,
+                                                deleted: false,
+                                                simpleId: "id",
+                                                begin: 0,
+                                                end: nil,
+                                                realTimeContent: false,
+                                                intervals: [interval],
+                                                cappings: nil,
+                                                triggers: ["exit" : 0],
+                                                daysRecurrence: [""],
+                                                recurrenceEnabled: false,
+                                                tz: "tz",
+                                                notification: nil)
 
-        cacheManager.saveCampaigns(items: [campaign]) { [self] in
+
+        self.cacheManager.saveCampaigns(items: [campaign]) { [self] in
             XCTAssertTrue(self.cacheManager.getCampaigns().count == 1)
             XCTAssertTrue(self.cacheManager.getCampaigns().count == 1)
             self.cacheManager.cleanCache()
             XCTAssertTrue(self.cacheManager.getPois().count == 0)
             testFailExpectation.fulfill()
         }
+
+
+
+
         waitForExpectations(timeout:30) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
@@ -124,58 +129,90 @@ class CacheManagerTests: XCTestCase, CacheListener {
     }
 
     func testArround() throws {
+        let testFailExpectation = expectation(description: "testFailExpectation")
         let coordinates = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
         let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinates)
         let zones = tupple.0
         let campaigns = tupple.1
-        cacheManager.save(zones: zones, campaigns: campaigns, pois: nil, completion: nil)
-        XCTAssertTrue(cacheManager.getZones().count == 10)
-        XCTAssertTrue(cacheManager.getCampaigns().count == 50)
-        for zone in zones {
-            let hash = zone.hash
-            XCTAssertTrue(cacheManager.getZones(ids: [hash]).count == 1)
-            XCTAssertTrue(cacheManager.getCampaignsForZone(zone).count  == 5)
+        cacheManager.save(zones: zones, campaigns: campaigns, pois: nil) {
+            XCTAssertTrue(self.cacheManager.getZones().count == 10)
+            XCTAssertTrue(self.cacheManager.getCampaigns().count == 50)
+            for zone in zones {
+                let hash = zone.hash
+                XCTAssertTrue(self.cacheManager.getZones(ids: [hash]).count == 1)
+                XCTAssertTrue(self.cacheManager.getCampaignsForZone(zone).count  == 5)
 
+            }
+            testFailExpectation.fulfill()
+        }
+        waitForExpectations(timeout:30) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
         }
     }
 
     func testArround2() throws {
+        let testFailExpectation = expectation(description: "testFailExpectation")
         let coordinates = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
         let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinates, distance: 10000)
         let zones = tupple.0
         let campaigns = tupple.1
-        cacheManager.saveZones(items: zones, completion: nil)
-        cacheManager.saveCampaigns(items: campaigns, completion: nil)
-        XCTAssertTrue(cacheManager.getZones().count == 10)
-        XCTAssertTrue(cacheManager.getCampaigns().count == 50)
-        XCTAssertTrue(cacheManager.getNearbyZones(CLLocation(latitude: 49.371864318847656, longitude: 3.8972530364990234)).count == 2)
+
+        cacheManager.save(zones: zones, campaigns: campaigns, pois: nil) {
+            XCTAssertTrue(self.cacheManager.getZones().count == 10)
+            XCTAssertTrue(self.cacheManager.getCampaigns().count == 50)
+            XCTAssertTrue(self.cacheManager.getNearbyZones(CLLocation(latitude: 49.371864318847656, longitude: 3.8972530364990234)).count == 2)
+            testFailExpectation.fulfill()
+        }
+        waitForExpectations(timeout:30) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
 
     }
 
     func testArround3() throws {
+        let testFailExpectation = expectation(description: "testFailExpectation")
         let coordinates = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
         let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinates, distance: 5000)
         let zones = tupple.0
         let campaigns = tupple.1
-        cacheManager.saveZones(items: zones, completion: nil)
-        cacheManager.saveCampaigns(items: campaigns, completion: nil)
-        XCTAssertTrue(cacheManager.getZones().count == 10)
-        XCTAssertTrue(cacheManager.getCampaigns().count == 50)
-        XCTAssertTrue(cacheManager.getNearbyZones(CLLocation(latitude: 49.371864318847656, longitude: 3.8972530364990234)).count == 4)
+
+        cacheManager.save(zones: zones, campaigns: campaigns, pois: nil) {
+            XCTAssertTrue(self.cacheManager.getZones().count == 10)
+            XCTAssertTrue(self.cacheManager.getCampaigns().count == 50)
+            XCTAssertTrue(self.cacheManager.getNearbyZones(CLLocation(latitude: 49.371864318847656, longitude: 3.8972530364990234)).count == 4)
+            testFailExpectation.fulfill()
+        }
+        waitForExpectations(timeout:30) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
 
     }
 
     func testArround4() throws {
+        let testFailExpectation = expectation(description: "testFailExpectation")
         let coordinates = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
         let pois =  Builder.createPois(number: 10, from: coordinates,distance: 5000)
         let location = CLLocation(latitude: 49.371864318847656, longitude: 3.8972530364990234)
-        cacheManager.savePois(items: pois, completion: nil)
-        XCTAssertTrue(cacheManager.getPois().count == 10)
-        XCTAssertTrue(cacheManager.getNearbyPois(location, distance: 20000, count: 10).count == 4)
-        XCTAssertTrue(cacheManager.getNearbyPois(location, distance: 20000, count: 2).count == 2)
-        XCTAssertTrue(cacheManager.getNearbyPois(location, distance: 5000, count: 10).count == 1)
-        XCTAssertTrue(cacheManager.getNearbyPois(location, distance: 10000, count: 10).count == 2)
-        XCTAssertTrue(cacheManager.getNearbyPois(location, distance: 10000, count: 1).count == 1)
+        cacheManager.savePois(items: pois) {
+            XCTAssertTrue(self.cacheManager.getPois().count == 10)
+            XCTAssertTrue(self.cacheManager.getNearbyPois(location, distance: 20000, count: 10).count == 4)
+            XCTAssertTrue(self.cacheManager.getNearbyPois(location, distance: 20000, count: 2).count == 2)
+            XCTAssertTrue(self.cacheManager.getNearbyPois(location, distance: 5000, count: 10).count == 1)
+            XCTAssertTrue(self.cacheManager.getNearbyPois(location, distance: 10000, count: 10).count == 2)
+            XCTAssertTrue(self.cacheManager.getNearbyPois(location, distance: 10000, count: 1).count == 1)
+            testFailExpectation.fulfill()
+        }
+        waitForExpectations(timeout:30) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
     }
 
     func testPerformanceExample() throws {

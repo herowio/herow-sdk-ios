@@ -188,15 +188,15 @@ class UserInfoManager: UserInfoManagerProtocol {
     }
 
     func onAppInForeground() {
-        if herowDataHolder.userInfoWaitingForUpdate() {
+      /*  if herowDataHolder.userInfoWaitingForUpdate() {
             synchronize()
-        }
+        }*/
     }
 
     func onAppInBackground() {
-        if herowDataHolder.userInfoWaitingForUpdate() {
+      /*  if herowDataHolder.userInfoWaitingForUpdate() {
             synchronize()
-        }
+        }*/
     }
 
     func synchronize() {

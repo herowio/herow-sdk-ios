@@ -50,7 +50,7 @@ public class BackgroundTaskManager: AppStateDelegate {
                 GlobalLogger.shared.debug("Background time remaining = \(UIApplication.shared.backgroundTimeRemaining) seconds")
             }
             self.delegate?.onStartBackgroundTask(id: backgroundTaskId, name: name)
-        } 
+        }
     }
 
     public func updateTimeOut() {
@@ -100,3 +100,4 @@ public protocol BackgroundTaskDelegate: class {
 
     func onStopBackgroundTask(id: UIBackgroundTaskIdentifier, name: String)
 }
+

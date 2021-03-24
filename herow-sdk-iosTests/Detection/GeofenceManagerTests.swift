@@ -36,7 +36,7 @@ class GeofenceManagerTests: XCTestCase {
         XCTAssertTrue(geofenceManager.getMonitoredRegions().count == 1)
        _ = geofenceManager.cleanPlaceMonitoredRegions(places: zones)
         XCTAssertTrue(geofenceManager.getMonitoredRegions().count == 1)
-       _ = geofenceManager.createNewMovingGeofences( location: CLLocation(latitude: 10, longitude: 10))
+        geofenceManager.createNewMovingGeofences( location: CLLocation(latitude: 10, longitude: 10))
         XCTAssertTrue(geofenceManager.getMonitoredRegions().count == 5)
     _ = geofenceManager.cleanPlaceMonitoredRegions(places: zones)
         XCTAssertTrue(geofenceManager.getMonitoredRegions().count == 1)

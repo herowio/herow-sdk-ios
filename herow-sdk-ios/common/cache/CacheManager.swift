@@ -88,10 +88,19 @@ class CacheManager: CacheManagerProtocol {
                                 self.didSave()
                                 completion?()
                             }
+                        } else {
+                            self.didSave()
+                            completion?()
                         }
                     }
+                } else {
+                    self.didSave()
+                    completion?()
                 }
             }
+        } else {
+            self.didSave()
+            completion?()
         }
     }
 

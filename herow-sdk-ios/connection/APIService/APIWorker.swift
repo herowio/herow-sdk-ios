@@ -27,6 +27,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
     typealias ResponseType = T
     var shouldHaveResponse = true
+    var queue = OperationQueue()
     private var session: URLSession
     private var sessionCfg: URLSessionConfiguration
     private var currentTask: URLSessionDataTask?
@@ -44,6 +45,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         self.sessionCfg = URLSessionConfiguration.default
         self.sessionCfg.timeoutIntervalForRequest = 30.0
         self.session = URLSession(configuration: sessionCfg)
+        queue.qualityOfService = .background
     }
 
     public func setUrlType(_ urlType: URLType) {
@@ -75,7 +77,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     }
 
     internal  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?)  {
-
+        let blockOPeration = BlockOperation { [self] in
 
         let completion: (Result<ResponseType, Error>) -> Void = {result in
             callback?(result)
@@ -142,6 +144,9 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
             }
         })
         currentTask?.resume()
+        }
+        queue.maxConcurrentOperationCount = 1
+        queue.addOperation(blockOPeration)
 
     }
 

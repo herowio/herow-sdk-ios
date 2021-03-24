@@ -30,9 +30,11 @@ class TestMonitotingListener: ClickAndConnectListener {
 }
 
 class DetectionengineTests: XCTestCase {
-
-    let detectionEngine = DetectionEngine(MockLocationManager())
+    let timeProvider =  TimeProviderForTests()
+    var detectionEngine : DetectionEngine?
     override func setUpWithError() throws {
+        timeProvider.updateNow()
+       detectionEngine = DetectionEngine(MockLocationManager(),timeProvider: timeProvider)
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
 
@@ -45,6 +47,9 @@ class DetectionengineTests: XCTestCase {
         let detetionListener1 = TestDetectionListener()
         let detetionListener2 = TestDetectionListener()
         let detetionListener3 = TestDetectionListener()
+        guard let detectionEngine = self.detectionEngine else {
+            return
+        }
         XCTAssertTrue(detectionEngine.detectionListners.count == 0)
         detectionEngine.registerDetectionListener(listener: detetionListener1)
         XCTAssertTrue(detectionEngine.detectionListners.count == 1)
@@ -79,29 +84,58 @@ class DetectionengineTests: XCTestCase {
     }
 
     func testDispatch() throws {
+        guard let detectionEngine = self.detectionEngine else {
+            return
+        }
         let location1 = CLLocation(latitude: 10, longitude: 10)
         let location2 = Builder.locationWithBearing(bearingRadians: 0, distanceMeters: 10, origin: location1)
         let location3 = Builder.locationWithBearing(bearingRadians: 0, distanceMeters: 40, origin: location2)
         XCTAssertTrue(detectionEngine.dispatchLocation(location1))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertFalse(detectionEngine.dispatchLocation(location2))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertTrue(detectionEngine.dispatchLocation(location3))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertFalse(detectionEngine.dispatchLocation(location3))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertTrue(detectionEngine.dispatchLocation(location2))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertTrue(detectionEngine.dispatchLocation(location3))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertFalse(detectionEngine.dispatchLocation(location3))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertFalse(detectionEngine.dispatchLocation(location3))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertFalse(detectionEngine.dispatchLocation(location3))
+        timeProvider.addingTimeInterval(timeInterval: 10)
+        XCTAssertFalse(detectionEngine.dispatchLocation(location3))
+        timeProvider.addingTimeInterval(timeInterval: 10)
+        XCTAssertFalse(detectionEngine.dispatchLocation(location3))
+        
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertTrue(detectionEngine.dispatchLocation(location3))
-        // stop skipping because 3 
+        // stop skipping because 5
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertTrue(detectionEngine.dispatchLocation(location1))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertFalse(detectionEngine.dispatchLocation(location1))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertFalse(detectionEngine.dispatchLocation(location1))
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertFalse(detectionEngine.dispatchLocation(location1))
-        // stop skipping because 3
+        timeProvider.addingTimeInterval(timeInterval: 10)
+        XCTAssertFalse(detectionEngine.dispatchLocation(location1))
+        timeProvider.addingTimeInterval(timeInterval: 10)
+        XCTAssertFalse(detectionEngine.dispatchLocation(location1))
+        // stop skipping because 5
+        timeProvider.addingTimeInterval(timeInterval: 10)
         XCTAssertTrue(detectionEngine.dispatchLocation(location1))
     }
 
     func testReceiveConfig() throws {
+        guard let detectionEngine = self.detectionEngine else {
+            return
+        }
         var config = APIConfig(cacheInterval: 1000, configInterval: 1000, enabled: true)
         detectionEngine.didRecievedConfig(config)
         XCTAssertTrue(detectionEngine.isUpdatingPosition)
@@ -109,10 +143,12 @@ class DetectionengineTests: XCTestCase {
         detectionEngine.didRecievedConfig(config)
         detectionEngine.didRecievedConfig(config)
         XCTAssertFalse(detectionEngine.isUpdatingPosition)
-
     }
 
     func testVisitMonitoring() throws {
+        guard let detectionEngine = self.detectionEngine else {
+            return
+        }
         detectionEngine.startMonitoringVisits()
         XCTAssertTrue(detectionEngine.isMonitoringVisit)
         detectionEngine.stopMonitoringVisits()

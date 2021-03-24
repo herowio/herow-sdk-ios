@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreLocation
-
+import UIKit
 @objc public enum UpdateType: Int {
     case update
     case geofence
@@ -19,14 +19,13 @@ import CoreLocation
 }
 
 
-public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelegate, ConfigListener {
-
-
+public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelegate, ConfigListener, AppStateDelegate {
 
     internal var isUpdatingPosition = false
     internal var isUpdatingSignificantChanges = false
     internal var isMonitoringRegion = false
     internal  var isMonitoringVisit = false
+    internal var bgTaskManager = BackgroundTaskManager(app: UIApplication.shared, name: "io.herow.backgroundDetectionTask")
     private let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
     private let dataHolder =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")
     private var locationManager: LocationManager
@@ -34,6 +33,9 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     internal var lastLocation: CLLocation?
     internal var monitoringListeners: [WeakContainer<ClickAndConnectListener>] = [WeakContainer<ClickAndConnectListener>]()
     internal var detectionListners: [WeakContainer<DetectionEngineListener>] = [WeakContainer<DetectionEngineListener>]()
+    internal var dispatchTime = Date(timeIntervalSince1970: 0)
+    private var timeProvider: TimeProvider
+
 
     public var showsBackgroundLocationIndicator: Bool {
         get {
@@ -123,8 +125,9 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         return self.locationManager.getMonitoredRegions()
     }
 
-    public init(_ locationManager: LocationManager) {
+    public init(_ locationManager: LocationManager, timeProvider: TimeProvider = TimeProviderAbsolute()) {
         self.locationManager = locationManager
+        self.timeProvider = timeProvider
         super.init()
         initBackgroundCapabilities()
         self.updateClickAndCollectState()
@@ -340,24 +343,26 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     func dispatchLocation(_ location: CLLocation, from: UpdateType = .undefined) -> Bool{
+        bgTaskManager.start()
         var skip = false
         var distance = 0.0
-
+        let distpatchTimeKO = abs(dispatchTime.timeIntervalSince1970 - timeProvider.getTime()) < 3
         if let lastLocation = self.lastLocation {
             let distanceKO =  lastLocation.distance(from: location) < 30
-            let timeKO = (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 300
+            let timeKO = (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 10
+
             distance = lastLocation.distance(from: location)
-            skip = (distanceKO && timeKO && skipCount < 3)
+            skip = distanceKO && timeKO && skipCount < 5
         }
+        skip = skip || distpatchTimeKO
         if skip == false {
             if  self.lastLocation == nil {
                 GlobalLogger.shared.debug("DetectionEngine - first location : \(location), accuracy: \(location.horizontalAccuracy)")
             }
             skipCount = 0
             self.lastLocation = location
-
-
             GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
+            dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
             for listener in  detectionListners {
                 listener.get()?.onLocationUpdate(location, from: from)
             }
@@ -365,18 +370,21 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             skipCount = skipCount + 1
             GlobalLogger.shared.debug("DetectionEngine - skip location : \(location) DISTANCE FROM LAST : \(distance)")
         }
+        bgTaskManager.stop()
         return !skip
     }
 
+
+
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = manager.location {
-            GlobalLogger.shared.debug("didUpdate - manager location: \(location.coordinate.latitude),"
-                                        + "\(location.coordinate.longitude) - \(location.timestamp)")
-        }
+
         if  let location: CLLocation =  locations.last {
-            GlobalLogger.shared.debug("didUpdate - last location: \(location.coordinate.latitude),"
-                                        + "\(location.coordinate.longitude) - \(location.timestamp)")
+
+            if location.timestamp.timeIntervalSince(Date()) < 20 {
+                GlobalLogger.shared.debug("didUpdate - last location: \(location.coordinate.latitude),"
+                                            + "\(location.coordinate.longitude) - \(location.timestamp)")
             _ = dispatchLocation(location, from: .update)
+            }
         }
     }
 
@@ -422,6 +430,14 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     func stopWorking() {
         self.stopUpdatingLocation()
         self.stopMonitoringSignificantLocationChanges()
+    }
+
+    public func onAppInForeground() {
+        bgTaskManager.onAppInForeground()
+    }
+
+    public func onAppInBackground() {
+        bgTaskManager.onAppInBackground()
     }
 
 }

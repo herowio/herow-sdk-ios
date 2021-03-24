@@ -221,11 +221,14 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
                 return initial.distanceFrom(location: location) < next.distanceFrom(location: location)
                 }.prefix(maxGeoFenceZoneCount))
 
+            var distance = Double.infinity
             if let nearestZone = zones.first {
-                let distance = max (0, nearestZone.distanceFrom(location: location) - nearestZone.getRadius())
+                distance = max (0, nearestZone.distanceFrom(location: location) - nearestZone.getRadius())
                 GlobalLogger.shared.debug("GeofenceManager - distance to nearest zone = \(distance)")
-                adjustDistanceFilterForDistanceToNearestZone(distance)
+            } else {
+                GlobalLogger.shared.debug("GeofenceManager -  no zone detected distance to nearest zone = infinity")
             }
+            adjustDistanceFilterForDistanceToNearestZone(distance)
 
         } else {
             zones = [Zone]()

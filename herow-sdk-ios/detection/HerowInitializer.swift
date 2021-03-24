@@ -50,6 +50,7 @@ import CoreLocation
         detectionEngine.registerDetectionListener(listener: zoneProvider)
         analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
         appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
+        appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
         detectionEngine.registerDetectionListener(listener: analyticsManager)
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
 

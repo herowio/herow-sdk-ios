@@ -260,6 +260,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             if self.herowDataStorage.shouldGetCache(for: geoHash) {
                 GlobalLogger.shared.info("APIManager- SHOULD FETCH CACHE")
                 self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
+
                 self.cacheWorker.getData(endPoint: .cache(geoHash)) { cache, error in
                     guard let cache = cache else {
                         return
@@ -353,6 +354,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
    public func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         let currentGeoHash = GeoHashHelper.encodeBase32(lat: location.coordinate.latitude, lng: location.coordinate.longitude)[0...3]
+      
         getCache(geoHash: String(currentGeoHash))
     }
 

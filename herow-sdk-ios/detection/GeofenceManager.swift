@@ -126,13 +126,13 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
         if regionsRecord.update() {
             GlobalLogger.shared.debug("geofenceMoving - create new regions")
             createNewMovingGeofences(location: location)
-            for listener in listeners {
-                listener.get()?.onMovingZoneUpdated(regions:  self.locationManager.getMonitoredRegions().filter{
-                    $0.identifier.hasPrefix(LocationUtils.regionIdPrefix + ".moving.")
-                })
-            }
         }
-
+        let regions =   Array(self.locationManager.getMonitoredRegions().filter{
+            isMovingRegion($0)
+        })
+        for listener in listeners {
+            listener.get()?.onMovingZoneUpdated(regions: regions)
+        }
     }
 
    private func selectMovingGeofenceRegions(location: CLLocation) -> MovingRegionRecord {

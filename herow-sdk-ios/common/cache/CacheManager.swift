@@ -130,9 +130,7 @@ class CacheManager: CacheManagerProtocol {
     }
 
     func getZones(ids: [String])-> [Zone] {
-        return self.db.getZonesInBase().filter {
-            ids.contains($0.getHash())
-        }
+        return self.db.getZonesInBase(ids)
     }
     
     func getZones() -> [Zone] {

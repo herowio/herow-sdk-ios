@@ -187,12 +187,19 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
     }
 
     func getZonesInBase() -> [Zone] {
+        return getZonesInBase(nil)
+    }
+
+    func getZonesInBase(_ idList: [String]? = nil) -> [Zone] {
         var zones = [Zone]()
         let managedContext = context
         let fetchRequest = NSFetchRequest<ZoneCoreData>(entityName: StorageConstants.ZoneCoreDataEntityName)
+        if let idList = idList {
+            fetchRequest.predicate = NSPredicate(format: "zoneHash IN %@", idList)
+        }
         do {
             let  zonesCoreData = try managedContext.fetch(fetchRequest)
-            for zoneCoreData in zonesCoreData where zoneCoreData is ZoneCoreData {
+            for zoneCoreData in zonesCoreData {
                 let hash = zoneCoreData.zoneHash
                 let lat = zoneCoreData.lat
                 let lng = zoneCoreData.lng

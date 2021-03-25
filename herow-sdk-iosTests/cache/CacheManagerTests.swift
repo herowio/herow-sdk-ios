@@ -46,8 +46,12 @@ class CacheManagerTests: XCTestCase, CacheListener {
         let testFailExpectation = expectation(description: "testFailExpectation")
         let access = APIAccess(id: "access1", name: "access1Name", address: "accessAdress1")
         let zone = APIZone(hash: "hash", lat: 49.371864318847656, lng: 3.8972530364990234, radius: 30, campaigns: campaigns, access: access, liveEvent: false)
-        cacheManager.saveZones(items: [zone]) { [self] in
-            XCTAssertTrue(self.cacheManager.getZones().count == 1)
+        let zone2 = APIZone(hash: "hash2", lat: 49.371864318847656, lng: 3.8972530364990234, radius: 30, campaigns: campaigns, access: access, liveEvent: false)
+        cacheManager.saveZones(items: [zone, zone2]) { [self] in
+            XCTAssertTrue(self.cacheManager.getZones().count == 2)
+            XCTAssertTrue(self.cacheManager.getZones(ids: ["hash"]).count == 1)
+            XCTAssertTrue(self.cacheManager.getZones(ids: ["hash2"]).count == 1)
+            XCTAssertTrue(self.cacheManager.getZones(ids: ["hash2","hash"]).count == 2)
             self.cacheManager.cleanCache()
             XCTAssertTrue(self.cacheManager.getZones().count == 0)
             testFailExpectation.fulfill()

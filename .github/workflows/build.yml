@@ -1,31 +1,20 @@
-<<<<<<< HEAD
-on: 
-  workflow_dispatch:
-jobs:
-  build:
 
-    runs-on: macOS-latest
-    
-=======
 name: Build and Deploy
 on: 
  workflow_dispatch:
 jobs:
   build:
     runs-on: macOS-latest
->>>>>>> refs/heads/develop
     steps:
     - uses: actions/checkout@v1
     - name: add platform_secrets 
       env:
           PLATFORM_SECRETS: ${{ secrets.PLATFORM_SECRETS }}
-<<<<<<< HEAD
       run: pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/connection/platform-secrets.plist;cd  herow-sdk-ios/connexion;ls
     - name: Start build
       run: |
     
           xcodebuild clean build -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO
-=======
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       run: 
            pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/connection/platform-secrets.plist;
@@ -127,3 +116,6 @@ jobs:
      
       
 >>>>>>> refs/heads/develop
+=======
+            xcodebuild clean build -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO;cd output;ls
+>>>>>>> cd41b2db13bade56bd87ae6a50f9bb35248591f9

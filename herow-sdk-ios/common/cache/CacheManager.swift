@@ -123,6 +123,7 @@ class CacheManager: CacheManagerProtocol {
             listener.get()?.willCacheUpdate()
         }
     }
+    
     func didSave() {
         for listener in listeners {
             listener.get()?.onCacheUpdate()

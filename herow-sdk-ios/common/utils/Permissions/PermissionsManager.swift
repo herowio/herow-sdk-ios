@@ -22,7 +22,7 @@ import UserNotifications
 }
 
 extension PermissionsManagerProtocol {
-    public func requestAllPermissions(completion: (()->())?) {
+    public func requestAllPermissions(_ type: LocationPermission = .whenInUse, completion: (()->())?) {
         self.requestIDFA() {
             self.requestLocation(.whenInUse) {
                 self.requestNotificationPermission { _, _ in

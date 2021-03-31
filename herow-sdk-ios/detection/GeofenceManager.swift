@@ -11,7 +11,6 @@ fileprivate struct MovingGeofenceParameter {
     fileprivate var distanceFromNearestPlace: CLLocationDistance
     fileprivate let circleRadiusOfRegion: CLLocationDistance
     fileprivate let distanceFromUserToRegionBorder: CLLocationDistance
-
     init(distanceFromNearestPlace: CLLocationDistance,
          circleRadiusOfMovingRegion: CLLocationDistance,
          distanceFromUserForBorderOfMovingRegion: CLLocationDistance) {
@@ -20,26 +19,44 @@ fileprivate struct MovingGeofenceParameter {
         self.distanceFromUserToRegionBorder = distanceFromUserForBorderOfMovingRegion
     }
 }
-class GeofenceManager: CacheListener, DetectionEngineListener {
+
+@objc public protocol GeofenceManagerListener: class {
+    func onMovingZoneUpdated(regions:  [CLRegion])
+}
+class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListener {
 
     private let movingRegionBearings: [Double] = [0, 90, 180, 270]
     private let maxGeoFenceZoneCount = 10
+    static let minDistanceFilter: Double = 15.0
+    static let maxDistanceFilter: Double = 500
+    static let distanceThousand: Double = 1000
+    static let distance3Thousand: Double = 3000
+    static let distanceHundred: Double = 100
+    static let distance250: Double = 250
+    static let distanceTen: Double = 10
+    static let filterDistanceStepCount = 5.0
     internal private(set) var lastLocation: CLLocation?
 
-    fileprivate let movingGeofenceParameter: MovingGeofenceParameter = MovingGeofenceParameter(distanceFromNearestPlace: 0,
+    fileprivate var movingGeofenceParameter: MovingGeofenceParameter = MovingGeofenceParameter(distanceFromNearestPlace: 0,
                                               circleRadiusOfMovingRegion: 150,
                                 distanceFromUserForBorderOfMovingRegion: 100)
     private var currentParametersPosition: Int = 0
-    private let locationManager: LocationManager
+    private var locationManager: LocationManager
     private let cacheManager : CacheManagerProtocol
-
-    init(locationManager: LocationManager, cacheManager: CacheManagerProtocol) {
+    private var fuseManager: FuseManager?
+    private var listeners:[WeakContainer<GeofenceManagerListener>] = [WeakContainer<GeofenceManagerListener>]()
+    init(locationManager: LocationManager, cacheManager: CacheManagerProtocol, fuseManager: FuseManager? = nil) {
         self.locationManager = locationManager
         self.cacheManager = cacheManager
+        self.fuseManager = fuseManager
     }
 
     private func startMonitoringRegion(_ region: CLRegion) {
         locationManager.startMonitoring(region: region)
+    }
+
+    internal func getMonitoredRegions() -> Set<CLRegion> {
+        return self.locationManager.getMonitoredRegions()
     }
 
     private func stopMonitoringRegions(_ regions: [CLRegion]) {
@@ -48,8 +65,7 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
         }
     }
 
-
-    private func createPlaceRegions( places: [Zone]) {
+    internal func createPlaceRegions( places: [Zone]) {
         for place in places {
             let placeLocation = CLLocation(latitude: place.getLat(), longitude: place.getLng())
             let region = createRegion(center: placeLocation, radius: place.getRadius(), prefix: "zone",zoneHash: place.getHash())
@@ -57,11 +73,14 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
         }
     }
 
-    private func cleanPlaceMonitoredRegions( places: [Zone]) -> [Zone] {
+    internal func cleanPlaceMonitoredRegions( places: [Zone]) -> [Zone] {
         let monitoredRegions = locationManager.getMonitoredRegions()
         let monitoredIds = monitoredRegions.map {getPlaceIdForRegion($0)}
         let idsToKeep = places.map {$0.getHash()}
-        let idsToUnMonitor = monitoredIds.filter {!(idsToKeep.contains($0 as String) || $0.hasPrefix(LocationUtils.regionIdPrefix + ".moving."))}
+        let idsToUnMonitor = monitoredIds.filter {
+            !(idsToKeep.contains($0 as String)) || $0.hasPrefix(LocationUtils.regionIdPrefix + ".moving.")
+            
+        }
         let regionToUnMonitor = monitoredRegions.filter {
             idsToUnMonitor.contains(getPlaceIdForRegion($0))
         }
@@ -72,7 +91,7 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
         return places.filter { !nowMonitoredRegionsIds.contains($0.getHash() as NSString)}
     }
 
-    private  func createRegion(center: CLLocation, radius: CLLocationDistance, prefix: String, zoneHash: String = "") -> CLRegion {
+    internal  func createRegion(center: CLLocation, radius: CLLocationDistance, prefix: String, zoneHash: String = "") -> CLRegion {
         let identifier: String = LocationUtils.regionIdPrefix + "." + prefix + ".\(center.coordinate.latitude).\(center.coordinate.longitude).\(zoneHash)"
         let region = CLCircularRegion(center: center.coordinate, radius: radius, identifier: identifier)
         region.notifyOnExit = true
@@ -104,11 +123,15 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
             self.locationManager.stopMonitoring(region: region)
         }
         GlobalLogger.shared.debug("geofenceMoving - regionsToRemove: \(regionsRecord.regionsToRemove)")
-
         if regionsRecord.update() {
-
             GlobalLogger.shared.debug("geofenceMoving - create new regions")
             createNewMovingGeofences(location: location)
+        }
+        let regions =   Array(self.locationManager.getMonitoredRegions().filter{
+            isMovingRegion($0)
+        })
+        for listener in listeners {
+            listener.get()?.onMovingZoneUpdated(regions: regions)
         }
     }
 
@@ -156,11 +179,9 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
     private func getDistanceFromNearestPlace(location: CLLocation, nearestPlace: Zone) -> CLLocationDistance {
         let placeLocation = CLLocation(latitude: nearestPlace.getLat(), longitude: nearestPlace.getLng())
         return location.distance(from:placeLocation)
-
-
     }
 
-    private func createNewMovingGeofences(location: CLLocation) {
+    internal func createNewMovingGeofences(location: CLLocation) {
         let movingDistance = calculateDistanceFromCenter(parameter: movingGeofenceParameter)
         let radius = calculateRegionRadius(parameter: movingGeofenceParameter)
         for bearing in movingRegionBearings {
@@ -174,8 +195,8 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
     }
 
     private func calculateRegionRadius(parameter: MovingGeofenceParameter) -> Double {
-        //return parameter.circleRadiusOfRegion
-        return parameter.distanceFromUserToRegionBorder * 2
+        return parameter.circleRadiusOfRegion
+       // return parameter.distanceFromUserToRegionBorder * 2
     }
 
     private func calculateDistanceFromCenter(parameter: MovingGeofenceParameter) -> Double {
@@ -187,6 +208,10 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
             updateMonitoringFor(location: lastLocation)
     }
 
+    func willCacheUpdate() {
+
+    }
+
     func updateMonitoringFor(location: CLLocation?) {
         var zones : [Zone]
         if let location = location {
@@ -195,14 +220,55 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
             zones = Array(zones.sorted { (initial, next) -> Bool in
                 return initial.distanceFrom(location: location) < next.distanceFrom(location: location)
                 }.prefix(maxGeoFenceZoneCount))
+
+            var distance = Double.infinity
+            if let nearestZone = zones.first {
+                distance = max (0, nearestZone.distanceFrom(location: location) - nearestZone.getRadius())
+                GlobalLogger.shared.debug("GeofenceManager - distance to nearest zone = \(distance)")
+            } else {
+                GlobalLogger.shared.debug("GeofenceManager -  no zone detected distance to nearest zone = infinity")
+            }
+            adjustDistanceFilterForDistanceToNearestZone(distance)
+
         } else {
             zones = [Zone]()
         }
         createPlaceRegions(places: cleanPlaceMonitoredRegions(places: zones))
     }
 
-    func onLocationUpdate(_ location: CLLocation) {
+    private func adjustDistanceFilterForDistanceToNearestZone(_ distance : CLLocationDistance) {
+
+        let distanceStep =  max(distance / GeofenceManager.filterDistanceStepCount, GeofenceManager.minDistanceFilter)
+        let distanceFilter = min(GeofenceManager.maxDistanceFilter, distanceStep)
+        locationManager.distanceFilter = distanceFilter
+        var desiredAccuracy = kCLLocationAccuracyBest
+        if distance > GeofenceManager.distance3Thousand {
+            desiredAccuracy = kCLLocationAccuracyKilometer
+        }
+        if distance < GeofenceManager.distance3Thousand && distance > GeofenceManager.distance250 {
+            desiredAccuracy = kCLLocationAccuracyHundredMeters
+        }
+        if distance < GeofenceManager.distance250 && distance > GeofenceManager.distanceHundred {
+            desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        }
+        movingGeofenceParameter = MovingGeofenceParameter(distanceFromNearestPlace: 0,
+                                                  circleRadiusOfMovingRegion: max (150, distanceFilter),
+                                    distanceFromUserForBorderOfMovingRegion: 100)
+        locationManager.desiredAccuracy = desiredAccuracy
+        GlobalLogger.shared.debug("GeofenceManager - desiredAccuracy = \(locationManager.desiredAccuracy)")
+        GlobalLogger.shared.debug("GeofenceManager - distanceFilter = \(locationManager.distanceFilter)")
+    }
+
+    func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         updateMonitoringFor(location: location)
+    }
+
+    func onFuseUpdate(_ activated: Bool, location: CLLocation? = nil) {
+        if activated  {
+            locationManager.stopUpdatingLocation()
+        } else {
+            locationManager.startUpdatingLocation()
+        }
     }
 
     func reset() {
@@ -212,7 +278,23 @@ class GeofenceManager: CacheListener, DetectionEngineListener {
             }
         }
     }
+
+    @objc public func registerGeofenceManagerListener(listener: GeofenceManagerListener) {
+        let first = listeners.first {
+            ($0.get() === listener) == true
+        }
+        if first == nil {
+            listeners.append(WeakContainer<GeofenceManagerListener>(value: listener))
+        }
+    }
+
+    @objc public func unregisterGeofenceManagerListener(listener: GeofenceManagerListener) {
+        listeners = listeners.filter {
+            ($0.get() === listener) == false
+        }
+    }
 }
+
 
 fileprivate class MovingRegionRecord {
     var regionsToRemove: [CLRegion]
@@ -222,7 +304,6 @@ fileprivate class MovingRegionRecord {
         regionsToRemove = []
         areMonitoredRegions = false
     }
-
     func update() -> Bool {
         return regionsToRemove.count > 0 || !areMonitoredRegions
     }

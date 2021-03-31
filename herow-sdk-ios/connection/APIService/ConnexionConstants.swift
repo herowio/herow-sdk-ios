@@ -10,6 +10,7 @@ import Foundation
 class HerowConstants {
     static let tokenKey: String = "com.herow.sdk.connection.token"
     static let userInfoKey: String = "com.herow.sdk.connection.userInfo"
+    static let userDataOptin: String = "com.herow.sdk.connection.optin"
     static let userInfoStatusKey: String = "com.herow.sdk.connection.userInfo.status"
     static let cacheDateKey: String = "com.herow.sdk.connection.cache.date"
     static let configKey: String = "com.herow.sdk.connection.config"
@@ -17,7 +18,6 @@ class HerowConstants {
     static let geoHashKey: String = "com.herow.sdk.connection.cache.geoHash"
     static let lastCacheModifiedDateKey: String = "com.herow.sdk.connection.cache.lastModifiedDate"
     static let lastCacheFetchDateKey: String = "com.herow.sdk.connection.cache.fetchDate"
-
     static let customIdKey: String = "com.herow.sdk.user.customid"
     static let idfvKey: String = "com.herow.sdk.user.idfv"
     static let idfaKey: String = "com.herow.sdk.user.idfa"
@@ -37,13 +37,14 @@ public struct Headers {
         public static let contentTypeFormUrlEncoded = "application/x-www-form-urlencoded"
         public static let contentTypeJson = "application/json"
         public static let charsetUtf8="UTF-8"
+        public static let gzip="gzip"
     }
 
     public static let charset: String="Charset"
     public static let contentType: String = "Content-Type"
     public static let contentLength: String = "Content-Length"
     public static let ifModifiedSince = "If-Modified-Since"
-
+    public static let contentEncoding = "Content-Encoding"
     public static let authorization: String = "Authorization"
     public static let sdk = "X-SDK"
     public static let version = "X-VERSION"

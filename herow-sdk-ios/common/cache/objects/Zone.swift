@@ -27,7 +27,7 @@ extension Zone {
     }
 }
 
-protocol Access {
+public protocol Access {
     
     func getId() -> String
     func getName() -> String
@@ -69,7 +69,7 @@ protocol Campaign {
          cappings: [String: Int]?,
          triggers:[String: Int],
          daysRecurrence: [String],
-         recurrenceEnbaled:Bool,
+         recurrenceEnabled:Bool,
          tz:String,
          notification: Notification?)
 }

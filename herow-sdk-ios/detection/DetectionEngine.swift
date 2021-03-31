@@ -7,25 +7,35 @@
 
 import Foundation
 import CoreLocation
-
+import UIKit
+@objc public enum UpdateType: Int {
+    case update
+    case geofence
+    case undefined
+}
 @objc public protocol DetectionEngineListener: class {
-    func onLocationUpdate(_ location: CLLocation)
+    func onLocationUpdate(_ location: CLLocation, from: UpdateType)
     
 }
 
 
-public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelegate, ConfigListener {
+public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelegate, ConfigListener, AppStateDelegate {
 
-    var isUpdatingPosition = false
-    var isUpdatingSignificantChanges = false
-    var isMonitoringRegion = false
-    var isMonitoringVisit = false
-    let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
-    let dataHolder =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")
-    let locationManager: CLLocationManager
-    var lastLocation: CLLocation?
-    var monitoringListeners: [WeakContainer<ClickAndConnectListener>] = [WeakContainer<ClickAndConnectListener>]()
-    var detectionListners: [WeakContainer<DetectionEngineListener>] = [WeakContainer<DetectionEngineListener>]()
+    internal var isUpdatingPosition = false
+    internal var isUpdatingSignificantChanges = false
+    internal var isMonitoringRegion = false
+    internal  var isMonitoringVisit = false
+    internal var bgTaskManager = BackgroundTaskManager(app: UIApplication.shared, name: "io.herow.backgroundDetectionTask")
+    private let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
+    private let dataHolder =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")
+    private var locationManager: LocationManager
+    private var skipCount = 0
+    internal var lastLocation: CLLocation?
+    internal var monitoringListeners: [WeakContainer<ClickAndConnectListener>] = [WeakContainer<ClickAndConnectListener>]()
+    internal var detectionListners: [WeakContainer<DetectionEngineListener>] = [WeakContainer<DetectionEngineListener>]()
+    internal var dispatchTime = Date(timeIntervalSince1970: 0)
+    private var timeProvider: TimeProvider
+
 
     public var showsBackgroundLocationIndicator: Bool {
         get {
@@ -112,11 +122,12 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     public func getMonitoredRegions() -> Set<CLRegion> {
-        return self.locationManager.monitoredRegions
+        return self.locationManager.getMonitoredRegions()
     }
 
-    public init(_ locationManager: CLLocationManager) {
+    public init(_ locationManager: LocationManager, timeProvider: TimeProvider = TimeProviderAbsolute()) {
         self.locationManager = locationManager
+        self.timeProvider = timeProvider
         super.init()
         initBackgroundCapabilities()
         self.updateClickAndCollectState()
@@ -132,24 +143,11 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     public func authorizationStatus() -> CLAuthorizationStatus {
-        return CLLocationManager.authorizationStatus()
+        return self.locationManager.authorizationStatus()
     }
 
     public func authorizationStatusString() -> String {
-        switch CLLocationManager.authorizationStatus() {
-        case .authorizedAlways:
-            return "authorizedAlways"
-        case .authorizedWhenInUse:
-            return "authorizedWhenInUse"
-        case .denied:
-            return "denied"
-        case .restricted:
-            return "restricted"
-        case .notDetermined:
-            return "notDetermined"
-        default:
-            return "notDetermined"
-        }
+        return self.locationManager.authorizationStatusString()
     }
 
     public func setIsOnClickAndCollect(_ value: Bool) {
@@ -170,8 +168,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         guard let value = value else {
             return dataHolder.remove(key: "lastClickAndCollectActivationDate")
         }
-            self.dataHolder.putDate(key: "lastClickAndCollectActivationDate", value: value)
-            self.dataHolder.apply()
+        self.dataHolder.putDate(key: "lastClickAndCollectActivationDate", value: value)
+        self.dataHolder.apply()
     }
 
     private func getLastClickAndCollectActivationDate() -> Date? {
@@ -183,7 +181,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     private func checkLastClickAndCollectActivationDate() -> Bool {
 
         guard let date = getLastClickAndCollectActivationDate() else {
-             return true
+            return true
         }
         return Date() < Date(timeInterval: timeIntervalLimit, since: date)
     }
@@ -212,46 +210,36 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
     }
 
-     public func getIsOnClickAndCollect() -> Bool {
+    public func getIsOnClickAndCollect() -> Bool {
         return dataHolder.getBoolean(key: "isLocationMonitoring")
     }
 
     @available(iOS 14.0, *)
     public func accuracyAuthorizationStatus() -> CLAccuracyAuthorization {
-        return locationManager.accuracyAuthorization
+        return locationManager.accuracyAuthorizationStatus()
     }
 
     public func accuracyAuthorizationStatusString() -> String {
-        if #available(iOS 14, *) {
-            switch  locationManager.accuracyAuthorization {
-            case .fullAccuracy:
-                return "fullAccuracy"
-            case .reducedAccuracy:
-                return "reducedAccuracy"
-            default:
-                return "notDetermined"
-            }
-        } else {
-            return "fullAccuracy"
-        }
+        return self.locationManager.accuracyAuthorizationStatusString()
+
     }
 
     public func locationServicesEnabled() -> Bool {
-        return CLLocationManager.locationServicesEnabled()
+        return self.locationManager.locationServicesEnabled()
     }
 
     public func startMonitoring(region: CLRegion) {
-        GlobalLogger.shared.debug("startMonitoring in ", region.identifier)
+        GlobalLogger.shared.debug("startMonitoring in \(region.identifier)")
         isMonitoringRegion = true
         updateClickAndCollectState()
-        locationManager.startMonitoring(for: region)
+        locationManager.startMonitoring(region: region)
     }
 
     public func stopMonitoring(region: CLRegion) {
-        GlobalLogger.shared.debug("stopMonitoring in ", region.identifier)
+        GlobalLogger.shared.debug("stopMonitoring in \(region.identifier)")
         isMonitoringRegion = false
         updateClickAndCollectState()
-        locationManager.stopMonitoring(for: region)
+        locationManager.stopMonitoring(region: region)
     }
 
 
@@ -309,16 +297,16 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     private func didStartClickAndCollect() {
-        locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        self.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        GlobalLogger.shared.verbose("DetectionEngine - didStartClickAndCollect")
         for listener in monitoringListeners {
             listener.get()?.didStartClickAndConnect()
         }
     }
 
     private func didStopClickAndCollect() {
-        stopUpdatingLocation()
-        startUpdatingLocation()
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        self.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        GlobalLogger.shared.verbose("DetectionEngine - didStopClickAndCollect")
         for listener in monitoringListeners {
             listener.get()?.didStopClickAndConnect()
         }
@@ -354,42 +342,57 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
     }
 
-    func dispatchLocation(_ location: CLLocation) {
-
+    func dispatchLocation(_ location: CLLocation, from: UpdateType = .undefined) -> Bool{
+        bgTaskManager.start()
         var skip = false
         var distance = 0.0
+        let distpatchTimeKO = abs(dispatchTime.timeIntervalSince1970 - timeProvider.getTime()) < 3
         if let lastLocation = self.lastLocation {
+            let distanceKO =  lastLocation.distance(from: location) < 30
+            let timeKO = (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 10
+
             distance = lastLocation.distance(from: location)
-            skip = distance < 20 && (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 300
+            skip = distanceKO && timeKO && skipCount < 5
         }
+        skip = skip || distpatchTimeKO
         if skip == false {
+            if  self.lastLocation == nil {
+                GlobalLogger.shared.debug("DetectionEngine - first location : \(location), accuracy: \(location.horizontalAccuracy)")
+            }
+            skipCount = 0
             self.lastLocation = location
-            GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance)")
+            GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
+            dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
             for listener in  detectionListners {
-                listener.get()?.onLocationUpdate(location)
+                listener.get()?.onLocationUpdate(location, from: from)
             }
         } else {
-            GlobalLogger.shared.debug("DetectionEngine - skip location DISTANCE FROM LAST : \(distance)")
+            skipCount = skipCount + 1
+            GlobalLogger.shared.debug("DetectionEngine - skip location : \(location) DISTANCE FROM LAST : \(distance)")
         }
+        bgTaskManager.stop()
+        return !skip
     }
 
+
+
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let location = manager.location {
-            GlobalLogger.shared.debug("didUpdate - manager location: \(location.coordinate.latitude),"
-                + "\(location.coordinate.longitude) - \(location.timestamp)")
-        }
+
         if  let location: CLLocation =  locations.last {
-            GlobalLogger.shared.debug("didUpdate - last location: \(location.coordinate.latitude),"
-                + "\(location.coordinate.longitude) - \(location.timestamp)")
-            dispatchLocation(location)
+
+            if location.timestamp.timeIntervalSince(Date()) < 20 {
+                GlobalLogger.shared.debug("didUpdate - last location: \(location.coordinate.latitude),"
+                                            + "\(location.coordinate.longitude) - \(location.timestamp)")
+            _ = dispatchLocation(location, from: .update)
+            }
         }
     }
 
     func extractLocationAfterRegionUpdate() {
-            if let location = locationManager.location {
-                GlobalLogger.shared.debug("extractLocationAfterRegionUpdate - \(location.coordinate.latitude), \(location.coordinate.longitude)")
-                dispatchLocation(location)
-            }
+        if let location = locationManager.location {
+            GlobalLogger.shared.debug("extractLocationAfterRegionUpdate - \(location.coordinate.latitude), \(location.coordinate.longitude)")
+            _ = dispatchLocation(location, from:.geofence)
+        }
     }
 
     public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
@@ -406,7 +409,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         if LocationUtils.isGeofenceRegion(region) {
             extractLocationAfterRegionUpdate()
         } else {
-             GlobalLogger.shared.debug("it's not a geofence region - we do not extract a location")
+            GlobalLogger.shared.debug("it's not a geofence region - we do not extract a location")
         }
     }
 
@@ -428,4 +431,13 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         self.stopUpdatingLocation()
         self.stopMonitoringSignificantLocationChanges()
     }
+
+    public func onAppInForeground() {
+        bgTaskManager.onAppInForeground()
+    }
+
+    public func onAppInBackground() {
+        bgTaskManager.onAppInBackground()
+    }
+
 }

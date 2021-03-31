@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct HerowZone: Zone {
+@objc public class HerowZone: NSObject, Zone {
     var zonehash: String
     var lat: Double
     var lng: Double
@@ -16,7 +16,11 @@ public struct HerowZone: Zone {
     var access: Access?
     var liveEvent: Bool
 
-    init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?, liveEvent: Bool) {
+
+    convenience init( zone: Zone) {
+        self.init(hash: zone.getHash(), lat: zone.getLat(), lng: zone.getLng(), radius: zone.getRadius(), campaigns: zone.getCampaigns(), access: zone.getAccess(), liveEvent: zone.getLiveEvent())
+    }
+    required init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?, liveEvent: Bool) {
      self.zonehash = hash
      self.lat = lat
      self.lng = lng
@@ -26,35 +30,33 @@ public struct HerowZone: Zone {
      self.liveEvent = liveEvent
      }
 
-    func getHash() -> String {
+    public func getHash() -> String {
         return zonehash
     }
 
-    func getLat() -> Double {
+    public func getLat() -> Double {
         return lat
     }
 
-    func getLng() -> Double {
+    public func getLng() -> Double {
         return lng
     }
 
-    func getRadius() -> Double {
+    public  func getRadius() -> Double {
         return radius
     }
 
-    func getCampaigns() -> [String] {
+    public func getCampaigns() -> [String] {
         return campaigns
     }
 
-    func getAccess() -> Access? {
+    public func getAccess() -> Access? {
         return access
     }
 
-    func getLiveEvent() -> Bool {
+    public  func getLiveEvent() -> Bool {
         return liveEvent
     }
-
-    
 
 }
 

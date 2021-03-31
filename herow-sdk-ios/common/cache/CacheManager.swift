@@ -16,8 +16,9 @@ enum CacheUpdate {
     case delete
 }
 
-protocol CacheListener: class {
+@objc public protocol CacheListener: class {
     func onCacheUpdate()
+    func willCacheUpdate()
 }
 
 protocol CacheManagerProtocol {
@@ -31,7 +32,7 @@ protocol CacheManagerProtocol {
     func getCampaignsForZone(_ zone: Zone) -> [Campaign]
     func getNearbyZones(_ location: CLLocation) -> [Zone]
     func getNearbyPois(_ location: CLLocation) -> [Poi]
-    func cleanCache()
+    func cleanCache(_ completion:(()->())?) 
     func registerCacheListener(listener: CacheListener)
     func unregisterCacheListener(listener: CacheListener)
     func didSave()
@@ -69,7 +70,7 @@ class CacheManager: CacheManagerProtocol {
     static let distanceThreshold: CLLocationDistance = 20_000
     static let maxNearByPoiCount: Int = 10
     let db: DataBase
-    private var listeners = [WeakContainer<CacheListener>]()
+    internal var listeners = [WeakContainer<CacheListener>]()
 
     required init(db: DataBase) {
         self.db = db
@@ -77,6 +78,7 @@ class CacheManager: CacheManagerProtocol {
 
 
     func save(zones: [Zone]?,campaigns: [Campaign]?, pois: [Poi]?,  completion:(()->())?) {
+        willSave()
         if let zones = zones {
             saveZones(items: zones) {
                 if let campaigns = campaigns {
@@ -86,10 +88,19 @@ class CacheManager: CacheManagerProtocol {
                                 self.didSave()
                                 completion?()
                             }
+                        } else {
+                            self.didSave()
+                            completion?()
                         }
                     }
+                } else {
+                    self.didSave()
+                    completion?()
                 }
             }
+        } else {
+            self.didSave()
+            completion?()
         }
     }
 
@@ -106,6 +117,13 @@ class CacheManager: CacheManagerProtocol {
     func saveCampaigns(items: [Campaign], completion:(()->())?) {
         self.db.saveCampaignsInBase(items: items, completion: completion)
     }
+
+    func willSave() {
+        for listener in listeners {
+            listener.get()?.willCacheUpdate()
+        }
+    }
+    
     func didSave() {
         for listener in listeners {
             listener.get()?.onCacheUpdate()
@@ -113,9 +131,7 @@ class CacheManager: CacheManagerProtocol {
     }
 
     func getZones(ids: [String])-> [Zone] {
-        return self.db.getZonesInBase().filter {
-            ids.contains($0.getHash())
-        }
+        return self.db.getZonesInBase(ids)
     }
     
     func getZones() -> [Zone] {
@@ -145,8 +161,9 @@ class CacheManager: CacheManagerProtocol {
         getNearbyPois(location, distance: CacheManager.distanceThreshold, count: CacheManager.maxNearByPoiCount)
     }
 
-    func cleanCache() {
+    func cleanCache(_ completion:(()->())? = nil) {
         db.purgeAllData() { [self] in
+            completion?()
             for listener in listeners {
                 listener.get()?.onCacheUpdate()
             }

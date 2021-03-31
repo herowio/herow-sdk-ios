@@ -10,7 +10,6 @@ import CoreData
 
 class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Notification>: DataBase {
 
-    
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(for: Self.self)
         let modelURL = messageKitBundle.url(forResource: StorageConstants.dataModelName, withExtension: "momd")!
@@ -36,22 +35,22 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
 
     // MARK: - Core Data read and write
     private func deleteEntity(name:String) {
-         bgContext.performAndWait {
-             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
-             fetchRequest.returnsObjectsAsFaults = false
-             do {
-                 let results = try bgContext.fetch(fetchRequest)
-                 for managedObject in results {
-                     if let managedObjectData: NSManagedObject = managedObject as? NSManagedObject {
-                         bgContext.delete(managedObjectData)
-                     }
-                 }
-             } catch let error as NSError {
-                 print("Deleted all my data in myEntity error : \(error) \(error.userInfo)")
-             }
-         }
-         save()
-     }
+        bgContext.performAndWait {
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
+            fetchRequest.returnsObjectsAsFaults = false
+            do {
+                let results = try bgContext.fetch(fetchRequest)
+                for managedObject in results {
+                    if let managedObjectData: NSManagedObject = managedObject as? NSManagedObject {
+                        bgContext.delete(managedObjectData)
+                    }
+                }
+            } catch let error as NSError {
+                print("Deleted all my data in myEntity error : \(error) \(error.userInfo)")
+            }
+        }
+
+    }
     
     func savePoisInBase(items: [Poi], completion: (()->())? = nil) {
         bgContext.performAndWait {
@@ -65,9 +64,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.PoiCoreDataEntityName,
                                                    in: bgContext)!
-                   // print("create entity \(StorageConstants.PoiCoreDataEntityName)")
                     poiCoreData = PoiCoreData(entity: entity,
-                                                insertInto: bgContext)
+                                              insertInto: bgContext)
                 }
                 poiCoreData?.id = item.getId()
                 poiCoreData?.lat = item.getLat()
@@ -75,8 +73,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 poiCoreData?.tags = item.getTags()
             }
         }
-        save()
-        completion?()
+        save() {
+            completion?()
+        }
     }
 
     func saveCampaignsInBase(items: [Campaign],  completion: (()->())? = nil) {
@@ -91,9 +90,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.CampaignCoreDataEntityName,
                                                    in: bgContext)!
-                   // print("create entity \(StorageConstants.CampaignCoreDataEntityName)")
                     campaignCoreData = CampaignCoreData(entity: entity,
-                                                insertInto: bgContext)
+                                                        insertInto: bgContext)
                 }
                 campaignCoreData?.id = item.getId()
                 campaignCoreData?.company = item.getCompany()
@@ -105,12 +103,12 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 campaignCoreData?.name = item.getName()
                 campaignCoreData?.begin = item.getBegin()
                 campaignCoreData?.end = item.getEnd() ?? 0
+                campaignCoreData?.realTimeContent = item.getRealTimeContent()
                 var intervalsCoreData = [IntervalCoreData]()
                 if let intervals = item.getIntervals() {
                     for interval in intervals {
-                         let entity = NSEntityDescription.entity(forEntityName: StorageConstants.IntervalCoreDataEntityName,
-                                                                   in: bgContext)!
-                       // print("create entity \(StorageConstants.IntervalCoreDataEntityName)")
+                        let entity = NSEntityDescription.entity(forEntityName: StorageConstants.IntervalCoreDataEntityName,
+                                                                in: bgContext)!
                         let intervalCoreData = IntervalCoreData(entity: entity,
                                                                 insertInto: bgContext)
                         intervalCoreData.start = interval.getStart()
@@ -127,10 +125,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 var notificationCoreData: NotificationCoreData?
                 if let notification = item.getNotification() {
                     let entity = NSEntityDescription.entity(forEntityName: StorageConstants.NotificationCoreDataEntityName,
-                                                              in: bgContext)!
-                   //print("create entity \(StorageConstants.NotificationCoreDataEntityName)")
+                                                            in: bgContext)!
                     notificationCoreData = NotificationCoreData(entity: entity,
-                                                           insertInto: bgContext)
+                                                                insertInto: bgContext)
                     notificationCoreData?.title = notification.getTitle()
                     notificationCoreData?.content = notification.getDescription()
                 }
@@ -139,10 +136,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 }
             }
         }
-        save()
-        completion?()
+        save() {
+            completion?()
+        }
     }
-
 
     func saveZonesInBase(items: [Zone], completion: (()->())? = nil) {
         bgContext.performAndWait {
@@ -156,7 +153,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.ZoneCoreDataEntityName,
                                                    in: bgContext)!
-                    //print("create entity \(StorageConstants.ZoneCoreDataEntityName)")
                     zoneCoreData = ZoneCoreData(entity: entity,
                                                 insertInto: bgContext)
                 }
@@ -166,7 +162,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.AccessCoreDataEntityName,
                                                    in: bgContext)!
-                    //print("create entity \(StorageConstants.AccessCoreDataEntityName)")
                     accessInBase = AccessCoreData(entity: entity,
                                                   insertInto: bgContext)
                 }
@@ -186,14 +181,22 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 zoneCoreData?.campaigns = item.getCampaigns()
             }
         }
-        save()
-        completion?()
+        save() {
+            completion?()
+        }
     }
 
     func getZonesInBase() -> [Zone] {
+        return getZonesInBase(nil)
+    }
+
+    func getZonesInBase(_ idList: [String]? = nil) -> [Zone] {
         var zones = [Zone]()
         let managedContext = context
         let fetchRequest = NSFetchRequest<ZoneCoreData>(entityName: StorageConstants.ZoneCoreDataEntityName)
+        if let idList = idList {
+            fetchRequest.predicate = NSPredicate(format: "zoneHash IN %@", idList)
+        }
         do {
             let  zonesCoreData = try managedContext.fetch(fetchRequest)
             for zoneCoreData in zonesCoreData {
@@ -205,7 +208,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 let access = A(id: zoneCoreData.access.id,
                                name: zoneCoreData.access.name,
                                address: zoneCoreData.access.address)
-
                 let liveevent = zoneCoreData.liveEvent
                 let zone: Z = Z(hash: hash, lat:lat, lng: lng, radius: radius, campaigns: campaigns, access: access, liveEvent: liveevent)
                 zones.append(zone)
@@ -216,7 +218,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         }
         return zones
     }
-
 
     func getCampaignsInBase() -> [Campaign] {
         var campaigns = [Campaign]()
@@ -247,7 +248,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 let tz = campaignsCoreData.tz
                 let recurrenceEnabled = campaignsCoreData.recurrenceEnabled
                 let  notification = N(title: campaignsCoreData.notification.title, description: campaignsCoreData.notification.content)
-                let campaign = C(id: id, company: company, name: name, createdDate: createdDate, modifiedDate: modifiedDate, deleted: deleted, simpleId: simpleId, begin: begin, end: end, realTimeContent: realTimeContent, intervals: intervals, cappings: cappings, triggers: triggers, daysRecurrence: daysRecurrence, recurrenceEnbaled: recurrenceEnabled, tz: tz, notification: notification)
+                let campaign = C(id: id, company: company, name: name, createdDate: createdDate, modifiedDate: modifiedDate, deleted: deleted, simpleId: simpleId, begin: begin, end: end, realTimeContent: realTimeContent, intervals: intervals, cappings: cappings, triggers: triggers, daysRecurrence: daysRecurrence, recurrenceEnabled: recurrenceEnabled, tz: tz, notification: notification)
                 campaigns.append(campaign)
             }
         }
@@ -257,14 +258,13 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         return campaigns
     }
 
-
     func getPoisInBase() -> [Poi] {
         var pois = [Poi]()
         let managedContext = context
         let fetchRequest = NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
         do {
-            let  poissCoreData = try managedContext.fetch(fetchRequest)
-            for poiCoreData in poissCoreData {
+            let  poisCoreData = try managedContext.fetch(fetchRequest)
+            for poiCoreData in poisCoreData {
                 let poi: P = P(id: poiCoreData.id, tags: poiCoreData.tags, lat: poiCoreData.lat, lng: poiCoreData.lng)
                 pois.append(poi)
             }
@@ -275,21 +275,27 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         return pois
     }
 
-
     func purgeAllData(completion: (()->())? = nil) {
         let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name })
         uniqueNames.forEach { (name) in
             deleteEntity(name: name)
         }
-        completion?()
+        save() {
+            completion?()
+        }
     }
 
-   private func save() {
-        saveContext(context: context)
-        saveContext(context: bgContext)
+    private func save(completion: (() ->())? = nil) {
+        saveContext(context: bgContext ) {
+            DispatchQueue.main.async {
+                self.saveContext(context: self.context) {
+                    completion?()
+                }
+            }}
+
     }
 
-   private func saveContext (context :NSManagedObjectContext) {
+    private func saveContext (context :NSManagedObjectContext, completion: (() ->())? = nil) {
         context.performAndWait {
             if context.hasChanges {
                 do {
@@ -299,7 +305,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
                 }
             }
+            completion?()
         }
     }
+
 }
 

@@ -8,15 +8,29 @@
 import Foundation
 import CoreLocation
 import AppTrackingTransparency
-
+import UserNotifications
 @objc public enum LocationPermission: Int {
     case whenInUse
     case always
 }
 @objc public protocol PermissionsManagerProtocol: class {
+
     func requestIDFA(completion: (()->())?)
     func requestLocation(_ type: LocationPermission, completion: (()->())?)
     func requestActivity( completion: (()->())?)
+    func requestNotificationPermission ( completion: ((Bool, Error?)->())?)
+}
+
+extension PermissionsManagerProtocol {
+    public func requestAllPermissions(_ type: LocationPermission = .whenInUse, completion: (()->())?) {
+        self.requestIDFA() {
+            self.requestLocation(.whenInUse) {
+                self.requestNotificationPermission { _, _ in
+                    completion?()
+                }
+            }
+        }
+    }
 }
 @objc class PermissionsManager: NSObject, PermissionsManagerProtocol  {
     let userInfoManager: UserInfoManagerProtocol
@@ -66,4 +80,9 @@ import AppTrackingTransparency
 
     }
 
+    @objc func requestNotificationPermission ( completion: ((Bool, Error?)->())?) {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            completion?(granted, error)
+        }
+    }
 }

@@ -33,7 +33,6 @@ public protocol HerowDataStorageProtocol: ResetDelegate {
     func getIDFA() -> String?
     func setIDFA( _ id: String)
     func getHerowId() -> String?
-    func setHerowId( _ id: String)
     func getLang() -> String?
     func setLang( _ lang: String)
     func getOffset() -> Int?
@@ -44,5 +43,7 @@ public protocol HerowDataStorageProtocol: ResetDelegate {
     func setAccuracyStatus( _ status: String)
     func getNotificationStatus() -> String?
     func setNotificationStatus( _ status: String)
+    func getOptin() -> Optin
+    func setOptin(optin: Optin)
 
 }

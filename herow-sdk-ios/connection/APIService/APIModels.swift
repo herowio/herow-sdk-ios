@@ -7,20 +7,30 @@
 
 import Foundation
 
-enum Platform {
+public enum Platform {
     case prod
     case preprod
+    case test
     var credentials: SDKCredential {
         return SDKCredential(self)
     }
 }
 
-public struct ConnectionInfo {
-    var platform = Platform.prod
-    mutating func updatePlateform(_ platform: String) {
+
+public protocol ConnectionInfoProtocol {
+    var platform: Platform {get set}
+    func getUrlType() -> URLType
+    mutating func updatePlateform(_ platform: String)
+}
+
+public struct ConnectionInfo: ConnectionInfoProtocol {
+    public var platform = Platform.prod
+    mutating public func updatePlateform(_ platform: String) {
         switch platform {
         case "preprod":
             self.platform = Platform.preprod
+        case "test":
+            self.platform = Platform.test
         default:
             self.platform = Platform.prod
         }
@@ -32,7 +42,9 @@ public struct ConnectionInfo {
         case .preprod:
             urlType = .preprod
         case .prod:
-            urlType = .preprod
+            urlType = .prod
+        case .test:
+            urlType = .test
         }
         return urlType
     }
@@ -130,7 +142,6 @@ public struct User {
         self.login = login
         self.password = password
         self.company = company
-
     }
 }
 
@@ -147,6 +158,21 @@ public struct UserInfo: Codable {
 public struct Optin: Codable {
     var type: String
     var value: Bool
+    static var optinDataOk = Optin(type: "USER_DATA", value: true)
+    static var optinDataNotOk = Optin(type: "USER_DATA", value: false)
+
+    public func encode() -> Data? {
+        let encoder = JSONEncoder()
+        return try? encoder.encode(self)
+    }
+
+    static public func decode(data: Data) -> Optin? {
+        let decoder = JSONDecoder()
+        guard let token = try? decoder.decode(Optin.self, from: data) else {
+            return nil
+        }
+        return token
+    }
 }
 
 public struct APICache: Codable {
@@ -158,19 +184,4 @@ public struct APICache: Codable {
 
 struct NoReply: Codable {
     var response = "OK"
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

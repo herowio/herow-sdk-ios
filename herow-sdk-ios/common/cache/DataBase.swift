@@ -9,6 +9,7 @@ import Foundation
 
 protocol DataBase {
     func saveZonesInBase(items: [Zone], completion: (()->())?)
+    func getZonesInBase(_ idList: [String]?) -> [Zone]
     func getZonesInBase() -> [Zone]
     func savePoisInBase(items: [Poi], completion: (()->())?)
     func getPoisInBase() -> [Poi]

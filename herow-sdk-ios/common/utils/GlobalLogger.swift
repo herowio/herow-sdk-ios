@@ -7,97 +7,154 @@
 //
 
 import Foundation
-import CocoaLumberjack
 
+
+@objc public protocol LoggerDelegate {
+
+    @objc func startDebug()
+
+    @objc func stopDebug()
+
+    @objc  func startLogInFile()
+
+    @objc  func stopLogInFile()
+
+    @objc  func verbose(_ message: Any )
+
+    @objc  func debug(_ message: Any )
+
+    @objc  func info(_ message: Any )
+
+    @objc  func warning(_ message: Any )
+
+    @objc   func error(_ message: Any )
+
+    @objc func registerHerowId(herowId: String)
+}
+
+public enum MessageType: String {
+    case verbose = "🟢 verbose"
+    case debug = "🔵 debug"
+    case info = "🟡 info"
+    case warning = "🟠 warning"
+    case error = "🔴 error"
+}
 @objc public class GlobalLogger: NSObject {
-    @objc public static let shared = GlobalLogger()
-    var loggerFile: DDFileLogger?
 
-    private override init() {
-        DDLog.add(DDOSLogger.sharedInstance, with: DDLogLevel.info)
-        super.init()
+    var debug = false
+    var debugInFile = false
+    @objc public static let shared = GlobalLogger()
+
+
+    var logger: LoggerDelegate?
+
+    @objc public func registerHerowId(herowId: String) {
+        self.logger?.registerHerowId(herowId: herowId)
+    }
+
+    @objc public func registerLogger( logger: LoggerDelegate) {
+        self.logger = logger
+    }
+
+    private func log(_ message: Any) {
+        if debug {
+            print(String(describing:message))
+        }
     }
 
     @objc public func startDebug() {
-        DDLog.remove(DDOSLogger.sharedInstance)
-        DDLog.add(DDOSLogger.sharedInstance, with: DDLogLevel.verbose)
+        debug = true
+        if let logger = self.logger {
+            logger.startDebug()
+        }
+
     }
 
     @objc public func stopDebug() {
-        DDLog.remove(DDOSLogger.sharedInstance)
-        DDLog.add(DDOSLogger.sharedInstance, with: DDLogLevel.info)
+        debug = false
+        if let logger = self.logger {
+            logger.stopDebug()
+        }
     }
 
     @objc public func startLogInFile() {
-        if loggerFile == nil {
-            loggerFile = DDFileLogger()
-            loggerFile?.rollingFrequency = 60 * 60 * 24 // 24 hour rolling
-            loggerFile?.logFileManager.maximumNumberOfLogFiles = 7
-        }
-        if let loggerFile = loggerFile {
-            DDLog.add(loggerFile, with: DDLogLevel.verbose)
+        debugInFile = true
+        if let logger = self.logger {
+            logger.startLogInFile()
         }
     }
 
-    @objc public func getLogData() -> [Data] {
-        var logFileDataArray = [Data]()
-        if let logFilePaths = loggerFile?.logFileManager.sortedLogFilePaths {
-            for logFilePath in logFilePaths {
-                let fileURL = URL(fileURLWithPath: logFilePath)
-                if let logFileData =
-                    try? Data(contentsOf: fileURL, options: Data.ReadingOptions.mappedIfSafe) {
-                    logFileDataArray.insert(logFileData, at: 0)
-                }
-            }
-        }
-        return logFileDataArray
-    }
 
     @objc public func stopLogInFile() {
-        if let loggerFile = loggerFile {
-            DDLog.remove(loggerFile)
+        debugInFile = false
+        if let logger = self.logger {
+            logger.stopLogInFile()
         }
     }
 
-    func format(fileName: String, functionName: String, lineNumber: Int, _ items: Any ...) -> String {
+    func format(fileName: String, functionName: String, lineNumber: Int, _ message: Any) -> String {
         var log = "\((fileName as NSString).lastPathComponent) - \(functionName) at line \(lineNumber): "
-        log += items.map({ String(describing: $0) }).joined(separator: " ")
-        log += " - \(BatteryUtils.getCurrentLevel())%"
+        log += String(describing:message)
+        log += " - battery level: \(BatteryUtils.getCurrentLevel())%"
         return log
     }
 
-    public func trace(_ items: Any...,
+
+    private func dispatchMessage(_ message: String , type: MessageType) {
+
+        let display = "[\(type.rawValue.uppercased())]" + " \(message)"
+        if let logger = self.logger {
+            switch type {
+            case .debug:
+                logger.debug(display)
+            case .verbose:
+                logger.verbose(display)
+            case .info:
+                logger.info(display)
+            case .warning:
+                logger.warning(display)
+            case .error:
+                logger.error(display)
+            }
+        } else {
+            log(display)
+        }
+    }
+    public func verbose(_ message: Any,
                     fileName: String = #file,
                 functionName: String = #function,
                   lineNumber: Int = #line) {
-        DDLogVerbose(format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, items))
+
+        let message = format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, message)
+        dispatchMessage(message,type: .verbose)
+
     }
 
-    public func debug(_ items: Any...,
+    public func debug(_ message: Any,
                      fileName: String = #file,
                  functionName: String = #function,
                    lineNumber: Int = #line) {
-        DDLogDebug(format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, items))
-    }
+        let message = format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, message)
+        dispatchMessage(message,type: .debug)   }
 
-    public func info(_ items: Any...,
+    public func info(_ message: Any,
                     fileName: String = #file,
                 functionName: String = #function,
                   lineNumber: Int = #line) {
-        DDLogInfo(format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, items))
-    }
+        let message = format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, message)
+        dispatchMessage(message,type: .info)    }
 
-    public func warning(_ items: Any...,
+    public func warning(_ message: Any,
                        fileName: String = #file,
                    functionName: String = #function,
                      lineNumber: Int = #line) {
-        DDLogWarn(format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, items))
-    }
+        let message = format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, message)
+        dispatchMessage(message,type: .warning)    }
 
-    public func error(_ items: Any...,
+    public func error(_ message: Any,
                      fileName: String = #file,
                  functionName: String = #function,
                    lineNumber: Int = #line) {
-        DDLogError(format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, items))
-    }
+        let message = format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, message)
+        dispatchMessage(message,type: .error)   }
 }

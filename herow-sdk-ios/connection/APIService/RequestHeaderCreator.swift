@@ -15,10 +15,10 @@ public class RequestHeaderCreator {
                          Headers.deviceId: infos.deviceInfo.deviceId()
         ]
 
-
         if let token = token {
             hearders[Headers.authorization] = "OAuth \(token)"
         }
+
         if let herowId = herowId {
             hearders[Headers.herowId] = herowId
         }
@@ -26,7 +26,6 @@ public class RequestHeaderCreator {
         if let sdk = sdk {
             hearders[Headers.sdk] = sdk
         }
-
         return hearders
     }
 }

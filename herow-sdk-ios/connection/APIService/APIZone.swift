@@ -66,6 +66,7 @@ extension Encodable {
         guard let data = try? encoder.encode(self) else {
             return nil
         }
+        GlobalLogger.shared.debug("Encode: \(String(decoding: data, as: UTF8.self))")
         return data
     }
 

@@ -32,6 +32,8 @@
     </entity>
     <entity name="NotificationCoreData" representedClassName="NotificationCoreData" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String"/>
+        <attribute name="image" optional="YES" attributeType="String"/>
+        <attribute name="thumbnail" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="campaigns" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CampaignCoreData" inverseName="notification" inverseEntity="CampaignCoreData"/>
     </entity>
@@ -54,7 +56,7 @@
         <element name="AccessCoreData" positionX="-54" positionY="45" width="128" height="89"/>
         <element name="CampaignCoreData" positionX="-36" positionY="63" width="128" height="284"/>
         <element name="IntervalCoreData" positionX="-36" positionY="45" width="128" height="74"/>
-        <element name="NotificationCoreData" positionX="-27" positionY="54" width="128" height="74"/>
+        <element name="NotificationCoreData" positionX="-27" positionY="54" width="128" height="104"/>
         <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="14"/>
         <element name="ZoneCoreData" positionX="-63" positionY="-18" width="128" height="134"/>
     </elements>

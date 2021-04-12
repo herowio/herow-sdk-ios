@@ -55,6 +55,7 @@ protocol Campaign {
     func getDaysRecurrence() -> [String]?
     func getReccurenceEnable() -> Bool
 
+
     init(id: String,
          company: String,
          name: String,
@@ -81,11 +82,14 @@ protocol Interval {
     init(start: Int64, end: Int64)
 }
 
-protocol Notification {
+public protocol Notification {
 
     func getTitle() -> String
     func getDescription() -> String
     init(title: String, description: String)
+    init(title: String, description: String, image: String?, thumbnail: String?)
+    func getImage() -> String?
+    func getThumbnail() -> String?
 }
 
 protocol Poi {

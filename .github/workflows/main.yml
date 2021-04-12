@@ -19,3 +19,4 @@ jobs:
     - name: Start xcodebuild test
       run: |
           xcodebuild clean test -workspace herow_sdk_ios.xcworkspace -scheme herow_sdk_ios -destination "platform=iOS Simulator,name=iPhone 11 Pro"
+

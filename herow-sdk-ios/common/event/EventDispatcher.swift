@@ -10,12 +10,15 @@ import Foundation
 @objc public enum Event: Int {
     case GEOFENCE_ENTER
     case GEOFENCE_EXIT
+    case GEOFENCE_NOTIFICATION_ZONE_ENTER
     case GEOFENCE_VISIT
 
     func toString() -> String {
         switch self {
         case .GEOFENCE_EXIT:
             return "GEOFENCE_EXIT"
+        case .GEOFENCE_NOTIFICATION_ZONE_ENTER:
+            return "GEOFENCE_NOTIFICATION_ZONE_ENTER"
         case .GEOFENCE_ENTER:
             return "GEOFENCE_ENTER"
         case .GEOFENCE_VISIT:
@@ -42,6 +45,7 @@ import Foundation
         registerListener(observer, event: .GEOFENCE_ENTER)
         registerListener(observer, event: .GEOFENCE_EXIT)
         registerListener(observer, event: .GEOFENCE_VISIT)
+        registerListener(observer, event: .GEOFENCE_NOTIFICATION_ZONE_ENTER)
     }
 
     func post(event: Event, infos: [ZoneInfo]) {

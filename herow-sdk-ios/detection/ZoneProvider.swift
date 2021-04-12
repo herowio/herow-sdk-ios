@@ -12,10 +12,12 @@ import CoreData
 class SelectionContainer {
     let location: CLLocation?
     internal let zones: [Zone]
+    internal let notificationZones: [Zone]
 
-    init(location: CLLocation?, zones:[Zone]) {
+    init(location: CLLocation?, zones:[Zone],notificationZones: [Zone] ) {
         self.location = location
         self.zones = zones
+        self.notificationZones = notificationZones
     }
 }
 
@@ -53,6 +55,7 @@ extension CLLocationCoordinate2D: Codable {
 }
  class ZoneEventGenerator {
     static let keyZoneEventHistory = "com.connecthings.keyZoneEventHistory"
+    static let keyNotificationZoneEventHistory = "com.connecthings.keyNotificationZoneEventHistory"
     var dataHolder = DataHolderUserDefaults(suiteName: "ZoneEventGenerator")
     var eventDisPatcher: EventDispatcher
     let serialQueue = DispatchQueue(label: "ZoneEventGenerator.serial.queue")
@@ -60,6 +63,7 @@ extension CLLocationCoordinate2D: Codable {
     let decoder = JSONDecoder()
     var isComputing = false
     var history :[ZoneInfo]?
+    var notificationHistory :[ZoneInfo]?
     var queue = OperationQueue()
     init(eventDisPatcher: EventDispatcher) {
         self.eventDisPatcher = eventDisPatcher
@@ -76,10 +80,31 @@ extension CLLocationCoordinate2D: Codable {
         return zoneInfos
     }
 
+    private func getPlaceNotificationHistory() -> [ZoneInfo] {
+
+        if let history = self.notificationHistory {
+            return history
+        }
+        guard let data = dataHolder.getData(key: ZoneEventGenerator.keyNotificationZoneEventHistory) ,  let zoneInfos = try? decoder.decode([ZoneInfo].self, from: data) else {
+            return [ZoneInfo]()
+        }
+        return zoneInfos
+    }
+
     private func savePlaceHistory(_ zoneInfos: [ZoneInfo]) {
         history = zoneInfos
         if let data = try? encoder.encode(zoneInfos) {
             dataHolder.putData(key: ZoneEventGenerator.keyZoneEventHistory, value: data)
+            dataHolder.apply()
+        } else {
+            GlobalLogger.shared.debug("ZoneEventGenerator - encoding error")
+        }
+    }
+
+    private func savePlaceNotificationHistory(_ zoneInfos: [ZoneInfo]) {
+        notificationHistory = zoneInfos
+        if let data = try? encoder.encode(zoneInfos) {
+            dataHolder.putData(key: ZoneEventGenerator.keyNotificationZoneEventHistory, value: data)
             dataHolder.apply()
         } else {
             GlobalLogger.shared.debug("ZoneEventGenerator - encoding error")
@@ -95,12 +120,18 @@ extension CLLocationCoordinate2D: Codable {
             GlobalLogger.shared.debug("ZoneEventGenerator - starts operation: \(uuid)")
             let now = Date().timeIntervalSince1970
             let zones: [Zone] = forZones.zones
+            let notificationZones: [Zone] = forZones.notificationZones
             let currentLocation = forZones.location
 
             let zonesLocationIds = zones.map {
                 $0.getHash()
             }
+
+            let zonesNotificationLocationIds = notificationZones.map {
+                $0.getHash()
+            }
             let oldZonesIds = getPlaceHistory().map {$0.zoneHash}
+            let oldNotificationZonesIds = getPlaceNotificationHistory().map {$0.zoneHash}
 
             let input: [ZoneInfo] = zones.map {
                 let zoneInfo = getOldZoneInfoFor(hash: $0.getHash())
@@ -109,6 +140,19 @@ extension CLLocationCoordinate2D: Codable {
                 new.enterTime = now
                 let result = zoneInfo ?? new
                 return result
+            }
+
+            let notificationInput: [ZoneInfo] = notificationZones.map {
+                let zoneInfo = getOldNotificationZoneInfoFor(hash: $0.getHash())
+                let new = ZoneInfo(hash: $0.getHash() )
+                new.enterLocation = currentLocation?.coordinate
+                new.enterTime = now
+                let result = zoneInfo ?? new
+                return result
+            }
+
+            let notificationEntries: [ZoneInfo] = notificationInput.filter {
+                !oldNotificationZonesIds.contains( $0.zoneHash as String )
             }
             let entries: [ZoneInfo] = input.filter {
                 !oldZonesIds.contains( $0.zoneHash as String )
@@ -129,11 +173,14 @@ extension CLLocationCoordinate2D: Codable {
                 return $0.zoneHash
             }
             savePlaceHistory(input)
+            savePlaceNotificationHistory(notificationInput)
+
             GlobalLogger.shared.verbose("ZoneEventGenerator computeEvents oldZonesIds =\(oldZonesIds.count), entries=\(entriesids), exits=\(exitesids)")
             DispatchQueue.global().async {
                 eventDisPatcher.post(event: .GEOFENCE_ENTER, infos: entries)
                 eventDisPatcher.post(event: .GEOFENCE_EXIT, infos: exits)
                 eventDisPatcher.post(event: .GEOFENCE_VISIT, infos: exits)
+                eventDisPatcher.post(event: .GEOFENCE_NOTIFICATION_ZONE_ENTER, infos: notificationEntries)
             }
 
             GlobalLogger.shared.debug("ZoneEventGenerator - ends operation: \(uuid)")
@@ -146,6 +193,12 @@ extension CLLocationCoordinate2D: Codable {
 
     func getOldZoneInfoFor(hash: String) -> ZoneInfo? {
         return getPlaceHistory().filter {
+            $0.zoneHash == hash
+        }.first
+    }
+
+    func getOldNotificationZoneInfoFor(hash: String) -> ZoneInfo? {
+        return getPlaceNotificationHistory().filter {
             $0.zoneHash == hash
         }.first
     }
@@ -173,6 +226,13 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
         }
     }
 
+    func notificationZonesForLocation(_ location: CLLocation) -> [Zone] {
+        return cacheManager.getNearbyZones(location).filter {
+            return  $0.distanceFrom(location: location) <= $0.getRadius() * 3
+        }
+    }
+
+
     func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         self.lastLocation = location
         if cacheIsLoaded {
@@ -184,7 +244,8 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
 
     func zoneDetectionProcess(_ location: CLLocation) -> SelectionContainer{
         let entrances = zonesForLocation(location)
-        let container =  SelectionContainer(location: location, zones: entrances)
+        let notificationZonesEntrances = notificationZonesForLocation(location)
+        let container =  SelectionContainer(location: location, zones: entrances, notificationZones: notificationZonesEntrances)
         zoneEventGenerator.computeEvents(forZones: container)
         return container
     }

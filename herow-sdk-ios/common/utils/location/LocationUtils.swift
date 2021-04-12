@@ -77,4 +77,13 @@ public class LocationUtils {
                           longitude: LocationUtils.radiansToDegrees(lon2))
     }
 
+
+
+    static func randomLocation() -> CLLocation {
+
+        let randomLat = Double.random(in: -90...90)
+        let randomLong = Double.random(in: -180...180)
+        return CLLocation(latitude: randomLat, longitude: randomLong)
+    }
+
 }

@@ -184,7 +184,8 @@ import CoreLocation
         }
     }
 
-
-
+    @objc public func dispatchFakeLocation() {
+        detectionEngine.dispatchFakeLocation()
+    }
 
 }

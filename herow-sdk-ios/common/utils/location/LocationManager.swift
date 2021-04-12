@@ -147,10 +147,14 @@ public protocol LocationManager {
 
     func setIsOnClickAndCollect(_ value: Bool)
 
+    func dispatchFakeLocation()
+
     
 }
 
 extension CLLocationManager: LocationManager {
+
+
     @available(iOS 14.0, *)
     public func accuracyAuthorizationStatus() -> CLAccuracyAuthorization {
         self.accuracyAuthorization
@@ -228,6 +232,10 @@ extension CLLocationManager: LocationManager {
     }
 
     public func setIsOnClickAndCollect(_ value: Bool) {
+
+    }
+
+    public func dispatchFakeLocation() {
 
     }
 

@@ -112,5 +112,11 @@ class MockLocationManager: LocationManager {
 
     }
 
+    public func dispatchFakeLocation() {
+
+    }
+
+    
+
 
 }

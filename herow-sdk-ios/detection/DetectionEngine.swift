@@ -11,6 +11,7 @@ import UIKit
 @objc public enum UpdateType: Int {
     case update
     case geofence
+    case fake
     case undefined
 }
 @objc public protocol DetectionEngineListener: class {
@@ -438,6 +439,13 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     public func onAppInBackground() {
         bgTaskManager.onAppInBackground()
+    }
+
+   @objc public func dispatchFakeLocation() {
+        let location = LocationUtils.randomLocation()
+        for listener in  detectionListners {
+            listener.get()?.onLocationUpdate(location, from: .fake)
+        }
     }
 
 }

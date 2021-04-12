@@ -15,6 +15,8 @@ public struct APICampaign: Campaign, Codable {
     var deleted: Bool
     var simpleId: String
     var name: String
+    var image: String?
+    var thumbnail:String?
     var begin: Double
     var end: Double?
     var realTimeContent: Bool

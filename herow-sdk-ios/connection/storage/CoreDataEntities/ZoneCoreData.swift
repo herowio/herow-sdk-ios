@@ -68,5 +68,7 @@ class IntervalCoreData: NSManagedObject {
 class NotificationCoreData: NSManagedObject {
     @NSManaged var title: String
     @NSManaged var content: String
+    @NSManaged var image: String
+    @NSManaged var thumbnail: String
 }
 

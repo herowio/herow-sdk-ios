@@ -130,6 +130,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                                                                 insertInto: bgContext)
                     notificationCoreData?.title = notification.getTitle()
                     notificationCoreData?.content = notification.getDescription()
+                    notificationCoreData?.image = notification.getImage() ?? ""
+                    notificationCoreData?.thumbnail = notification.getThumbnail() ?? ""
                 }
                 if let notificationCoreData = notificationCoreData {
                     campaignCoreData?.notification = notificationCoreData
@@ -247,7 +249,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 let daysRecurrence = campaignsCoreData.daysRecurrence
                 let tz = campaignsCoreData.tz
                 let recurrenceEnabled = campaignsCoreData.recurrenceEnabled
-                let  notification = N(title: campaignsCoreData.notification.title, description: campaignsCoreData.notification.content)
+                let  notification = N(title: campaignsCoreData.notification.title, description: campaignsCoreData.notification.content,image: campaignsCoreData.notification.image, thumbnail: campaignsCoreData.notification.thumbnail)
                 let campaign = C(id: id, company: company, name: name, createdDate: createdDate, modifiedDate: modifiedDate, deleted: deleted, simpleId: simpleId, begin: begin, end: end, realTimeContent: realTimeContent, intervals: intervals, cappings: cappings, triggers: triggers, daysRecurrence: daysRecurrence, recurrenceEnabled: recurrenceEnabled, tz: tz, notification: notification)
                 campaigns.append(campaign)
             }

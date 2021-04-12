@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct HerowCampaign: Campaign {
+@objc public class HerowCampaign: NSObject, Campaign {
     var id: String
     var company: String
     var createdDate: Double
@@ -26,7 +26,7 @@ struct HerowCampaign: Campaign {
     var notification: Notification?
     var recurrenceEnabled: Bool
 
-    func getId() -> String {
+   public func getId() -> String {
         return id
     }
 
@@ -82,7 +82,7 @@ struct HerowCampaign: Campaign {
         return tz
     }
 
-    func getNotification() -> Notification? {
+   public func getNotification() -> Notification? {
         return notification
     }
 
@@ -94,7 +94,27 @@ struct HerowCampaign: Campaign {
         return recurrenceEnabled
     }
 
-    init(id: String,
+    init(campaign: Campaign) {
+        self.id = campaign.getId()
+        self.company = campaign.getCompany()
+        self.name = campaign.getName()
+        self.createdDate = campaign.getCreatedDate()
+        self.modifiedDate = campaign.getModifiedDate()
+        self.deleted = campaign.getDeleted()
+        self.simpleId = campaign.getSimpleId()
+        self.begin = campaign.getBegin()
+        self.end = campaign.getEnd()
+        self.realTimeContent = campaign.getRealTimeContent()
+        self.intervals = campaign.getIntervals()
+        self.cappings = campaign.getCappings()
+        self.triggers = campaign.getTriggers()
+        self.daysRecurrence = campaign.getDaysRecurrence()
+        self.recurrenceEnabled = campaign.getReccurenceEnable()
+        self.tz = campaign.getTz()
+        self.notification = campaign.getNotification()
+
+    }
+    required init(id: String,
          company: String,
          name: String,
          createdDate: Double,

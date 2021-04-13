@@ -199,6 +199,11 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         dataHolder.apply()
     }
 
+    public func removeCustomId() {
+        dataHolder.remove(key: HerowConstants.customIdKey)
+        dataHolder.apply()
+    }
+
     public func getIDFV() -> String? {
        return  dataHolder.getString(key: HerowConstants.idfvKey)
     }

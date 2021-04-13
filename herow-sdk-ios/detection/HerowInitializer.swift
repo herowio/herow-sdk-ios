@@ -61,7 +61,7 @@ import CoreLocation
 
 
 
-    @objc public func configPlatform(_ platform: String) -> HerowInitializer {
+    @objc public func configPlatform(_ platform: HerowPlatform) -> HerowInitializer {
         connectionInfo.updatePlateform(platform)
         self.apiManager.configure(connectInfo: connectionInfo)
         return self
@@ -171,6 +171,10 @@ import CoreLocation
     @objc public func setCustomId(customId: String) {
         self.userInfoManager.setCustomId(customId)
 
+    }
+
+    @objc public func removeCustomId() {
+        self.userInfoManager.removeCustomId()
     }
 
     @objc public func getHerowZoneForId(id: String) -> HerowZone? {

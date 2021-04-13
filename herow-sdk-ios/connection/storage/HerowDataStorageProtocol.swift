@@ -26,6 +26,7 @@ public protocol HerowDataStorageProtocol: ResetDelegate {
     func saveLastCacheFetchDate(_ date: Date)
     func getLastCacheFetchDate() -> Date?
 
+    func removeCustomId()
     func getCustomId() -> String?
     func setCustomId( _ customId: String)
     func getIDFV() -> String?

@@ -15,21 +15,26 @@ public enum Platform {
         return SDKCredential(self)
     }
 }
-
+// visible objectiv C
+@objc public enum HerowPlatform: Int {
+    case prod
+    case preprod
+    case test
+}
 
 public protocol ConnectionInfoProtocol {
     var platform: Platform {get set}
     func getUrlType() -> URLType
-    mutating func updatePlateform(_ platform: String)
+    mutating func updatePlateform(_ platform: HerowPlatform)
 }
 
 public struct ConnectionInfo: ConnectionInfoProtocol {
     public var platform = Platform.prod
-    mutating public func updatePlateform(_ platform: String) {
+    mutating public func updatePlateform(_ platform: HerowPlatform) {
         switch platform {
-        case "preprod":
+        case .preprod:
             self.platform = Platform.preprod
-        case "test":
+        case .test:
             self.platform = Platform.test
         default:
             self.platform = Platform.prod

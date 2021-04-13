@@ -40,7 +40,7 @@ extension PermissionsManagerProtocol {
         self.userInfoManager = userInfoManager
     }
 
-    func requestIDFA(completion: (()->())? = nil) {
+    public func requestIDFA(completion: (()->())? = nil) {
         if #available(iOS 14, *) {
             ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
                 completion?()
@@ -51,7 +51,7 @@ extension PermissionsManagerProtocol {
         }
     }
 
-    internal func requestWhenInUSeLocation(completion: (()->())?) {
+    internal func requestWhenInUseLocation(completion: (()->())?) {
         if CLLocationManager.locationServicesEnabled() {
             locationManager.requestWhenInUseAuthorization()
         }
@@ -65,10 +65,10 @@ extension PermissionsManagerProtocol {
         completion?()
     }
 
-    @objc func requestLocation(_ type: LocationPermission, completion: (()->())?) {
+    @objc public  func requestLocation(_ type: LocationPermission, completion: (()->())?) {
         switch type {
         case .whenInUse:
-            requestWhenInUSeLocation(completion: completion)
+            requestWhenInUseLocation(completion: completion)
         case .always:
             requestAlwaysLocation(completion: completion)
         }

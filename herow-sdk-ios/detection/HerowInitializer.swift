@@ -11,7 +11,7 @@ import CoreLocation
 
 @objc public class HerowInitializer: NSObject, ResetDelegate {
 
-    public static let instance = HerowInitializer()
+    @objc public static let instance = HerowInitializer()
     private var appStateDetector = AppStateDetector()
     private var apiManager: APIManager
     private var herowDataHolder: HerowDataStorageProtocol

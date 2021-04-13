@@ -15,6 +15,7 @@ protocol UserInfoListener: class {
 }
 protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate {
     func getCustomId() -> String?
+    func removeCustomId()
     func setCustomId( _ customId: String)
     func getIDFV() -> String?
     func setIDFV( _ id: String)
@@ -51,6 +52,15 @@ class UserInfoManager: UserInfoManagerProtocol {
     weak  var  userInfoListener: UserInfoListener?
     let herowDataHolder: HerowDataStorageProtocol
 
+
+    func removeCustomId() {
+        if getCustomId() != nil {
+        herowDataHolder.removeCustomId()
+        herowDataHolder.saveUserInfoWaitingForUpdate(true)
+        synchronize()
+        }
+    }
+    
     func getCustomId() -> String? {
         return herowDataHolder.getCustomId()
     }

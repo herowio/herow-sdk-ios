@@ -13,6 +13,17 @@ struct HerowNotification: Notification {
     var description: String
     var image : String?
     var thumbnail : String?
+    var textToSpeech: String?
+    var uri: String?
+
+    func getTextToSpeech() -> String? {
+        return textToSpeech
+    }
+
+    func getUri() -> String? {
+        return uri
+    }
+
     func getTitle() -> String {
         return title
     }
@@ -25,11 +36,13 @@ struct HerowNotification: Notification {
         self.title = title
         self.description = description
     }
-    init(title: String, description: String, image: String?, thumbnail: String?) {
+    init(title: String, description: String, image: String?, thumbnail: String?, textToSpeech: String?, uri: String?) {
         self.title = title
         self.description = description
         self.image = image
         self.thumbnail = thumbnail
+        self.textToSpeech = textToSpeech
+        self.uri = uri
     }
 
 

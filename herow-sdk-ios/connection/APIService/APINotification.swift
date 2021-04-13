@@ -12,7 +12,8 @@ public struct APINotification: Codable, Notification {
     var description: String
     var image: String?
     var thumbnail: String?
-    
+    var textToSpeech: String?
+    var uri: String?
     public func getTitle() -> String {
         return title
     }
@@ -21,11 +22,13 @@ public struct APINotification: Codable, Notification {
         return description
     }
 
-    public init(title: String, description: String, image: String?, thumbnail: String?) {
+    public init(title: String, description: String, image: String?, thumbnail: String?, textToSpeech: String?, uri: String?) {
         self.title = title
         self.description = description
         self.image = image
         self.thumbnail = thumbnail
+        self.textToSpeech = textToSpeech
+        self.uri = uri
     }
 
     public func getImage() -> String? {
@@ -33,6 +36,13 @@ public struct APINotification: Codable, Notification {
     }
     public func getThumbnail() -> String? {
         return thumbnail
+    }
+
+    public func getTextToSpeech() -> String? {
+        return textToSpeech
+    }
+    public func getUri() -> String? {
+        return uri
     }
 
     public init(title: String, description: String) {
@@ -45,6 +55,8 @@ public struct APINotification: Codable, Notification {
         case description
         case image
         case thumbnail
+        case textToSpeech
+        case uri
     }
 
     public  init(from decoder: Decoder) throws {
@@ -53,6 +65,8 @@ public struct APINotification: Codable, Notification {
         self.description = try values.decode(String.self, forKey: .description)
         self.image = try values.decodeIfPresent(String.self, forKey: .image)
         self.thumbnail = try values.decodeIfPresent(String.self, forKey: .thumbnail)
+        self.textToSpeech = try values.decodeIfPresent(String.self, forKey: .textToSpeech)
+        self.uri = try values.decodeIfPresent(String.self, forKey: .uri)
     }
 
 }

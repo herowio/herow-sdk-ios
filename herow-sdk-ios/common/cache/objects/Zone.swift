@@ -87,9 +87,11 @@ public protocol Notification {
     func getTitle() -> String
     func getDescription() -> String
     init(title: String, description: String)
-    init(title: String, description: String, image: String?, thumbnail: String?)
+    init(title: String, description: String, image: String?, thumbnail: String?, textToSpeech: String?, uri: String?)
     func getImage() -> String?
     func getThumbnail() -> String?
+    func getTextToSpeech() -> String?
+    func getUri() -> String?
 }
 
 protocol Poi {

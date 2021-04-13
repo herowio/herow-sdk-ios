@@ -103,7 +103,7 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
 ##### Objectiv-C
 ```
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    herowInitializer = [HerowInitializer instance];
+    herowInitializer = HerowInitializer.instance;
     [[[herowInitializer configPlatform: HerowPlatform.prod]
         configAppWithIdentifier:@"your SDK ID" sdkKey:@"your SDK Key"] synchronize];
     return YES;
@@ -145,19 +145,20 @@ The HEROW SDK only works if the GDPR opt-in is given by the end-user. The SDK ca
 #### Update the opt-ins permissions
 
 
-##### Objectiv-C
-
-```
-[herowInitializer instance] acceptOptin];
-or 
-[herowInitializer instance] refuseOptin];
-```
 ##### Swift
 ```
  HerowInitializer.instance.acceptOptin()
  or
  HerowInitializer.instance.refuseOptin() 
 ```
+##### Objectiv-C
+
+```
+[HerowInitializer.instance  acceptOptin];
+or 
+[HerowInitializer.instance  refuseOptin];
+```
+
 
 > **Note 1:**
 >
@@ -177,9 +178,9 @@ HerowInitializer.instance.removeCustomId()
 ##### Objectiv-C
 
 ```
-[HerowInitializer instance] setCustomId: "customId"];
+[HerowInitializer.instance setCustomId: "customId"];
 
-[HerowInitializer instance] removeCustomId];
+[HerowInitializer.instance  removeCustomId];
 ```
 ## HEROW Click & Collect
 
@@ -211,7 +212,7 @@ HerowInitializer.instance.launchClickAndCollect()
 ```
 ##### Objectiv-C
 ```
-[[HerowInitializer instance] launchClickAndCollect];
+[HerowInitializer.instance  launchClickAndCollect];
 ```
 
 ### How to stop the Click & Collect
@@ -225,8 +226,73 @@ HerowInitializer.instance.stopClickAndCollect()
 ```
 ##### Objectiv-C
 ```
-[[HerowInitializer instance] stopClickAndCollect];
+[HerowInitializer.instance g stopClickAndCollect];
 ```
+
+## Location Permissions
+
+The sdk needs some permissions to work.
+To be able to take background position readings by activating the **clickAndCollect** feature you will need the **whenInUse** permission.
+If you want to take readings permanently the **always** permissions will be required.
+
+In these two cases you will also need to activate background mode in Xcode.
+![image](background.png)
+In addition, the iOS system requires an application to provide a description of the framework usage.
+
+These descriptions can be configured in the **info.plist** file, by adding the following keys:
+
+* The three keys for the location permission
+
+```xml
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>This text is shown when permission to use the location of the device is requested. Note that for the app to be accepted in the App Store, the description why the app needs location services must be clear to the end user.</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>This text is shown when permission to use the location of the device is requested. Note that for the app to be accepted in the App Store, the description why the app needs location services must be clear to the end user.</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>This text is shown when permission to use the location of the device is requested. Note that for the app to be accepted in the App Store, the description why the app needs location services must be clear to the end user.</string>
+```
+> **Note**:
+>
+> From the HEROW SDK version 6.3 onwards, a click and collect feature running as a **background service** is available for temporary user tracking when the app is in the background. This feature does not work with the Always Location permission.
+
+
+
+
+We provide methods for requesting permissions directly through the sdk.
+##### Swift
+```
+HerowInitializer.instance.getPermissionsManager().requestLocation(.always, completion: nil)
+   
+HerowInitializer.instance.getPermissionsManager().requestLocation(.whenInUse, completion: nil)
+```
+
+##### Objectiv-C
+```
+[[HerowInitializer.instance getPermissionManager] requestLocation:LocationPermissionAlways completion: nil];
+ 
+[[HerowInitializer.instance getPermissionManager] requestLocation:LocationPermissionWhenInUse completion: nil];
+```
+
+
+## IDFA Permission
+From iOS 14 to have access to **idfa** you must ask for authorization.
+The sdk also provides a method to access it more easily.
+
+##### Swift
+```        
+HerowInitializer.instance.getPermissionsManager().requestIDFA(completion: nil)
+```
+
+##### Objectiv-C
+```
+ [[HerowInitializer.instance getPermissionManager] requestIDFAWithCompletion: nil];
+
+```
+
+
+
+
+
 
 
 

@@ -54,7 +54,6 @@ class UserInfoManager: UserInfoManagerProtocol {
 
 
     func removeCustomId() {
-
         if getCustomId() != nil {
         herowDataHolder.removeCustomId()
         herowDataHolder.saveUserInfoWaitingForUpdate(true)

@@ -70,5 +70,7 @@ class NotificationCoreData: NSManagedObject {
     @NSManaged var content: String
     @NSManaged var image: String
     @NSManaged var thumbnail: String
+    @NSManaged var texToSpeech: String
+    @NSManaged var uri: String
 }
 

@@ -18,7 +18,7 @@ class HerowInitializerTests: XCTestCase {
     func setup() {
         herowInitializer = HerowInitializer(locationManager: locationManager)
         herowInitializer?.reset()
-        _ = herowInitializer?.configPlatform("preprod")
+        _ = herowInitializer?.configPlatform(.preprod)
             .configApp(identifier: "appdemo98", sdkKey: "4WQmEg3I6tAsFQG9ZN8T")
     }
 

@@ -308,7 +308,7 @@ GlobalLogger.shared.stopDebug()
 
 ##### Objectiv-C
 ```
- [[GlobalLogger.shared stopDebug];
+[[GlobalLogger.shared stopDebug];
 ```
 If you with register this logs localy or on remote storage systeme you can by implementing this interface: **LoggerDelegate** and register it into the GlobalLogger.
 In this exemple HerowLogger is a class which implements the LoggerDelegate protocol
@@ -320,7 +320,7 @@ GlobalLogger.shared.registerLogger(logger: HerowLogger())
 
 ##### Objectiv-C
 ```
- [[GlobalLogger.shared registerLogger:[HerowLogger new]];
+[[GlobalLogger.shared registerLogger:[HerowLogger new]];
 ```
 
 

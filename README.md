@@ -310,7 +310,7 @@ GlobalLogger.shared.stopDebug()
 ```
 [[GlobalLogger.shared stopDebug];
 ```
-If you with register this logs localy or on remote storage systeme you can by implementing this interface: **LoggerDelegate** and register it into the GlobalLogger.
+If you want to save this logs localy or on remote storage system, you can by implementing this interface: **LoggerDelegate** and register it on the GlobalLogger.
 In this exemple HerowLogger is a class which implements the LoggerDelegate protocol
 
 ##### Swift

@@ -75,14 +75,20 @@ protocol Campaign {
          notification: Notification?)
 }
 
-protocol Interval {
+extension Campaign {
+    func isExit() -> Bool {
+        return getTriggers()["onExit"] == 1
+    }
+}
+
+ protocol Interval {
 
     func getStart() -> Int64
     func getEnd() -> Int64?
     init(start: Int64, end: Int64)
 }
 
-public protocol Notification {
+ protocol Notification {
 
     func getTitle() -> String
     func getDescription() -> String

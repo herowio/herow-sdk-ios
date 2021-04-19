@@ -132,6 +132,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                     notificationCoreData?.content = notification.getDescription()
                     notificationCoreData?.image = notification.getImage() ?? ""
                     notificationCoreData?.thumbnail = notification.getThumbnail() ?? ""
+                    notificationCoreData?.uri = notification.getUri() ?? ""
                 }
                 if let notificationCoreData = notificationCoreData {
                     campaignCoreData?.notification = notificationCoreData

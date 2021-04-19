@@ -7,6 +7,6 @@
 
 import Foundation
 
-public protocol NotificationFilter: class {
+ protocol NotificationFilter: class {
     func createNotification(campaign: Campaign) -> Bool
 }

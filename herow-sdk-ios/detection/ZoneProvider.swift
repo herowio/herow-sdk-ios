@@ -127,9 +127,6 @@ extension CLLocationCoordinate2D: Codable {
                 $0.getHash()
             }
 
-            let zonesNotificationLocationIds = notificationZones.map {
-                $0.getHash()
-            }
             let oldZonesIds = getPlaceHistory().map {$0.zoneHash}
             let oldNotificationZonesIds = getPlaceNotificationHistory().map {$0.zoneHash}
 
@@ -228,8 +225,16 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
 
     func notificationZonesForLocation(_ location: CLLocation) -> [Zone] {
         return cacheManager.getNearbyZones(location).filter {
-            return  $0.distanceFrom(location: location) <= $0.getRadius() * 3
+            return  $0.distanceFrom(location: location) <= notificationDistanceForZone($0)
         }
+    }
+
+    private   func notificationDistanceForZone(_ zone: Zone) -> Double{
+        // let campaigns = cacheManager.getCampaignsForZone(zone).filter {
+        //    $0.isExit() == false
+        // }
+        // TODO: TI UPDATE
+        return zone.getRadius() * 3
     }
 
 

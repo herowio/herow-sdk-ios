@@ -39,23 +39,27 @@ class NotificationManager: NSObject, EventListener {
 
     private func canCreateNotification( _ campaign : Campaign) -> Bool {
         for filter in filters {
+          
             if let filter = filter.get() {
                 if !(filter.createNotification(campaign: campaign)) {
                     return false
                 }
             }
         }
+        GlobalLogger.shared.warning("can reate notification")
         return true
     }
 
     private func createNotificationForEvent( event: Event,  info: ZoneInfo) {
 
-        let zone = cacheManager.getZones(ids: [info.zoneHash])
-        let campaigns = cacheManager.getCampaignsForZone(zone as! Zone)
-        for campaign in campaigns {
-            if (event == .GEOFENCE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit() ) {
-                if canCreateNotification(campaign) {
-                    createCampaignNotification(campaign)
+        let zones = cacheManager.getZones(ids: [info.zoneHash])
+        for zone in zones {
+            let campaigns = cacheManager.getCampaignsForZone(zone)
+            for campaign in campaigns {
+                if (event == .GEOFENCE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit() ) {
+                    if canCreateNotification(campaign) {
+                        createCampaignNotification(campaign)
+                    }
                 }
             }
         }
@@ -76,6 +80,8 @@ class NotificationManager: NSObject, EventListener {
         notificationCenter.add(request) { (error) in
             if error != nil {
                 // Handle any errors.
+            } else {
+                GlobalLogger.shared.warning("create notification: \(campaign.getId())")
             }
         }
     }
@@ -86,5 +92,4 @@ class NotificationManager: NSObject, EventListener {
             createNotificationForEvent(event: event, info: info)
         }
     }
-
 }

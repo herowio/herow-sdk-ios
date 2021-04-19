@@ -21,13 +21,13 @@ Pod::Spec.new do |s|
     s.platform     = :ios
 
     # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-    s.source       = { :git => "./", :branch => "master" }
+    s.source       = { :git => "./", :branch => "main" }
     s.vendored_frameworks = 'Herow.framework'
     s.ios.deployment_target = '11.0'
     s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
 
     # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-    s.default_subspecs = 'Detection'
+    s.default_subspecs = 'Detection','Action'
 
     # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
     s.dependency 'SwiftLint'
@@ -49,11 +49,19 @@ Pod::Spec.new do |s|
         ss.ios.resources = 'herow-sdk-ios/connection/**/*.plist', 'herow-sdk-ios/connection/**/*.xcdatamodeld'
     end
 
+      s.subspec 'Action' do |ss|
+        ss.ios.source_files = 'herow-sdk-ios/action/**/*.swift'
+        ss.ios.dependency 'Herow/Core'
+        ss.ios.deployment_target = '11.0'
+    end
+
     s.subspec 'Detection' do |ss|
         ss.ios.source_files = 'herow-sdk-ios/detection/**/*.swift'
         ss.ios.frameworks = 'CoreLocation'
         ss.ios.dependency 'Herow/Connection'
         ss.ios.deployment_target = '11.0'
     end
+
+   
     
 end

@@ -82,7 +82,7 @@ import Foundation
         return tz
     }
 
-   public func getNotification() -> Notification? {
+    func getNotification() -> Notification? {
         return notification
     }
 

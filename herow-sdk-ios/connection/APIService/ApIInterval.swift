@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct APIInterval: Codable, Interval {
+ struct APIInterval: Codable, Interval {
 
     var start: Int64
     var end: Int64?

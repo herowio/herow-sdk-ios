@@ -7,7 +7,7 @@
 
 import Foundation
 
-@objc public class HerowCampaign: NSObject, Campaign {
+@objc  class HerowCampaign: NSObject, Campaign {
     var id: String
     var company: String
     var createdDate: Double

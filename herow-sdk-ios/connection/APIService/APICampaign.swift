@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct APICampaign: Campaign, Codable {
+ struct APICampaign: Campaign, Codable {
     var id: String
     var company: String
     var createdDate: Double

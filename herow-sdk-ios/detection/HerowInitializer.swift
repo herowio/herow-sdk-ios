@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreLocation
-
+import UIKit
 
 @objc public class HerowInitializer: NSObject, ResetDelegate {
 
@@ -27,6 +27,7 @@ import CoreLocation
     private let eventDispatcher: EventDispatcher
     private let analyticsManager: AnalyticsManager
     private let fuseManager: FuseManager
+    private var notificationManager: NotificationManager
     internal  init(locationManager: LocationManager = CLLocationManager()) {
 
         eventDispatcher = EventDispatcher()
@@ -53,10 +54,12 @@ import CoreLocation
         appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
         detectionEngine.registerDetectionListener(listener: analyticsManager)
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
+        notificationManager = NotificationManager(cacheManager: cacheManager, notificationCenter:  UNUserNotificationCenter.current())
 
         super.init()
         registerEventListener(listener: analyticsManager)
         detectionEngine.registerDetectionListener(listener: apiManager)
+        registerEventListener(listener: notificationManager)
     }
 
 
@@ -191,5 +194,9 @@ import CoreLocation
     @objc public func dispatchFakeLocation() {
         detectionEngine.dispatchFakeLocation()
     }
+
+}
+
+extension UNUserNotificationCenter : NotificationCenterProtocol {
 
 }

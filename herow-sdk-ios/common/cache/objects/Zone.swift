@@ -35,7 +35,7 @@ public protocol Access {
     init(id: String, name: String, address: String)
 }
 
-protocol Campaign {
+public protocol Campaign {
 
     func getId() -> String
     func getCompany() -> String
@@ -75,7 +75,13 @@ protocol Campaign {
          notification: Notification?)
 }
 
-protocol Interval {
+extension Campaign {
+    func isExit() -> Bool {
+        return getTriggers()["onExit"] == 1
+    }
+}
+
+public protocol Interval {
 
     func getStart() -> Int64
     func getEnd() -> Int64?

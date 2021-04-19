@@ -8,9 +8,11 @@
 import Foundation
 import CoreLocation
 import Foundation
+import UserNotifications
+
+class AnalyticsManager: NSObject, UNUserNotificationCenterDelegate, EventListener, DetectionEngineListener, ClickAndConnectListener,AppStateDelegate, NotificationCreationListener  {
 
 
-class AnalyticsManager: EventListener, DetectionEngineListener, ClickAndConnectListener,AppStateDelegate  {
 
 
     private var dataStorage: HerowDataStorageProtocol?
@@ -22,6 +24,9 @@ class AnalyticsManager: EventListener, DetectionEngineListener, ClickAndConnectL
         self.apiManager = apiManager
         self.cacheManager =  cacheManager
         self.dataStorage = dataStorage
+        super.init()
+        NotificationDelegateDispatcher.instance.registerDelegate(self)
+        NotificationDelegateDispatcher.instance.registerCreationListener(listener: self)
     }
 
     func didReceivedEvent(_ event: Event, infos: [ZoneInfo]) {
@@ -67,6 +72,22 @@ class AnalyticsManager: EventListener, DetectionEngineListener, ClickAndConnectL
 
     func onAppInBackground() {
         appState = "bg"
+    }
+
+    func didCreateNotificationForCampaign(_ campaign: Campaign) {
+        GlobalLogger.shared.debug("AnalyticsManager - create Notification Log")
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let id = response.notification.request.identifier
+        let camp = cacheManager.getCampaigns().first {
+            $0.getId() == id
+        }
+        guard let campaign = camp else {
+            return
+        }
+        GlobalLogger.shared.debug("AnalyticsManager - redirect Notification Log : \(campaign.getName())")
+
     }
 
 }

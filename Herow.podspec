@@ -44,7 +44,7 @@ Pod::Spec.new do |s|
 
     s.subspec 'Connection' do |ss|
         ss.ios.source_files = 'herow-sdk-ios/connection/**/*.swift'
-        ss.ios.dependency 'Herow/Core'
+        ss.ios.dependency 'Herow/Action'
         ss.ios.deployment_target = '11.0'   
         ss.ios.resources = 'herow-sdk-ios/connection/**/*.plist', 'herow-sdk-ios/connection/**/*.xcdatamodeld'
     end

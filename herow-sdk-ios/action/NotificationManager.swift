@@ -10,6 +10,13 @@ import UIKit
 protocol NotificationCenterProtocol {
     func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> Void)?)
 
+    func removeDeliveredNotifications(withIdentifiers identifiers: [String])
+
+    func removePendingNotificationRequests(withIdentifiers identifiers: [String])
+
+    func getDeliveredNotifications(completionHandler: @escaping ([UNNotification]) -> Void)
+
+
 }
 class NotificationManager: NSObject, EventListener {
 
@@ -74,7 +81,7 @@ class NotificationManager: NSObject, EventListener {
 
         content.title = notification.getTitle()
         content.body = notification.getDescription()
-        let uuidString = UUID().uuidString
+        let uuidString = campaign.getId()
         let request = UNNotificationRequest(identifier: uuidString,
                                             content: content, trigger: nil)
         notificationCenter.add(request) { (error) in
@@ -82,6 +89,7 @@ class NotificationManager: NSObject, EventListener {
                 // Handle any errors.
             } else {
                 GlobalLogger.shared.warning("create notification: \(campaign.getId())")
+                NotificationDelegateDispatcher.instance.didCreateNotificationForCampaign(campaign)
             }
         }
     }

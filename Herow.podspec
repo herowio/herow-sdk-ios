@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
     s.pod_target_xcconfig = { 'SWIFT_VERSION' => '5.0' }
 
     # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-    s.default_subspecs = 'Detection','Action'
+    s.default_subspecs = 'Detection'
 
     # ――― Project Linking ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
     s.dependency 'SwiftLint'
@@ -42,6 +42,12 @@ Pod::Spec.new do |s|
         ss.ios.deployment_target = '11.0'     
     end
 
+     s.subspec 'Action' do |ss|
+        ss.ios.source_files = 'herow-sdk-ios/action/**/*.swift'
+        ss.ios.dependency 'Herow/Core'
+        ss.ios.deployment_target = '11.0'
+    end
+
     s.subspec 'Connection' do |ss|
         ss.ios.source_files = 'herow-sdk-ios/connection/**/*.swift'
         ss.ios.dependency 'Herow/Action'
@@ -49,11 +55,7 @@ Pod::Spec.new do |s|
         ss.ios.resources = 'herow-sdk-ios/connection/**/*.plist', 'herow-sdk-ios/connection/**/*.xcdatamodeld'
     end
 
-      s.subspec 'Action' do |ss|
-        ss.ios.source_files = 'herow-sdk-ios/action/**/*.swift'
-        ss.ios.dependency 'Herow/Core'
-        ss.ios.deployment_target = '11.0'
-    end
+     
 
     s.subspec 'Detection' do |ss|
         ss.ios.source_files = 'herow-sdk-ios/detection/**/*.swift'

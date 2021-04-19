@@ -55,7 +55,7 @@ public class NotificationDelegateDispatcher: NSObject, UNUserNotificationCenterD
     public func foregroundNotificationEnabled() -> Bool {
         let selector = #selector(UNUserNotificationCenterDelegate.userNotificationCenter(_:willPresent:withCompletionHandler:))
         for delegate in delegates() {
-            if delegate?.responds(to: selector) ?? false{
+            if delegate?.responds(to: selector) ?? false {
                 return true
             }
         }

@@ -88,6 +88,11 @@ class AnalyticsManager: NSObject, UNUserNotificationCenterDelegate, EventListene
         }
         GlobalLogger.shared.debug("AnalyticsManager - redirect Notification Log : \(campaign.getName())")
 
+        let logRedirect = LogDataRedirect(appState: appState, campaignId: campaign.getId(), campaignName: campaign.getName(), isPersistentNotification: campaign.isPersistent(), isExitNotification: campaign.isExit(), cacheManager: cacheManager, dataStorage: dataStorage)
+        if let data = logRedirect.getData() {
+           apiManager.pushLog(data) {}
+        }
+
     }
 
 }

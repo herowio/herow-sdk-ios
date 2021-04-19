@@ -79,6 +79,10 @@ extension Campaign {
     func isExit() -> Bool {
         return getTriggers()["onExit"] == 1
     }
+
+    func isPersistent() -> Bool {
+        return getTriggers()["isPersistent"] == 1
+    }
 }
 
  protocol Interval {

@@ -286,8 +286,44 @@ HerowInitializer.instance.getPermissionsManager().requestIDFA(completion: nil)
 ##### Objectiv-C
 ```
  [[HerowInitializer.instance getPermissionManager] requestIDFAWithCompletion: nil];
-
 ```
+
+## Debug Mode
+You can now follow the execution logs with this method.
+##### Swift
+```        
+GlobalLogger.shared.startDebug()
+```
+
+##### Objectiv-C
+```
+ [[GlobalLogger.shared startDebug];
+```
+You can stop this mode with this command
+
+##### Swift
+```        
+GlobalLogger.shared.stopDebug()
+```
+
+##### Objectiv-C
+```
+[[GlobalLogger.shared stopDebug];
+```
+If you want to save this logs locally or on remote storage system, you can by implementing this interface: **LoggerDelegate** and register it on the GlobalLogger.
+In this exemple HerowLogger is a class which implements the LoggerDelegate protocol
+
+##### Swift
+```        
+GlobalLogger.shared.registerLogger(logger: HerowLogger())
+```
+
+##### Objectiv-C
+```
+[[GlobalLogger.shared registerLogger:[HerowLogger new]];
+```
+
+
 
 
 

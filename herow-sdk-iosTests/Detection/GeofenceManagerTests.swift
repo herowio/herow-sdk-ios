@@ -15,7 +15,7 @@ class GeofenceManagerTests: XCTestCase {
     override func setUpWithError() throws {
         herowInitializer = HerowInitializer(locationManager: locationManager)
         herowInitializer?.reset()
-        _ = herowInitializer?.configPlatform("preprod")
+        _ = herowInitializer?.configPlatform(.preprod)
             .configApp(identifier: "appdemo98", sdkKey: "4WQmEg3I6tAsFQG9ZN8T")
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }

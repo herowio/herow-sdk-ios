@@ -35,7 +35,7 @@ public protocol Access {
     init(id: String, name: String, address: String)
 }
 
-public protocol Campaign {
+ protocol Campaign {
 
     func getId() -> String
     func getCompany() -> String
@@ -81,14 +81,14 @@ extension Campaign {
     }
 }
 
-public protocol Interval {
+ protocol Interval {
 
     func getStart() -> Int64
     func getEnd() -> Int64?
     init(start: Int64, end: Int64)
 }
 
-public protocol Notification {
+ protocol Notification {
 
     func getTitle() -> String
     func getDescription() -> String

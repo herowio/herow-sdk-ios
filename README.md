@@ -1,4 +1,16 @@
-# Herow SDK for iOS
+<h1 align="center">Herow SDK for iOS</h1>
+
+<p align="center">
+  
+  <a href="https://github.com/herowio/herow-sdk-ios/workflows/Build%20and%20Test/badge.svg?">
+	<img alt="Unit Tests" src="https://github.com/herowio/herow-sdk-ios/workflows/Build%20and%20Test//badge.svg"/>
+  </a>
+  <a href="https://sonarcloud.io/dashboard?id=herowio_herow-sdk-ios">
+	<img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=herowio_herow-sdk-ios&metric=alert_status"/>
+  </a>
+</p>
+
+
 
 ## Installation with CocoaPod
 

@@ -32,7 +32,7 @@ extension PermissionsManagerProtocol {
         }
     }
 }
-@objc class PermissionsManager: NSObject, PermissionsManagerProtocol  {
+@objc public class PermissionsManager: NSObject, PermissionsManagerProtocol  {
     let userInfoManager: UserInfoManagerProtocol
     let locationManager = CLLocationManager()
     let motionManager = MotionActivityManager()
@@ -40,7 +40,7 @@ extension PermissionsManagerProtocol {
         self.userInfoManager = userInfoManager
     }
 
-    public func requestIDFA(completion: (()->())? = nil) {
+   @objc public func requestIDFA(completion: (()->())? = nil) {
         if #available(iOS 14, *) {
             ATTrackingManager.requestTrackingAuthorization(completionHandler: { status in
                 completion?()
@@ -74,13 +74,13 @@ extension PermissionsManagerProtocol {
         }
     }
 
-    @objc func requestActivity( completion: (()->())?) {
+    @objc public func requestActivity( completion: (()->())?) {
         motionManager.requestPermission()
         completion?()
 
     }
 
-    @objc func requestNotificationPermission ( completion: ((Bool, Error?)->())?) {
+    @objc public func requestNotificationPermission ( completion: ((Bool, Error?)->())?) {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             completion?(granted, error)
         }

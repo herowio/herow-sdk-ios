@@ -65,14 +65,14 @@ class NotificationManager: NSObject, EventListener {
             for campaign in campaigns {
                 if (event == .GEOFENCE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit() ) {
                     if canCreateNotification(campaign) {
-                        createCampaignNotification(campaign)
+                        createCampaignNotification(campaign, zoneID: zone.getHash())
                     }
                 }
             }
         }
     }
 
-    private func createCampaignNotification(_ campaign: Campaign) {
+    private func createCampaignNotification(_ campaign: Campaign, zoneID: String) {
 
         guard let notification = campaign.getNotification() else {
             return
@@ -81,6 +81,7 @@ class NotificationManager: NSObject, EventListener {
 
         content.title = notification.getTitle()
         content.body = notification.getDescription()
+        content.userInfo = ["zoneID": zoneID]
         let uuidString = campaign.getId()
         let request = UNNotificationRequest(identifier: uuidString,
                                             content: content, trigger: nil)
@@ -89,7 +90,7 @@ class NotificationManager: NSObject, EventListener {
                 // Handle any errors.
             } else {
                 GlobalLogger.shared.warning("create notification: \(campaign.getId())")
-                NotificationDelegateDispatcher.instance.didCreateNotificationForCampaign(campaign)
+                NotificationDelegateDispatcher.instance.didCreateNotificationForCampaign(campaign, zoneID: zoneID)
             }
         }
     }

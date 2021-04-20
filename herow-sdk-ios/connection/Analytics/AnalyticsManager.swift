@@ -71,9 +71,9 @@ class AnalyticsManager: NSObject, UNUserNotificationCenterDelegate, EventListene
         appState = "bg"
     }
 
-    func didCreateNotificationForCampaign(_ campaign: Campaign) {
+    func didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String) {
         GlobalLogger.shared.debug("AnalyticsManager - create Notification Log : \(campaign.getName())")
-        let log = LogDataNotification(appState: appState, campaignId: campaign.getId(), campaignName: campaign.getName(), isPersistentNotification: campaign.isPersistent(), isExitNotification: campaign.isExit(), cacheManager: cacheManager, dataStorage: dataStorage, subType: .GEOFENCE_ZONE_NOTIFICATION)
+        let log = LogDataNotification(appState: appState, campaignId: campaign.getId(), campaignName: campaign.getName(), isPersistentNotification: campaign.isPersistent(), isExitNotification: campaign.isExit(), cacheManager: cacheManager, dataStorage: dataStorage, subType: .GEOFENCE_ZONE_NOTIFICATION, zoneID: zoneID)
         if let data = log.getData() {
            apiManager.pushLog(data) {}
         }
@@ -81,15 +81,16 @@ class AnalyticsManager: NSObject, UNUserNotificationCenterDelegate, EventListene
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         let id = response.notification.request.identifier
+        let zID = response.notification.request.content.userInfo["zoneID"]
         let camp = cacheManager.getCampaigns().first {
             $0.getId() == id
         }
-        guard let campaign = camp else {
+        guard let campaign = camp, let zoneID = zID as? String else {
             return
         }
         GlobalLogger.shared.debug("AnalyticsManager - redirect Notification Log : \(campaign.getName())")
 
-        let log = LogDataNotification(appState: appState, campaignId: campaign.getId(), campaignName: campaign.getName(), isPersistentNotification: campaign.isPersistent(), isExitNotification: campaign.isExit(), cacheManager: cacheManager, dataStorage: dataStorage, subType: .REDIRECT)
+        let log = LogDataNotification(appState: appState, campaignId: campaign.getId(), campaignName: campaign.getName(), isPersistentNotification: campaign.isPersistent(), isExitNotification: campaign.isExit(), cacheManager: cacheManager, dataStorage: dataStorage, subType: .REDIRECT, zoneID: zoneID)
         if let data = log.getData() {
            apiManager.pushLog(data) {}
         }

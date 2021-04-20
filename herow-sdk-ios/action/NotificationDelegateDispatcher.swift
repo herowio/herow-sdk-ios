@@ -10,7 +10,7 @@ import UserNotifications
 
 
  protocol NotificationCreationListener: class {
-   func  didCreateNotificationForCampaign(_ campaign: Campaign)
+    func  didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String)
 }
 
 
@@ -45,9 +45,9 @@ public class NotificationDelegateDispatcher: NSObject, UNUserNotificationCenterD
         }
     }
 
-    func didCreateNotificationForCampaign(_ campaign: Campaign) {
+    func didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String) {
         for listener in creationListeners {
-            listener.get()?.didCreateNotificationForCampaign(campaign)
+            listener.get()?.didCreateNotificationForCampaign(campaign, zoneID: zoneID)
         }
 
     }

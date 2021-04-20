@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
     # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
     s.name         = "Herow"
-    s.version      = "7.0-SNAPSHOT"
+    s.version      = "7.1.0-SNAPSHOT"
     s.summary      = "herow-sdk-ios: an assets of classes and interfaces "
     s.homepage     = "http://www.herow.io/"
     s.module_name  = 'Herow'
@@ -63,7 +63,5 @@ Pod::Spec.new do |s|
         ss.ios.dependency 'Herow/Connection'
         ss.ios.deployment_target = '11.0'
     end
-
-   
     
 end

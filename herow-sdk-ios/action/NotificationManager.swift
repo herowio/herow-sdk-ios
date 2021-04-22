@@ -65,23 +65,29 @@ class NotificationManager: NSObject, EventListener {
             for campaign in campaigns {
                 if (event == .GEOFENCE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit() ) {
                     if canCreateNotification(campaign) {
-                        createCampaignNotification(campaign, zoneID: zone.getHash())
+                        createCampaignNotification(campaign, zone: zone)
                     }
                 }
             }
         }
     }
 
-    private func createCampaignNotification(_ campaign: Campaign, zoneID: String) {
+    private func createCampaignNotification(_ campaign: Campaign, zone: Zone) {
 
         guard let notification = campaign.getNotification() else {
             return
         }
         let content = UNMutableNotificationContent()
 
-        content.title = notification.getTitle()
-        content.body = notification.getDescription()
-        content.userInfo = ["zoneID": zoneID]
+        var title = notification.getTitle()
+        var description = notification.getDescription()
+        if campaign.getRealTimeContent() {
+            title = computeDynamicContent(title)
+            description = computeDynamicContent(description)
+        }
+        content.title = title
+        content.body = description
+        content.userInfo = ["zoneID": zone.getHash()]
         let uuidString = campaign.getId()
         let request = UNNotificationRequest(identifier: uuidString,
                                             content: content, trigger: nil)
@@ -90,7 +96,7 @@ class NotificationManager: NSObject, EventListener {
                 // Handle any errors.
             } else {
                 GlobalLogger.shared.warning("create notification: \(campaign.getId())")
-                NotificationDelegateDispatcher.instance.didCreateNotificationForCampaign(campaign, zoneID: zoneID)
+                NotificationDelegateDispatcher.instance.didCreateNotificationForCampaign(campaign, zoneID: zone.getHash())
             }
         }
     }
@@ -100,5 +106,10 @@ class NotificationManager: NSObject, EventListener {
         for info in infos {
             createNotificationForEvent(event: event, info: info)
         }
+    }
+
+    private func computeDynamicContent(_ text: String) -> String {
+        // TODO: implement mecanism
+        return text
     }
 }

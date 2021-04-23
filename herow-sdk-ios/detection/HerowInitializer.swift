@@ -28,7 +28,8 @@ import UIKit
     private let analyticsManager: AnalyticsManager
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
-    internal  init(locationManager: LocationManager = CLLocationManager()) {
+    internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol =  UNUserNotificationCenter.current()) {
+
 
         eventDispatcher = EventDispatcher()
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
@@ -54,9 +55,11 @@ import UIKit
         appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
         detectionEngine.registerDetectionListener(listener: analyticsManager)
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
-        notificationManager = NotificationManager(cacheManager: cacheManager, notificationCenter:  UNUserNotificationCenter.current(), herowDataStorage: herowDataHolder)
+     
+        notificationManager = NotificationManager(cacheManager: cacheManager, notificationCenter:  notificationCenter, herowDataStorage: herowDataHolder)
 
         super.init()
+
         registerEventListener(listener: analyticsManager)
         detectionEngine.registerDetectionListener(listener: apiManager)
         registerEventListener(listener: notificationManager)

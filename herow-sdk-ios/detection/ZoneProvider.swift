@@ -27,9 +27,60 @@ class SelectionContainer {
     public var exitTime: TimeInterval? = 0
     public var enterLocation: CLLocationCoordinate2D?
     public var exitLocation: CLLocationCoordinate2D?
-    init(hash: String) {
-        self.zoneHash = hash
+    public var centerLocation: CLLocationCoordinate2D
+    public var confidence: Double?
+    public var radius: Double?
+    
+    init(zone: Zone) {
+        self.zoneHash = zone.getHash()
+        self.radius = zone.getRadius()
+        self.centerLocation = CLLocationCoordinate2D(latitude: zone.getLat(), longitude:  zone.getLng())
     }
+
+    func computeEnterConfidence(location: CLLocation)  {
+
+        confidence = computeConfidence(location: location, radius: radius ?? 0)
+    }
+
+    func computeNotificationConfidence(location: CLLocation)  {
+        confidence = computeConfidence(location: location, radius: 3 * (radius ?? 0))
+    }
+
+    func computeExitConfidence(location: CLLocation)  {
+        confidence =  1 - computeConfidence(location: location, radius: radius ?? 0)
+    }
+
+    private func computeConfidence(location: CLLocation, radius: Double) -> Double {
+        var result: Double = 0
+        let center = CLLocation(latitude: centerLocation.latitude, longitude: centerLocation.longitude)
+        let d = center.distance(from: location) as Double
+        let zoneRadius = radius
+        let accuracyRadius = location.horizontalAccuracy
+        var intersectArea: Double  = 0
+        let r1 = max(zoneRadius, accuracyRadius)
+        let r2 = min(zoneRadius, accuracyRadius)
+        let r1r1 = r1 * r1
+        let r2r2 = r2 * r2
+        let dd = d * d
+        if r1 + r2  <= d {
+            intersectArea = 0
+        } else {
+            if r1 - r2 >= d {
+                GlobalLogger.shared.debug("full inclusion: distance = \(d)")
+                intersectArea = Double.pi * r2r2
+            } else {
+                let d1 = ((r1r1 - r2r2) + dd) / (2 * d)
+                let d2 = ((r2r2 - r1r1) + dd) / (2 * d)
+                let a1 = r1r1 * acos(d1 / r1) - d1 * sqrt(r1r1 - d1 * d1)
+                let a2 = r2r2 * acos(d2 / r2) - d2 * sqrt(r2r2 - d2 * d2)
+                intersectArea = a1 + a2
+            }
+        }
+        result = min(1, intersectArea / (Double.pi * accuracyRadius * accuracyRadius))
+        GlobalLogger.shared.debug("confidence : \(result) for zone: \(self.zoneHash) , radius: \(zoneRadius), accuracy: \(accuracyRadius), location:\(location)")
+        return result
+    }
+
 
 
 }
@@ -122,7 +173,6 @@ extension CLLocationCoordinate2D: Codable {
             let zones: [Zone] = forZones.zones
             let notificationZones: [Zone] = forZones.notificationZones
             let currentLocation = forZones.location
-
             let zonesLocationIds = zones.map {
                 $0.getHash()
             }
@@ -132,18 +182,26 @@ extension CLLocationCoordinate2D: Codable {
 
             let input: [ZoneInfo] = zones.map {
                 let zoneInfo = getOldZoneInfoFor(hash: $0.getHash())
-                let new = ZoneInfo(hash: $0.getHash() )
+                let new = ZoneInfo(zone: $0 )
                 new.enterLocation = currentLocation?.coordinate
                 new.enterTime = now
+                if let currentLocation = currentLocation {
+
+                    new.computeEnterConfidence(location: currentLocation)
+                }
                 let result = zoneInfo ?? new
                 return result
             }
 
             let notificationInput: [ZoneInfo] = notificationZones.map {
                 let zoneInfo = getOldNotificationZoneInfoFor(hash: $0.getHash())
-                let new = ZoneInfo(hash: $0.getHash() )
+                let new = ZoneInfo(zone: $0 )
                 new.enterLocation = currentLocation?.coordinate
                 new.enterTime = now
+
+                if let currentLocation = currentLocation {
+                    new.computeNotificationConfidence(location: currentLocation)
+                }
                 let result = zoneInfo ?? new
                 return result
             }
@@ -161,6 +219,9 @@ extension CLLocationCoordinate2D: Codable {
             for info in exits {
                 info.exitLocation = currentLocation?.coordinate
                 info.exitTime = now
+                if let currentLocation = currentLocation {
+                    info.computeExitConfidence(location: currentLocation)
+                }
             }
 
             let entriesids = entries.map {

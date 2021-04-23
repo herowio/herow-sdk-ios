@@ -65,10 +65,10 @@ struct DateFormat {
 }
 
 struct Parameters {
-    static let clientId = "client_id"
-    static let clientSecret = "client_secret"
-    static let redirectUri = "redirect_uri"
-    static let grantType = "grant_type"
+    static let clientId = "clientId"
+    static let clientSecret = "clientSecret"
+    static let redirectUri = "redirectUri"
+    static let grantType = "grantType"
     static let username = "username"
     static let code = "code"
     static let password: String = "password"

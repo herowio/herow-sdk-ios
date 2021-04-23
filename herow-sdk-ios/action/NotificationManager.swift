@@ -7,6 +7,13 @@
 
 import UIKit
 
+enum DynamicKeys : String {
+    case radius = "zone.radius"
+    case name = "zone.name"
+    case address = "zone.address"
+    case customId = "user.customId"
+    static let allKeys = [radius, name, address, customId]
+}
 protocol NotificationCenterProtocol {
     func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> Void)?)
 
@@ -23,10 +30,11 @@ class NotificationManager: NSObject, EventListener {
     internal var filters: [WeakContainer<NotificationFilter>] = [WeakContainer<NotificationFilter>]()
     private var cacheManager: CacheManagerProtocol
     private var notificationCenter: NotificationCenterProtocol
-    
-    init(cacheManager: CacheManagerProtocol, notificationCenter: NotificationCenterProtocol) {
+    private var herowDataStorage: HerowDataStorageProtocol
+    init(cacheManager: CacheManagerProtocol, notificationCenter: NotificationCenterProtocol, herowDataStorage: HerowDataStorageProtocol) {
         self.cacheManager = cacheManager
         self.notificationCenter = notificationCenter
+        self.herowDataStorage = herowDataStorage
     }
 
     public func addFilter( _ filter: NotificationFilter) {
@@ -58,12 +66,11 @@ class NotificationManager: NSObject, EventListener {
     }
 
     private func createNotificationForEvent( event: Event,  info: ZoneInfo) {
-
         let zones = cacheManager.getZones(ids: [info.zoneHash])
         for zone in zones {
             let campaigns = cacheManager.getCampaignsForZone(zone)
             for campaign in campaigns {
-                if (event == .GEOFENCE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit() ) {
+                if (trigger(event: event, campaign: campaign) ) {
                     if canCreateNotification(campaign) {
                         createCampaignNotification(campaign, zone: zone)
                     }
@@ -72,6 +79,10 @@ class NotificationManager: NSObject, EventListener {
         }
     }
 
+    private func trigger(event: Event, campaign: Campaign) -> Bool {
+        return (event == .GEOFENCE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit())
+      //  return event == .GEOFENCE_NOTIFICATION_ZONE_ENTER
+    }
     private func createCampaignNotification(_ campaign: Campaign, zone: Zone) {
 
         guard let notification = campaign.getNotification() else {
@@ -82,8 +93,8 @@ class NotificationManager: NSObject, EventListener {
         var title = notification.getTitle()
         var description = notification.getDescription()
         if campaign.getRealTimeContent() {
-            title = computeDynamicContent(title)
-            description = computeDynamicContent(description)
+            title = computeDynamicContent(&title, zone: zone, campaign: campaign)
+            description = computeDynamicContent(&description, zone: zone, campaign: campaign)
         }
         content.title = title
         content.body = description
@@ -101,15 +112,29 @@ class NotificationManager: NSObject, EventListener {
         }
     }
 
-
     func didReceivedEvent(_ event: Event, infos: [ZoneInfo]) {
         for info in infos {
             createNotificationForEvent(event: event, info: info)
         }
     }
 
-    private func computeDynamicContent(_ text: String) -> String {
-        // TODO: implement mecanism
+    private func computeDynamicContent(_ text: inout String, zone: Zone, campaign: Campaign) -> String {
+        GlobalLogger.shared.debug("create dynamic content notification: \(campaign.getId())")
+        DynamicKeys.allKeys.forEach() { key in
+            var value = ""
+            switch key {
+            case .name:
+                value = zone.getAccess()?.getName() ?? ""
+            case .radius:
+                value = "\(zone.getRadius())"
+            case .address:
+                value = zone.getAccess()?.getAddress() ?? ""
+            case .customId:
+                value = herowDataStorage.getCustomId() ?? ""
+            }
+            text = text.dynamicValues(for: "\\{\\{(.*?)\\}\\}")
+            text = text.replacingOccurrences(of: key.rawValue, with: value)
+        }
         return text
     }
 }

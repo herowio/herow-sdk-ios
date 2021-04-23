@@ -54,7 +54,7 @@ import UIKit
         appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
         detectionEngine.registerDetectionListener(listener: analyticsManager)
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
-        notificationManager = NotificationManager(cacheManager: cacheManager, notificationCenter:  UNUserNotificationCenter.current())
+        notificationManager = NotificationManager(cacheManager: cacheManager, notificationCenter:  UNUserNotificationCenter.current(), herowDataStorage: herowDataHolder)
 
         super.init()
         registerEventListener(listener: analyticsManager)

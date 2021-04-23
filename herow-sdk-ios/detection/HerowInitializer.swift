@@ -101,6 +101,10 @@ import CoreLocation
 
     }
 
+    func getDetectionEngine() -> DetectionEngine {
+        return self.detectionEngine
+    }
+
     @objc public func stopClickAndCollect() {
         self.detectionEngine.setIsOnClickAndCollect(false)
     }

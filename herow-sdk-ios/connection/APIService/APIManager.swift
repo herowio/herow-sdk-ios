@@ -207,7 +207,10 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             completion(nil,.invalidInPut)
             return
         }
-        tokenWorker.postData(param: tokenParam(user), completion: completion)
+
+        let headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login, token: self.herowDataStorage.getToken()?.accessToken)
+        tokenWorker.headers = headers
+        tokenWorker.postData(param: tokenParams(user), completion: completion)
     }
 
     // MARK: Config
@@ -303,7 +306,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
     }
     // MARK: Params
-    private func tokenParam(_ user: User) -> Data {
+   /* private func tokenParam(_ user: User) -> Data {
         
         let credentials = self.connectInfo.platform.credentials
         let params = [Parameters.username: user.login,
@@ -313,9 +316,32 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                       Parameters.redirectUri: credentials.redirectURI,
                       Parameters.grantType : "password"]
         return self.encodeFormParams(dictionary: params)
-    }
+    }*/
     
 
+    private func tokenParams(_ user: User) -> Data {
+        var result: Data?
+        let encoder = JSONEncoder()
+        let credentials = self.connectInfo.platform.credentials
+        do {
+            let params = [Parameters.username: user.login,
+                          Parameters.password: user.password,
+                          Parameters.clientId:  credentials.clientId,
+                          Parameters.clientSecret: credentials.clientSecret,
+                          Parameters.redirectUri: credentials.redirectURI,
+                          Parameters.grantType : "password"]
+
+            result = try encoder.encode(params)
+            if let result = result {
+            GlobalLogger.shared.debug("APIManager - token infos to send: \(String(decoding: result, as: UTF8.self))")
+            }
+
+        } catch {
+            print("error while encoding userInfo : \(error.localizedDescription)")
+        }
+        return result ?? Data()
+
+    }
     private func userInfoParam() -> Data? {
         var result: Data?
         let encoder = JSONEncoder()

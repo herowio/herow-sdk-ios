@@ -17,29 +17,37 @@ class APIWorkerTest: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    private func encodeFormParams(dictionary: [String: String]) -> Data {
-        var parts: [String] = []
-        for (key, value) in dictionary {
-            parts.append("\(key)=\(value)")
+
+
+    private func tokenParams() -> Data {
+        var result: Data?
+        let encoder = JSONEncoder()
+
+        do {
+            let params = [Parameters.username:"login",
+                          Parameters.password: "password",
+                          Parameters.clientId:  "credentials.clientId",
+                          Parameters.clientSecret: "credentials.clientSecret",
+                         // Parameters.redirectUri: "credentials.redirectURI",
+                          Parameters.grantType : "password"]
+
+            result = try encoder.encode(params)
+            if let result = result {
+            GlobalLogger.shared.debug("APIManager - token infos to send: \(String(decoding: result, as: UTF8.self))")
+            }
+
+        } catch {
+            print("error while encoding userInfo : \(error.localizedDescription)")
         }
-        let encodeResult = parts.joined(separator: "&")
-        return encodeResult.data(using: String.Encoding.utf8)!
-    }
-    private func tokenParam() -> Data {
-        let params = [Parameters.username:"login",
-                      Parameters.password: "password",
-                      Parameters.clientId:  "credentials.clientId",
-                      Parameters.clientSecret: "credentials.clientSecret",
-                      Parameters.redirectUri: "credentials.redirectURI",
-                      Parameters.grantType : "password"]
-        return self.encodeFormParams(dictionary: params)
+        return result ?? Data()
+
     }
 
     func testFailBadRoute() throws {
         let apiWorker = APIWorker<APIToken>(urlType: .badURL, endPoint: .token)
         apiWorker.setUrlType(.badURL)
         let testFailExpectation = expectation(description: "testFailExpectation")
-        apiWorker.postData(param: tokenParam(), completion: { (token, error) in
+        apiWorker.postData(param: tokenParams(), completion: { (token, error) in
             if let error = error  {
                 switch error {
                 case .badUrl:
@@ -63,7 +71,12 @@ class APIWorkerTest: XCTestCase {
         let apiWorker = APIWorker<String>(urlType: .test, endPoint: .token)
         apiWorker.setUrlType(.test)
         let testFailExpectation = expectation(description: "testFailExpectation")
-        apiWorker.postData(param: tokenParam(), completion: { (token, error) in
+        apiWorker.headers = [ Headers.contentType: Headers.Values.contentTypeJson,
+                              Headers.version: "0.0.0",
+                              Headers.deviceId: "00000",
+                              Headers.sdk: "test"
+             ]
+        apiWorker.postData(param: tokenParams(), completion: { (token, error) in
             if let error = error {
                 switch error {
                 case .serialization:
@@ -87,7 +100,12 @@ class APIWorkerTest: XCTestCase {
         let apiWorker = APIWorker<APIToken>(urlType: .test, endPoint: .token)
         apiWorker.setUrlType(.test)
         let testFailExpectation = expectation(description: "testFailExpectation")
-        apiWorker.postData(param: tokenParam(), completion: { (token, error) in
+        apiWorker.headers = [ Headers.contentType: Headers.Values.contentTypeJson,
+                              Headers.version: "0.0.0",
+                              Headers.deviceId: "00000",
+                              Headers.sdk: "test"
+             ]
+        apiWorker.postData(param: tokenParams(), completion: { (token, error) in
             if let _ = error  {
                     XCTAssertTrue(false)
             } else {

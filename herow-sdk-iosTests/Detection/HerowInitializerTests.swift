@@ -18,6 +18,7 @@ class HerowInitializerTests: XCTestCase {
     func setup() {
         herowInitializer = HerowInitializer(locationManager: locationManager, notificationCenter: MockNotificationCenter())
         herowInitializer?.reset()
+        herowInitializer?.getDetectionEngine().startWorking()
         _ = herowInitializer?.configPlatform(.preprod)
             .configApp(identifier: "appdemo98", sdkKey: "4WQmEg3I6tAsFQG9ZN8T")
     }
@@ -29,24 +30,20 @@ class HerowInitializerTests: XCTestCase {
     }
 
     func testClickAnCollect() throws {
-        let testFailExpectation = expectation(description: "testFailExpectation")
-        herowInitializer?.synchronize {
+
+
+
             guard let herowInitializer =  self.herowInitializer else {
                 return }
+      
             herowInitializer.launchClickAndCollect()
             XCTAssertTrue(herowInitializer.isOnClickAndCollect())
 
             herowInitializer.stopClickAndCollect()
             XCTAssertFalse(herowInitializer.isOnClickAndCollect())
 
-            testFailExpectation.fulfill()
-        }
+          
 
-        waitForExpectations(timeout:30) { error in
-            if let error = error {
-                print("Error: \(error.localizedDescription)")
-            }
-        }
     }
 
     func testOptin() throws {

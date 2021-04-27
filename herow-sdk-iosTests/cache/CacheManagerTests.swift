@@ -83,6 +83,23 @@ class CacheManagerTests: XCTestCase, CacheListener {
         }
     }
 
+    func testCapping() throws {
+        let testFailExpectation = expectation(description: "testFailExpectation")
+        let capping = HerowCapping(id: "id", razDate: Date(), count: 0)
+        cacheManager.saveCapping(capping) {
+          let savedCapping =   self.cacheManager.getCapping(id: "id")
+            XCTAssertTrue(savedCapping?.getId() == "id")
+            XCTAssertTrue(savedCapping?.getCount() == 0)
+            testFailExpectation.fulfill()
+        }
+        waitForExpectations(timeout:30) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
+
+
     func testCampaign() throws {
         let testFailExpectation = expectation(description: "testFailExpectation")
         let interval = APIInterval(start: 0, end: 1000)

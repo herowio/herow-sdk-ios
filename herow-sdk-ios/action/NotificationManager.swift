@@ -7,12 +7,11 @@
 
 import UIKit
 
-enum DynamicKeys : String {
+enum DynamicKeys : String, CaseIterable {
     case radius = "zone.radius"
     case name = "zone.name"
     case address = "zone.address"
     case customId = "user.customId"
-    static let allKeys = [radius, name, address, customId]
 }
 protocol NotificationCenterProtocol {
     func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> Void)?)
@@ -22,7 +21,6 @@ protocol NotificationCenterProtocol {
     func removePendingNotificationRequests(withIdentifiers identifiers: [String])
 
     func getDeliveredNotifications(completionHandler: @escaping ([UNNotification]) -> Void)
-
 
 }
 class NotificationManager: NSObject, EventListener {
@@ -129,7 +127,7 @@ class NotificationManager: NSObject, EventListener {
 
     private func computeDynamicContent(_ text: inout String, zone: Zone, campaign: Campaign) -> String {
         GlobalLogger.shared.debug("create dynamic content notification: \(campaign.getId())")
-        DynamicKeys.allKeys.forEach() { key in
+        DynamicKeys.allCases.forEach() { key in
             var value = ""
             switch key {
             case .name:

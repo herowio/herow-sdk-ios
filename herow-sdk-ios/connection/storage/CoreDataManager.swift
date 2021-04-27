@@ -269,7 +269,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         var capping: Capping?
         let managedContext = context
         let fetchRequest = NSFetchRequest<CappingCoreData>(entityName: StorageConstants.CappingCoreDataEntityName)
-        fetchRequest.predicate = NSPredicate(format: "campaignId IN %@", id)
+        fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.campaignId) == %@", id)
         do {
             if let  cappingCoreData = try managedContext.fetch(fetchRequest).first {
                 let id = cappingCoreData.campaignId

@@ -26,4 +26,10 @@ public class TimeProviderForTests: TimeProvider {
     public func addingTimeInterval(timeInterval: TimeInterval) {
         date = date.addingTimeInterval(timeInterval)
     }
+
+    public func setHour(hour: Int, minutes: Int) {
+        date = date.setTime(hour: hour, min: minutes) ?? date
+    }
+
+
 }

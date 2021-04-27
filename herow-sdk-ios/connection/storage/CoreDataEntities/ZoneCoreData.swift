@@ -46,6 +46,8 @@ class CampaignCoreData: NSManagedObject {
     @NSManaged override var isDeleted: Bool
     @NSManaged var simpleId: String
     @NSManaged var name: String
+    @NSManaged var startHour: String
+    @NSManaged var stopHour: String
     @NSManaged var begin: Double
     @NSManaged var end: Double
     @NSManaged var realTimeContent: Bool

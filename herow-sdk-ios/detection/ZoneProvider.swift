@@ -40,14 +40,17 @@ class SelectionContainer {
     func computeEnterConfidence(location: CLLocation)  {
 
         confidence = computeConfidence(location: location, radius: radius ?? 0)
+        GlobalLogger.shared.debug("ZoneInfo enter confidence : \(confidence ?? 0)")
     }
 
     func computeNotificationConfidence(location: CLLocation)  {
         confidence = computeConfidence(location: location, radius: 3 * (radius ?? 0))
+        GlobalLogger.shared.debug("ZoneInfo enter notification zone confidence : \(confidence ?? 0)")
     }
 
     func computeExitConfidence(location: CLLocation)  {
         confidence =  1 - computeConfidence(location: location, radius: radius ?? 0)
+        GlobalLogger.shared.debug("ZoneInfo exit zone confidence : \(confidence ?? 0)")
     }
 
     private func computeConfidence(location: CLLocation, radius: Double) -> Double {
@@ -71,20 +74,27 @@ class SelectionContainer {
             } else {
                 let d1 = ((r1r1 - r2r2) + dd) / (2 * d)
                 let d2 = ((r2r2 - r1r1) + dd) / (2 * d)
-                let a1 = r1r1 * acos(d1 / r1) - d1 * sqrt(r1r1 - d1 * d1)
-                let a2 = r2r2 * acos(d2 / r2) - d2 * sqrt(r2r2 - d2 * d2)
-                intersectArea = a1 + a2
+                let cos1 = max(min(d1 / r1, 1), -1)
+                let cos2 = max(min(d2 / r2, 1), -1)
+                let a1 = r1r1 * acos(cos1) - d1 * sqrt(abs(r1r1 - d1 * d1))
+                let a2 = r2r2 * acos(cos2) - d2 * sqrt(abs(r2r2 - d2 * d2))
+                intersectArea = abs(a1 + a2)
             }
         }
-        result = min(1, intersectArea / (Double.pi * accuracyRadius * accuracyRadius))
+        result = min(1, intersectArea / (Double.pi * accuracyRadius * accuracyRadius)).round(to: 2)
         GlobalLogger.shared.debug("confidence : \(result) for zone: \(self.zoneHash) , radius: \(zoneRadius), accuracy: \(accuracyRadius), location:\(location)")
         return result
     }
 
-
-
 }
 
+
+extension Double {
+    func round(to places: Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return (self * divisor).rounded() / divisor
+    }
+}
 extension CLLocationCoordinate2D: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.unkeyedContainer()

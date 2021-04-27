@@ -33,6 +33,7 @@ extension String {
                 String(self[Range($0.range, in: self)!])
             }
         } catch let error {
+            GlobalLogger.shared.error("regex :\(regex) invalid regex: \(error.localizedDescription)")
             print("invalid regex: \(error.localizedDescription)")
             return []
         }

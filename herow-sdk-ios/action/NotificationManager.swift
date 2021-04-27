@@ -35,6 +35,9 @@ class NotificationManager: NSObject, EventListener {
         self.cacheManager = cacheManager
         self.notificationCenter = notificationCenter
         self.herowDataStorage = herowDataStorage
+        super.init()
+        self.addFilter(RecurencyFilter())
+        self.addFilter(TimeSlotFilter())
     }
 
     public func addFilter( _ filter: NotificationFilter) {
@@ -55,8 +58,8 @@ class NotificationManager: NSObject, EventListener {
     private func canCreateNotification( _ campaign : Campaign) -> Bool {
         for filter in filters {
           
-            if let filter = filter.get() {
-                if !(filter.createNotification(campaign: campaign)) {
+            if let f = filter.get() {
+                if !(f.createNotification(campaign: campaign)) {
                     return false
                 }
             }
@@ -72,7 +75,7 @@ class NotificationManager: NSObject, EventListener {
             for campaign in campaigns {
                 if (trigger(event: event, campaign: campaign) ) {
                     if canCreateNotification(campaign) {
-                        createCampaignNotification(campaign, zone: zone)
+                        createCampaignNotification(campaign, zone: zone, zoneInfo: info )
                     }
                 }
             }
@@ -80,10 +83,12 @@ class NotificationManager: NSObject, EventListener {
     }
 
     private func trigger(event: Event, campaign: Campaign) -> Bool {
-        return (event == .GEOFENCE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit())
-      //  return event == .GEOFENCE_NOTIFICATION_ZONE_ENTER
+      //  return (event == .GEOFENCE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit())
+      //  return event == .GEOFENCE_NOTIFICATION_ZONE_ENTER && !campaign.isExit()
+
+      return (event == .GEOFENCE_NOTIFICATION_ZONE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit())
     }
-    private func createCampaignNotification(_ campaign: Campaign, zone: Zone) {
+    private func createCampaignNotification(_ campaign: Campaign, zone: Zone, zoneInfo: ZoneInfo) {
 
         guard let notification = campaign.getNotification() else {
             return
@@ -99,6 +104,9 @@ class NotificationManager: NSObject, EventListener {
         content.title = title
         content.body = description
         content.userInfo = ["zoneID": zone.getHash()]
+
+        GlobalLogger.shared.debug("create notification title: \(title)")
+        GlobalLogger.shared.debug("create notificationd description: \(description)")
         let uuidString = campaign.getId()
         let request = UNNotificationRequest(identifier: uuidString,
                                             content: content, trigger: nil)
@@ -107,7 +115,7 @@ class NotificationManager: NSObject, EventListener {
                 // Handle any errors.
             } else {
                 GlobalLogger.shared.warning("create notification: \(campaign.getId())")
-                NotificationDelegateDispatcher.instance.didCreateNotificationForCampaign(campaign, zoneID: zone.getHash())
+                NotificationDelegateDispatcher.instance.didCreateNotificationForCampaign(campaign, zoneID: zone.getHash(), zoneInfo: zoneInfo)
             }
         }
     }
@@ -124,15 +132,16 @@ class NotificationManager: NSObject, EventListener {
             var value = ""
             switch key {
             case .name:
-                value = zone.getAccess()?.getName() ?? ""
+                value = zone.getAccess()?.getName() ?? "error no acces name"
             case .radius:
                 value = "\(zone.getRadius())"
             case .address:
-                value = zone.getAccess()?.getAddress() ?? ""
+                value = zone.getAccess()?.getAddress() ?? "error no acces address"
             case .customId:
-                value = herowDataStorage.getCustomId() ?? ""
+                value = herowDataStorage.getCustomId() ?? "no custom ID"
             }
             text = text.dynamicValues(for: "\\{\\{(.*?)\\}\\}")
+
             text = text.replacingOccurrences(of: key.rawValue, with: value)
         }
         return text

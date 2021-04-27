@@ -25,6 +25,8 @@ import Foundation
     var triggers: [String: Int]
     var daysRecurrence: [String]?
     var tz: String
+    var startHour: String?
+    var stopHour: String?
     var notification: APINotification?
     var recurrenceEnabled: Bool
 
@@ -96,6 +98,14 @@ import Foundation
         return recurrenceEnabled
     }
 
+    func getStartHour() -> String? {
+        return startHour
+    }
+
+    func getStopHour() -> String? {
+        return stopHour
+    }
+
     enum CodingKeys: String, CodingKey {
         case id
         case company
@@ -114,6 +124,8 @@ import Foundation
         case triggers
         case daysRecurrence
         case recurrenceEnabled
+        case startHour
+        case stopHour
     }
     init(id: String,
          company: String,
@@ -131,7 +143,7 @@ import Foundation
          daysRecurrence: [String],
          recurrenceEnabled: Bool,
          tz:String,
-         notification: Notification?) {
+         notification: Notification?, startHour: String?, stopHour: String?) {
 
         self.id = id
         self.company = company
@@ -150,6 +162,8 @@ import Foundation
         self.recurrenceEnabled = recurrenceEnabled
         self.tz = tz
         self.notification = notification as? APINotification
+        self.stopHour = stopHour
+        self.startHour = startHour
 
     }
 
@@ -172,6 +186,8 @@ import Foundation
         self.daysRecurrence = try values.decodeIfPresent([String].self, forKey: .daysRecurrence)
         self.tz = try values.decode(String.self, forKey: .tz)
         self.realTimeContent = try values.decodeIfPresent(Bool.self, forKey: .realTimeContent) ?? false
+        self.startHour =  try values.decodeIfPresent(String.self, forKey: .startHour)
+        self.stopHour =  try values.decodeIfPresent(String.self, forKey: .stopHour)
     }
 
 }

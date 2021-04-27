@@ -442,7 +442,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
    @objc public func dispatchFakeLocation() {
-        let location = LocationUtils.randomLocation()
+        let location = LocationUtils.randomSylvain()
         for listener in  detectionListners {
             listener.get()?.onLocationUpdate(location, from: .fake)
         }

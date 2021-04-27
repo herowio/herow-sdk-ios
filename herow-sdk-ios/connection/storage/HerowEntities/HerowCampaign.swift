@@ -25,6 +25,8 @@ import Foundation
     var tz: String
     var notification: Notification?
     var recurrenceEnabled: Bool
+    var startHour: String?
+    var stopHour: String?
 
    public func getId() -> String {
         return id
@@ -94,6 +96,15 @@ import Foundation
         return recurrenceEnabled
     }
 
+    func getStartHour() -> String? {
+        return startHour
+    }
+
+    func getStopHour() -> String? {
+        return stopHour
+    }
+
+
     init(campaign: Campaign) {
         self.id = campaign.getId()
         self.company = campaign.getCompany()
@@ -112,6 +123,8 @@ import Foundation
         self.recurrenceEnabled = campaign.getReccurenceEnable()
         self.tz = campaign.getTz()
         self.notification = campaign.getNotification()
+        self.stopHour = campaign.getStopHour()
+        self.startHour = campaign.getStartHour()
 
     }
     required init(id: String,
@@ -130,7 +143,8 @@ import Foundation
          daysRecurrence: [String],
          recurrenceEnabled:Bool,
          tz:String,
-         notification: Notification?) {
+         notification: Notification?, startHour: String?,
+         stopHour: String?) {
 
         self.id = id
         self.company = company
@@ -149,6 +163,8 @@ import Foundation
         self.recurrenceEnabled = recurrenceEnabled
         self.tz = tz
         self.notification = notification
+        self.stopHour = stopHour
+        self.startHour = startHour
 
     }
 }

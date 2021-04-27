@@ -41,7 +41,7 @@ class LogDataEventStruct: LogDataStruct {
             if event == .GEOFENCE_VISIT ,let entrance = infos.enterTime, let exit = infos.exitTime {
                 self.duration = (exit - entrance) * 1000
             }
-            self.place = NearbyPlace(placeId: zone.getHash(), distance: distance, radius: zone.getRadius(), lat: lat, lng: lng)
+            self.place = NearbyPlace(placeId: zone.getHash(), distance: distance, radius: zone.getRadius(), lat: lat, lng: lng, confidence: infos.confidence)
         }
 
         super.init(appState: appState, subtype: event.toString(), dataStorage: dataStorage)

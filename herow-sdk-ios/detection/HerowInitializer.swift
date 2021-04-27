@@ -57,7 +57,7 @@ import UIKit
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
      
         notificationManager = NotificationManager(cacheManager: cacheManager, notificationCenter:  notificationCenter, herowDataStorage: herowDataHolder)
-
+       
         super.init()
 
         registerEventListener(listener: analyticsManager)

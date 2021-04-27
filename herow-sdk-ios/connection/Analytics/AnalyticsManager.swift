@@ -71,9 +71,9 @@ class AnalyticsManager: NSObject, UNUserNotificationCenterDelegate, EventListene
         appState = "bg"
     }
 
-    func didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String) {
+    func didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String, zoneInfo: ZoneInfo) {
         GlobalLogger.shared.debug("AnalyticsManager - create Notification Log : \(campaign.getName())")
-        let log = LogDataNotification(appState: appState, campaignId: campaign.getId(), campaignName: campaign.getName(), isPersistentNotification: campaign.isPersistent(), isExitNotification: campaign.isExit(), cacheManager: cacheManager, dataStorage: dataStorage, subType: .GEOFENCE_ZONE_NOTIFICATION, zoneID: zoneID)
+        let log = LogDataNotification(appState: appState, campaignId: campaign.getId(), campaignName: campaign.getName(), isPersistentNotification: campaign.isPersistent(), isExitNotification: campaign.isExit(), cacheManager: cacheManager, dataStorage: dataStorage, subType: .GEOFENCE_ZONE_NOTIFICATION, zoneID: zoneID, zoneInfo: zoneInfo)
         if let data = log.getData() {
            apiManager.pushLog(data) {}
         }
@@ -90,7 +90,7 @@ class AnalyticsManager: NSObject, UNUserNotificationCenterDelegate, EventListene
         }
         GlobalLogger.shared.debug("AnalyticsManager - redirect Notification Log : \(campaign.getName())")
 
-        let log = LogDataNotification(appState: appState, campaignId: campaign.getId(), campaignName: campaign.getName(), isPersistentNotification: campaign.isPersistent(), isExitNotification: campaign.isExit(), cacheManager: cacheManager, dataStorage: dataStorage, subType: .REDIRECT, zoneID: zoneID)
+        let log = LogDataNotification(appState: appState, campaignId: campaign.getId(), campaignName: campaign.getName(), isPersistentNotification: campaign.isPersistent(), isExitNotification: campaign.isExit(), cacheManager: cacheManager, dataStorage: dataStorage, subType: .REDIRECT, zoneID: zoneID, zoneInfo: nil)
         if let data = log.getData() {
            apiManager.pushLog(data) {}
         }

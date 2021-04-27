@@ -54,6 +54,8 @@ public protocol Access {
     func getNotification() -> Notification?
     func getDaysRecurrence() -> [String]?
     func getReccurenceEnable() -> Bool
+    func getStartHour() -> String?
+    func getStopHour() -> String?
 
 
     init(id: String,
@@ -72,7 +74,7 @@ public protocol Access {
          daysRecurrence: [String],
          recurrenceEnabled:Bool,
          tz:String,
-         notification: Notification?)
+         notification: Notification?, startHour: String?, stopHour: String?)
 }
 
 extension Campaign {

@@ -7,6 +7,10 @@
 
 import Foundation
 
- protocol NotificationFilter: class {
+ protocol NotificationFilter: AnyObject {
+    var timeProvider: TimeProvider {get set}
+    init(timeProvider: TimeProvider)
     func createNotification(campaign: Campaign) -> Bool
 }
+
+

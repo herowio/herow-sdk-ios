@@ -37,7 +37,7 @@ class Builder {
         }
         let campaignsIds: [String] = campaignsIdsArrays.reduce([]) { $0 + $1 }
         let campaigns =  campaignsIds.map {
-            return APICampaign(id: $0, company: "company", name: $0, createdDate: 0, modifiedDate: 0, deleted: false, simpleId: $0, begin: 0, end: nil, realTimeContent: false, intervals: nil, cappings: nil, triggers: ["exit":0], daysRecurrence: [], recurrenceEnabled: false, tz: "tz", notification: nil)
+            return APICampaign(id: $0, company: "company", name: $0, createdDate: 0, modifiedDate: 0, deleted: false, simpleId: $0, begin: 0, end: nil, realTimeContent: false, intervals: nil, cappings: nil, triggers: ["exit":0], daysRecurrence: [], recurrenceEnabled: false, tz: "tz", notification: nil, startHour: nil, stopHour: nil)
         }
 
         return (zones, campaigns)

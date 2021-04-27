@@ -102,7 +102,9 @@ class CacheManagerTests: XCTestCase, CacheListener {
                                                 daysRecurrence: [""],
                                                 recurrenceEnabled: false,
                                                 tz: "tz",
-                                                notification: nil)
+                                                notification: nil,
+                                                startHour: "",
+                                                stopHour: "")
 
 
         self.cacheManager.saveCampaigns(items: [campaign]) { [self] in

@@ -27,7 +27,7 @@ protocol NotificationCenterProtocol {
 }
 class NotificationManager: NSObject, EventListener {
 
-    internal var filters: [WeakContainer<NotificationFilter>] = [WeakContainer<NotificationFilter>]()
+    internal var filters: [NotificationFilter] = [NotificationFilter]()
     private var cacheManager: CacheManagerProtocol
     private var notificationCenter: NotificationCenterProtocol
     private var herowDataStorage: HerowDataStorageProtocol
@@ -36,33 +36,34 @@ class NotificationManager: NSObject, EventListener {
         self.notificationCenter = notificationCenter
         self.herowDataStorage = herowDataStorage
         super.init()
+        self.addFilter(ValidityFilter())
         self.addFilter(RecurencyFilter())
         self.addFilter(TimeSlotFilter())
+        self.addFilter(CappingFilter(timeProvider: TimeProviderAbsolute(), cacheManager: self.cacheManager))
+      
+
     }
 
     public func addFilter( _ filter: NotificationFilter) {
         let first = filters.first {
-            ($0.get() === filter) == true
+            ($0 === filter) == true
         }
         if first == nil {
-            filters.append(WeakContainer<NotificationFilter>(value: filter))
+            filters.append(filter)
         }
     }
 
    public func removeFilter( _ filter: NotificationFilter) {
         filters = filters.filter {
-            ($0.get() === filter) == false
+            ($0 === filter) == false
         }
     }
 
     private func canCreateNotification( _ campaign : Campaign) -> Bool {
         for filter in filters {
-          
-            if let f = filter.get() {
-                if !(f.createNotification(campaign: campaign)) {
+                if !(filter.createNotification(campaign: campaign)) {
                     return false
                 }
-            }
         }
         GlobalLogger.shared.warning("can reate notification")
         return true

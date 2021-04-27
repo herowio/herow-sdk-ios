@@ -13,7 +13,7 @@ import UserNotifications
     case whenInUse
     case always
 }
-@objc public protocol PermissionsManagerProtocol: class {
+@objc public protocol PermissionsManagerProtocol: AnyObject {
 
     func requestIDFA(completion: (()->())?)
     func requestLocation(_ type: LocationPermission, completion: (()->())?)

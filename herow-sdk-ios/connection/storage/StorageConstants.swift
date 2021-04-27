@@ -14,8 +14,10 @@ class StorageConstants {
     static let PoiCoreDataEntityName = "PoiCoreData"
     static let AccessCoreDataEntityName = "AccessCoreData"
     static let CampaignCoreDataEntityName = "CampaignCoreData"
+    static let CappingCoreDataEntityName = "CappingCoreData"
     static let IntervalCoreDataEntityName = "IntervalCoreData"
     static let NotificationCoreDataEntityName = "NotificationCoreData"
     static let zoneHash = "zoneHash"
+    static let campaignId = "campaignId"
     static let id = "id"
 }

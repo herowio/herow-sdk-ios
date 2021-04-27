@@ -10,7 +10,7 @@ import AppTrackingTransparency
 import AdSupport
 
 
-protocol UserInfoListener: class {
+protocol UserInfoListener: AnyObject {
     func  onUserInfoUpdate(userInfo: UserInfo)
 }
 protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate {

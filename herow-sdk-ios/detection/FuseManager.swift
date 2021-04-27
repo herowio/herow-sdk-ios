@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-@objc public protocol FuseManagerListener: class {
+@objc public protocol FuseManagerListener: AnyObject {
     func onFuseUpdate(_ activated: Bool, location: CLLocation?)
 }
 class FuseManager: DetectionEngineListener, ResetDelegate {

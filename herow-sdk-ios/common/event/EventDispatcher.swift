@@ -27,7 +27,7 @@ import Foundation
     }
 }
 
-@objc public protocol   EventListener: class {
+@objc public protocol   EventListener: AnyObject {
     func didReceivedEvent( _ event: Event, infos: [ZoneInfo])
 }
   class EventDispatcher {

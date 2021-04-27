@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 
-protocol RequestStatusListener: class {
+protocol RequestStatusListener: AnyObject {
     func didReceiveResponse(_ statusCode: Int)
 }
 internal enum Method: String {

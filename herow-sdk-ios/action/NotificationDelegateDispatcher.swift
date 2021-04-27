@@ -9,7 +9,7 @@ import Foundation
 import UserNotifications
 
 
- protocol NotificationCreationListener: class {
+protocol NotificationCreationListener: AnyObject {
     func  didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String, zoneInfo: ZoneInfo)
 }
 

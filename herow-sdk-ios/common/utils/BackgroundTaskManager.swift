@@ -95,7 +95,7 @@ public class BackgroundTaskManager: AppStateDelegate {
     }
 }
 
-public protocol BackgroundTaskDelegate: class {
+public protocol BackgroundTaskDelegate: AnyObject {
     func onStartBackgroundTask(id: UIBackgroundTaskIdentifier, name: String)
 
     func onStopBackgroundTask(id: UIBackgroundTaskIdentifier, name: String)

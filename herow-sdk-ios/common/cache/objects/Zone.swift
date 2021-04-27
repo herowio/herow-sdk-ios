@@ -114,3 +114,12 @@ protocol Poi {
     func getLng() -> Double
     init(id: String, tags: [String],lat: Double, lng: Double)
 }
+
+public protocol Capping {
+    func getId() -> String
+    func getRazDate() -> Date
+    func getCount() -> Int64
+    func setRazDate(date: Date)
+    func setCount(count: Int64)
+    init(id: String, razDate: Date, count: Int64)
+}

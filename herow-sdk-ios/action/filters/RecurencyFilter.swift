@@ -9,7 +9,7 @@ import Foundation
 class RecurencyFilter :NotificationFilter {
     var timeProvider: TimeProvider
     private var dateFormatter = DateFormatter()
-    required init(timeProvider: TimeProvider = TimeProviderAbsolute()) {
+    required init(timeProvider: TimeProvider = TimeProviderAbsolute(), cacheManager: CacheManagerProtocol? = nil) {
         self.timeProvider = timeProvider
         dateFormatter.dateFormat = "EEEE"
         dateFormatter.locale =  NSLocale(localeIdentifier: "en_EN") as Locale
@@ -31,6 +31,8 @@ class RecurencyFilter :NotificationFilter {
         }else {
             result = true
         }
+        let can = result ? "CAN" : "CAN NOT"
+        GlobalLogger.shared.info("RecurencyFilter: \(campaign.getName()) \(can) create notification")
         return result
     }
 }

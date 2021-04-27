@@ -16,5 +16,8 @@ protocol DataBase {
     func saveCampaignsInBase(items: [Campaign], completion: (()->())?)
     func getCampaignsInBase() -> [Campaign]
     func purgeAllData(completion: (()->())?)
+    func purgeCapping(completion: (()->())?)
+    func getCapping(id: String) -> Capping?
+    func saveCapping(_ capping: Capping, completion: (()->())?)
 
 }

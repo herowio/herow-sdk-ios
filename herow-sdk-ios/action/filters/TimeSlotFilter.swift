@@ -10,7 +10,7 @@ import Foundation
 
 class TimeSlotFilter: NotificationFilter {
     var timeProvider: TimeProvider
-    required init(timeProvider: TimeProvider = TimeProviderAbsolute()) {
+    required init(timeProvider: TimeProvider = TimeProviderAbsolute(), cacheManager: CacheManagerProtocol? = nil) {
         self.timeProvider = timeProvider
     }
 
@@ -31,15 +31,15 @@ class TimeSlotFilter: NotificationFilter {
                     , let stopHour = now.setTime(hour: stopHour, min: stopMinutes) {
                     let result = now > startHour && now < stopHour
                     if result {
-                        GlobalLogger.shared.debug("TimeSlotFilter: \(campaign.getName()) CAN create notification  slot date: \(now) startDate: \(startHour) stopDate: \(stopHour)")
+                        GlobalLogger.shared.info("TimeSlotFilter: \(campaign.getName()) CAN create notification  slot date: \(now) startDate: \(startHour) stopDate: \(stopHour)")
                     } else {
-                        GlobalLogger.shared.debug("TimeSlotFilter: \(campaign.getName()) CAN NOT create notification  slot date: \(now) startDate: \(startHour) stopDate: \(stopHour)")
+                        GlobalLogger.shared.info("TimeSlotFilter: \(campaign.getName()) CAN NOT create notification  slot date: \(now) startDate: \(startHour) stopDate: \(stopHour)")
                     }
                     return result
                 }
             }
         }
-        GlobalLogger.shared.debug("TimeSlotFilter: can create notification no slot)")
+        GlobalLogger.shared.info("TimeSlotFilter: can create notification no slot)")
         return true
     }
 

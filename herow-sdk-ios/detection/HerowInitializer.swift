@@ -35,7 +35,7 @@ import UIKit
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
-        cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowInterval, HerowNotification>())
+        cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowInterval, HerowNotification, HerowCapping>())
         apiManager = APIManager(connectInfo: connectionInfo, herowDataStorage: herowDataHolder, cacheManager: cacheManager)
         userInfoManager = UserInfoManager(listener: apiManager, herowDataStorage: herowDataHolder)
         permissionsManager = PermissionsManager(userInfoManager: userInfoManager)
@@ -57,6 +57,7 @@ import UIKit
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
      
         notificationManager = NotificationManager(cacheManager: cacheManager, notificationCenter:  notificationCenter, herowDataStorage: herowDataHolder)
+     
        
         super.init()
 

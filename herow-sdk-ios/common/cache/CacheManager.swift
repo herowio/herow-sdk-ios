@@ -16,7 +16,7 @@ enum CacheUpdate {
     case delete
 }
 
-@objc public protocol CacheListener: class {
+@objc public protocol CacheListener: AnyObject {
     func onCacheUpdate()
     func willCacheUpdate()
 }
@@ -28,11 +28,14 @@ protocol CacheManagerProtocol {
     func getZones() -> [Zone]
     func getZones(ids: [String])-> [Zone]
     func getPois() -> [Poi]
+    func getCapping(id: String) -> Capping?
+    func saveCapping(_ capping: Capping, completion: (()->())?)
     func getCampaigns() -> [Campaign]
     func getCampaignsForZone(_ zone: Zone) -> [Campaign]
     func getNearbyZones(_ location: CLLocation) -> [Zone]
     func getNearbyPois(_ location: CLLocation) -> [Poi]
-    func cleanCache(_ completion:(()->())?) 
+    func cleanCache(_ completion:(()->())?)
+    func cleanCapping(_ completion:(()->())?)
     func registerCacheListener(listener: CacheListener)
     func unregisterCacheListener(listener: CacheListener)
     func didSave()
@@ -65,7 +68,6 @@ extension CacheManagerProtocol {
 }
 
 class CacheManager: CacheManagerProtocol {
-
 
     static let distanceThreshold: CLLocationDistance = 20_000
     static let maxNearByPoiCount: Int = 10
@@ -159,6 +161,19 @@ class CacheManager: CacheManagerProtocol {
 
     func getNearbyPois(_ location: CLLocation) -> [Poi] {
         getNearbyPois(location, distance: CacheManager.distanceThreshold, count: CacheManager.maxNearByPoiCount)
+    }
+
+
+    func getCapping(id: String) -> Capping? {
+        return db.getCapping(id: id)
+    }
+
+    func saveCapping(_ capping: Capping, completion: (()->())? = nil) {
+        db.saveCapping(capping, completion: completion)
+    }
+
+    func cleanCapping(_ completion: (() -> ())?) {
+        db.purgeCapping(completion: completion)
     }
 
     func cleanCache(_ completion:(()->())? = nil) {

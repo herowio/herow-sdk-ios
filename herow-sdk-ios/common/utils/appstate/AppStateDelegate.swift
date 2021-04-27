@@ -10,7 +10,7 @@ import Foundation
 
 import Foundation
 
-@objc(CPAppStateDelegate) public protocol AppStateDelegate: class {
+@objc(CPAppStateDelegate) public protocol AppStateDelegate: AnyObject {
     /// Notify when the application enters in foreground
     @objc func onAppInForeground()
     /// Notify when the application enters in background

@@ -56,7 +56,7 @@ protocol ConfigDispatcher {
     func dispatchConfig( _ config: APIConfig)
 }
 
-protocol ConfigListener:  class {
+protocol ConfigListener:  AnyObject {
     func didRecievedConfig( _ config: APIConfig)
 }
 

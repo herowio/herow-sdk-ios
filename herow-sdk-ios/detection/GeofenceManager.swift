@@ -20,7 +20,7 @@ fileprivate struct MovingGeofenceParameter {
     }
 }
 
-@objc public protocol GeofenceManagerListener: class {
+@objc public protocol GeofenceManagerListener: AnyObject {
     func onMovingZoneUpdated(regions:  [CLRegion])
 }
 class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListener {

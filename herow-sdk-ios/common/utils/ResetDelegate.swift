@@ -8,6 +8,6 @@
 
 import Foundation
 
-@objc public protocol ResetDelegate: class {
+@objc public protocol ResetDelegate: AnyObject {
     func reset()
 }

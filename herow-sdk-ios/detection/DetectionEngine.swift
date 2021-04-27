@@ -14,7 +14,7 @@ import UIKit
     case fake
     case undefined
 }
-@objc public protocol DetectionEngineListener: class {
+@objc public protocol DetectionEngineListener: AnyObject {
     func onLocationUpdate(_ location: CLLocation, from: UpdateType)
     
 }

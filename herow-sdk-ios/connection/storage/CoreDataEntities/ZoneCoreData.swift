@@ -76,3 +76,11 @@ class NotificationCoreData: NSManagedObject {
     @NSManaged var uri: String
 }
 
+@objc(CappingCoreData)
+class CappingCoreData: NSManagedObject {
+    @NSManaged var campaignId: String
+    @NSManaged var count: Int64
+    @NSManaged var razDate: Date
+}
+
+

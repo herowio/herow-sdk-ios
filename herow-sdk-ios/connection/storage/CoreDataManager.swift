@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Notification>: DataBase {
+class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Notification, Q: Capping>: DataBase {
 
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(for: Self.self)
@@ -227,6 +227,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         var campaigns = [Campaign]()
         let managedContext = context
         let fetchRequest = NSFetchRequest<CampaignCoreData>(entityName: StorageConstants.CampaignCoreDataEntityName)
+
         do {
             let  campaignsCoreData = try managedContext.fetch(fetchRequest)
             for campaignsCoreData in campaignsCoreData {
@@ -264,6 +265,50 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
         return campaigns
     }
 
+    func getCapping(id: String) -> Capping? {
+        var capping: Capping?
+        let managedContext = context
+        let fetchRequest = NSFetchRequest<CappingCoreData>(entityName: StorageConstants.CappingCoreDataEntityName)
+        fetchRequest.predicate = NSPredicate(format: "campaignId IN %@", id)
+        do {
+            if let  cappingCoreData = try managedContext.fetch(fetchRequest).first {
+                let id = cappingCoreData.campaignId
+                let razDate = cappingCoreData.razDate
+                let count = cappingCoreData.count
+                capping = Q(id: id, razDate: razDate, count: count)
+            }
+        }
+        catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        return capping
+    }
+
+    func saveCapping(_ capping: Capping, completion: (()->())? = nil) {
+        bgContext.performAndWait {
+
+            var  cappingCoreData :CappingCoreData?
+            let fetchRequest =
+                NSFetchRequest<CappingCoreData>(entityName: StorageConstants.CappingCoreDataEntityName)
+            fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.campaignId) == %@", capping.getId())
+            cappingCoreData = try? bgContext.fetch(fetchRequest).first
+            if cappingCoreData == nil {
+                let entity =
+                    NSEntityDescription.entity(forEntityName: StorageConstants.CappingCoreDataEntityName,
+                                               in: bgContext)!
+                cappingCoreData = CappingCoreData(entity: entity,
+                                                  insertInto: bgContext)
+
+                cappingCoreData?.campaignId = capping.getId()
+                cappingCoreData?.razDate = capping.getRazDate()
+                cappingCoreData?.count = capping.getCount()
+            }
+        }
+        save() {
+            completion?()
+        }
+    }
+
     func getPoisInBase() -> [Poi] {
         var pois = [Poi]()
         let managedContext = context
@@ -282,10 +327,17 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
     }
 
     func purgeAllData(completion: (()->())? = nil) {
-        let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name })
+        let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name }).filter({$0 != StorageConstants.CappingCoreDataEntityName})
         uniqueNames.forEach { (name) in
             deleteEntity(name: name)
         }
+        save() {
+            completion?()
+        }
+    }
+
+    func purgeCapping(completion: (()->())? = nil) {
+        deleteEntity(name: StorageConstants.CappingCoreDataEntityName)
         save() {
             completion?()
         }

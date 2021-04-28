@@ -59,7 +59,7 @@ class NotificationManager: NSObject, EventListener {
 
     private func canCreateNotification( _ campaign : Campaign) -> Bool {
         for filter in filters {
-                if !(filter.createNotification(campaign: campaign)) {
+                if !(filter.createNotification(campaign: campaign, completion: nil)) {
                     return false
                 }
         }

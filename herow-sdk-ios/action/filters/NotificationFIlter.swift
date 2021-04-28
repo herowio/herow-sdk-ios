@@ -10,7 +10,7 @@ import Foundation
  protocol NotificationFilter: AnyObject {
     var timeProvider: TimeProvider {get set}
     init(timeProvider: TimeProvider, cacheManager: CacheManagerProtocol?)
-    func createNotification(campaign: Campaign) -> Bool
+    func createNotification(campaign: Campaign, completion:(()->())?) -> Bool
 }
 
 

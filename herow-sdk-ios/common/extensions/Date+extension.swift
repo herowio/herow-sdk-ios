@@ -9,6 +9,21 @@ import Foundation
 
 extension Date {
 
+
+    var startOfDay: Date
+        {
+            return Calendar.current.startOfDay(for: self)
+        }
+
+        func getDate(dayDifference: Int) -> Date {
+            var components = DateComponents()
+            components.day = dayDifference
+            return Calendar.current.date(byAdding: components, to:startOfDay)!
+        }
+
+    func tomorrow() -> Date {
+        return  self.startOfDay.addingTimeInterval(86400).startOfDay
+    }
     // Convert local time to UTC (or GMT)
     func toGlobalTime() -> Date {
         let timezone = TimeZone.current
@@ -32,6 +47,7 @@ extension Date {
             components.timeZone = .current
             components.hour = hour
             components.minute = min
+            components.second = 0
 
             return cal.date(from: components)?.toLocalTime()
         }

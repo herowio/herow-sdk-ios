@@ -6,7 +6,7 @@
 //
 
 import Foundation
-let oneDaySeconds = 86400
+let oneDayMilliSeconds = 86400000
 let maxNumberNotifications = "maxNumberNotifications"
 let minTimeBetweenTwoNotifications = "minTimeBetweenTwoNotifications"
 class CappingFilter :NotificationFilter {
@@ -18,11 +18,11 @@ class CappingFilter :NotificationFilter {
         self.timeProvider = timeProvider
     }
 
-    func createNotification(campaign: Campaign) -> Bool {
+    func createNotification(campaign: Campaign, completion:(()->())? = nil) -> Bool {
         guard let cacheManager = self.cacheManager, let capping = campaign.getCappings(), let max = capping[maxNumberNotifications] else {
             return true
         }
-        let resetDelay = Double(capping[minTimeBetweenTwoNotifications] ?? oneDaySeconds ) / 1000
+        let resetDelay = Double(capping[minTimeBetweenTwoNotifications] ?? oneDayMilliSeconds ) / 1000
         var startHour = 0
         var startMinutes = 0
         //compute beginning of new period
@@ -37,25 +37,32 @@ class CappingFilter :NotificationFilter {
             }
         }
         let now = Date(timeIntervalSince1970: timeProvider.getTime()).toLocalTime()
-        let firstRazDate = now.setTime(hour: startHour, min: startMinutes) ?? Date()
+        var firstRazDate = Date().setTime(hour: startHour, min: startMinutes) ?? Date()
+        if ( resetDelay > Double(oneDayMilliSeconds / 1000)) {
+            firstRazDate = now.addingTimeInterval(resetDelay).setTime(hour: startHour, min: startMinutes) ?? Date()
+        } else {
+            firstRazDate = now.tomorrow().setTime(hour: startHour, min: startMinutes) ?? Date()
+        }
+
         let herowCapping : HerowCapping = (cacheManager.getCapping(id: campaign.getId()) as? HerowCapping) ?? HerowCapping(id: campaign.getId(), razDate: firstRazDate, count: 0)
-        var count:Int64 = 0
+        var count:Int64 = Int64.max
         var result = false
-        if now < herowCapping.getRazDate().toLocalTime() {
+        if now < herowCapping.getRazDate() {
             count = herowCapping.getCount()
         } else {
+            count = 0
             if  let newRazDate =  herowCapping.getRazDate().addingTimeInterval(resetDelay).setTime(hour: startHour, min: startMinutes) {
                 herowCapping.setRazDate(date: newRazDate)
             }
-
         }
-        herowCapping.setCount(count: count + 1)
-        cacheManager.saveCapping(herowCapping, completion: nil)
-        if count < max {
+        herowCapping.setCount(count: min(count + 1,Int64(max)))
 
+        cacheManager.saveCapping(herowCapping, completion: {
+            completion?()
+        })
+        if count < max {
             result = true
         }
         return result
     }
-
 }

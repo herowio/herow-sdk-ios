@@ -72,6 +72,8 @@
 		6D39776A25D6B7A4009CF99A /* APIManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D39776925D6B7A4009CF99A /* APIManagerTests.swift */; };
 		6D39776F25DA6E2A009CF99A /* HerowDataStrorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D39776E25DA6E2A009CF99A /* HerowDataStrorageTests.swift */; };
 		6D39777525DBAA72009CF99A /* UserInfoManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D39777425DBAA72009CF99A /* UserInfoManagerTests.swift */; };
+		6D3DC6A8263943EF00DE8FD3 /* ValidityFilterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D3DC6A7263943EF00DE8FD3 /* ValidityFilterTest.swift */; };
+		6D3DC6AA2639494800DE8FD3 /* CappingFilterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D3DC6A92639494700DE8FD3 /* CappingFilterTest.swift */; };
 		6D40A20125BB76810025268E /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A20025BB76810025268E /* EventDispatcher.swift */; };
 		6D40A22325BC07C80025268E /* HerowDataStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */; };
 		6D40A25B25BED02B0025268E /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A25A25BED02B0025268E /* CoreDataManager.swift */; };
@@ -212,6 +214,8 @@
 		6D39776925D6B7A4009CF99A /* APIManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManagerTests.swift; sourceTree = "<group>"; };
 		6D39776E25DA6E2A009CF99A /* HerowDataStrorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowDataStrorageTests.swift; sourceTree = "<group>"; };
 		6D39777425DBAA72009CF99A /* UserInfoManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoManagerTests.swift; sourceTree = "<group>"; };
+		6D3DC6A7263943EF00DE8FD3 /* ValidityFilterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidityFilterTest.swift; sourceTree = "<group>"; };
+		6D3DC6A92639494700DE8FD3 /* CappingFilterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CappingFilterTest.swift; sourceTree = "<group>"; };
 		6D40A20025BB76810025268E /* EventDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDispatcher.swift; sourceTree = "<group>"; };
 		6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowDataStorageProtocol.swift; sourceTree = "<group>"; };
 		6D40A25A25BED02B0025268E /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -684,6 +688,8 @@
 			children = (
 				6DFA760E2636F90E000254E2 /* TimeSlotFilterTest.swift */,
 				6DFA763B26374BE3000254E2 /* RecurencyFilterTest.swift */,
+				6D3DC6A7263943EF00DE8FD3 /* ValidityFilterTest.swift */,
+				6D3DC6A92639494700DE8FD3 /* CappingFilterTest.swift */,
 			);
 			path = action;
 			sourceTree = "<group>";
@@ -993,6 +999,7 @@
 				6D60E6DF25DC26F800AC6291 /* CacheManagerTests.swift in Sources */,
 				6D39777525DBAA72009CF99A /* UserInfoManagerTests.swift in Sources */,
 				6DF3C34925FF60360073283B /* FuseManagerTests.swift in Sources */,
+				6D3DC6AA2639494800DE8FD3 /* CappingFilterTest.swift in Sources */,
 				6D39776F25DA6E2A009CF99A /* HerowDataStrorageTests.swift in Sources */,
 				6D97C28325DE6F7C007AC150 /* ZoneProviderTests.swift in Sources */,
 				6D8775B425D663BF00148DC9 /* APIWorkerTest.swift in Sources */,
@@ -1000,6 +1007,7 @@
 				6DE7559725F0E6E8003C0252 /* FileUtilsTests.swift in Sources */,
 				6D1F4E4025EE24D80034D4B0 /* DetectionengineTests.swift in Sources */,
 				6DFA763C26374BE3000254E2 /* RecurencyFilterTest.swift in Sources */,
+				6D3DC6A8263943EF00DE8FD3 /* ValidityFilterTest.swift in Sources */,
 				6D07420A25B079EC005E08F8 /* CredentialsTests.swift in Sources */,
 				6DFA760F2636F90E000254E2 /* TimeSlotFilterTest.swift in Sources */,
 				6D39776A25D6B7A4009CF99A /* APIManagerTests.swift in Sources */,

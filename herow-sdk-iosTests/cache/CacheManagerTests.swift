@@ -87,10 +87,20 @@ class CacheManagerTests: XCTestCase, CacheListener {
         let testFailExpectation = expectation(description: "testFailExpectation")
         let capping = HerowCapping(id: "id", razDate: Date(), count: 0)
         cacheManager.saveCapping(capping) {
-          let savedCapping =   self.cacheManager.getCapping(id: "id")
-            XCTAssertTrue(savedCapping?.getId() == "id")
-            XCTAssertTrue(savedCapping?.getCount() == 0)
-            testFailExpectation.fulfill()
+            if  let savedCapping =   self.cacheManager.getCapping(id: "id") {
+                XCTAssertTrue(savedCapping.getId() == "id")
+                XCTAssertTrue(savedCapping.getCount() == 0)
+
+                savedCapping.setCount(count: 2)
+                self.cacheManager.saveCapping(savedCapping) {
+                    let savedCapping =   self.cacheManager.getCapping(id: "id")
+                    XCTAssertTrue(savedCapping?.getId() == "id")
+                    XCTAssertTrue(savedCapping?.getCount() == 2)
+
+                    testFailExpectation.fulfill()
+                }
+            }
+
         }
         waitForExpectations(timeout:30) { error in
             if let error = error {

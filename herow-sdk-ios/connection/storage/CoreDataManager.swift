@@ -298,11 +298,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                                                in: bgContext)!
                 cappingCoreData = CappingCoreData(entity: entity,
                                                   insertInto: bgContext)
-
-                cappingCoreData?.campaignId = capping.getId()
-                cappingCoreData?.razDate = capping.getRazDate()
-                cappingCoreData?.count = capping.getCount()
             }
+            cappingCoreData?.campaignId = capping.getId()
+            cappingCoreData?.razDate = capping.getRazDate()
+            cappingCoreData?.count = capping.getCount()
         }
         save() {
             completion?()

@@ -15,7 +15,7 @@ class RecurencyFilter :NotificationFilter {
         dateFormatter.locale =  NSLocale(localeIdentifier: "en_EN") as Locale
     }
 
-    func createNotification(campaign: Campaign) -> Bool {
+    func createNotification(campaign: Campaign, completion:(()->())? = nil) -> Bool {
         let now = Date(timeIntervalSince1970: timeProvider.getTime()).toLocalTime()
         let currentDay = dateFormatter.string(from: now).uppercased()
         var result = false

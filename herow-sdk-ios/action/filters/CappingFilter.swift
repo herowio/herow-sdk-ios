@@ -43,7 +43,6 @@ class CappingFilter :NotificationFilter {
         } else {
             firstRazDate = now.tomorrow().setTime(hour: startHour, min: startMinutes) ?? Date()
         }
-
         let herowCapping : HerowCapping = (cacheManager.getCapping(id: campaign.getId()) as? HerowCapping) ?? HerowCapping(id: campaign.getId(), razDate: firstRazDate, count: 0)
         var count:Int64 = Int64.max
         var result = false
@@ -56,7 +55,6 @@ class CappingFilter :NotificationFilter {
             }
         }
         herowCapping.setCount(count: min(count + 1,Int64(max)))
-
         cacheManager.saveCapping(herowCapping, completion: {
             completion?()
         })

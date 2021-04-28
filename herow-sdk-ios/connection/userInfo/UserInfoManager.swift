@@ -232,6 +232,7 @@ class UserInfoManager: UserInfoManagerProtocol {
     }
 
     func reset() {
+        removeCustomId()
         self.customId = nil
         self.idfv = nil
         self.idfa = nil

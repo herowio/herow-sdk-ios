@@ -8,20 +8,19 @@
 import Foundation
 
 extension String {
-    func dynamicValues(for regex: String) -> String  {
+    func dynamicValues(for regex: String) -> (String, [String: String]) {
         let textMatches = matches(for: regex)
+        var couple = [String: String]()
         var newtext = self
         textMatches.forEach { match in
             let str = match.replacingOccurrences(of: "{", with: "").replacingOccurrences(of: "}", with: "").replacingOccurrences(of: "default('", with: "").replacingOccurrences(of: "')", with: "")
             let components = str.components(separatedBy: "|")
-            if components.count > 0 {
+            if components.count > 1 {
+                couple[components[0]] = components[1]
                 newtext = newtext.replacingOccurrences(of: match, with: components[0] )
             }
-            else if  components.count > 1 {
-                newtext = newtext.replacingOccurrences(of: match, with: components[1] )
-            }
         }
-        return newtext
+        return (newtext, couple)
     }
 
     func matches(for regex: String) -> [String] {

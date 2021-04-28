@@ -97,8 +97,8 @@ class NotificationManager: NSObject, EventListener {
         var title = notification.getTitle()
         var description = notification.getDescription()
         if campaign.getRealTimeContent() {
-            title = computeDynamicContent(&title, zone: zone, campaign: campaign)
-            description = computeDynamicContent(&description, zone: zone, campaign: campaign)
+            title = computeDynamicContent(title, zone: zone, campaign: campaign)
+            description = computeDynamicContent(description, zone: zone, campaign: campaign)
         }
         content.title = title
         content.body = description
@@ -125,24 +125,26 @@ class NotificationManager: NSObject, EventListener {
         }
     }
 
-    private func computeDynamicContent(_ text: inout String, zone: Zone, campaign: Campaign) -> String {
+    internal func computeDynamicContent(_ text:  String, zone: Zone, campaign: Campaign) -> String {
+        let tupple =  text.dynamicValues(for: "\\{\\{(.*?)\\}\\}")
+        var result = tupple.0
+        let defaultValues = tupple.1
         GlobalLogger.shared.debug("create dynamic content notification: \(campaign.getId())")
+
         DynamicKeys.allCases.forEach() { key in
             var value = ""
             switch key {
             case .name:
-                value = zone.getAccess()?.getName() ?? "error no acces name"
+                value = zone.getAccess()?.getName() ?? (defaultValues[key.rawValue] ?? "")
             case .radius:
                 value = "\(zone.getRadius())"
             case .address:
-                value = zone.getAccess()?.getAddress() ?? "error no acces address"
+                value = zone.getAccess()?.getAddress() ??  (defaultValues[key.rawValue] ?? "")
             case .customId:
-                value = herowDataStorage.getCustomId() ?? "no custom ID"
+                value = herowDataStorage.getCustomId() ??  (defaultValues[key.rawValue] ?? "")
             }
-            text = text.dynamicValues(for: "\\{\\{(.*?)\\}\\}")
-
-            text = text.replacingOccurrences(of: key.rawValue, with: value)
+            result = result.replacingOccurrences(of: key.rawValue, with: value)
         }
-        return text
+        return result
     }
 }

@@ -74,6 +74,7 @@
 		6D39777525DBAA72009CF99A /* UserInfoManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D39777425DBAA72009CF99A /* UserInfoManagerTests.swift */; };
 		6D3DC6A8263943EF00DE8FD3 /* ValidityFilterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D3DC6A7263943EF00DE8FD3 /* ValidityFilterTest.swift */; };
 		6D3DC6AA2639494800DE8FD3 /* CappingFilterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D3DC6A92639494700DE8FD3 /* CappingFilterTest.swift */; };
+		6D3DC6AC2639997000DE8FD3 /* NotificationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D3DC6AB2639997000DE8FD3 /* NotificationManagerTests.swift */; };
 		6D40A20125BB76810025268E /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A20025BB76810025268E /* EventDispatcher.swift */; };
 		6D40A22325BC07C80025268E /* HerowDataStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */; };
 		6D40A25B25BED02B0025268E /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A25A25BED02B0025268E /* CoreDataManager.swift */; };
@@ -216,6 +217,7 @@
 		6D39777425DBAA72009CF99A /* UserInfoManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInfoManagerTests.swift; sourceTree = "<group>"; };
 		6D3DC6A7263943EF00DE8FD3 /* ValidityFilterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidityFilterTest.swift; sourceTree = "<group>"; };
 		6D3DC6A92639494700DE8FD3 /* CappingFilterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CappingFilterTest.swift; sourceTree = "<group>"; };
+		6D3DC6AB2639997000DE8FD3 /* NotificationManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManagerTests.swift; sourceTree = "<group>"; };
 		6D40A20025BB76810025268E /* EventDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDispatcher.swift; sourceTree = "<group>"; };
 		6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowDataStorageProtocol.swift; sourceTree = "<group>"; };
 		6D40A25A25BED02B0025268E /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -687,6 +689,7 @@
 			isa = PBXGroup;
 			children = (
 				6DFA760E2636F90E000254E2 /* TimeSlotFilterTest.swift */,
+				6D3DC6AB2639997000DE8FD3 /* NotificationManagerTests.swift */,
 				6DFA763B26374BE3000254E2 /* RecurencyFilterTest.swift */,
 				6D3DC6A7263943EF00DE8FD3 /* ValidityFilterTest.swift */,
 				6D3DC6A92639494700DE8FD3 /* CappingFilterTest.swift */,
@@ -1001,6 +1004,7 @@
 				6DF3C34925FF60360073283B /* FuseManagerTests.swift in Sources */,
 				6D3DC6AA2639494800DE8FD3 /* CappingFilterTest.swift in Sources */,
 				6D39776F25DA6E2A009CF99A /* HerowDataStrorageTests.swift in Sources */,
+				6D3DC6AC2639997000DE8FD3 /* NotificationManagerTests.swift in Sources */,
 				6D97C28325DE6F7C007AC150 /* ZoneProviderTests.swift in Sources */,
 				6D8775B425D663BF00148DC9 /* APIWorkerTest.swift in Sources */,
 				6D1F4E2D25ED1D5E0034D4B0 /* EventDispatcherTests.swift in Sources */,

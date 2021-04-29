@@ -143,8 +143,17 @@ class NotificationManager: NSObject, EventListener {
             case .customId:
                 value = herowDataStorage.getCustomId() ??  (defaultValues[key.rawValue] ?? "")
             }
+
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.name.rawValue) with \( zone.getAccess()?.getName())")
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.radius.rawValue) with \(zone.getRadius())")
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.address.rawValue) with \(zone.getAccess()?.getAddress())")
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.customId.rawValue) with \( herowDataStorage.getCustomId())")
+            GlobalLogger.shared.debug("dynamic content replacing: \(key.rawValue) with \(value)")
             result = result.replacingOccurrences(of: key.rawValue, with: value)
         }
+        GlobalLogger.shared.debug("create dynamic content notification: \(text)")
+        GlobalLogger.shared.debug("create dynamic content notification tupple: \(tupple)")
+        GlobalLogger.shared.debug("create dynamic content notification result: \(result)")
         return result
     }
 }

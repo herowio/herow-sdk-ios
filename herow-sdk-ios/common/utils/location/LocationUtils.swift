@@ -99,8 +99,8 @@ public class LocationUtils {
 
     static func randomSylvain() -> CLLocation {
        // <wpt lat="48.709583" lon="2.387505">
-        let randomLat = 48.709583
-        let randomLong = 2.387505
+        let randomLat = 48.69183
+        let randomLong = 2.378031
         let accuracy = 50.0
         let coor = CLLocationCoordinate2D(latitude: randomLat, longitude: randomLong)
         return CLLocation(coordinate: coor, altitude: 0, horizontalAccuracy: accuracy, verticalAccuracy: accuracy, timestamp: Date())

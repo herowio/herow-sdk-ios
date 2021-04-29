@@ -162,6 +162,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 }
                 zoneCoreData?.zoneHash = item.getHash()
                 var accessInBase =  zoneCoreData?.access
+                GlobalLogger.shared.debug("CoreDataManager:  access in base : \(accessInBase)")
                 if accessInBase  == nil {
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.AccessCoreDataEntityName,
@@ -170,13 +171,20 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                                                   insertInto: bgContext)
                 }
                 if let access = item.getAccess() {
+                    GlobalLogger.shared.debug("CoreDataManager:  zone has access")
+                    GlobalLogger.shared.debug("CoreDataManager: access : \(access.getName())")
+                    GlobalLogger.shared.debug("CoreDataManager: access : \(access.getAddress())")
                     accessInBase?.id = access.getId()
                     accessInBase?.name = access.getName()
                     accessInBase?.address = access.getAddress()
+                } else {
+                    GlobalLogger.shared.debug("CoreDataManager:  zone has no access")
                 }
                 if let accessInBase = accessInBase {
                     zoneCoreData?.access = accessInBase
                 }
+
+                GlobalLogger.shared.debug("CoreDataManager:  access name : \(zoneCoreData?.access.name)")
                 zoneCoreData?.lat = item.getLat()
                 zoneCoreData?.lng = item.getLng()
                 zoneCoreData?.radius = item.getRadius()

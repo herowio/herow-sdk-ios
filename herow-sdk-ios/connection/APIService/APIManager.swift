@@ -270,6 +270,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                         return
                     }
                     GlobalLogger.shared.info("APIManager- CACHE HAS BEEN FETCHED")
+                    GlobalLogger.shared.verbose("APIManager- received cache: \(cache)")
                     self.herowDataStorage.saveLastCacheFetchDate(Date())
                     self.herowDataStorage.setLastGeohash(geoHash)
                     self.cacheManager.cleanCache() {

@@ -14,7 +14,6 @@ class ZoneCoreData: NSManagedObject {
     @NSManaged var lat: Double
     @NSManaged var lng: Double
     @NSManaged var radius: Double
-    @NSManaged var liveEvent: Bool
     @NSManaged var campaigns : [String]
     @NSManaged var access: AccessCoreData
 }
@@ -40,30 +39,14 @@ class PoiCoreData: NSManagedObject {
 class CampaignCoreData: NSManagedObject {
 
     @NSManaged var id: String
-    @NSManaged var company: String
-    @NSManaged var createdDate: Double
-    @NSManaged var modifiedDate: Double
-    @NSManaged override var isDeleted: Bool
-    @NSManaged var simpleId: String
     @NSManaged var name: String
     @NSManaged var startHour: String
     @NSManaged var stopHour: String
     @NSManaged var begin: Double
     @NSManaged var end: Double
-    @NSManaged var realTimeContent: Bool
-    @NSManaged var intervals: Set<IntervalCoreData>
     @NSManaged var cappings: [String: Int]
-    @NSManaged var triggers: [String: Int]
-    @NSManaged var tz: String
     @NSManaged var notification: NotificationCoreData
-    @NSManaged var recurrenceEnabled: Bool
     @NSManaged var daysRecurrence: [String]
-}
-
-@objc(IntervalCoreData)
-class IntervalCoreData: NSManagedObject {
-    @NSManaged var start: Int64
-    @NSManaged var end: Int64
 }
 
 @objc(NotificationCoreData)

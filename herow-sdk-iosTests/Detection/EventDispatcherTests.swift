@@ -97,7 +97,7 @@ class EventDispatcherTests: XCTestCase {
     func testPost() throws {
         let listener1 = TestEventListener()
         eventDispatcher.registerListener(listener1)
-        let zone = HerowZone(hash: "hash", lat: 0.0, lng: 0.0, radius: 50, campaigns: [String](), access: nil, liveEvent: false)
+        let zone = HerowZone(hash: "hash", lat: 0.0, lng: 0.0, radius: 50, campaigns: [String](), access: nil)
         eventDispatcher.post(event: .GEOFENCE_ENTER, infos: [ZoneInfo(zone: zone)])
         XCTAssertTrue(listener1.event == .GEOFENCE_ENTER)
         XCTAssertTrue(listener1.infos?.first?.zoneHash == "hash")

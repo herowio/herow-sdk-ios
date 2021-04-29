@@ -7,56 +7,31 @@
 
 import Foundation
 
- struct APICampaign: Campaign, Codable {
+struct APICampaign: Campaign, Codable {
     var id: String
-    var company: String
-    var createdDate: Double
-    var modifiedDate: Double
-    var deleted: Bool
-    var simpleId: String
     var name: String
     var image: String?
     var thumbnail:String?
     var begin: Double
     var end: Double?
-    var realTimeContent: Bool
-    var intervals: [APIInterval]?
     let cappings: [String: Int]?
-    var triggers: [String: Int]
     var daysRecurrence: [String]?
-    var tz: String
     var startHour: String?
     var stopHour: String?
     var notification: APINotification?
-    var recurrenceEnabled: Bool
 
     func getId() -> String {
         return id
     }
 
-    func getCompany() -> String {
-        return company
-    }
 
-    func getCreatedDate() -> Double {
-        return createdDate
-    }
 
-    func getModifiedDate() -> Double {
-        return modifiedDate
-    }
 
-    func getDeleted() -> Bool {
-        return deleted
-    }
 
     func getName() -> String {
         return name
     }
 
-    func getSimpleId() -> String {
-        return simpleId
-    }
 
     func getBegin() -> Double {
         return begin
@@ -66,24 +41,8 @@ import Foundation
         return end
     }
 
-    func getRealTimeContent() -> Bool {
-        return realTimeContent
-    }
-
-    func getIntervals() -> [Interval]? {
-        return intervals
-    }
-
-    func getTriggers() -> [String : Int] {
-        return triggers
-    }
-
     func getCappings() -> [String : Int]? {
         return cappings
-    }
-
-    func getTz() -> String {
-        return tz
     }
 
     func getNotification() -> Notification? {
@@ -92,10 +51,6 @@ import Foundation
 
     func getDaysRecurrence() -> [String]? {
         return daysRecurrence
-    }
-
-    func getReccurenceEnable() -> Bool {
-        return recurrenceEnabled
     }
 
     func getStartHour() -> String? {
@@ -108,59 +63,32 @@ import Foundation
 
     enum CodingKeys: String, CodingKey {
         case id
-        case company
-        case createdDate
-        case modifiedDate
-        case deleted
-        case simpleId
+
         case name
         case begin
         case end
-        case intervals
         case notification
-        case tz
-        case realTimeContent
         case cappings = "capping"
-        case triggers
         case daysRecurrence
-        case recurrenceEnabled
         case startHour
         case stopHour
     }
     init(id: String,
-         company: String,
          name: String,
-         createdDate: Double,
-         modifiedDate: Double,
-         deleted: Bool,
-         simpleId: String,
          begin: Double,
          end: Double?,
-         realTimeContent: Bool,
-         intervals: [Interval]?,
          cappings: [String: Int]?,
-         triggers:[String: Int],
          daysRecurrence: [String],
-         recurrenceEnabled: Bool,
-         tz:String,
-         notification: Notification?, startHour: String?, stopHour: String?) {
+         notification: Notification?,
+         startHour: String?,
+         stopHour: String?) {
 
         self.id = id
-        self.company = company
         self.name = name
-        self.createdDate = createdDate
-        self.modifiedDate = modifiedDate
-        self.deleted = deleted
-        self.simpleId = simpleId
         self.begin = begin
         self.end = end
-        self.realTimeContent = realTimeContent
-        self.intervals = intervals as? [APIInterval]
         self.cappings = cappings
-        self.triggers = triggers
         self.daysRecurrence = daysRecurrence
-        self.recurrenceEnabled = recurrenceEnabled
-        self.tz = tz
         self.notification = notification as? APINotification
         self.stopHour = stopHour
         self.startHour = startHour
@@ -170,22 +98,12 @@ import Foundation
     public  init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try values.decode(String.self, forKey: .id)
-        self.company = try values.decode(String.self, forKey: .company)
-        self.createdDate = try values.decode(Double.self, forKey: .createdDate)
-        self.modifiedDate = try values.decode(Double.self, forKey: .modifiedDate)
-        self.deleted = try values.decode(Bool.self, forKey: .deleted)
-        self.simpleId = try values.decode(String.self, forKey: .simpleId)
         self.name = try values.decode(String.self, forKey: .name)
         self.begin = try values.decode(Double.self, forKey: .begin)
         self.end = try values.decodeIfPresent(Double.self, forKey: .end)
-        self.intervals = try values.decode([APIInterval].self, forKey: .intervals)
-        self.triggers = try values.decode([String: Int].self, forKey: .triggers)
         self.cappings = try values.decodeIfPresent([String: Int].self, forKey: .cappings) ?? [String: Int]()
         self.notification = try values.decodeIfPresent(APINotification.self, forKey: .notification)
-        self.recurrenceEnabled = try values.decodeIfPresent(Bool.self, forKey: .recurrenceEnabled) ?? false
         self.daysRecurrence = try values.decodeIfPresent([String].self, forKey: .daysRecurrence)
-        self.tz = try values.decode(String.self, forKey: .tz)
-        self.realTimeContent = try values.decodeIfPresent(Bool.self, forKey: .realTimeContent) ?? false
         self.startHour =  try values.decodeIfPresent(String.self, forKey: .startHour)
         self.stopHour =  try values.decodeIfPresent(String.self, forKey: .stopHour)
     }

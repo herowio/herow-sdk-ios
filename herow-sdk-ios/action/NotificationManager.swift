@@ -85,7 +85,7 @@ class NotificationManager: NSObject, EventListener {
       //  return (event == .GEOFENCE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit())
       //  return event == .GEOFENCE_NOTIFICATION_ZONE_ENTER && !campaign.isExit()
 
-      return (event == .GEOFENCE_NOTIFICATION_ZONE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit())
+      return  event == .GEOFENCE_NOTIFICATION_ZONE_ENTER
     }
     private func createCampaignNotification(_ campaign: Campaign, zone: Zone, zoneInfo: ZoneInfo) {
 
@@ -93,13 +93,9 @@ class NotificationManager: NSObject, EventListener {
             return
         }
         let content = UNMutableNotificationContent()
+        let title = computeDynamicContent(notification.getTitle(), zone: zone, campaign: campaign)
+        let description = computeDynamicContent(notification.getDescription(), zone: zone, campaign: campaign)
 
-        var title = notification.getTitle()
-        var description = notification.getDescription()
-        if campaign.getRealTimeContent() {
-            title = computeDynamicContent(title, zone: zone, campaign: campaign)
-            description = computeDynamicContent(description, zone: zone, campaign: campaign)
-        }
         content.title = title
         content.body = description
         content.userInfo = ["zoneID": zone.getHash()]

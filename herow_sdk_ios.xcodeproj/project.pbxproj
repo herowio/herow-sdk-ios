@@ -83,7 +83,6 @@
 		6D40A26E25BEF4860025268E /* APIZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A26D25BEF4860025268E /* APIZone.swift */; };
 		6D40A27225BEF4AB0025268E /* APICampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A27125BEF4AB0025268E /* APICampaign.swift */; };
 		6D40A27625BEF4D70025268E /* APIAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A27525BEF4D70025268E /* APIAccess.swift */; };
-		6D40A27A25BEF5050025268E /* ApIInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A27925BEF5050025268E /* ApIInterval.swift */; };
 		6D40A27E25BEF5180025268E /* APINotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A27D25BEF5180025268E /* APINotification.swift */; };
 		6D40A28225BEF5410025268E /* APIPoi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A28125BEF5410025268E /* APIPoi.swift */; };
 		6D40A28B25BEF8F80025268E /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A28A25BEF8F80025268E /* CacheManager.swift */; };
@@ -97,7 +96,6 @@
 		6D79A19925BF69160048CAF0 /* HerowZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A19725BF69160048CAF0 /* HerowZone.swift */; };
 		6D79A1B625BF73940048CAF0 /* HerowPoi.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1B525BF73940048CAF0 /* HerowPoi.swift */; };
 		6D79A1D425C00BC50048CAF0 /* HerowCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1D325C00BC50048CAF0 /* HerowCampaign.swift */; };
-		6D79A1D825C013700048CAF0 /* HerowInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1D725C013700048CAF0 /* HerowInterval.swift */; };
 		6D79A1DC25C013FE0048CAF0 /* HerowNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1DB25C013FE0048CAF0 /* HerowNotification.swift */; };
 		6D79A1FE25C14F4F0048CAF0 /* ZoneProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A1FD25C14F4F0048CAF0 /* ZoneProvider.swift */; };
 		6D79A20225C151CF0048CAF0 /* DetectionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D79A20125C151CF0048CAF0 /* DetectionEngine.swift */; };
@@ -226,7 +224,6 @@
 		6D40A26D25BEF4860025268E /* APIZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIZone.swift; sourceTree = "<group>"; };
 		6D40A27125BEF4AB0025268E /* APICampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICampaign.swift; sourceTree = "<group>"; };
 		6D40A27525BEF4D70025268E /* APIAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIAccess.swift; sourceTree = "<group>"; };
-		6D40A27925BEF5050025268E /* ApIInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApIInterval.swift; sourceTree = "<group>"; };
 		6D40A27D25BEF5180025268E /* APINotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APINotification.swift; sourceTree = "<group>"; };
 		6D40A28125BEF5410025268E /* APIPoi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIPoi.swift; sourceTree = "<group>"; };
 		6D40A28A25BEF8F80025268E /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
@@ -240,7 +237,6 @@
 		6D79A19725BF69160048CAF0 /* HerowZone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HerowZone.swift; sourceTree = "<group>"; };
 		6D79A1B525BF73940048CAF0 /* HerowPoi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowPoi.swift; sourceTree = "<group>"; };
 		6D79A1D325C00BC50048CAF0 /* HerowCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowCampaign.swift; sourceTree = "<group>"; };
-		6D79A1D725C013700048CAF0 /* HerowInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowInterval.swift; sourceTree = "<group>"; };
 		6D79A1DB25C013FE0048CAF0 /* HerowNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowNotification.swift; sourceTree = "<group>"; };
 		6D79A1FD25C14F4F0048CAF0 /* ZoneProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneProvider.swift; sourceTree = "<group>"; };
 		6D79A20125C151CF0048CAF0 /* DetectionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetectionEngine.swift; sourceTree = "<group>"; };
@@ -315,7 +311,6 @@
 				6B9A5F5F25B9D36600AAC673 /* APIModels.swift */,
 				6D40A26D25BEF4860025268E /* APIZone.swift */,
 				6D40A28125BEF5410025268E /* APIPoi.swift */,
-				6D40A27925BEF5050025268E /* ApIInterval.swift */,
 				6D40A27D25BEF5180025268E /* APINotification.swift */,
 				6D40A27125BEF4AB0025268E /* APICampaign.swift */,
 				6D40A27525BEF4D70025268E /* APIAccess.swift */,
@@ -617,7 +612,6 @@
 				6D79A19725BF69160048CAF0 /* HerowZone.swift */,
 				6D7DF5A92638506F008E164E /* HerowCapping.swift */,
 				6D79A1D325C00BC50048CAF0 /* HerowCampaign.swift */,
-				6D79A1D725C013700048CAF0 /* HerowInterval.swift */,
 				6D79A1DB25C013FE0048CAF0 /* HerowNotification.swift */,
 			);
 			path = HerowEntities;
@@ -945,10 +939,8 @@
 				6D07480A25B72FFB005E08F8 /* DataHolder.swift in Sources */,
 				6D40A26E25BEF4860025268E /* APIZone.swift in Sources */,
 				6D79A20225C151CF0048CAF0 /* DetectionEngine.swift in Sources */,
-				6D79A1D825C013700048CAF0 /* HerowInterval.swift in Sources */,
 				6D0747FE25B72FFB005E08F8 /* TimeProvider.swift in Sources */,
 				6B9A5F6125B9D36600AAC673 /* APIManager.swift in Sources */,
-				6D40A27A25BEF5050025268E /* ApIInterval.swift in Sources */,
 				6B9A5F6425B9D36600AAC673 /* HerowDataStorage.swift in Sources */,
 				6D07494225BB035F005E08F8 /* GeoHashHelper.swift in Sources */,
 				6D07480525B72FFB005E08F8 /* AppStateDetector.swift in Sources */,

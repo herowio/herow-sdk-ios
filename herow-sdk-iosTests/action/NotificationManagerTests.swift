@@ -14,7 +14,7 @@ class NotificationManagerTests: XCTestCase, UserInfoListener {
     }
 
     let herowDataStorage = HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest"))
-    var notificationManager = NotificationManager(cacheManager: CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowInterval, HerowNotification, HerowCapping>()), notificationCenter: MockNotificationCenter(), herowDataStorage: HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest")))
+    var notificationManager = NotificationManager(cacheManager: CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>()), notificationCenter: MockNotificationCenter(), herowDataStorage: HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest")))
     override func setUpWithError() throws {
         let herowDataStorage = HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest"))
          userInfoManager = UserInfoManager(listener: self, herowDataStorage: herowDataStorage)
@@ -29,8 +29,8 @@ class NotificationManagerTests: XCTestCase, UserInfoListener {
 
     func testDynamic() throws {
 
-        let zone = HerowZone(hash: "ee", lat: 0, lng: 0, radius: 50, campaigns: ["gh"], access: HerowAccess(id: "ee", name: "HerowZoneName", address: "my address"), liveEvent: false)
-        let camp = HerowCampaign(id: "gh", company: "hj", name: "jh", createdDate: 1234, modifiedDate: 12345, deleted: false, simpleId: "gg", begin: 0, end: nil, realTimeContent: true, intervals: nil, cappings: [maxNumberNotifications : 3, minTimeBetweenTwoNotifications : 3 * oneDayMilliSeconds], triggers: [String:Int](), daysRecurrence: [String](), recurrenceEnabled: false, tz: "ee", notification: HerowNotification(title: "vente macbook", description: "{{user.customId|default('toi')}}, tu es à {{zone.name|default('zone')}}"), startHour: nil, stopHour: nil)
+        let zone = HerowZone(hash: "ee", lat: 0, lng: 0, radius: 50, campaigns: ["gh"], access: HerowAccess(id: "ee", name: "HerowZoneName", address: "my address"))
+        let camp = HerowCampaign(id: "gh", name: "jh", begin: 0, end: nil, cappings: [maxNumberNotifications : 3, minTimeBetweenTwoNotifications : 3 * oneDayMilliSeconds], daysRecurrence: [String](), notification: HerowNotification(title: "vente macbook", description: "{{user.customId|default('toi')}}, tu es à {{zone.name|default('zone')}}"), startHour: nil, stopHour: nil)
 
         var text: String = camp.getNotification()?.getDescription() ?? ""
        text =  notificationManager.computeDynamicContent(text, zone: zone, campaign: camp)
@@ -41,8 +41,8 @@ class NotificationManagerTests: XCTestCase, UserInfoListener {
         XCTAssertTrue(text == "toi, tu es à HerowZoneName")
 
         userInfoManager?.setCustomId("customID")
-        let zone2 = HerowZone(hash: "ee", lat: 0, lng: 0, radius: 50, campaigns: ["gh"], access: nil, liveEvent: false)
-        let camp2 = HerowCampaign(id: "gh", company: "hj", name: "jh", createdDate: 1234, modifiedDate: 12345, deleted: false, simpleId: "gg", begin: 0, end: nil, realTimeContent: true, intervals: nil, cappings: [maxNumberNotifications : 3, minTimeBetweenTwoNotifications : 3 * oneDayMilliSeconds], triggers: [String:Int](), daysRecurrence: [String](), recurrenceEnabled: false, tz: "ee", notification: HerowNotification(title: "vente macbook", description: "{{user.customId|default('toi')}}, tu es à {{zone.name|default('zone')}}"), startHour: nil, stopHour: nil)
+        let zone2 = HerowZone(hash: "ee", lat: 0, lng: 0, radius: 50, campaigns: ["gh"], access: nil)
+        let camp2 = HerowCampaign(id: "gh", name: "jh", begin: 0, end: nil, cappings: [maxNumberNotifications : 3, minTimeBetweenTwoNotifications : 3 * oneDayMilliSeconds], daysRecurrence: [String](), notification: HerowNotification(title: "vente macbook", description: "{{user.customId|default('toi')}}, tu es à {{zone.name|default('zone')}}"), startHour: nil, stopHour: nil)
 
        text = camp2.getNotification()?.getDescription() ?? ""
        text =  notificationManager.computeDynamicContent(text, zone: zone2, campaign: camp2)

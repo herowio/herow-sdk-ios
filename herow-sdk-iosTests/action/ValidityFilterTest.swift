@@ -24,7 +24,7 @@ class ValidityFilterTest: XCTestCase {
         return
        }
 
-        let camp = HerowCampaign(id: "gh", company: "hj", name: "jh", createdDate: 1234, modifiedDate: 12345, deleted: false, simpleId: "gg", begin: start * 1000, end: end * 1000, realTimeContent: false, intervals: nil, cappings: nil, triggers: [String:Int](), daysRecurrence: [String](), recurrenceEnabled: false, tz: "ee", notification: nil, startHour: "09:00", stopHour: "19:15")
+        let camp = HerowCampaign(id: "gh", name: "jh", begin: start * 1000, end: end * 1000 , cappings: nil, daysRecurrence: [String](), notification: nil, startHour: "09:00", stopHour: "19:15")
         let timeProvider = TimeProviderForTests()
         let filter = ValidityFilter(timeProvider: timeProvider)
         timeProvider.setHour(hour: 8, minutes: 0)

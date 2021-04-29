@@ -10,7 +10,7 @@ import CoreLocation
 @testable import herow_sdk_ios
 class CacheManagerTests: XCTestCase, CacheListener {
 
-    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowInterval, HerowNotification, HerowCapping>())
+    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>())
     override func setUpWithError() throws {
 
         cacheManager.registerCacheListener(listener: self)
@@ -45,8 +45,8 @@ class CacheManagerTests: XCTestCase, CacheListener {
         let campaigns = ["1","2","3","4"]
         let testFailExpectation = expectation(description: "testFailExpectation")
         let access = APIAccess(id: "access1", name: "access1Name", address: "accessAdress1")
-        let zone = APIZone(hash: "hash", lat: 49.371864318847656, lng: 3.8972530364990234, radius: 30, campaigns: campaigns, access: access, liveEvent: false)
-        let zone2 = APIZone(hash: "hash2", lat: 49.371864318847656, lng: 3.8972530364990234, radius: 30, campaigns: campaigns, access: access, liveEvent: false)
+        let zone = APIZone(hash: "hash", lat: 49.371864318847656, lng: 3.8972530364990234, radius: 30, campaigns: campaigns, access: access)
+        let zone2 = APIZone(hash: "hash2", lat: 49.371864318847656, lng: 3.8972530364990234, radius: 30, campaigns: campaigns, access: access)
         cacheManager.saveZones(items: [zone, zone2]) { [self] in
             XCTAssertTrue(self.cacheManager.getZones().count == 2)
             XCTAssertTrue(self.cacheManager.getZones(ids: ["hash"]).count == 1)
@@ -112,23 +112,13 @@ class CacheManagerTests: XCTestCase, CacheListener {
 
     func testCampaign() throws {
         let testFailExpectation = expectation(description: "testFailExpectation")
-        let interval = APIInterval(start: 0, end: 1000)
+
         let campaign: APICampaign = APICampaign(id: "ggggg",
-                                                company: "company",
                                                 name: "name",
-                                                createdDate: 0,
-                                                modifiedDate: 0,
-                                                deleted: false,
-                                                simpleId: "id",
                                                 begin: 0,
                                                 end: nil,
-                                                realTimeContent: false,
-                                                intervals: [interval],
                                                 cappings: nil,
-                                                triggers: ["exit" : 0],
                                                 daysRecurrence: [""],
-                                                recurrenceEnabled: false,
-                                                tz: "tz",
                                                 notification: nil,
                                                 startHour: "",
                                                 stopHour: "")

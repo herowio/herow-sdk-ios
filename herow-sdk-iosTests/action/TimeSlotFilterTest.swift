@@ -18,7 +18,7 @@ class TimeSlotFilterTest: XCTestCase {
     }
 
     func testValidation() throws {
-        let camp = HerowCampaign(id: "gh", company: "hj", name: "jh", createdDate: 1234, modifiedDate: 12345, deleted: false, simpleId: "gg", begin: 1234, end: 1234, realTimeContent: false, intervals: nil, cappings: nil, triggers: [String:Int](), daysRecurrence: [String](), recurrenceEnabled: false, tz: "ee", notification: nil, startHour: "09:00", stopHour: "19:15")
+        let camp = HerowCampaign(id: "gh", name: "jh", begin: 1234, end: 1234, cappings: nil,  daysRecurrence: [String](), notification: nil, startHour: "09:00", stopHour: "19:15")
 
         let timeProvider = TimeProviderForTests()
         let filter =   TimeSlotFilter(timeProvider: timeProvider)

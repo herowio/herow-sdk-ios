@@ -14,20 +14,18 @@ import Foundation
     var radius: Double
     var campaigns: [String]
     var access: Access?
-    var liveEvent: Bool
 
 
     convenience init( zone: Zone) {
-        self.init(hash: zone.getHash(), lat: zone.getLat(), lng: zone.getLng(), radius: zone.getRadius(), campaigns: zone.getCampaigns(), access: zone.getAccess(), liveEvent: zone.getLiveEvent())
+        self.init(hash: zone.getHash(), lat: zone.getLat(), lng: zone.getLng(), radius: zone.getRadius(), campaigns: zone.getCampaigns(), access: zone.getAccess())
     }
-    required init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?, liveEvent: Bool) {
+    required init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?) {
      self.zonehash = hash
      self.lat = lat
      self.lng = lng
      self.radius = radius
      self.campaigns = campaigns
      self.access = access
-     self.liveEvent = liveEvent
      }
 
     public func getHash() -> String {
@@ -52,10 +50,6 @@ import Foundation
 
     public func getAccess() -> Access? {
         return access
-    }
-
-    public  func getLiveEvent() -> Bool {
-        return liveEvent
     }
 
 }

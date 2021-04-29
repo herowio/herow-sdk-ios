@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Notification, Q: Capping>: DataBase {
+class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping>: DataBase {
 
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(for: Self.self)
@@ -94,35 +94,16 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                                                         insertInto: bgContext)
                 }
                 campaignCoreData?.id = item.getId()
-                campaignCoreData?.company = item.getCompany()
-                campaignCoreData?.createdDate = item.getCreatedDate()
-                campaignCoreData?.modifiedDate = item.getModifiedDate()
-                campaignCoreData?.isDeleted = item.getDeleted()
-                campaignCoreData?.simpleId = item.getSimpleId()
                 campaignCoreData?.name = item.getName()
                 campaignCoreData?.begin = item.getBegin()
                 campaignCoreData?.end = item.getEnd() ?? 0
                 campaignCoreData?.startHour = item.getStartHour() ?? ""
                 campaignCoreData?.stopHour = item.getStopHour() ?? ""
-                campaignCoreData?.realTimeContent = item.getRealTimeContent()
-                var intervalsCoreData = [IntervalCoreData]()
-                if let intervals = item.getIntervals() {
-                    for interval in intervals {
-                        let entity = NSEntityDescription.entity(forEntityName: StorageConstants.IntervalCoreDataEntityName,
-                                                                in: bgContext)!
-                        let intervalCoreData = IntervalCoreData(entity: entity,
-                                                                insertInto: bgContext)
-                        intervalCoreData.start = interval.getStart()
-                        intervalCoreData.end = interval.getEnd() ?? 0
-                        intervalsCoreData.append(intervalCoreData)
-                    }
-                    campaignCoreData?.intervals = Set(intervalsCoreData)
-                }
+
+
                 campaignCoreData?.cappings = item.getCappings() ?? [String: Int]()
-                campaignCoreData?.triggers = item.getTriggers()
-                campaignCoreData?.recurrenceEnabled = item.getReccurenceEnable()
+
                 campaignCoreData?.daysRecurrence = item.getDaysRecurrence() ?? [String]()
-                campaignCoreData?.tz = item.getTz()
                 var notificationCoreData: NotificationCoreData?
                 if let notification = item.getNotification() {
                     let entity = NSEntityDescription.entity(forEntityName: StorageConstants.NotificationCoreDataEntityName,
@@ -188,7 +169,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 zoneCoreData?.lat = item.getLat()
                 zoneCoreData?.lng = item.getLng()
                 zoneCoreData?.radius = item.getRadius()
-                zoneCoreData?.liveEvent = item.getLiveEvent()
                 zoneCoreData?.zoneHash = item.getHash()
                 zoneCoreData?.campaigns = item.getCampaigns()
             }
@@ -220,8 +200,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
                 let access = A(id: zoneCoreData.access.id,
                                name: zoneCoreData.access.name,
                                address: zoneCoreData.access.address)
-                let liveevent = zoneCoreData.liveEvent
-                let zone: Z = Z(hash: hash, lat:lat, lng: lng, radius: radius, campaigns: campaigns, access: access, liveEvent: liveevent)
+                let zone: Z = Z(hash: hash, lat:lat, lng: lng, radius: radius, campaigns: campaigns, access: access)
                 zones.append(zone)
             }
         }
@@ -241,29 +220,14 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, I: Interval, N: Not
             for campaignsCoreData in campaignsCoreData {
                 let id = campaignsCoreData.id
                 let name = campaignsCoreData.name
-                let company = campaignsCoreData.company
-                let createdDate = campaignsCoreData.createdDate
-                let modifiedDate = campaignsCoreData.modifiedDate
-                let deleted = campaignsCoreData.isDeleted
-                let simpleId = campaignsCoreData.simpleId
                 let begin = campaignsCoreData.begin
                 let end = campaignsCoreData.end
-                let realTimeContent = campaignsCoreData.realTimeContent
-                let intervalsCoreData = campaignsCoreData.intervals
-                var intervals = [I]()
-                for intervalCoreData in intervalsCoreData {
-                    let interval = I(start: intervalCoreData.start, end: intervalCoreData.end)
-                    intervals.append(interval)
-                }
                 let cappings = campaignsCoreData.cappings
-                let triggers = campaignsCoreData.triggers
                 let daysRecurrence = campaignsCoreData.daysRecurrence
-                let tz = campaignsCoreData.tz
                 let startHour = campaignsCoreData.startHour
                 let stopHour = campaignsCoreData.stopHour
-                let recurrenceEnabled = campaignsCoreData.recurrenceEnabled
                 let  notification = N(title: campaignsCoreData.notification.title, description: campaignsCoreData.notification.content,image: campaignsCoreData.notification.image, thumbnail: campaignsCoreData.notification.thumbnail,textToSpeech: campaignsCoreData.notification.textToSpeech, uri : campaignsCoreData.notification.uri)
-                let campaign = C(id: id, company: company, name: name, createdDate: createdDate, modifiedDate: modifiedDate, deleted: deleted, simpleId: simpleId, begin: begin, end: end, realTimeContent: realTimeContent, intervals: intervals, cappings: cappings, triggers: triggers, daysRecurrence: daysRecurrence, recurrenceEnabled: recurrenceEnabled, tz: tz, notification: notification, startHour: startHour, stopHour: stopHour)
+                let campaign = C(id: id, name: name, begin: begin, end: end, cappings: cappings, daysRecurrence: daysRecurrence, notification: notification, startHour: startHour, stopHour: stopHour)
                 campaigns.append(campaign)
             }
         }

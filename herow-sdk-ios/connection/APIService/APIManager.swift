@@ -21,8 +21,8 @@ public enum NetworkError: Error {
 public enum URLType: String {
     case  badURL = ""
     case  test = "https://herow-sdk-backend-poc.ew.r.appspot.com"
-    case  preprod = "https://m-preprod.herow.io"
-    case  prod = "https://m.herow.io"
+    case  preprod = "https://sdk7-preprod.herow.io"
+    case  prod = "https://sdk7.herow.io"
 }
 
 public enum EndPoint {

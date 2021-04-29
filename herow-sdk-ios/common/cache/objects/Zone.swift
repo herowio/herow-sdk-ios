@@ -15,8 +15,8 @@ protocol Zone  {
     func getRadius() -> Double
     func getCampaigns() -> [String]
     func getAccess() -> Access?
-    func getLiveEvent() -> Bool
-    init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?, liveEvent: Bool)
+
+    init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?)
 
 }
 
@@ -38,60 +38,23 @@ public protocol Access {
  protocol Campaign {
 
     func getId() -> String
-    func getCompany() -> String
-    func getCreatedDate() -> Double
-    func getModifiedDate() -> Double
-    func getDeleted() -> Bool
     func getName() -> String
-    func getSimpleId() -> String
     func getBegin() -> Double
     func getEnd() -> Double?
-    func getRealTimeContent() -> Bool
-    func getIntervals() -> [Interval]?
-    func getTriggers() -> [String: Int]
     func getCappings() -> [String: Int]?
-    func getTz() -> String
     func getNotification() -> Notification?
     func getDaysRecurrence() -> [String]?
-    func getReccurenceEnable() -> Bool
     func getStartHour() -> String?
     func getStopHour() -> String?
 
 
     init(id: String,
-         company: String,
          name: String,
-         createdDate: Double,
-         modifiedDate: Double,
-         deleted: Bool,
-         simpleId: String,
          begin: Double,
          end: Double?,
-         realTimeContent: Bool,
-         intervals: [Interval]?,
          cappings: [String: Int]?,
-         triggers:[String: Int],
          daysRecurrence: [String],
-         recurrenceEnabled:Bool,
-         tz:String,
          notification: Notification?, startHour: String?, stopHour: String?)
-}
-
-extension Campaign {
-    func isExit() -> Bool {
-        return getTriggers()["onExit"] == 1
-    }
-
-    func isPersistent() -> Bool {
-        return getTriggers()["isPersistent"] == 1
-    }
-}
-
- protocol Interval {
-
-    func getStart() -> Int64
-    func getEnd() -> Int64?
-    init(start: Int64, end: Int64)
 }
 
  protocol Notification {

@@ -186,6 +186,7 @@ import UIKit
         self.userInfoManager.removeCustomId()
     }
 
+    //MARK: DATABASE MANAGEMENT
     @objc public func getHerowZoneForId(id: String) -> HerowZone? {
         guard let zone =  cacheManager.getZones(ids: [id]).first else { return nil }
         return HerowZone(zone: zone)
@@ -196,9 +197,13 @@ import UIKit
             HerowZone(zone: $0)
         }
     }
-
+    //MARK: UTILS
     @objc public func dispatchFakeLocation() {
         detectionEngine.dispatchFakeLocation()
+    }
+
+    @objc public func notificationsOnExactZoneEntry(_ value: Bool) {
+        notificationManager.notificationsOnExactZoneEntry(value)
     }
 
 }

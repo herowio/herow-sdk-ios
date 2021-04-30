@@ -143,7 +143,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 }
                 zoneCoreData?.zoneHash = item.getHash()
                 var accessInBase =  zoneCoreData?.access
-                GlobalLogger.shared.debug("CoreDataManager:  access in base : \(accessInBase)")
+                GlobalLogger.shared.debug("CoreDataManager:  access in base : \(String(describing: accessInBase))")
                 if accessInBase  == nil {
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.AccessCoreDataEntityName,
@@ -165,7 +165,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                     zoneCoreData?.access = accessInBase
                 }
 
-                GlobalLogger.shared.debug("CoreDataManager:  access name : \(zoneCoreData?.access.name)")
+                GlobalLogger.shared.debug("CoreDataManager:  access name : \(String(describing: zoneCoreData?.access.name))")
                 zoneCoreData?.lat = item.getLat()
                 zoneCoreData?.lng = item.getLng()
                 zoneCoreData?.radius = item.getRadius()

@@ -9,7 +9,7 @@
 import Foundation
 import CoreMotion
 
-public protocol MotionRequestDelegate: class {
+public protocol MotionRequestDelegate: AnyObject {
 
     func onMotionRequest()
 

@@ -7,20 +7,25 @@
 
 import Foundation
 
+struct DynamicValue {
+    var newText: String
+    var defaultValues: [String: String]
+}
+
 extension String {
-    func dynamicValues(for regex: String) -> (String, [String: String]) {
+    func dynamicValues(for regex: String) -> DynamicValue {
         let textMatches = matches(for: regex)
-        var couple = [String: String]()
+        var defaultValues = [String: String]()
         var newtext = self
         textMatches.forEach { match in
             let str = match.replacingOccurrences(of: "{", with: "").replacingOccurrences(of: "}", with: "").replacingOccurrences(of: "default('", with: "").replacingOccurrences(of: "')", with: "")
             let components = str.components(separatedBy: "|")
             if components.count > 1 {
-                couple[components[0]] = components[1]
+                defaultValues[components[0]] = components[1]
                 newtext = newtext.replacingOccurrences(of: match, with: components[0] )
             }
         }
-        return (newtext, couple)
+        return DynamicValue(newText: newtext, defaultValues: defaultValues)
     }
 
     func matches(for regex: String) -> [String] {

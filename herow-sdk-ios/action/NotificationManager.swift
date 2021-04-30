@@ -26,6 +26,7 @@ protocol NotificationCenterProtocol {
 class NotificationManager: NSObject, EventListener {
 
     internal var filters: [NotificationFilter] = [NotificationFilter]()
+    private var onExactZoneEntry: Bool = false
     private var cacheManager: CacheManagerProtocol
     private var notificationCenter: NotificationCenterProtocol
     private var herowDataStorage: HerowDataStorageProtocol
@@ -85,7 +86,7 @@ class NotificationManager: NSObject, EventListener {
       //  return (event == .GEOFENCE_ENTER && !campaign.isExit()) || (event == .GEOFENCE_EXIT && campaign.isExit())
       //  return event == .GEOFENCE_NOTIFICATION_ZONE_ENTER && !campaign.isExit()
 
-      return  event == .GEOFENCE_NOTIFICATION_ZONE_ENTER
+        return  onExactZoneEntry ? event == .GEOFENCE_ENTER : event == .GEOFENCE_NOTIFICATION_ZONE_ENTER
     }
     private func createCampaignNotification(_ campaign: Campaign, zone: Zone, zoneInfo: ZoneInfo) {
 
@@ -102,7 +103,7 @@ class NotificationManager: NSObject, EventListener {
 
         GlobalLogger.shared.debug("create notification title: \(title)")
         GlobalLogger.shared.debug("create notificationd description: \(description)")
-        let uuidString = campaign.getId()
+        let uuidString = campaign.getId() + "_\(zone.getHash())"
         let request = UNNotificationRequest(identifier: uuidString,
                                             content: content, trigger: nil)
         notificationCenter.add(request) { (error) in
@@ -122,9 +123,9 @@ class NotificationManager: NSObject, EventListener {
     }
 
     internal func computeDynamicContent(_ text:  String, zone: Zone, campaign: Campaign) -> String {
-        let tupple =  text.dynamicValues(for: "\\{\\{(.*?)\\}\\}")
-        var result = tupple.0
-        let defaultValues = tupple.1
+        let dynamicValues =  text.dynamicValues(for: "\\{\\{(.*?)\\}\\}")
+        var result = dynamicValues.newText
+        let defaultValues = dynamicValues.defaultValues
         GlobalLogger.shared.debug("create dynamic content notification: \(campaign.getId())")
 
         DynamicKeys.allCases.forEach() { key in
@@ -140,16 +141,20 @@ class NotificationManager: NSObject, EventListener {
                 value = herowDataStorage.getCustomId() ??  (defaultValues[key.rawValue] ?? "")
             }
 
-            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.name.rawValue) with \( zone.getAccess()?.getName())")
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.name.rawValue) with \( String(describing: zone.getAccess()?.getName()))")
             GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.radius.rawValue) with \(zone.getRadius())")
-            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.address.rawValue) with \(zone.getAccess()?.getAddress())")
-            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.customId.rawValue) with \( herowDataStorage.getCustomId())")
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.address.rawValue) with \(String(describing: zone.getAccess()?.getAddress()))")
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.customId.rawValue) with \( String(describing: herowDataStorage.getCustomId()))")
             GlobalLogger.shared.debug("dynamic content replacing: \(key.rawValue) with \(value)")
             result = result.replacingOccurrences(of: key.rawValue, with: value)
         }
         GlobalLogger.shared.debug("create dynamic content notification: \(text)")
-        GlobalLogger.shared.debug("create dynamic content notification tupple: \(tupple)")
+        GlobalLogger.shared.debug("create dynamic content notification tupple: \(dynamicValues)")
         GlobalLogger.shared.debug("create dynamic content notification result: \(result)")
         return result
+    }
+
+    func notificationsOnExactZoneEntry(_ value: Bool) {
+        onExactZoneEntry = value
     }
 }

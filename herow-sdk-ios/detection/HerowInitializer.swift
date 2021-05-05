@@ -20,7 +20,6 @@ import UIKit
     private var userInfoManager: UserInfoManagerProtocol
     private var permissionsManager: PermissionsManagerProtocol
     private let cacheManager: CacheManagerProtocol
-
     internal let geofenceManager: GeofenceManager
     private var detectionEngine: DetectionEngine
     private let zoneProvider: ZoneProvider
@@ -103,7 +102,6 @@ import UIKit
 
     @objc public func launchClickAndCollect() {
         self.detectionEngine.setIsOnClickAndCollect(true)
-
     }
 
     func getDetectionEngine() -> DetectionEngine {

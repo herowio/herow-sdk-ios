@@ -68,9 +68,13 @@ extension CacheManagerProtocol {
 }
 
 class CacheManager: CacheManagerProtocol {
-    func reset() {
-        self.db.purgeAllData(completion: nil)
-        self.db.purgeCapping(completion: nil)
+    func reset( completion: @escaping ()->()) {
+        self.db.purgeAllData {
+            self.db.purgeCapping{
+                completion()
+            }
+        }
+
     }
 
 

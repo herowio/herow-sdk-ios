@@ -73,7 +73,7 @@ import UIKit
         }
     }
 
-    public func reset() {
+    public func reset(completion: ()->()) {
         DispatchQueue.global(qos: .background).async {
             guard let filename =  UserDefaults.standard.string(forKey: MetricsManager.MetricsFileNameKey) else {
                 return
@@ -85,6 +85,8 @@ import UIKit
                 UserDefaults.standard.removeObject(forKey: MetricsManager.MetricsFileNameKey)
                 UserDefaults.standard.synchronize()
             }
+
         }
+        completion()
     }
 }

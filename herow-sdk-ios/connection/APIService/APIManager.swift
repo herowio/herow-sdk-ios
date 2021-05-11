@@ -84,6 +84,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     private var listeners = [WeakContainer<ConfigListener>]()
     private  var connectInfo: ConnectionInfoProtocol
     var user: User?
+    var cacheLoading = false
     init(connectInfo: ConnectionInfoProtocol, herowDataStorage: HerowDataStorageProtocol, cacheManager: CacheManagerProtocol) {
         // setting infos storage
         self.herowDataStorage = herowDataStorage
@@ -260,6 +261,10 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             completion?(nil, NetworkError.noOptin)
             return
         }
+        if cacheLoading {
+            return
+        }
+        cacheLoading = true
         authenticationFlow  {
             if self.herowDataStorage.shouldGetCache(for: geoHash) {
                 GlobalLogger.shared.info("APIManager- SHOULD FETCH CACHE")
@@ -276,13 +281,16 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                     self.cacheManager.cleanCache() {
                         self.cacheManager.save(zones: cache.zones,
                                                campaigns: cache.campaigns,
-                                               pois: cache.pois, completion: nil)
+                                               pois: cache.pois, completion: {
+                                                self.cacheLoading =  false
+                                               })
                         completion?(cache, error)
                     }
                 }
             } else {
                 self.cacheManager.didSave()
                 GlobalLogger.shared.info("APIManager- NO NEED TO FETCH CACHE")
+                self.cacheLoading =  false
             }
         }
     }

@@ -9,5 +9,15 @@
 import Foundation
 
 @objc public protocol ResetDelegate: AnyObject {
-    func reset()
+     func reset(completion: @escaping ()->())
 }
+
+extension ResetDelegate {
+    func reset() {
+        reset {
+            // do nothing
+        }
+    }
+}
+
+

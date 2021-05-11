@@ -106,5 +106,14 @@ public class LocationUtils {
         return CLLocation(coordinate: coor, altitude: 0, horizontalAccuracy: accuracy, verticalAccuracy: accuracy, timestamp: Date())
     }
 
+    static func cappingZone() -> CLLocation {
+       // <wpt lat="48.709583" lon="2.387505">
+        let randomLat = 49.369307
+        let randomLong = 3.899048
+        let accuracy = 50.0
+        let coor = CLLocationCoordinate2D(latitude: randomLat, longitude: randomLong)
+        return CLLocation(coordinate: coor, altitude: 0, horizontalAccuracy: accuracy, verticalAccuracy: accuracy, timestamp: Date())
+    }
+
 
 }

@@ -7,6 +7,7 @@
 
 import Foundation
 let oneDayMilliSeconds = 86400000
+let oneDaySeconds = 86400
 let maxNumberNotifications = "maxNumberNotifications"
 let minTimeBetweenTwoNotifications = "minTimeBetweenTwoNotifications"
 class CappingFilter :NotificationFilter {
@@ -19,10 +20,10 @@ class CappingFilter :NotificationFilter {
     }
 
     func createNotification(campaign: Campaign, completion:(()->())? = nil) -> Bool {
-        guard let cacheManager = self.cacheManager, let capping = campaign.getCappings(), let max = capping[maxNumberNotifications] else {
+        guard let cacheManager = self.cacheManager, let capping = campaign.getCappings(), let maxCapping = capping[maxNumberNotifications] else {
             return true
         }
-        let resetDelay = Double(capping[minTimeBetweenTwoNotifications] ?? oneDayMilliSeconds ) / 1000
+        let  resetDelay = max(Double(capping[minTimeBetweenTwoNotifications] ?? oneDayMilliSeconds ) / 1000,  Double(oneDaySeconds))
         var startHour = 0
         var startMinutes = 0
         //compute beginning of new period
@@ -54,11 +55,11 @@ class CappingFilter :NotificationFilter {
                 herowCapping.setRazDate(date: newRazDate)
             }
         }
-        herowCapping.setCount(count: min(count + 1,Int64(max)))
+        herowCapping.setCount(count: min(count + 1,Int64(maxCapping)))
         cacheManager.saveCapping(herowCapping, completion: {
             completion?()
         })
-        if count < max {
+        if count < maxCapping {
             result = true
         }
         return result

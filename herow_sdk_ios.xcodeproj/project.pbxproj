@@ -29,6 +29,8 @@
 		6B9A5F6325B9D36600AAC673 /* RequestHeaderCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5D25B9D36600AAC673 /* RequestHeaderCreator.swift */; };
 		6B9A5F6425B9D36600AAC673 /* HerowDataStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5E25B9D36600AAC673 /* HerowDataStorage.swift */; };
 		6B9A5F6525B9D36600AAC673 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B9A5F5F25B9D36600AAC673 /* APIModels.swift */; };
+		6D007E3E264976B30063CE5E /* QuadTreeCoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D007E3D264976B30063CE5E /* QuadTreeCoreData.swift */; };
+		6D007E41264A5D820063CE5E /* LiveMomentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D007E40264A5D820063CE5E /* LiveMomentStore.swift */; };
 		6D07420525B079EC005E08F8 /* herow_sdk_ios.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D0741FB25B079EC005E08F8 /* herow_sdk_ios.framework */; };
 		6D07420A25B079EC005E08F8 /* CredentialsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D07420925B079EC005E08F8 /* CredentialsTests.swift */; };
 		6D07420C25B079EC005E08F8 /* herow_sdk_ios.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D0741FE25B079EC005E08F8 /* herow_sdk_ios.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -167,6 +169,8 @@
 		6B9A5F5D25B9D36600AAC673 /* RequestHeaderCreator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHeaderCreator.swift; sourceTree = "<group>"; };
 		6B9A5F5E25B9D36600AAC673 /* HerowDataStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HerowDataStorage.swift; sourceTree = "<group>"; };
 		6B9A5F5F25B9D36600AAC673 /* APIModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
+		6D007E3D264976B30063CE5E /* QuadTreeCoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuadTreeCoreData.swift; sourceTree = "<group>"; };
+		6D007E40264A5D820063CE5E /* LiveMomentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveMomentStore.swift; sourceTree = "<group>"; };
 		6D0741FB25B079EC005E08F8 /* herow_sdk_ios.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = herow_sdk_ios.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D0741FE25B079EC005E08F8 /* herow_sdk_ios.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = herow_sdk_ios.h; sourceTree = "<group>"; };
 		6D0741FF25B079EC005E08F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -322,6 +326,14 @@
 			path = APIService;
 			sourceTree = "<group>";
 		};
+		6D007E3F264A5D420063CE5E /* live moment */ = {
+			isa = PBXGroup;
+			children = (
+				6D007E40264A5D820063CE5E /* LiveMomentStore.swift */,
+			);
+			path = "live moment";
+			sourceTree = "<group>";
+		};
 		6D0741F125B079EC005E08F8 = {
 			isa = PBXGroup;
 			children = (
@@ -346,6 +358,7 @@
 		6D0741FD25B079EC005E08F8 /* herow-sdk-ios */ = {
 			isa = PBXGroup;
 			children = (
+				6D007E3F264A5D420063CE5E /* live moment */,
 				6DAE957B262D725900954897 /* action */,
 				6D07479A25B72FF9005E08F8 /* common */,
 				6D0747DC25B72FFA005E08F8 /* connection */,
@@ -581,6 +594,7 @@
 			isa = PBXGroup;
 			children = (
 				6D40A29D25BEFC270025268E /* ZoneCoreData.swift */,
+				6D007E3D264976B30063CE5E /* QuadTreeCoreData.swift */,
 			);
 			path = CoreDataEntities;
 			sourceTree = "<group>";
@@ -947,6 +961,7 @@
 				6D33408925C81C700011CBAB /* LogData.swift in Sources */,
 				6B9A5F4B25B9D17500AAC673 /* UserInfoManager.swift in Sources */,
 				6D40A29725BEFA150025268E /* Zone.swift in Sources */,
+				6D007E3E264976B30063CE5E /* QuadTreeCoreData.swift in Sources */,
 				6D383EFD2602609400B48BC7 /* WifiUtils.swift in Sources */,
 				6D07480225B72FFB005E08F8 /* GlobalLogger.swift in Sources */,
 				6D40A29025BEF9730025268E /* DataBase.swift in Sources */,
@@ -980,6 +995,7 @@
 				6D97C27325DD5958007AC150 /* StringUtils.swift in Sources */,
 				6D9796D92608866400B6420C /* BackGroundTaskManager.swift in Sources */,
 				6D7DF5AA2638506F008E164E /* HerowCapping.swift in Sources */,
+				6D007E41264A5D820063CE5E /* LiveMomentStore.swift in Sources */,
 				6D33409D25C81D110011CBAB /* LogDataEvent.swift in Sources */,
 				6D07481025B72FFB005E08F8 /* DispatchQueueUtils.swift in Sources */,
 				6D07480C25B72FFB005E08F8 /* DataHolderUserDefaults.swift in Sources */,

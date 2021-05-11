@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20E232" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="HerowDataModel">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20E241" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="HerowDataModel">
     <entity name="AccessCoreData" representedClassName="AccessCoreData" syncable="YES">
         <attribute name="address" optional="YES" attributeType="String"/>
         <attribute name="id" optional="YES" attributeType="String"/>
@@ -22,17 +22,20 @@
         <attribute name="count" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="razDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
-    <entity name="HerowBucket" representedClassName="HerowBucket" syncable="YES">
-        <attribute name="confidences" optional="YES" attributeType="Transformable"/>
+    <entity name="LocationCoreData" representedClassName="LocationCoreData" syncable="YES">
         <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="lng" optional="YES"/>
-        <attribute name="radius" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="HerowBucketLocation" inverseName="bucket" inverseEntity="HerowBucketLocation"/>
+        <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
-    <entity name="HerowBucketLocation" representedClassName="HerowBucketLocation" syncable="YES">
-        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="bucket" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="HerowBucket" inverseName="locations" inverseEntity="HerowBucket"/>
+    <entity name="NodeCoreData" representedClassName="NodeCoreData" syncable="YES">
+        <attribute name="geoHash" optional="YES" attributeType="String"/>
+        <attribute name="size" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="leftBottom" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData"/>
+        <relationship name="leftUp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationCoreData"/>
+        <relationship name="parentNode" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData"/>
+        <relationship name="rightBottom" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData"/>
+        <relationship name="rightUp" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData"/>
     </entity>
     <entity name="NotificationCoreData" representedClassName="NotificationCoreData" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String"/>
@@ -64,7 +67,7 @@
         <element name="NotificationCoreData" positionX="-27" positionY="54" width="128" height="134"/>
         <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="14"/>
         <element name="ZoneCoreData" positionX="-63" positionY="-18" width="128" height="119"/>
-        <element name="HerowBucket" positionX="-45" positionY="99" width="128" height="104"/>
-        <element name="HerowBucketLocation" positionX="-36" positionY="108" width="128" height="74"/>
+        <element name="NodeCoreData" positionX="-45" positionY="99" width="128" height="149"/>
+        <element name="LocationCoreData" positionX="-36" positionY="117" width="128" height="74"/>
     </elements>
 </model>

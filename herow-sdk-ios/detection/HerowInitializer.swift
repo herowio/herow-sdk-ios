@@ -20,6 +20,7 @@ import UIKit
     private var userInfoManager: UserInfoManagerProtocol
     private var permissionsManager: PermissionsManagerProtocol
     private let cacheManager: CacheManagerProtocol
+    private let liveMomentStore: LiveMomentStoreProtocol
     internal let geofenceManager: GeofenceManager
     private var detectionEngine: DetectionEngine
     private let zoneProvider: ZoneProvider
@@ -32,7 +33,9 @@ import UIKit
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
-        cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>())
+        let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>()
+        cacheManager = CacheManager(db: db)
+        liveMomentStore = LiveMomentStore(db: db)
         apiManager = APIManager(connectInfo: connectionInfo, herowDataStorage: herowDataHolder, cacheManager: cacheManager)
         userInfoManager = UserInfoManager(listener: apiManager, herowDataStorage: herowDataHolder)
         permissionsManager = PermissionsManager(userInfoManager: userInfoManager)

@@ -290,8 +290,9 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         dataHolder.apply()
     }
 
-    public func reset() {
+    public func reset(completion : ()->()) {
 
+        self.token = nil 
         dataHolder.remove(key: HerowConstants.tokenKey)
         dataHolder.remove(key: HerowConstants.configKey)
         dataHolder.remove(key: HerowConstants.userInfoKey)
@@ -300,6 +301,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         dataHolder.remove(key: HerowConstants.configDateKey)
         dataHolder.remove(key: HerowConstants.geoHashKey)
         dataHolder.apply()
+        completion()
 
     }
 

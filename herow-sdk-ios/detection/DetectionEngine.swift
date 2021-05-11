@@ -441,8 +441,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         bgTaskManager.onAppInBackground()
     }
 
-   @objc public func dispatchFakeLocation() {
-        let location = LocationUtils.randomSylvain()
+    @objc public func dispatchFakeLocation(_ location : CLLocation) {
         for listener in  detectionListners {
             listener.get()?.onLocationUpdate(location, from: .fake)
         }

@@ -231,7 +231,7 @@ class UserInfoManager: UserInfoManagerProtocol {
         self.userInfoListener?.onUserInfoUpdate(userInfo: userInfo)
     }
 
-    func reset() {
+    func reset(completion: @escaping ()->()) {
         removeCustomId()
         self.customId = nil
         self.idfv = nil
@@ -242,7 +242,7 @@ class UserInfoManager: UserInfoManagerProtocol {
         self.locationStatus = nil
         self.accuracyStatus = nil
         self.notificationStatus = nil
-        self.herowDataHolder.reset()
+        self.herowDataHolder.reset(completion:completion)
     }
 
 }

@@ -90,9 +90,11 @@ import UIKit
     }
 
 
-    @objc public func reset() {
-     self.herowDataHolder.reset()
-     }
+    @objc public func reset(completion: @escaping ()->()) {
+        self.herowDataHolder.reset()
+        self.userInfoManager.reset()
+        self.cacheManager.reset(completion: completion)
+    }
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {
        eventDispatcher.registerListener(listener)
@@ -199,8 +201,8 @@ import UIKit
         }
     }
     //MARK: UTILS
-    @objc public func dispatchFakeLocation() {
-        detectionEngine.dispatchFakeLocation()
+    @objc public func dispatchFakeLocation(_ location: CLLocation) {
+        detectionEngine.dispatchFakeLocation(location)
     }
 
     @objc public func notificationsOnExactZoneEntry(_ value: Bool) {

@@ -21,7 +21,7 @@ enum CacheUpdate {
     func willCacheUpdate()
 }
 
-protocol CacheManagerProtocol {
+protocol CacheManagerProtocol: ResetDelegate {
     init(db: DataBase)
 
     func save(zones: [Zone]?,campaigns: [Campaign]?, pois: [Poi]?,  completion:(()->())?)
@@ -68,6 +68,11 @@ extension CacheManagerProtocol {
 }
 
 class CacheManager: CacheManagerProtocol {
+    func reset() {
+        self.db.purgeAllData(completion: nil)
+        self.db.purgeCapping(completion: nil)
+    }
+
 
     static let distanceThreshold: CLLocationDistance = 20_000
     static let maxNearByPoiCount: Int = 10

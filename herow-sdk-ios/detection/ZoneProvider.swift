@@ -301,10 +301,6 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
     }
 
     private   func notificationDistanceForZone(_ zone: Zone) -> Double{
-        // let campaigns = cacheManager.getCampaignsForZone(zone).filter {
-        //    $0.isExit() == false
-        // }
-        // TODO: TI UPDATE
         return zone.getRadius() * 3
     }
 

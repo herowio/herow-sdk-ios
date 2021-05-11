@@ -90,6 +90,7 @@ import UIKit
 
     @objc public func reset() {
      self.herowDataHolder.reset()
+        self.userInfoManager.reset()
      }
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {

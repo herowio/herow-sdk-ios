@@ -22,11 +22,15 @@ class TimeSlotFilterTest: XCTestCase {
 
         let timeProvider = TimeProviderForTests()
         let filter =   TimeSlotFilter(timeProvider: timeProvider)
+
         timeProvider.setHour(hour: 7, minutes: 0)
+        print(timeProvider.date)
         XCTAssertFalse( filter.createNotification(campaign: camp))
         timeProvider.setHour(hour: 10, minutes: 0)
+        print(timeProvider.date)
         XCTAssertTrue( filter.createNotification(campaign: camp))
         timeProvider.setHour(hour: 19, minutes: 0)
+        print(timeProvider.date)
         XCTAssertFalse( filter.createNotification(campaign: camp))
     }
 

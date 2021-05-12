@@ -29,6 +29,11 @@ public class TimeProviderForTests: TimeProvider {
 
     public func setHour(hour: Int, minutes: Int) {
         date = date.setTime(hour: hour, min: minutes) ?? date
+        date =  date.toGlobalTime()
+    }
+
+    public func getDate() -> Date {
+        return date
     }
 
 

@@ -16,4 +16,8 @@ import Foundation
     public func getTime() -> Double {
         return ProcessInfo.processInfo.systemUptime
     }
+
+    public func getDate() -> Date {
+        return Date(timeIntervalSince1970: getTime())
+    }
 }

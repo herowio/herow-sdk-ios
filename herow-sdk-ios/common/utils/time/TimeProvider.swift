@@ -10,5 +10,5 @@ import Foundation
 
 @objc public protocol TimeProvider {
     func getTime() -> Double
-
+    func getDate() -> Date
 }

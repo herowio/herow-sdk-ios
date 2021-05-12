@@ -39,8 +39,6 @@ class NotificationManager: NSObject, EventListener {
         self.addFilter(RecurencyFilter())
         self.addFilter(TimeSlotFilter())
         self.addFilter(CappingFilter(timeProvider: TimeProviderAbsolute(), cacheManager: self.cacheManager))
-      
-
     }
 
     public func addFilter( _ filter: NotificationFilter) {
@@ -96,11 +94,9 @@ class NotificationManager: NSObject, EventListener {
         let content = UNMutableNotificationContent()
         let title = computeDynamicContent(notification.getTitle(), zone: zone, campaign: campaign)
         let description = computeDynamicContent(notification.getDescription(), zone: zone, campaign: campaign)
-
         content.title = title
         content.body = description
         content.userInfo = ["zoneID": zone.getHash()]
-
         GlobalLogger.shared.debug("create notification title: \(title)")
         GlobalLogger.shared.debug("create notificationd description: \(description)")
         let uuidString = campaign.getId() + "_\(zone.getHash())"
@@ -127,7 +123,6 @@ class NotificationManager: NSObject, EventListener {
         var result = dynamicValues.newText
         let defaultValues = dynamicValues.defaultValues
         GlobalLogger.shared.debug("create dynamic content notification: \(campaign.getId())")
-
         DynamicKeys.allCases.forEach() { key in
             var value = ""
             switch key {
@@ -140,7 +135,6 @@ class NotificationManager: NSObject, EventListener {
             case .customId:
                 value = herowDataStorage.getCustomId() ??  (defaultValues[key.rawValue] ?? "")
             }
-
             GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.name.rawValue) with \( String(describing: zone.getAccess()?.getName()))")
             GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.radius.rawValue) with \(zone.getRadius())")
             GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.address.rawValue) with \(String(describing: zone.getAccess()?.getAddress()))")

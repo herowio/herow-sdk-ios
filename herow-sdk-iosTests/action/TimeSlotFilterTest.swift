@@ -31,6 +31,9 @@ class TimeSlotFilterTest: XCTestCase {
         XCTAssertTrue( filter.createNotification(campaign: camp))
         timeProvider.setHour(hour: 19, minutes: 0)
         print(timeProvider.date)
+        XCTAssertTrue( filter.createNotification(campaign: camp))
+        timeProvider.setHour(hour: 21, minutes: 0)
+        print(timeProvider.date)
         XCTAssertFalse( filter.createNotification(campaign: camp))
     }
 

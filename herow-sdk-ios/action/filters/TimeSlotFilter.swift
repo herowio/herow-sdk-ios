@@ -30,6 +30,8 @@ class TimeSlotFilter: NotificationFilter {
                 if  let startHour = now.setTime(hour: startHour, min: startMinutes)
                     , let stopHour = now.setTime(hour: stopHour, min: stopMinutes) {
                     let result = now > startHour && now < stopHour
+                    print("startHour is : \(startHour)")
+                    print("stopHour is : \(stopHour)")
                     if result {
                         GlobalLogger.shared.info("TimeSlotFilter: \(campaign.getName()) CAN create notification  slot date: \(now) startDate: \(startHour) stopDate: \(stopHour)")
                     } else {

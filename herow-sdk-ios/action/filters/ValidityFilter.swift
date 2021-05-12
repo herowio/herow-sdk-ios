@@ -10,7 +10,6 @@ class ValidityFilter :NotificationFilter {
     var timeProvider: TimeProvider
     required init(timeProvider: TimeProvider = TimeProviderAbsolute(), cacheManager: CacheManagerProtocol? = nil) {
         self.timeProvider = timeProvider
-
     }
 
     func createNotification(campaign: Campaign, completion:(()->())? = nil) -> Bool {

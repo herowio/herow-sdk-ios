@@ -13,15 +13,15 @@ class ValidityFilter :NotificationFilter {
     }
 
     func createNotification(campaign: Campaign, completion:(()->())? = nil) -> Bool {
-        let now = Date(timeIntervalSince1970: timeProvider.getTime()).toLocalTime()
+        let now = Date(timeIntervalSince1970: timeProvider.getTime()).toLocalTime().timeIntervalSince1970
         var result = true
-        let start = Date(timeIntervalSince1970: campaign.getBegin() / 1000).toLocalTime()
+        let start =  campaign.getBegin() / 1000
         if start > now {
             result = false
         }
         if let endTime = campaign.getEnd() {
             if endTime == 0 { return true }
-            let end = Date(timeIntervalSince1970: endTime / 1000).toLocalTime()
+            let end =  endTime / 1000
             if end < now {
                 result = false
             }

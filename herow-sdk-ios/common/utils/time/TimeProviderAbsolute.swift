@@ -16,4 +16,8 @@ import Foundation
     public func getTime() -> Double {
         return Date().timeIntervalSince1970
     }
+
+    public func getDate() -> Date {
+        return Date()
+    }
 }

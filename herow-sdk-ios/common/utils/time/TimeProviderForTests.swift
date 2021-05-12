@@ -31,5 +31,9 @@ public class TimeProviderForTests: TimeProvider {
         date = date.setTime(hour: hour, min: minutes) ?? date
     }
 
+    public func getDate() -> Date {
+        return date
+    }
+
 
 }

@@ -19,10 +19,8 @@ class TimeSlotFilterTest: XCTestCase {
 
     func testValidation() throws {
         let camp = HerowCampaign(id: "gh", name: "jh", begin: 1234, end: 1234, cappings: nil,  daysRecurrence: [String](), notification: nil, startHour: "09:00", stopHour: "19:15")
-
         let timeProvider = TimeProviderForTests()
         let filter =   TimeSlotFilter(timeProvider: timeProvider)
-
         timeProvider.setHour(hour: 7, minutes: 0)
         print(timeProvider.date)
         XCTAssertFalse( filter.createNotification(campaign: camp))

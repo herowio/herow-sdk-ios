@@ -48,6 +48,12 @@ Pod::Spec.new do |s|
         ss.ios.deployment_target = '11.0'
     end
 
+    s.subspec 'LiveMoment' do |ss|
+        ss.ios.source_files = 'herow-sdk-ios/livemoment/**/*.swift'
+        ss.ios.dependency 'Herow/Core'
+        ss.ios.deployment_target = '11.0'
+    end
+
     s.subspec 'Connection' do |ss|
         ss.ios.source_files = 'herow-sdk-ios/connection/**/*.swift'
         ss.ios.dependency 'Herow/Action'
@@ -61,6 +67,7 @@ Pod::Spec.new do |s|
         ss.ios.source_files = 'herow-sdk-ios/detection/**/*.swift'
         ss.ios.frameworks = 'CoreLocation'
         ss.ios.dependency 'Herow/Connection'
+        ss.ios.dependency 'Herow/LiveMoment'
         ss.ios.deployment_target = '11.0'
     end
     

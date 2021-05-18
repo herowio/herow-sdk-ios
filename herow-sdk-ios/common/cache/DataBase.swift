@@ -19,5 +19,9 @@ protocol DataBase {
     func purgeCapping(completion: (()->())?)
     func getCapping(id: String) -> Capping?
     func saveCapping(_ capping: Capping, completion: (()->())?)
+// QuadTree methods
+    func getQuadTreeRoot() -> QuadTreeNode?
+    func getNodeForId(_ id: String) ->  QuadTreeNode? 
+    func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())?)
 
 }

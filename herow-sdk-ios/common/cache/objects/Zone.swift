@@ -86,3 +86,37 @@ public protocol Capping {
     func setCount(count: Int64)
     init(id: String, razDate: Date, count: Int64)
 }
+
+public enum LeafType: Int {
+    case root = 0
+    case leftUp = 1
+    case rightUp = 2
+    case leftBottom = 3
+    case rightBottom = 4
+}
+public protocol QuadTreeNode {
+    func getTreeId() -> String
+    func getLocations() -> [QuadTreeLocation]
+    func getLeftUpChild() -> QuadTreeNode?
+    func getRightUpChild() -> QuadTreeNode?
+    func getRightBottomChild() -> QuadTreeNode?
+    func getLeftBottomChild() -> QuadTreeNode?
+    func getTags() -> [String: Double]?
+    func computeTags() 
+    func getRect() -> Rect
+    func nodeForLocation(_ location: QuadTreeLocation) -> QuadTreeNode?
+    func  browseTree(_ location: QuadTreeLocation) -> QuadTreeNode?
+    func getReccursiveRects(_ rects: [NodeDescription]?) -> [NodeDescription]
+    init(id:String, locations:[QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom: QuadTreeNode?, rightBottom: QuadTreeNode?, tags: [String: Double]?, rect: Rect)
+    func childs() -> [QuadTreeNode]
+    func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode? 
+}
+
+public protocol QuadTreeLocation {
+    var lat: Double {get set}
+    var lng: Double {get set}
+    var time: Date {get set}
+
+    init(lat: Double, lng: Double, time: Date)
+}
+

@@ -33,7 +33,7 @@ import UIKit
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
-        let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>()
+        let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
         cacheManager = CacheManager(db: db)
         liveMomentStore = LiveMomentStore(db: db)
         apiManager = APIManager(connectInfo: connectionInfo, herowDataStorage: herowDataHolder, cacheManager: cacheManager)
@@ -47,6 +47,7 @@ import UIKit
         cacheManager.registerCacheListener(listener: geofenceManager)
         detectionEngine.registerDetectionListener(listener: fuseManager)
         detectionEngine.registerDetectionListener(listener: geofenceManager)
+        detectionEngine.registerDetectionListener(listener: liveMomentStore)
         zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: eventDispatcher)
         cacheManager.registerCacheListener(listener: zoneProvider)
         detectionEngine.registerDetectionListener(listener: zoneProvider)
@@ -199,6 +200,10 @@ import UIKit
         return  cacheManager.getZones().map {
             HerowZone(zone: $0)
         }
+    }
+
+    public func getClusters() -> [NodeDescription]? {
+        return  liveMomentStore.getClusters()?.getReccursiveRects(nil)
     }
     //MARK: UTILS
     @objc public func dispatchFakeLocation(_ location: CLLocation) {

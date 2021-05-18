@@ -8,7 +8,8 @@
 import Foundation
 import CoreData
 
-class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping>: DataBase {
+class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping,T: QuadTreeNode, L: QuadTreeLocation>: DataBase {
+
 
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(for: Self.self)
@@ -25,6 +26,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     var context: NSManagedObjectContext {
         return self.persistentContainer.viewContext
+    }
+
+    init() {
+        self.createQuadTreeRoot()
     }
 
     lazy var bgContext: NSManagedObjectContext  = {
@@ -298,7 +303,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func purgeAllData(completion: (()->())? = nil) {
-        let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name }).filter({$0 != StorageConstants.CappingCoreDataEntityName})
+        let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name }).filter({$0 != StorageConstants.CappingCoreDataEntityName && $0 != StorageConstants.NodeCoreDataEntityName && $0 != StorageConstants.LocationCoreDataEntityName})
         uniqueNames.forEach { (name) in
             deleteEntity(name: name)
         }
@@ -338,5 +343,138 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
     }
 
-}
+    //MARK: QUADTREE
 
+    func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())? = nil) {
+        bgContext.performAndWait {
+            recursiveSave(node,context: bgContext)
+        }
+        save() {
+            completion?()
+        }
+    }
+
+    func createQuadTreeRoot( completion: (()->())? = nil) {
+        if hasQuadTreeRoot() {
+            completion?()
+            return
+        }
+        let root = T(id: "\(LeafType.root.rawValue)", locations: nil, leftUp: nil, rightUp: nil, leftBottom: nil, rightBottom: nil, tags: nil, rect: Rect.world)
+        saveQuadTree(root) {
+            completion?()
+        }
+    }
+
+    func hasQuadTreeRoot() -> Bool {
+        guard getQuadTreeRoot() != nil else {
+            return false
+        }
+        return true
+    }
+
+    func getQuadTreeRoot() -> QuadTreeNode? {
+        return getNodeForId( "\(LeafType.root.rawValue)")
+    }
+
+    func  getNodeForId(_ id: String) -> QuadTreeNode? {
+        let managedContext = context
+        var node: QuadTreeNode?
+        let fetchRequest = NSFetchRequest<NodeCoreData>(entityName: StorageConstants.NodeCoreDataEntityName)
+        fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.treeId) == %@", id)
+        do {
+            if let  nodeCoreData = try managedContext.fetch(fetchRequest).first {
+                node = recursiveInit(nodeCoreData)
+            }
+        }
+
+        catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        return node
+    }
+
+
+
+    func recursiveInit(_ node : NodeCoreData?)  -> QuadTreeNode?{
+        guard let node = node else {
+            return nil
+        }
+        var mylocations = [L]()
+        if let coreDataLocations = node.locations {
+            for loc in coreDataLocations {
+                mylocations.append(L(lat: loc.lat, lng: loc.lng, time: loc.time))
+            }
+        }
+        let treeId =  node.treeId
+        let leftUp  = recursiveInit( node.leftUp())
+        let rightUp  =  recursiveInit(node.rightUp())
+        let leftBottom  =  recursiveInit(node.leftBottom())
+        let rightBottom  =  recursiveInit(node.rightBottom())
+        let tags = node.nodeTags
+        let  rect: Rect = Rect(originLat: node.originLat, endLat: node.endLat, originLng: node.originLng, endLng: node.endLng)
+        return T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags, rect: rect )
+
+    }
+
+    @discardableResult
+    func recursiveSave(_ node : QuadTreeNode?, context: NSManagedObjectContext ) -> NodeCoreData? {
+        if let node = node {
+            print("NODE TO SAVE has \(node.childs().count) child(s)")
+        }
+        guard let node = node else {
+            return nil
+        }
+        var  nodeCoreData :NodeCoreData?
+        let fetchRequest =
+            NSFetchRequest<NodeCoreData>(entityName: StorageConstants.NodeCoreDataEntityName)
+        fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.treeId) == %@", node.getTreeId())
+        nodeCoreData = try? bgContext.fetch(fetchRequest).first
+        if nodeCoreData == nil {
+            let entity =
+                NSEntityDescription.entity(forEntityName: StorageConstants.NodeCoreDataEntityName,
+                                           in: context)!
+            nodeCoreData = NodeCoreData(entity: entity,
+                                        insertInto: context)
+        }
+        nodeCoreData?.treeId = node.getTreeId()
+        nodeCoreData?.nodeTags = node.getTags() ?? [String: Double]()
+        nodeCoreData?.originLat = node.getRect().originLat
+        nodeCoreData?.originLng = node.getRect().originLng
+        nodeCoreData?.endLat = node.getRect().endLat
+        nodeCoreData?.endLng = node.getRect().endLng
+        nodeCoreData?.locations = saveLocations(node.getLocations(), context: context)
+        let bottomLeft = recursiveSave(node.getLeftBottomChild(), context: context)
+        bottomLeft?.type = "\(LeafType.leftBottom.rawValue)"
+        let bottomRight = recursiveSave(node.getRightBottomChild(), context: context)
+        bottomRight?.type = "\(LeafType.rightBottom.rawValue)"
+        let upLeft = recursiveSave(node.getLeftUpChild(), context: context)
+        upLeft?.type = "\(LeafType.leftUp.rawValue)"
+        let upRight = recursiveSave(node.getRightUpChild(), context: context)
+        upRight?.type = "\(LeafType.rightUp.rawValue)"
+        let childs = [bottomLeft, bottomRight, upLeft, upRight].compactMap { $0 }
+        nodeCoreData?.childs = Set(childs)
+        
+        print("NODE IN BASE has \(childs.count) child(s)")
+        return nodeCoreData
+
+    }
+
+    @discardableResult
+    func saveLocations(_ locations: [QuadTreeLocation], context: NSManagedObjectContext ) -> Set<LocationCoreData> {
+        var result = [LocationCoreData]()
+        for loc in locations {
+            let entity =
+                NSEntityDescription.entity(forEntityName: StorageConstants.LocationCoreDataEntityName,
+                                           in: context)!
+            let  locationCoreData = LocationCoreData(entity: entity,
+                                                     insertInto: context)
+            locationCoreData.lat = loc.lat
+            locationCoreData.lng = loc.lng
+            locationCoreData.time = loc.time
+            result.append(locationCoreData)
+        }
+
+        return Set(result)
+    }
+
+}

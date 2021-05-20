@@ -7,14 +7,22 @@
 
 import Foundation
 import CoreLocation
-enum LivingTag: String {
+public enum LivingTag: String {
     case home
     case work
+    case school
     case shopping
 }
 
 
+public struct Circle {
+   public var radius: Double
+   public var center: CLLocationCoordinate2D
 
+    func area() -> Double {
+        return radius * radius * Double.pi
+    }
+}
 
 public struct Rect {
     var originLat: Double
@@ -31,6 +39,11 @@ public struct Rect {
     }
 
 
+    public func circle() -> Circle {
+        let radius = CLLocation(latitude: originLat, longitude: originLng).distance(from: CLLocation(latitude: endLat, longitude: endLng)) / 2
+        return Circle(radius: radius, center: CLLocationCoordinate2D(latitude: middleLat(), longitude: middleLng()))
+    }
+
    public func points() -> [CLLocationCoordinate2D] {
         return [CLLocationCoordinate2D(latitude: originLat, longitude: originLng),
                 CLLocationCoordinate2D(latitude: originLat, longitude: endLng),
@@ -46,6 +59,13 @@ public struct Rect {
     private func middleLng() -> Double {
         return (endLng + originLng) / 2
     }
+
+    func area() -> Double {
+        let d1 =  CLLocation(latitude: originLat, longitude: originLng).distance(from: CLLocation(latitude: endLat, longitude: originLng))
+        let d2 =  CLLocation(latitude: endLat, longitude: originLng).distance(from: CLLocation(latitude: endLat, longitude: endLng))
+        return d1 * d2
+    }
+
     func leftUpRect() -> Rect {
         return Rect(originLat: middleLat(), endLat: endLat, originLng: originLng, endLng: middleLng())
     }
@@ -82,9 +102,14 @@ public struct Rect {
 }
 
 public struct NodeDescription {
-   public var rect: Rect
+    public var treeId: String
+    public var rect: Rect
     public  var locations:  [QuadTreeLocation]
     public var tags : [String: Double]?
+    public var densities : [String: Double]?
+    public var isMin: Bool
+
+
 }
 
 class HerowQuadTreeNode: QuadTreeNode {
@@ -106,9 +131,10 @@ class HerowQuadTreeNode: QuadTreeNode {
     private var rightBottomChild : QuadTreeNode?
     private var leftBottomChild : QuadTreeNode?
     private var tags: [String: Double]?
+    private var densities : [String: Double]?
+    private var pois: [Poi]?
 
-
-    required init(id: String, locations: [QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom : QuadTreeNode?, rightBottom : QuadTreeNode?, tags: [String: Double]?, rect: Rect) {
+    required init(id: String, locations: [QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom : QuadTreeNode?, rightBottom : QuadTreeNode?, tags: [String: Double]?, densities:  [String: Double]?, rect: Rect, pois: [Poi]?) {
         treeId = id
         self.locations = locations ?? [QuadTreeLocation]()
         rightUpChild = rightUp
@@ -117,8 +143,50 @@ class HerowQuadTreeNode: QuadTreeNode {
         leftBottomChild = leftBottom
         self.rect = rect
         self.tags = tags
+        self.densities = densities
+        self.pois = pois
+       // redraw()
+        //un comment to compute at the init
+        // computeTags()
     }
 
+    func findNodeWithId(_ id: String)  -> QuadTreeNode? {
+        let mytreeId = treeId ?? "0"
+
+        if mytreeId == id {
+            return self
+        } else {
+            var childResult: QuadTreeNode?
+            for child in childs() {
+                childResult = child.findNodeWithId(id)
+                if childResult != nil {
+                    return childResult
+                }
+            }
+            return nil
+        }
+    }
+
+
+    func redraw() {
+        self.leftBottomChild?.setRect( getRect().leftBottomRect())
+        self.rightBottomChild?.setRect( getRect().rigthBottomRect())
+        self.leftUpChild?.setRect( getRect().leftUpRect())
+        self.getRightUpChild()?.setRect( getRect().rightUpRect())
+
+        for child in childs() {
+            child.redraw()
+        }
+    }
+    func setParentNode(_ parent: QuadTreeNode?) {
+        self.parentNode = parent
+    }
+    func getParentNode() -> QuadTreeNode? {
+        return parentNode
+    }
+    func setRect(_ rect : Rect) {
+        self.rect = rect
+    }
     func getRect() -> Rect {
         return rect
     }
@@ -150,20 +218,135 @@ class HerowQuadTreeNode: QuadTreeNode {
     func getTags() -> [String : Double]? {
         return tags
     }
-
-    func computeTags() {
-        var tags =  self.tags ?? [String: Double] ()
-        tags[LivingTag.home.rawValue] = scoreForHome()
-        tags[LivingTag.work.rawValue] = scoreForWork()
-        self.tags = tags
+    
+    func getDensities() -> [String : Double]? {
+        return densities
     }
 
+    func computeTags() {
+        if (treeId?.count ?? 0) < 15 {
+            return
+        }
+        var tags =  self.tags ?? [String: Double] ()
+        var densities =  self.densities ?? [String: Double] ()
+        tags[LivingTag.home.rawValue] = 0.0
+        tags[LivingTag.work.rawValue] = 0.0
+        tags[LivingTag.work.rawValue] = 0.0
+        tags[LivingTag.shopping.rawValue] = 0.0
+        densities[LivingTag.home.rawValue] = 0.0
+        densities[LivingTag.school.rawValue] = 0.0
+        densities[LivingTag.work.rawValue] = 0.0
+        densities[LivingTag.shopping.rawValue] = 0.0
+        if schoolCount() > 0 {
+            tags[LivingTag.school.rawValue] = scoreForSchool()
+            densities[LivingTag.school.rawValue] = densityForSchool()
+        }
+        if homeCount() > 0 {
+            tags[LivingTag.home.rawValue] = scoreForHome()
+            densities[LivingTag.home.rawValue] = densityForHome()
+        }
+        if workCount() > 0 {
+            tags[LivingTag.work.rawValue] = scoreForWork()
+            densities[LivingTag.work.rawValue] = densityForWork()
+        }
+        if shoppingCount() > 0 {
+            tags[LivingTag.shopping.rawValue] = scoreForShopping()
+            densities[LivingTag.shopping.rawValue] = densityForShopping()
+        }
+        self.tags = tags
+        self.densities = densities
+        self.parentNode?.computeTags()
+    }
+
+
+    func allLocations() -> [QuadTreeLocation] {
+        var result = [QuadTreeLocation]()
+        let allDescr = getReccursiveRects()
+        let locationsArrayList = allDescr.map {$0.locations}
+
+        for array in locationsArrayList {
+            result.append(contentsOf: array)
+        }
+       return result
+    }
     func scoreForHome() -> Double {
-        return 0.0
+
+        let homeCount: Double  = Double(allLocations().map {
+            return $0.time
+        }.filter {
+            return $0.isHomeCompliant()
+        }.count)
+        return homeCount / Double(allLocations().count)
+    }
+
+    func scoreForSchool() -> Double {
+        return Double(schoolCount()) / Double(allLocations().count)
+    }
+
+    func homeCount() -> Int {
+        return allLocations().filter {
+            return $0.time.isHomeCompliant()
+        }.count
+    }
+
+    func workCount() -> Int {
+        return allLocations().filter {
+            return $0.time.isWorkCompliant()
+        }.count
+    }
+
+    func schoolCount() -> Int {
+        return allLocations().filter {
+            return $0.time.isSchoolCompliant()
+        }.count
+    }
+
+
+
+    func shoppingCount() -> Int {
+        var filteredLocations = [QuadTreeLocation]()
+        for loc in allLocations() {
+            if let pois = self.pois  {
+                var poisForlocation = [Poi]()
+                for poi in pois {
+                    let distance = CLLocation(latitude: poi.getLat(), longitude: poi.getLng()).distance(from: CLLocation(latitude: loc.lat, longitude: loc.lng))
+                    if distance < StorageConstants.shoppingMinRadius {
+                        poisForlocation.append(poi)
+                    }
+                }
+                loc.setPois( pois: poisForlocation)
+                if poisForlocation.count > 0 {
+                    filteredLocations.append(loc)
+                }
+            }
+        }
+        return filteredLocations.count
+    }
+    func scoreForShopping() -> Double {
+        return Double(shoppingCount()) / Double(allLocations().count)
+    }
+
+    func densityForHome() -> Double {
+        let homeCompliantCount  = homeCount()
+        return getRect().area() / Double(homeCompliantCount)
+    }
+
+    func densityForWork() -> Double {
+        let workCompliantCount  = workCount()
+        return getRect().area() / Double(workCompliantCount)
+    }
+
+    func densityForSchool() -> Double {
+        let schoolCompliantCount  = schoolCount()
+        return getRect().area() / Double(schoolCompliantCount)
+    }
+
+    func densityForShopping() -> Double {
+        return getRect().area() / Double(shoppingCount())
     }
 
     func scoreForWork() -> Double {
-        return 0.0
+        return 1 - scoreForHome()
     }
 
     func childs() -> [QuadTreeNode] {
@@ -206,8 +389,16 @@ class HerowQuadTreeNode: QuadTreeNode {
         }
     }
 
+    func getPois() -> [Poi]? {
+        return self.pois
+    }
+
+    func setPois(_ pois: [Poi]?) {
+        self.pois = pois
+    }
     func getDescription() ->NodeDescription {
-        return NodeDescription(rect: getRect(), locations: locations, tags: tags)
+
+        return NodeDescription( treeId: treeId ?? "\(LeafType.root.rawValue)", rect: getRect(), locations: locations, tags: tags, densities: densities, isMin: getRect().isMin())
     }
 
     func getReccursiveRects(_ rects: [NodeDescription]? = nil) -> [NodeDescription] {
@@ -218,12 +409,22 @@ class HerowQuadTreeNode: QuadTreeNode {
         return result
     }
 
+    func getReccursiveNodes(_ nodes: [QuadTreeNode]? = nil) -> [QuadTreeNode] {
+        var result =  nodes ?? [self]
+        for child in childs() {
+            result.append(contentsOf: child.getReccursiveNodes(result))
+        }
+        return result
+    }
+
+
     func nodeForLocation(_ location: QuadTreeLocation) -> QuadTreeNode? {
+
         if !rect.contains(location) {
             return nil
         }
         let result =  addLocation(location)
-        result?.computeTags()
+
         return result
     }
 
@@ -277,6 +478,7 @@ class HerowQuadTreeNode: QuadTreeNode {
             if !locationIsPresent(location) {
                 print ("addLocation node: \(treeId!) count: \(count) isMin? : \( rect.isMin()) limit: \(getLimit())")
                 locations.append(location)
+                computeTags()
             }
             return self
         } else {
@@ -290,7 +492,12 @@ class HerowQuadTreeNode: QuadTreeNode {
         if let location = location {
             array.append(location)
         }
-        let child =  HerowQuadTreeNode(id: treeId, locations: array, leftUp: nil, rightUp: nil, leftBottom: nil, rightBottom: nil, tags: [String: Double](), rect: getRect().rectForType(type))
+        let rect = getRect().rectForType(type)
+        let pois = self.pois?.filter {
+            let loc = HerowQuadTreeLocation(lat: $0.getLat(), lng: $0.getLng(), time: Date())
+            return rect.contains(loc)
+        }
+        let child =  HerowQuadTreeNode(id: treeId, locations: array, leftUp: nil, rightUp: nil, leftBottom: nil, rightBottom: nil, tags: [String: Double](),densities:  [String: Double](), rect: rect, pois: pois)
         switch type {
         case .rightUp:
              rightUpChild = child
@@ -326,8 +533,26 @@ class HerowQuadTreeNode: QuadTreeNode {
     }
 }
 
-struct HerowQuadTreeLocation: QuadTreeLocation {
+class HerowQuadTreeLocation: QuadTreeLocation {
+
+    func setPois(pois: [Poi]?) {
+        self.pois = pois
+    }
+
+    required init(lat: Double, lng: Double, time: Date) {
+        self.lat = lat
+        self.lng = lng
+        self.time = time
+    }
+    required init(lat: Double, lng: Double, time: Date, pois: [Poi]?) {
+       self.lat = lat
+       self.lng = lng
+       self.time = time
+       self.pois = pois
+   }
+
     var lat: Double
     var lng: Double
     var time: Date
+    var pois: [Poi]?
 }

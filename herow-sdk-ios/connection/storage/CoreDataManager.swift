@@ -83,6 +83,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
     }
 
+
+
     func saveCampaignsInBase(items: [Campaign],  completion: (()->())? = nil) {
         bgContext.performAndWait {
             for item in items {
@@ -292,14 +294,54 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         do {
             let  poisCoreData = try managedContext.fetch(fetchRequest)
             for poiCoreData in poisCoreData {
-                let poi: P = P(id: poiCoreData.id, tags: poiCoreData.tags, lat: poiCoreData.lat, lng: poiCoreData.lng)
-                pois.append(poi)
+                pois.append(createPoiObject(poiCoreData))
             }
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        return pois
+    }
+    func getPoisCoreData() -> [PoiCoreData] {
+        let managedContext = context
+        let fetchRequest = NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
+        do {
+            let  poisCoreData = try managedContext.fetch(fetchRequest)
+            return Array(poisCoreData)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        return [PoiCoreData]()
+    }
+
+    func getPoiCoreData( id: String, context: NSManagedObjectContext) -> PoiCoreData? {
+        let managedContext = context
+        let fetchRequest = NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
+        fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.id) == %@", id)
+        do {
+            let  poisCoreData = try managedContext.fetch(fetchRequest)
+            return poisCoreData.first
         }
         catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
-        return pois
+        return nil
+
+    }
+    func createPoiObject(_ poiCoreData: PoiCoreData) -> Poi {
+        let poi: P = P(id: poiCoreData.id, tags: poiCoreData.tags, lat: poiCoreData.lat, lng: poiCoreData.lng)
+        return poi
+    }
+
+    func getNearbyPois(_ location: CLLocation, distance: CLLocationDistance, count: Int ) -> [Poi] {
+        let pois = getPoisInBase().filter {
+            let locationToCompare = CLLocation(latitude: $0.getLat(), longitude: $0.getLng())
+            return location.distance(from: locationToCompare) <= distance
+        }
+        return Array(pois.sorted(by: {
+            let locationToCompare1 = CLLocation(latitude: $0.getLat(), longitude: $0.getLng())
+            let locationToCompare2 = CLLocation(latitude: $1.getLat(), longitude: $1.getLng())
+            return location.distance(from: locationToCompare1) < location.distance(from: locationToCompare2)
+        }).prefix(count))
     }
 
     func purgeAllData(completion: (()->())? = nil) {
@@ -356,10 +398,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     func createQuadTreeRoot( completion: (()->())? = nil) {
         if hasQuadTreeRoot() {
-            completion?()
             return
         }
-        let root = T(id: "\(LeafType.root.rawValue)", locations: nil, leftUp: nil, rightUp: nil, leftBottom: nil, rightBottom: nil, tags: nil, rect: Rect.world)
+        let pois = getPoisInBase()
+        let root = T(id: "\(LeafType.root.rawValue)", locations: nil, leftUp: nil, rightUp: nil, leftBottom: nil, rightBottom: nil, tags: nil, densities: nil, rect: Rect.world, pois: pois)
         saveQuadTree(root) {
             completion?()
         }
@@ -393,16 +435,45 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return node
     }
 
-
-
     func recursiveInit(_ node : NodeCoreData?)  -> QuadTreeNode?{
         guard let node = node else {
             return nil
         }
         var mylocations = [L]()
+      //  let targetNode = (node.parent?.parent ?? node.parent) ?? node
+      //  let targetRect = Rect(originLat: targetNode.originLat, endLat: targetNode.endLat, originLng: targetNode.originLng, endLng: targetNode.endLng)
+        let  rect: Rect = Rect(originLat: node.originLat, endLat: node.endLat, originLng: node.originLng, endLng: node.endLng)
+
+        var array : [PoiCoreData] =  [PoiCoreData]()
+        if let fromParent = node.parent?.pois {
+            print ("NODE WITH PARENT \(node.parent?.treeId) count: \(fromParent.count)")
+            array = Array(fromParent)
+        } else   if node.treeId == "0"{
+            if let rootSet = node.pois  {
+                array = Array(rootSet)
+            } else {
+                array = getPoisCoreData()
+            }
+
+        }
+
+        let filteredArray =  array.filter {
+            let loc = L(lat: $0.lat, lng:  $0.lng, time: Date())
+            return rect.contains(loc)
+        }
+        node.pois = Set(filteredArray)
+        let pois = filteredArray.map {
+            P(id: $0.id, tags: $0.tags, lat: $0.lat, lng: $0.lng)
+        }
         if let coreDataLocations = node.locations {
+
             for loc in coreDataLocations {
-                mylocations.append(L(lat: loc.lat, lng: loc.lng, time: loc.time))
+                let locationPois = pois.filter {
+                    let poiLocation = CLLocation(latitude: $0.getLat(), longitude: $0.getLng())
+                    let location = CLLocation(latitude: loc.lat, longitude: loc.lng)
+                    return poiLocation.distance(from: location) < StorageConstants.shoppingMinRadius
+                }
+                mylocations.append(L(lat: loc.lat, lng: loc.lng, time: loc.time, pois: locationPois ))
             }
         }
         let treeId =  node.treeId
@@ -411,9 +482,16 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         let leftBottom  =  recursiveInit(node.leftBottom())
         let rightBottom  =  recursiveInit(node.rightBottom())
         let tags = node.nodeTags
-        let  rect: Rect = Rect(originLat: node.originLat, endLat: node.endLat, originLng: node.originLng, endLng: node.endLng)
-        return T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags, rect: rect )
-
+        let densities = node.nodeDensities
+        if node.treeId == "0" || pois.count > 0{
+            print("ROOT CREATION")
+        }
+        let result =  T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags,densities: densities, rect: rect, pois: pois)
+        result.getLeftUpChild()?.setParentNode(result)
+        result.getLeftBottomChild()?.setParentNode(result)
+        result.getRightUpChild()?.setParentNode(result)
+        result.getRightBottomChild()?.setParentNode(result)
+        return result
     }
 
     @discardableResult
@@ -424,11 +502,12 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         guard let node = node else {
             return nil
         }
+
         var  nodeCoreData :NodeCoreData?
         let fetchRequest =
             NSFetchRequest<NodeCoreData>(entityName: StorageConstants.NodeCoreDataEntityName)
         fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.treeId) == %@", node.getTreeId())
-        nodeCoreData = try? bgContext.fetch(fetchRequest).first
+        nodeCoreData = try? context.fetch(fetchRequest).first
         if nodeCoreData == nil {
             let entity =
                 NSEntityDescription.entity(forEntityName: StorageConstants.NodeCoreDataEntityName,
@@ -436,8 +515,15 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             nodeCoreData = NodeCoreData(entity: entity,
                                         insertInto: context)
         }
+
+        let pois = node.getPois()?.compactMap {
+            return getPoiCoreData(id: $0.getId(), context: context)
+        } ?? [PoiCoreData]()
+
         nodeCoreData?.treeId = node.getTreeId()
-        nodeCoreData?.nodeTags = node.getTags() ?? [String: Double]()
+        nodeCoreData?.pois = Set(pois)
+        nodeCoreData?.nodeTags = node.getDensities() ?? [String: Double]()
+        nodeCoreData?.nodeDensities = node.getDensities() ?? [String: Double]()
         nodeCoreData?.originLat = node.getRect().originLat
         nodeCoreData?.originLng = node.getRect().originLng
         nodeCoreData?.endLat = node.getRect().endLat
@@ -445,12 +531,16 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         nodeCoreData?.locations = saveLocations(node.getLocations(), context: context)
         let bottomLeft = recursiveSave(node.getLeftBottomChild(), context: context)
         bottomLeft?.type = "\(LeafType.leftBottom.rawValue)"
+        bottomLeft?.parent = nodeCoreData
         let bottomRight = recursiveSave(node.getRightBottomChild(), context: context)
         bottomRight?.type = "\(LeafType.rightBottom.rawValue)"
+        bottomRight?.parent = nodeCoreData
         let upLeft = recursiveSave(node.getLeftUpChild(), context: context)
         upLeft?.type = "\(LeafType.leftUp.rawValue)"
+        upLeft?.parent = nodeCoreData
         let upRight = recursiveSave(node.getRightUpChild(), context: context)
         upRight?.type = "\(LeafType.rightUp.rawValue)"
+        upRight?.parent = nodeCoreData
         let childs = [bottomLeft, bottomRight, upLeft, upRight].compactMap { $0 }
         nodeCoreData?.childs = Set(childs)
         
@@ -471,6 +561,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             locationCoreData.lat = loc.lat
             locationCoreData.lng = loc.lng
             locationCoreData.time = loc.time
+            let pois = loc.pois?.compactMap {
+                return getPoiCoreData(id: $0.getId(), context: context)
+            } ?? [PoiCoreData]()
+            locationCoreData.pois = Set(pois)
             result.append(locationCoreData)
         }
 

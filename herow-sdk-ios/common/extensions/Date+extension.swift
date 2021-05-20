@@ -9,7 +9,7 @@ import Foundation
 
 extension Date {
 
-
+ public static var  dateFormatter = DateFormatter()
     var startOfDay: Date
         {
             return Calendar.current.startOfDay(for: self)
@@ -73,6 +73,40 @@ extension Date {
 
     public enum Weekday: Int {
         case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
+    }
+
+
+    public func  isHomeCompliant() -> Bool {
+        Date.dateFormatter.dateFormat = "EEEE"
+        Date.dateFormatter.locale =  NSLocale(localeIdentifier: "en_EN") as Locale
+        guard let evening18 = self.setTime(hour: 19, min: 0), let evening2359 = self.setTime(hour: 23, min: 59), let morning00 = self.setTime(hour: 0, min: 0), let morning09 = self.setTime(hour: 8, min: 0) else {
+            return false
+        }
+        let evening =  evening18 < self.toLocalTime() && evening2359 > self.toLocalTime()
+        let morning =  morning00 < self.toLocalTime() && morning09 > self.toLocalTime()
+
+        let isWeekEnd = ["Satursday","Sunday"].contains( Date.dateFormatter.string(from: self))
+        return (evening || morning) && !isWeekEnd
+    }
+
+
+    public func  isSchoolCompliant() -> Bool {
+        Date.dateFormatter.dateFormat = "EEEE"
+        Date.dateFormatter.locale =  NSLocale(localeIdentifier: "en_EN") as Locale
+        guard let moring0830 = self.setTime(hour:8, min: 30), let morning0900 = self.setTime(hour: 9, min: 0), let morning1130 = self.setTime(hour:11, min: 30), let morning12 = self.setTime(hour: 12, min: 0) , let after1330 = self.setTime(hour: 13, min: 30) , let after14 = self.setTime(hour: 14, min: 00), let after1630 = self.setTime(hour: 16, min: 30), let after17 = self.setTime(hour: 17, min: 0) else {
+            return false
+        }
+        let morningEntry =  moring0830 < self.toLocalTime() && morning0900 > self.toLocalTime()
+        let morningExit =  morning1130 < self.toLocalTime() && morning12 > self.toLocalTime()
+        let afterEntry =  after1330 < self.toLocalTime() && after14 > self.toLocalTime()
+        let afterExit =  after1630 < self.toLocalTime() && after17 > self.toLocalTime()
+
+        let isOff = ["Satursday","Sunday","Wednesday"].contains( Date.dateFormatter.string(from: self))
+        return (morningEntry || morningExit || afterEntry || afterExit) && !isOff
+    }
+
+    public func  isWorkCompliant() -> Bool {
+       return !isHomeCompliant()
     }
 
 

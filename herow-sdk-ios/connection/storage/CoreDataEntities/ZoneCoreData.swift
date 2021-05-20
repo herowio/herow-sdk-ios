@@ -33,7 +33,7 @@ class PoiCoreData: NSManagedObject {
     @NSManaged var lat: Double
     @NSManaged var lng: Double
     @NSManaged var tags: [String]
-
+    
 }
 @objc(CampaignCoreData)
 class CampaignCoreData: NSManagedObject {

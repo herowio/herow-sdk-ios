@@ -69,7 +69,7 @@ public protocol Access {
     func getUri() -> String?
 }
 
-protocol Poi {
+public protocol Poi {
 
     func getId() -> String
     func getTags() -> [String]
@@ -95,28 +95,40 @@ public enum LeafType: Int {
     case rightBottom = 4
 }
 public protocol QuadTreeNode {
+    func redraw()
+    func findNodeWithId(_ id: String)  -> QuadTreeNode?
     func getTreeId() -> String
+    func setParentNode(_ parent: QuadTreeNode?)
+    func getParentNode() -> QuadTreeNode?
+    func getPois() -> [Poi]?
+    func setPois(_ pois: [Poi]?)
     func getLocations() -> [QuadTreeLocation]
     func getLeftUpChild() -> QuadTreeNode?
     func getRightUpChild() -> QuadTreeNode?
     func getRightBottomChild() -> QuadTreeNode?
     func getLeftBottomChild() -> QuadTreeNode?
     func getTags() -> [String: Double]?
-    func computeTags() 
+    func getDensities() -> [String: Double]?
+    func computeTags()
+    func setRect(_ rect: Rect)
     func getRect() -> Rect
     func nodeForLocation(_ location: QuadTreeLocation) -> QuadTreeNode?
     func  browseTree(_ location: QuadTreeLocation) -> QuadTreeNode?
     func getReccursiveRects(_ rects: [NodeDescription]?) -> [NodeDescription]
-    init(id:String, locations:[QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom: QuadTreeNode?, rightBottom: QuadTreeNode?, tags: [String: Double]?, rect: Rect)
+    func getReccursiveNodes(_ nodes: [QuadTreeNode]?) -> [QuadTreeNode]
+    init(id: String, locations: [QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom : QuadTreeNode?, rightBottom : QuadTreeNode?, tags: [String: Double]?, densities:  [String: Double]?, rect: Rect, pois: [Poi]?)
     func childs() -> [QuadTreeNode]
-    func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode? 
+    func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode?
+   
 }
 
 public protocol QuadTreeLocation {
     var lat: Double {get set}
     var lng: Double {get set}
     var time: Date {get set}
-
+    var pois: [Poi]? {get set}
+    func setPois( pois: [Poi]?)
     init(lat: Double, lng: Double, time: Date)
+    init(lat: Double, lng: Double, time: Date, pois: [Poi]?)
 }
 

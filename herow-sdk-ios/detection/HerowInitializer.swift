@@ -35,7 +35,7 @@ import UIKit
         connectionInfo = ConnectionInfo()
         let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
         cacheManager = CacheManager(db: db)
-        liveMomentStore = LiveMomentStore(db: db)
+        liveMomentStore = LiveMomentStore(db: db, storage: herowDataHolder)
         apiManager = APIManager(connectInfo: connectionInfo, herowDataStorage: herowDataHolder, cacheManager: cacheManager)
         userInfoManager = UserInfoManager(listener: apiManager, herowDataStorage: herowDataHolder)
         permissionsManager = PermissionsManager(userInfoManager: userInfoManager)
@@ -52,6 +52,7 @@ import UIKit
         cacheManager.registerCacheListener(listener: zoneProvider)
         detectionEngine.registerDetectionListener(listener: zoneProvider)
         analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
+        appStateDetector.registerAppStateDelegate(appStateDelegate: liveMomentStore)
         appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
         detectionEngine.registerDetectionListener(listener: analyticsManager)
@@ -205,6 +206,23 @@ import UIKit
     public func getClusters() -> [NodeDescription]? {
         return  liveMomentStore.getClusters()?.getReccursiveRects(nil)
     }
+
+    public func getHome() -> QuadTreeNode? {
+        return  liveMomentStore.getHome()
+    }
+
+    public func getWork() -> QuadTreeNode? {
+        return  liveMomentStore.getWork()
+    }
+
+    public func getSchool() -> QuadTreeNode? {
+        return  liveMomentStore.getSchool()
+    }
+
+    public func getShoppings() -> [QuadTreeNode]? {
+        return  liveMomentStore.getShopping()
+    }
+
     //MARK: UTILS
     @objc public func dispatchFakeLocation(_ location: CLLocation) {
         detectionEngine.dispatchFakeLocation(location)

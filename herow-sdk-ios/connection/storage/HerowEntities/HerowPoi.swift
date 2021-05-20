@@ -13,7 +13,7 @@ public struct HerowPoi: Poi{
     var lat: Double
     var lng: Double
 
-     init(id: String, tags: [String],lat: Double, lng: Double) {
+    public init(id: String, tags: [String],lat: Double, lng: Double) {
         self.id = id
         self.lat = lat
         self.lng = lng
@@ -21,19 +21,19 @@ public struct HerowPoi: Poi{
     }
 
 
-    func getId() -> String {
+   public func getId() -> String {
         return id
     }
 
-    func getTags() -> [String] {
+    public  func getTags() -> [String] {
         return tags
     }
 
-    func getLat() -> Double {
+    public func getLat() -> Double {
         return lat
     }
 
-    func getLng() -> Double {
+    public func getLng() -> Double {
         return lng
     }
 }

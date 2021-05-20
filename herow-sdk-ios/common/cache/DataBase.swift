@@ -6,13 +6,14 @@
 //
 
 import Foundation
-
+import CoreLocation
 protocol DataBase {
     func saveZonesInBase(items: [Zone], completion: (()->())?)
     func getZonesInBase(_ idList: [String]?) -> [Zone]
     func getZonesInBase() -> [Zone]
     func savePoisInBase(items: [Poi], completion: (()->())?)
     func getPoisInBase() -> [Poi]
+    func getNearbyPois(_ location: CLLocation, distance: CLLocationDistance, count: Int ) -> [Poi]
     func saveCampaignsInBase(items: [Campaign], completion: (()->())?)
     func getCampaignsInBase() -> [Campaign]
     func purgeAllData(completion: (()->())?)

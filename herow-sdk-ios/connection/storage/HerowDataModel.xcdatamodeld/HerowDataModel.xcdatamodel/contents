@@ -27,17 +27,21 @@
         <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="node" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="locations" inverseEntity="NodeCoreData"/>
+        <relationship name="pois" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PoiCoreData" inverseName="locations" inverseEntity="PoiCoreData"/>
     </entity>
     <entity name="NodeCoreData" representedClassName="NodeCoreData" syncable="YES">
         <attribute name="endLat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="endLng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="nodeDensities" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String:Double]"/>
         <attribute name="nodeTags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String:Double]"/>
         <attribute name="originLat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="originLng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="treeId" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
-        <relationship name="childs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NodeCoreData"/>
+        <relationship name="childs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="parent" inverseEntity="NodeCoreData"/>
         <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationCoreData" inverseName="node" inverseEntity="LocationCoreData"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="childs" inverseEntity="NodeCoreData"/>
+        <relationship name="pois" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PoiCoreData" inverseName="nodes" inverseEntity="PoiCoreData"/>
     </entity>
     <entity name="NotificationCoreData" representedClassName="NotificationCoreData" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String"/>
@@ -53,6 +57,8 @@
         <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;String&gt;"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationCoreData" inverseName="pois" inverseEntity="LocationCoreData"/>
+        <relationship name="nodes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="pois" inverseEntity="NodeCoreData"/>
     </entity>
     <entity name="ZoneCoreData" representedClassName=".ZoneCoreData" syncable="YES">
         <attribute name="campaigns" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;String&gt;"/>
@@ -66,10 +72,10 @@
         <element name="AccessCoreData" positionX="-54" positionY="45" width="128" height="89"/>
         <element name="CampaignCoreData" positionX="-36" positionY="63" width="128" height="164"/>
         <element name="CappingCoreData" positionX="-45" positionY="144" width="128" height="74"/>
-        <element name="LocationCoreData" positionX="-36" positionY="117" width="128" height="89"/>
-        <element name="NodeCoreData" positionX="-27" positionY="72" width="128" height="164"/>
+        <element name="LocationCoreData" positionX="-36" positionY="117" width="128" height="104"/>
+        <element name="NodeCoreData" positionX="-27" positionY="72" width="128" height="209"/>
         <element name="NotificationCoreData" positionX="-27" positionY="54" width="128" height="134"/>
-        <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="14"/>
+        <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="119"/>
         <element name="ZoneCoreData" positionX="-63" positionY="-18" width="128" height="119"/>
     </elements>
 </model>

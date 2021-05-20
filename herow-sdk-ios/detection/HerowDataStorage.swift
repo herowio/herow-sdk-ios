@@ -11,6 +11,8 @@ import Foundation
 
 public class HerowDataStorage: HerowDataStorageProtocol {
 
+
+
     private var userInfo: APIUserInfo?
     private var token: APIToken?
     private var config: APIConfig?
@@ -103,6 +105,14 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     public func saveUserInfoWaitingForUpdate(_ waitForUpdate: Bool) {
        dataHolder.putBoolean(key: HerowConstants.userInfoStatusKey, value: waitForUpdate)
        dataHolder.apply()
+    }
+
+    public func saveLiveMomentLastSaveDate(_ date: Date) {
+        dataHolder.putDate(key:  HerowConstants.liveMomentSavingDate, value: date)
+    }
+
+    public func getLiveMomentLastSaveDate() -> Date? {
+        dataHolder.getDate(key: HerowConstants.liveMomentSavingDate)
     }
 
     public func userInfoWaitingForUpdate() -> Bool {

@@ -29,6 +29,8 @@ class HerowConstants {
     static let accuracyStatusKey: String = "com.herow.sdk.user.accuracy.status"
     static let notificationStatusKey: String = "com.herow.sdk.user.notification.status"
     static let userDefaultsName: String = "com.herow.sdk.userDefaultsName"
+
+    static let liveMomentSavingDate: String = "com.herow.sdk.liveMomentSavingDate"
 }
 
 public struct Headers {

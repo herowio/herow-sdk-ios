@@ -14,11 +14,13 @@ class NodeCoreData: NSManagedObject {
     @NSManaged var treeId: String
     @NSManaged var type: String
     @NSManaged var locations: Set<LocationCoreData>?
+    @NSManaged var pois: Set<PoiCoreData>?
     @NSManaged var originLat: Double
     @NSManaged var originLng: Double
     @NSManaged var endLat: Double
     @NSManaged var endLng: Double
     @NSManaged var nodeTags:  [String: Double]
+    @NSManaged var nodeDensities: [String: Double]
 
     func getChildForTYpe(_ type: LeafType) ->  NodeCoreData?{
         return childs?.filter {
@@ -47,5 +49,7 @@ class LocationCoreData: NSManagedObject {
     @NSManaged var time: Date
     @NSManaged var lat: Double
     @NSManaged var lng: Double
-}
+    @NSManaged var pois: Set<PoiCoreData>?
 
+
+}

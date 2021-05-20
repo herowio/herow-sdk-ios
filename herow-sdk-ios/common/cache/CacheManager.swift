@@ -25,6 +25,7 @@ protocol CacheManagerProtocol: ResetDelegate {
     init(db: DataBase)
 
     func save(zones: [Zone]?,campaigns: [Campaign]?, pois: [Poi]?,  completion:(()->())?)
+    func getDB() -> DataBase
     func getZones() -> [Zone]
     func getZones(ids: [String])-> [Zone]
     func getPois() -> [Poi]
@@ -42,16 +43,10 @@ protocol CacheManagerProtocol: ResetDelegate {
 }
 
 extension CacheManagerProtocol {
+
     func getNearbyPois(_ location: CLLocation, distance: CLLocationDistance, count: Int ) -> [Poi] {
-        let pois = getPois().filter {
-            let locationToCompare = CLLocation(latitude: $0.getLat(), longitude: $0.getLng())
-            return location.distance(from: locationToCompare) <= distance
-        }
-        return Array(pois.sorted(by: {
-            let locationToCompare1 = CLLocation(latitude: $0.getLat(), longitude: $0.getLng())
-            let locationToCompare2 = CLLocation(latitude: $1.getLat(), longitude: $1.getLng())
-            return location.distance(from: locationToCompare1) < location.distance(from: locationToCompare2)
-        }).prefix(count))
+         return getDB().getNearbyPois(location, distance: distance, count: count )
+
     }
 
     func getNearbyZones(_ location: CLLocation, distance: CLLocationDistance) -> [Zone] {
@@ -68,6 +63,8 @@ extension CacheManagerProtocol {
 }
 
 class CacheManager: CacheManagerProtocol {
+
+
     func reset( completion: @escaping ()->()) {
         self.db.purgeAllData {
             self.db.purgeCapping{
@@ -76,7 +73,6 @@ class CacheManager: CacheManagerProtocol {
         }
 
     }
-
 
     static let distanceThreshold: CLLocationDistance = 20_000
     static let maxNearByPoiCount: Int = 10
@@ -87,6 +83,9 @@ class CacheManager: CacheManagerProtocol {
         self.db = db
     }
 
+    func getDB() -> DataBase {
+        return self.db
+    }
 
     func save(zones: [Zone]?,campaigns: [Campaign]?, pois: [Poi]?,  completion:(()->())?) {
         willSave()

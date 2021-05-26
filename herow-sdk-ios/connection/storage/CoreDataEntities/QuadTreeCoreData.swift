@@ -10,7 +10,7 @@ import CoreData
 @objc(NodeCoreData)
 class NodeCoreData: NSManagedObject {
     @NSManaged var childs:Set<NodeCoreData>?
-    @NSManaged var parent: NodeCoreData?
+    @NSManaged  var parent: NodeCoreData?
     @NSManaged var treeId: String
     @NSManaged var type: String
     @NSManaged var locations: Set<LocationCoreData>?
@@ -22,26 +22,30 @@ class NodeCoreData: NSManagedObject {
     @NSManaged var nodeTags:  [String: Double]
     @NSManaged var nodeDensities: [String: Double]
 
-    func getChildForTYpe(_ type: LeafType) ->  NodeCoreData?{
+    func getChildForType(_ type: LeafType) ->  NodeCoreData?{
         return childs?.filter {
             $0.type == "\(type.rawValue)"
         }.first
     }
 
     func leftUp() -> NodeCoreData? {
-        return getChildForTYpe(.leftUp)
+        return getChildForType(.leftUp)
     }
 
     func leftBottom() -> NodeCoreData? {
-        return getChildForTYpe(.leftBottom)
+        return getChildForType(.leftBottom)
     }
 
     func rightUp() -> NodeCoreData? {
-        return getChildForTYpe(.rightUp)
+        return getChildForType(.rightUp)
     }
 
     func rightBottom() -> NodeCoreData? {
-        return getChildForTYpe(.rightBottom)
+        return getChildForType(.rightBottom)
+    }
+
+    func isRoot() -> Bool {
+        return treeId == "\(LeafType.root.rawValue)"
     }
 }
 @objc(LocationCoreData)
@@ -49,7 +53,7 @@ class LocationCoreData: NSManagedObject {
     @NSManaged var time: Date
     @NSManaged var lat: Double
     @NSManaged var lng: Double
-    @NSManaged var pois: Set<PoiCoreData>?
+//    @NSManaged var pois: Set<PoiCoreData>?
 
 
 }

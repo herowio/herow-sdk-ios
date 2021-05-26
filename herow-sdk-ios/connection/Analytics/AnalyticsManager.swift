@@ -68,6 +68,7 @@ class AnalyticsManager: NSObject, UNUserNotificationCenterDelegate, EventListene
     }
 
     func onAppInBackground() {
+        GlobalLogger.shared.debug("appStateDetector - inBackground \(self)")
         appState = "bg"
     }
 

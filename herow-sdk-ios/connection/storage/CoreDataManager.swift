@@ -24,81 +24,68 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return container
     }()
 
-    var context: NSManagedObjectContext {
-        return self.persistentContainer.viewContext
-    }
+    lazy var context: NSManagedObjectContext = {
+        let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        context.parent = bgContext
+        return context
+    }()
 
-    init() {
-        self.createQuadTreeRoot()
-    }
+
 
     lazy var bgContext: NSManagedObjectContext  = {
         let ct = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        ct.parent = context
+        ct.persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
         return ct
     }()
 
-    // MARK: - Core Data read and write
-    private func deleteEntity(name:String) {
-        bgContext.performAndWait {
-            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
-            fetchRequest.returnsObjectsAsFaults = false
-            do {
-                let results = try bgContext.fetch(fetchRequest)
-                for managedObject in results {
-                    if let managedObjectData: NSManagedObject = managedObject as? NSManagedObject {
-                        bgContext.delete(managedObjectData)
-                    }
-                }
-            } catch let error as NSError {
-                print("Deleted all my data in myEntity error : \(error) \(error.userInfo)")
-            }
-        }
 
-    }
-    
+
+
+
+
+    // MARK: - Core Data read and write
+
     func savePoisInBase(items: [Poi], completion: (()->())? = nil) {
-        bgContext.performAndWait {
+        self.bgContext.perform {
             for item in items {
                 var  poiCoreData :PoiCoreData?
                 let fetchRequest =
                     NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
                 fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.id) == %@", item.getId())
-                poiCoreData = try? bgContext.fetch(fetchRequest).first
+                poiCoreData = try?  self.bgContext.fetch(fetchRequest).first
                 if poiCoreData == nil {
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.PoiCoreDataEntityName,
-                                                   in: bgContext)!
+                                                   in:  self.bgContext)!
                     poiCoreData = PoiCoreData(entity: entity,
-                                              insertInto: bgContext)
+                                              insertInto:  self.bgContext)
                 }
                 poiCoreData?.id = item.getId()
                 poiCoreData?.lat = item.getLat()
                 poiCoreData?.lng = item.getLng()
                 poiCoreData?.tags = item.getTags()
             }
+            self.save(completion)
         }
-        save() {
-            completion?()
-        }
+
     }
 
 
 
     func saveCampaignsInBase(items: [Campaign],  completion: (()->())? = nil) {
-        bgContext.performAndWait {
+        self.bgContext.perform {
             for item in items {
                 var campaignCoreData: CampaignCoreData?
                 let  fetchRequest =
                     NSFetchRequest<CampaignCoreData>(entityName: StorageConstants.CampaignCoreDataEntityName)
                 fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.id) == %@", item.getId())
-                campaignCoreData = try? bgContext.fetch(fetchRequest).first
+                campaignCoreData = try? self.bgContext.fetch(fetchRequest).first
                 if campaignCoreData == nil {
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.CampaignCoreDataEntityName,
-                                                   in: bgContext)!
+                                                   in: self.bgContext)!
                     campaignCoreData = CampaignCoreData(entity: entity,
-                                                        insertInto: bgContext)
+                                                        insertInto: self.bgContext)
                 }
                 campaignCoreData?.id = item.getId()
                 campaignCoreData?.name = item.getName()
@@ -114,9 +101,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 var notificationCoreData: NotificationCoreData?
                 if let notification = item.getNotification() {
                     let entity = NSEntityDescription.entity(forEntityName: StorageConstants.NotificationCoreDataEntityName,
-                                                            in: bgContext)!
+                                                            in: self.bgContext)!
                     notificationCoreData = NotificationCoreData(entity: entity,
-                                                                insertInto: bgContext)
+                                                                insertInto: self.bgContext)
                     notificationCoreData?.title = notification.getTitle()
                     notificationCoreData?.content = notification.getDescription()
                     notificationCoreData?.image = notification.getImage() ?? ""
@@ -127,26 +114,29 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                     campaignCoreData?.notification = notificationCoreData
                 }
             }
+            self.save(completion)
         }
-        save() {
-            completion?()
-        }
+
+
     }
 
     func saveZonesInBase(items: [Zone], completion: (()->())? = nil) {
-        bgContext.performAndWait {
+
+
+        self.bgContext.perform {
+
             for item in items {
                 var  zoneCoreData :ZoneCoreData?
                 let fetchRequest =
                     NSFetchRequest<ZoneCoreData>(entityName: StorageConstants.ZoneCoreDataEntityName)
                 fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.zoneHash) == %@", item.getHash())
-                zoneCoreData = try? bgContext.fetch(fetchRequest).first
+                zoneCoreData = try?  self.bgContext.fetch(fetchRequest).first
                 if zoneCoreData == nil {
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.ZoneCoreDataEntityName,
-                                                   in: bgContext)!
+                                                   in:  self.bgContext)!
                     zoneCoreData = ZoneCoreData(entity: entity,
-                                                insertInto: bgContext)
+                                                insertInto:  self.bgContext)
                 }
                 zoneCoreData?.zoneHash = item.getHash()
                 var accessInBase =  zoneCoreData?.access
@@ -154,9 +144,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 if accessInBase  == nil {
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.AccessCoreDataEntityName,
-                                                   in: bgContext)!
+                                                   in:  self.bgContext)!
                     accessInBase = AccessCoreData(entity: entity,
-                                                  insertInto: bgContext)
+                                                  insertInto:  self.bgContext)
                 }
                 if let access = item.getAccess() {
                     GlobalLogger.shared.debug("CoreDataManager:  zone has access")
@@ -179,10 +169,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 zoneCoreData?.zoneHash = item.getHash()
                 zoneCoreData?.campaigns = item.getCampaigns()
             }
+            self.save(completion)
         }
-        save() {
-            completion?()
-        }
+
     }
 
     func getZonesInBase() -> [Zone] {
@@ -190,6 +179,20 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func getZonesInBase(_ idList: [String]? = nil) -> [Zone] {
+        var zones = [Zone]()
+        var context = self.bgContext
+        if Thread.isMainThread {
+            print("getZonesInBase MAIN THREAD ! ")
+            context = self.context
+        }
+        context.performAndWait() {
+            zones =  _getZonesInBase(idList, context: context)
+        }
+        return zones
+    }
+
+    private  func _getZonesInBase(_ idList: [String]? = nil, context: NSManagedObjectContext) -> [Zone] {
+        
         var zones = [Zone]()
         let managedContext = context
         let fetchRequest = NSFetchRequest<ZoneCoreData>(entityName: StorageConstants.ZoneCoreDataEntityName)
@@ -219,6 +222,19 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     func getCampaignsInBase() -> [Campaign] {
         var campaigns = [Campaign]()
+        var context = self.bgContext
+        if Thread.isMainThread {
+            print("MAIN THREAD ! ")
+            context = self.context
+        }
+        context.performAndWait {
+            campaigns =  _getCampaignsInBase(context: context)
+        }
+        return campaigns
+    }
+
+    private  func _getCampaignsInBase(context: NSManagedObjectContext) -> [Campaign] {
+        var campaigns = [Campaign]()
         let managedContext = context
         let fetchRequest = NSFetchRequest<CampaignCoreData>(entityName: StorageConstants.CampaignCoreDataEntityName)
 
@@ -246,6 +262,19 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     func getCapping(id: String) -> Capping? {
         var capping: Capping?
+        var context = self.bgContext
+        if Thread.isMainThread {
+            print("MAIN THREAD ! ")
+            context = self.context
+        }
+        context.performAndWait {
+            capping =  _getCapping(id: id, context: context)
+        }
+        return capping
+    }
+
+    private  func _getCapping(id: String, context: NSManagedObjectContext) -> Capping? {
+        var capping: Capping?
         let managedContext = context
         let fetchRequest = NSFetchRequest<CappingCoreData>(entityName: StorageConstants.CappingCoreDataEntityName)
         fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.campaignId) == %@", id)
@@ -264,7 +293,12 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func saveCapping(_ capping: Capping, completion: (()->())? = nil) {
-        bgContext.performAndWait {
+        var context = self.bgContext
+        if Thread.isMainThread {
+            print("MAIN THREAD ! ")
+            context = self.context
+        }
+        context.performAndWait {
 
             var  cappingCoreData :CappingCoreData?
             let fetchRequest =
@@ -281,13 +315,23 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             cappingCoreData?.campaignId = capping.getId()
             cappingCoreData?.razDate = capping.getRazDate()
             cappingCoreData?.count = capping.getCount()
+            save() {
+                completion?()
+            }
         }
-        save() {
-            completion?()
-        }
+
     }
 
     func getPoisInBase() -> [Poi] {
+        var pois = [Poi]()
+
+        self.context.performAndWait {
+            pois = _getPoisInBase()
+        }
+        return pois
+    }
+
+    private  func _getPoisInBase() -> [Poi] {
         var pois = [Poi]()
         let managedContext = context
         let fetchRequest = NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
@@ -301,30 +345,50 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
         return pois
     }
-    func getPoisCoreData() -> [PoiCoreData] {
-        let managedContext = context
-        let fetchRequest = NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
-        do {
-            let  poisCoreData = try managedContext.fetch(fetchRequest)
-            return Array(poisCoreData)
-        } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+
+    private  func getPoisCoreData() -> [PoiCoreData] {
+        var pois = [PoiCoreData]()
+        var context = self.bgContext
+        if Thread.isMainThread {
+            print("MAIN THREAD ! ")
+            context = self.context
         }
-        return [PoiCoreData]()
+
+        pois = _getPoisCoreData(context: context)
+        return pois
+
+
+    }
+
+    private func _getPoisCoreData(context: NSManagedObjectContext) -> [PoiCoreData] {
+        let managedContext = context
+        var pois = [PoiCoreData]()
+        let fetchRequest = NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
+        context.performAndWait {
+            do {
+                let  poisCoreData = try managedContext.fetch(fetchRequest)
+                pois =  Array(poisCoreData)
+            } catch let error as NSError {
+                print("Could not fetch. \(error), \(error.userInfo)")
+            }}
+        return pois
     }
 
     func getPoiCoreData( id: String, context: NSManagedObjectContext) -> PoiCoreData? {
         let managedContext = context
+        var poi: PoiCoreData?
         let fetchRequest = NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
         fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.id) == %@", id)
-        do {
-            let  poisCoreData = try managedContext.fetch(fetchRequest)
-            return poisCoreData.first
+        context.performAndWait {
+            do {
+                let  poisCoreData = try managedContext.fetch(fetchRequest)
+                poi =  poisCoreData.first
+            }
+            catch let error as NSError {
+                print("Could not fetch. \(error), \(error.userInfo)")
+            }
         }
-        catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
-        }
-        return nil
+        return poi
 
     }
     func createPoiObject(_ poiCoreData: PoiCoreData) -> Poi {
@@ -347,59 +411,89 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func purgeAllData(completion: (()->())? = nil) {
         let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name }).filter({$0 != StorageConstants.CappingCoreDataEntityName && $0 != StorageConstants.NodeCoreDataEntityName && $0 != StorageConstants.LocationCoreDataEntityName})
         uniqueNames.forEach { (name) in
-            deleteEntity(name: name)
+            deleteEntitiesByName(name)
         }
-        save() {
-            completion?()
+        save(completion)
+    }
+
+    func deleteEntitiesByName(_ name: String) {
+        self.bgContext.perform {
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
+            // Create Batch Delete Request
+            let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+            do {
+                try  self.bgContext.execute(batchDeleteRequest)
+
+            } catch {
+                print("error on delete")
+            }
         }
     }
 
     func purgeCapping(completion: (()->())? = nil) {
-        deleteEntity(name: StorageConstants.CappingCoreDataEntityName)
-        save() {
-            completion?()
-        }
+        deleteEntitiesByName( StorageConstants.CappingCoreDataEntityName)
+        save(completion)
     }
 
-    private func save(completion: (() ->())? = nil) {
-        saveContext(context: bgContext ) {
-            DispatchQueue.main.async {
-                self.saveContext(context: self.context) {
-                    completion?()
-                }
-            }}
+    private func save( _ completion: (() ->())? = nil) {
 
-    }
-
-    private func saveContext (context :NSManagedObjectContext, completion: (() ->())? = nil) {
         context.performAndWait {
-            if context.hasChanges {
+            if self.context.hasChanges {
                 do {
-                    try context.save()
+                    print("saving main context")
+                    try self.context.save()
                 } catch {
-                    let nserror = error as NSError
-                    fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+                    print ("Error saving main managed object context! \(error)")
                 }
             }
-            completion?()
+
         }
+
+        bgContext.perform {
+            if self.bgContext.hasChanges {
+                do {
+                    print("saving bg context")
+                    try self.bgContext.save()
+                } catch {
+                    print ("Error saving bg managed object context! \(error)")
+                }
+            }
+        }
+        completion?()
     }
+
+
 
     //MARK: QUADTREE
 
     func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())? = nil) {
-        bgContext.performAndWait {
-            recursiveSave(node,context: bgContext)
+        var context = self.bgContext
+        if Thread.isMainThread {
+            print("MAIN THREAD ! ")
+            context = self.context
         }
-        save() {
-            completion?()
+        self.context.perform {
+            self.recursiveSave(node,context:  context)
+            self.save(completion)
         }
+
     }
 
+
+
     func createQuadTreeRoot( completion: (()->())? = nil) {
-        if hasQuadTreeRoot() {
+
+        if let _ =  getCoreDataQuadTreeRoot()  {
+            print("LiveMomentStore - no need to create root")
+        //    reCreateChildsForNode(root)
+            //    save()
+
+            completion?()
+
             return
         }
+        print("LiveMomentStore -  need to create root")
         let pois = getPoisInBase()
         let root = T(id: "\(LeafType.root.rawValue)", locations: nil, leftUp: nil, rightUp: nil, leftBottom: nil, rightBottom: nil, tags: nil, densities: nil, rect: Rect.world, pois: pois)
         saveQuadTree(root) {
@@ -407,24 +501,124 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
     }
 
-    func hasQuadTreeRoot() -> Bool {
-        guard getQuadTreeRoot() != nil else {
-            return false
+    func reloadNewPois(completion: (()->())? = nil) {
+        var context = self.bgContext
+         if Thread.isMainThread {
+            print("MAIN THREAD ! ")
+            context = self.context
         }
-        return true
+        context.performAndWait {
+            if  let root = self.getCoreDataQuadTreeRoot() {
+                reloadPoisForNode(root)
+            }
+            self.save()
+            completion?()
+        }
     }
+
+
+    func reloadPoisForNode(_ node: NodeCoreData, poisToSort: Set<PoiCoreData>? = nil) {
+
+        var pois = poisToSort ??  Set(self.getPoisCoreData())
+        if  let parent = node.parent {
+            pois = parent.pois ?? Set<PoiCoreData>()
+        }
+        let  rect: Rect = Rect(originLat: node.originLat, endLat: node.endLat, originLng: node.originLng, endLng: node.endLng)
+        let filteredArray =  pois.filter {
+            let loc = L(lat: $0.lat, lng:  $0.lng, time: Date())
+            return rect.contains(loc)
+        }
+        node.pois = Set(filteredArray)
+        node.childs?.forEach { child in
+            reloadPoisForNode(child, poisToSort: node.pois)
+        }
+    }
+
+
+    private  func reCreateChildsForNode(_ node: NodeCoreData?) -> NodeCoreData?  {
+
+        var context = self.bgContext
+        if Thread.isMainThread {
+            print("MAIN THREAD ! ")
+            context = self.context
+        }
+        context.performAndWait {
+        if  let id = node?.treeId {
+        let child1 = reCreateChildsForNode(getCoreDataQuadTree("\(id)1"))
+        let child2 = reCreateChildsForNode(getCoreDataQuadTree("\(id)2"))
+        let child3 = reCreateChildsForNode(getCoreDataQuadTree("\(id)3"))
+        let child4 = reCreateChildsForNode(getCoreDataQuadTree("\(id)4"))
+            node?.childs = Set([child1, child2, child3, child4].compactMap{
+                return $0
+            })
+        }
+        }
+        return node
+    }
+
+    private  func getCoreDataQuadTreeRoot() -> NodeCoreData? {
+        return getCoreDataQuadTree("\(LeafType.root.rawValue)")
+    }
+
+    private  func getCoreDataQuadTree(_ id : String) -> NodeCoreData? {
+        let start = CFAbsoluteTimeGetCurrent()
+        var result : NodeCoreData?
+        var context = self.bgContext
+        if Thread.isMainThread {
+            print("MAIN THREAD ! ")
+            context = self.context
+        }
+        context.performAndWait {
+            let fetchRequest = NSFetchRequest<NodeCoreData>(entityName: StorageConstants.NodeCoreDataEntityName)
+            fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.treeId) == %@", id )
+            do {
+
+                let array = try context.fetch(fetchRequest)
+                print("LiveMomentStore -  getCoreDataQuadTreeRoot count : \(array.count) ")
+                result = array.first
+
+            } catch let error as NSError {
+                print("Could not fetch. \(error), \(error.userInfo)")
+            }
+        }
+        let endRoot = CFAbsoluteTimeGetCurrent()
+        let  elapsedTime = (endRoot - start) * 1000
+        print("LiveMomentStore -  find root in base took \(elapsedTime) ms ")
+        return result
+    }
+
+
 
     func getQuadTreeRoot() -> QuadTreeNode? {
-        return getNodeForId( "\(LeafType.root.rawValue)")
+        if let root =  getCoreDataQuadTreeRoot() {
+            return recursiveInit(root)
+        }
+        return nil
     }
 
+
+
     func  getNodeForId(_ id: String) -> QuadTreeNode? {
-        let managedContext = context
+        var quadTree: QuadTreeNode?
+        var context = self.bgContext
+        if Thread.isMainThread {
+            print("MAIN THREAD ! ")
+            context = self.context
+        }
+        context.performAndWait {
+            quadTree = _getNodeForId(id, context: context)
+        }
+        return quadTree
+
+    }
+
+    private  func  _getNodeForId(_ id: String, context: NSManagedObjectContext) -> QuadTreeNode? {
+
         var node: QuadTreeNode?
         let fetchRequest = NSFetchRequest<NodeCoreData>(entityName: StorageConstants.NodeCoreDataEntityName)
         fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.treeId) == %@", id)
         do {
-            if let  nodeCoreData = try managedContext.fetch(fetchRequest).first {
+            if let  nodeCoreData = try context.fetch(fetchRequest).first {
                 node = recursiveInit(nodeCoreData)
             }
         }
@@ -435,137 +629,170 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return node
     }
 
-    func recursiveInit(_ node : NodeCoreData?)  -> QuadTreeNode?{
-        guard let node = node else {
-            return nil
-        }
-        var mylocations = [L]()
-      //  let targetNode = (node.parent?.parent ?? node.parent) ?? node
-      //  let targetRect = Rect(originLat: targetNode.originLat, endLat: targetNode.endLat, originLng: targetNode.originLng, endLng: targetNode.endLng)
-        let  rect: Rect = Rect(originLat: node.originLat, endLat: node.endLat, originLng: node.originLng, endLng: node.endLng)
+    private func recursiveInit(_ node : NodeCoreData?)  -> QuadTreeNode?{
 
-        var array : [PoiCoreData] =  [PoiCoreData]()
-        if let fromParent = node.parent?.pois {
-            print ("NODE WITH PARENT \(node.parent?.treeId) count: \(fromParent.count)")
-            array = Array(fromParent)
-        } else   if node.treeId == "0"{
-            if let rootSet = node.pois  {
-                array = Array(rootSet)
-            } else {
-                array = getPoisCoreData()
+        var result : QuadTreeNode?
+        var context = self.bgContext
+        if Thread.isMainThread {
+            print("MAIN THREAD ! ")
+            context = self.context
+        }
+        context.performAndWait {
+            guard let node = node else {
+                return
             }
+            var mylocations = [L]()
+            //  let targetNode = (node.parent?.parent ?? node.parent) ?? node
+            //  let targetRect = Rect(originLat: targetNode.originLat, endLat: targetNode.endLat, originLng: targetNode.originLng, endLng: targetNode.endLng)
+            let  rect: Rect = Rect(originLat: node.originLat, endLat: node.endLat, originLng: node.originLng, endLng: node.endLng)
 
-        }
-
-        let filteredArray =  array.filter {
-            let loc = L(lat: $0.lat, lng:  $0.lng, time: Date())
-            return rect.contains(loc)
-        }
-        node.pois = Set(filteredArray)
-        let pois = filteredArray.map {
-            P(id: $0.id, tags: $0.tags, lat: $0.lat, lng: $0.lng)
-        }
-        if let coreDataLocations = node.locations {
-
-            for loc in coreDataLocations {
-                let locationPois = pois.filter {
-                    let poiLocation = CLLocation(latitude: $0.getLat(), longitude: $0.getLng())
-                    let location = CLLocation(latitude: loc.lat, longitude: loc.lng)
-                    return poiLocation.distance(from: location) < StorageConstants.shoppingMinRadius
+            var array : [PoiCoreData] =  [PoiCoreData]()
+            if let fromParent = node.parent?.pois {
+                print ("NODE \(node.treeId ) WITH PARENT \(node.parent?.treeId ?? "no parent") poi count: \(fromParent.count)")
+                array = Array(fromParent)
+            } else   if node.isRoot() {
+                if let rootSet = node.pois  {
+                    if rootSet.count > 0 {
+                        array = Array(rootSet)
+                    } else {
+                        array = getPoisCoreData()
+                    }
+                } else {
+                    array = getPoisCoreData()
                 }
-                mylocations.append(L(lat: loc.lat, lng: loc.lng, time: loc.time, pois: locationPois ))
             }
+            
+            let filteredArray =  array.filter {
+                let loc = L(lat: $0.lat, lng:  $0.lng, time: Date())
+                return rect.contains(loc)
+            }
+            node.pois = Set(filteredArray)
+            let pois = filteredArray.map {
+                P(id: $0.id, tags: $0.tags, lat: $0.lat, lng: $0.lng)
+            }
+            if let coreDataLocations = node.locations {
+                mylocations = coreDataLocations.map {L(lat: $0.lat, lng: $0.lng, time: $0.time, pois: nil )}
+            }
+            let treeId =  node.treeId
+            let leftUp  = recursiveInit( node.leftUp())
+            let rightUp  =  recursiveInit(node.rightUp())
+            let leftBottom  =  recursiveInit(node.leftBottom())
+            let rightBottom  =  recursiveInit(node.rightBottom())
+            let tags = node.nodeTags
+            let densities = node.nodeDensities
+            if node.isRoot() {
+                print("ROOT CREATION")
+            }
+             result =  T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags,densities: densities, rect: rect, pois: pois)
+            result?.getLeftUpChild()?.setParentNode(result)
+            result?.getLeftBottomChild()?.setParentNode(result)
+            result?.getRightUpChild()?.setParentNode(result)
+            result?.getRightBottomChild()?.setParentNode(result)
         }
-        let treeId =  node.treeId
-        let leftUp  = recursiveInit( node.leftUp())
-        let rightUp  =  recursiveInit(node.rightUp())
-        let leftBottom  =  recursiveInit(node.leftBottom())
-        let rightBottom  =  recursiveInit(node.rightBottom())
-        let tags = node.nodeTags
-        let densities = node.nodeDensities
-        if node.treeId == "0" || pois.count > 0{
-            print("ROOT CREATION")
-        }
-        let result =  T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags,densities: densities, rect: rect, pois: pois)
-        result.getLeftUpChild()?.setParentNode(result)
-        result.getLeftBottomChild()?.setParentNode(result)
-        result.getRightUpChild()?.setParentNode(result)
-        result.getRightBottomChild()?.setParentNode(result)
         return result
     }
 
     @discardableResult
-    func recursiveSave(_ node : QuadTreeNode?, context: NSManagedObjectContext ) -> NodeCoreData? {
+    private func recursiveSave(_ node : QuadTreeNode?, context: NSManagedObjectContext ) -> NodeCoreData? {
         if let node = node {
-            print("NODE TO SAVE has \(node.childs().count) child(s)")
+            print("NODE TO SAVE: \(node.getTreeId()) has \(node.childs().count) child(s)")
         }
         guard let node = node else {
             return nil
         }
-
         var  nodeCoreData :NodeCoreData?
-        let fetchRequest =
-            NSFetchRequest<NodeCoreData>(entityName: StorageConstants.NodeCoreDataEntityName)
-        fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.treeId) == %@", node.getTreeId())
-        nodeCoreData = try? context.fetch(fetchRequest).first
-        if nodeCoreData == nil {
-            let entity =
-                NSEntityDescription.entity(forEntityName: StorageConstants.NodeCoreDataEntityName,
-                                           in: context)!
-            nodeCoreData = NodeCoreData(entity: entity,
-                                        insertInto: context)
+        context.performAndWait {
+            let fetchRequest =
+                NSFetchRequest<NodeCoreData>(entityName: StorageConstants.NodeCoreDataEntityName)
+            fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.treeId) == %@", node.getTreeId())
+            nodeCoreData = try? context.fetch(fetchRequest).first
+            if nodeCoreData == nil {
+                let entity =
+                    NSEntityDescription.entity(forEntityName: StorageConstants.NodeCoreDataEntityName,
+                                               in: context)!
+                nodeCoreData = NodeCoreData(entity: entity,
+                                            insertInto: context)
+            }
+
+            let pois = node.getPois()?.compactMap {
+                return getPoiCoreData(id: $0.getId(), context: context)
+            } ?? [PoiCoreData]()
+
+            nodeCoreData?.treeId = node.getTreeId()
+            nodeCoreData?.pois = Set(pois)
+            nodeCoreData?.nodeTags = node.getDensities() ?? [String: Double]()
+            nodeCoreData?.nodeDensities = node.getDensities() ?? [String: Double]()
+            nodeCoreData?.originLat = node.getRect().originLat
+            nodeCoreData?.originLng = node.getRect().originLng
+            nodeCoreData?.endLat = node.getRect().endLat
+            nodeCoreData?.endLng = node.getRect().endLng
+            var locations =  nodeCoreData?.locations
+            if let newLocation = createLocation(node.getLastLocation(), context: context) {
+                locations?.insert(newLocation)
+            }
+            nodeCoreData?.locations = locations
+            let bottomLeft = recursiveSave(node.getLeftBottomChild(), context: context)
+            bottomLeft?.type = "\(LeafType.leftBottom.rawValue)"
+            bottomLeft?.parent = nodeCoreData
+            let bottomRight = recursiveSave(node.getRightBottomChild(), context: context)
+            bottomRight?.type = "\(LeafType.rightBottom.rawValue)"
+            bottomRight?.parent = nodeCoreData
+            let upLeft = recursiveSave(node.getLeftUpChild(), context: context)
+            upLeft?.type = "\(LeafType.leftUp.rawValue)"
+            upLeft?.parent = nodeCoreData
+            let upRight = recursiveSave(node.getRightUpChild(), context: context)
+            upRight?.type = "\(LeafType.rightUp.rawValue)"
+            upRight?.parent = nodeCoreData
+            let childs = [bottomLeft, bottomRight, upLeft, upRight].compactMap { $0 }
+            nodeCoreData?.childs = Set(childs)
+
+            print("NODE IN BASE \(node.getTreeId()) has \(childs.count) child(s)")
         }
-
-        let pois = node.getPois()?.compactMap {
-            return getPoiCoreData(id: $0.getId(), context: context)
-        } ?? [PoiCoreData]()
-
-        nodeCoreData?.treeId = node.getTreeId()
-        nodeCoreData?.pois = Set(pois)
-        nodeCoreData?.nodeTags = node.getDensities() ?? [String: Double]()
-        nodeCoreData?.nodeDensities = node.getDensities() ?? [String: Double]()
-        nodeCoreData?.originLat = node.getRect().originLat
-        nodeCoreData?.originLng = node.getRect().originLng
-        nodeCoreData?.endLat = node.getRect().endLat
-        nodeCoreData?.endLng = node.getRect().endLng
-        nodeCoreData?.locations = saveLocations(node.getLocations(), context: context)
-        let bottomLeft = recursiveSave(node.getLeftBottomChild(), context: context)
-        bottomLeft?.type = "\(LeafType.leftBottom.rawValue)"
-        bottomLeft?.parent = nodeCoreData
-        let bottomRight = recursiveSave(node.getRightBottomChild(), context: context)
-        bottomRight?.type = "\(LeafType.rightBottom.rawValue)"
-        bottomRight?.parent = nodeCoreData
-        let upLeft = recursiveSave(node.getLeftUpChild(), context: context)
-        upLeft?.type = "\(LeafType.leftUp.rawValue)"
-        upLeft?.parent = nodeCoreData
-        let upRight = recursiveSave(node.getRightUpChild(), context: context)
-        upRight?.type = "\(LeafType.rightUp.rawValue)"
-        upRight?.parent = nodeCoreData
-        let childs = [bottomLeft, bottomRight, upLeft, upRight].compactMap { $0 }
-        nodeCoreData?.childs = Set(childs)
-        
-        print("NODE IN BASE has \(childs.count) child(s)")
         return nodeCoreData
 
     }
 
+
+    private func createLocation(_ location: QuadTreeLocation?, context:NSManagedObjectContext) -> LocationCoreData? {
+
+        guard let location = location else {
+            return nil
+        }
+
+        let entity =
+            NSEntityDescription.entity(forEntityName: StorageConstants.LocationCoreDataEntityName,
+                                       in: context)!
+        let locationCoreData = LocationCoreData(entity: entity,
+                                                insertInto: context)
+        locationCoreData.lat = location.lat
+        locationCoreData.lng = location.lng
+        locationCoreData.time = location.time
+        return locationCoreData
+    }
+
     @discardableResult
-    func saveLocations(_ locations: [QuadTreeLocation], context: NSManagedObjectContext ) -> Set<LocationCoreData> {
+    private func saveLocations(_ locations: [QuadTreeLocation], context: NSManagedObjectContext ) -> Set<LocationCoreData> {
         var result = [LocationCoreData]()
         for loc in locations {
-            let entity =
-                NSEntityDescription.entity(forEntityName: StorageConstants.LocationCoreDataEntityName,
-                                           in: context)!
-            let  locationCoreData = LocationCoreData(entity: entity,
-                                                     insertInto: context)
-            locationCoreData.lat = loc.lat
-            locationCoreData.lng = loc.lng
-            locationCoreData.time = loc.time
-            let pois = loc.pois?.compactMap {
-                return getPoiCoreData(id: $0.getId(), context: context)
-            } ?? [PoiCoreData]()
-            locationCoreData.pois = Set(pois)
-            result.append(locationCoreData)
+            //
+            let fetchRequest =
+                NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
+            fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.locationLat) == %lf AND \(StorageConstants.locationLng) == %lf AND \(StorageConstants.locationTime) == %@", loc.lat, loc.lng, loc.time as NSDate)
+            var  locationCoreData = try? context.fetch(fetchRequest).first
+            if locationCoreData == nil {
+                print("saveLocations by creating")
+                let entity =
+                    NSEntityDescription.entity(forEntityName: StorageConstants.LocationCoreDataEntityName,
+                                               in: context)!
+                locationCoreData = LocationCoreData(entity: entity,
+                                                    insertInto: context)
+                locationCoreData?.lat = loc.lat
+                locationCoreData?.lng = loc.lng
+                locationCoreData?.time = loc.time
+            }
+            if let location = locationCoreData {
+                result.append(location)
+            }
         }
 
         return Set(result)

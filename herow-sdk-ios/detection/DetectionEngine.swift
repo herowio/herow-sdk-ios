@@ -342,7 +342,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             ($0.get() === listener) == false
         }
     }
-
+    
+    @discardableResult
     func dispatchLocation(_ location: CLLocation, from: UpdateType = .undefined) -> Bool{
         bgTaskManager.start()
         var skip = false
@@ -439,12 +440,11 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     public func onAppInBackground() {
         bgTaskManager.onAppInBackground()
+        GlobalLogger.shared.debug("appStateDetector - inBackground \(self)")
     }
 
     @objc public func dispatchFakeLocation(_ location : CLLocation) {
-        for listener in  detectionListners {
-            listener.get()?.onLocationUpdate(location, from: .fake)
-        }
+        dispatchLocation( location, from: .update)
     }
 
 }

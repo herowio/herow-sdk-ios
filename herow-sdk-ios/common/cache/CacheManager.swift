@@ -17,7 +17,7 @@ enum CacheUpdate {
 }
 
 @objc public protocol CacheListener: AnyObject {
-    func onCacheUpdate()
+    func onCacheUpdate(forGeoHash: String?)
     func willCacheUpdate()
 }
 
@@ -39,7 +39,7 @@ protocol CacheManagerProtocol: ResetDelegate {
     func cleanCapping(_ completion:(()->())?)
     func registerCacheListener(listener: CacheListener)
     func unregisterCacheListener(listener: CacheListener)
-    func didSave()
+    func didSave(forGeoHash: String?)
 }
 
 extension CacheManagerProtocol {
@@ -90,6 +90,18 @@ class CacheManager: CacheManagerProtocol {
     func save(zones: [Zone]?,campaigns: [Campaign]?, pois: [Poi]?,  completion:(()->())?) {
         willSave()
         if let zones = zones {
+            saveZones(items: zones, completion: nil)
+        }
+        if let campaigns = campaigns {
+            saveCampaigns(items: campaigns, completion: nil)
+        }
+        if let pois = pois {
+            savePois(items: pois, completion: nil)
+        }
+
+        completion?()
+
+       /* if let zones = zones {
             saveZones(items: zones) {
                 if let campaigns = campaigns {
                     self.saveCampaigns(items: campaigns) {
@@ -111,7 +123,7 @@ class CacheManager: CacheManagerProtocol {
         } else {
             self.didSave()
             completion?()
-        }
+        }*/
     }
 
     func saveZones(items: [Zone], completion:(()->())?)  {
@@ -134,9 +146,11 @@ class CacheManager: CacheManagerProtocol {
         }
     }
     
-    func didSave() {
-        for listener in listeners {
-            listener.get()?.onCacheUpdate()
+    func didSave(forGeoHash: String?) {
+        DispatchQueue.global(qos: .background).async {
+            for listener in self.listeners {
+                listener.get()?.onCacheUpdate(forGeoHash:forGeoHash)
+            }
         }
     }
 
@@ -188,7 +202,7 @@ class CacheManager: CacheManagerProtocol {
         db.purgeAllData() { [self] in
             completion?()
             for listener in listeners {
-                listener.get()?.onCacheUpdate()
+                listener.get()?.onCacheUpdate(forGeoHash: nil)
             }
         }
     }

@@ -33,7 +33,9 @@ class StorageConstants {
     static let treeRightUptId = "2"
     static let treeLeftBottomId = "3"
     static let treeRightBottomId = "4"
-
+    static let locationLat = "lat"
+    static let locationLng = "lng"
+    static let locationTime = "time"
     static let shoppingMinRadius = 50.0
     
 

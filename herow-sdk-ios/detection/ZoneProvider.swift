@@ -30,11 +30,18 @@ class SelectionContainer {
     public var centerLocation: CLLocationCoordinate2D
     public var confidence: Double?
     public var radius: Double?
-    
+    var zone: HerowZone?
     init(zone: Zone) {
         self.zoneHash = zone.getHash()
         self.radius = zone.getRadius()
         self.centerLocation = CLLocationCoordinate2D(latitude: zone.getLat(), longitude:  zone.getLng())
+        if let myZone = zone as? HerowZone {
+            self.zone = myZone
+        }
+    }
+
+    func getZone() -> Zone? {
+        return zone
     }
 
     func computeEnterConfidence(location: CLLocation)  {
@@ -323,7 +330,7 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
     }
 
 
-    func onCacheUpdate() {
+    func onCacheUpdate(forGeoHash: String?) {
         GlobalLogger.shared.warning("cache updated")
         cacheIsLoaded = true
         if let location = lastLocation {

@@ -7,7 +7,8 @@
 
 import Foundation
 import CoreLocation
-protocol Zone  {
+
+protocol Zone: Codable {
 
     func getHash() -> String
     func getLat() -> Double
@@ -27,7 +28,7 @@ extension Zone {
     }
 }
 
-public protocol Access {
+public protocol Access: Codable {
     
     func getId() -> String
     func getName() -> String
@@ -94,7 +95,7 @@ public enum LeafType: Int {
     case leftBottom = 3
     case rightBottom = 4
 }
-public protocol QuadTreeNode {
+public protocol QuadTreeNode: AnyObject {
     func redraw()
     func findNodeWithId(_ id: String)  -> QuadTreeNode?
     func getTreeId() -> String
@@ -103,17 +104,18 @@ public protocol QuadTreeNode {
     func getPois() -> [Poi]?
     func setPois(_ pois: [Poi]?)
     func getLocations() -> [QuadTreeLocation]
+    func getLastLocation() -> QuadTreeLocation?
     func getLeftUpChild() -> QuadTreeNode?
     func getRightUpChild() -> QuadTreeNode?
     func getRightBottomChild() -> QuadTreeNode?
     func getLeftBottomChild() -> QuadTreeNode?
     func getTags() -> [String: Double]?
     func getDensities() -> [String: Double]?
-    func computeTags()
+    func computeTags(_ computeParent: Bool)
     func setRect(_ rect: Rect)
     func getRect() -> Rect
     func nodeForLocation(_ location: QuadTreeLocation) -> QuadTreeNode?
-    func  browseTree(_ location: QuadTreeLocation) -> QuadTreeNode?
+    func browseTree(_ location: QuadTreeLocation) -> QuadTreeNode?
     func getReccursiveRects(_ rects: [NodeDescription]?) -> [NodeDescription]
     func getReccursiveNodes(_ nodes: [QuadTreeNode]?) -> [QuadTreeNode]
     init(id: String, locations: [QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom : QuadTreeNode?, rightBottom : QuadTreeNode?, tags: [String: Double]?, densities:  [String: Double]?, rect: Rect, pois: [Poi]?)

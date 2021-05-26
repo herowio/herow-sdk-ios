@@ -28,6 +28,37 @@ import Foundation
      self.access = access
      }
 
+    private enum CodingKeys: String, CodingKey {
+        case zonehash
+        case lat
+        case lng
+        case radius
+        case campaigns
+        case access
+    }
+
+    required public init(from decoder:Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            zonehash = try values.decode(String.self, forKey: .zonehash)
+            lat = try values.decode(Double.self, forKey: .lat)
+            lng = try values.decode(Double.self, forKey: .lat)
+            radius = try values.decode(Double.self, forKey: .radius)
+            campaigns = try values.decode([String].self, forKey: .campaigns)
+            access = try values.decode(HerowAccess.self, forKey: .access)
+        }
+
+    public func encode(to encoder: Encoder) throws {
+          var container = encoder.container(keyedBy: CodingKeys.self)
+          try container.encode(zonehash, forKey: .zonehash)
+          try container.encode(lat, forKey: .lat)
+          try container.encode(lng, forKey: .lng)
+          try container.encode(radius, forKey: .radius)
+          try container.encode(campaigns, forKey: .campaigns)
+         if let myAccess = access as? HerowAccess {
+          try container.encode(myAccess as HerowAccess, forKey: .access)
+        }
+      }
+
     public func getHash() -> String {
         return zonehash
     }

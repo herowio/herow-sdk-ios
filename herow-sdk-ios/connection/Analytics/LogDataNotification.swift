@@ -49,7 +49,7 @@ class LogDataNotificationStruct: LogDataStruct {
         self.campaignId = campaignId
         self.zoneInfo = zoneInfo
 
-        if let zone = cacheManager?.getZones(ids: [self.zoneID]).first {
+        if let zone = zoneInfo?.getZone() { //cacheManager?.getZones(ids: [self.zoneID]).first {
             let lat = zone.getLat()
             let lng = zone.getLng()
             let center = CLLocation(latitude: lat, longitude: lng)

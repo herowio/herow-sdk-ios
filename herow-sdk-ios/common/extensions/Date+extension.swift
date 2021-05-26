@@ -79,21 +79,21 @@ extension Date {
     public func  isHomeCompliant() -> Bool {
         Date.dateFormatter.dateFormat = "EEEE"
         Date.dateFormatter.locale =  NSLocale(localeIdentifier: "en_EN") as Locale
-        guard let evening18 = self.setTime(hour: 19, min: 0), let evening2359 = self.setTime(hour: 23, min: 59), let morning00 = self.setTime(hour: 0, min: 0), let morning09 = self.setTime(hour: 8, min: 0) else {
+        guard let evening20 = self.setTime(hour: 20, min: 0), let evening2359 = self.setTime(hour: 23, min: 59), let morning00 = self.setTime(hour: 0, min: 0), let morning06 = self.setTime(hour: 6, min: 0) else {
             return false
         }
-        let evening =  evening18 < self.toLocalTime() && evening2359 > self.toLocalTime()
-        let morning =  morning00 < self.toLocalTime() && morning09 > self.toLocalTime()
+        let evening =  evening20 < self.toLocalTime() && evening2359 > self.toLocalTime()
+        let morning =  morning00 < self.toLocalTime() && morning06 > self.toLocalTime()
 
-        let isWeekEnd = ["Satursday","Sunday"].contains( Date.dateFormatter.string(from: self))
-        return (evening || morning) && !isWeekEnd
+      //  let isWeekEnd = ["Satursday","Sunday"].contains( Date.dateFormatter.string(from: self))
+        return (evening || morning)
     }
 
 
     public func  isSchoolCompliant() -> Bool {
         Date.dateFormatter.dateFormat = "EEEE"
         Date.dateFormatter.locale =  NSLocale(localeIdentifier: "en_EN") as Locale
-        guard let moring0830 = self.setTime(hour:8, min: 30), let morning0900 = self.setTime(hour: 9, min: 0), let morning1130 = self.setTime(hour:11, min: 30), let morning12 = self.setTime(hour: 12, min: 0) , let after1330 = self.setTime(hour: 13, min: 30) , let after14 = self.setTime(hour: 14, min: 00), let after1630 = self.setTime(hour: 16, min: 30), let after17 = self.setTime(hour: 17, min: 0) else {
+        guard let moring0830 = self.setTime(hour:8, min: 30), let morning0900 = self.setTime(hour: 8, min: 45), let morning1130 = self.setTime(hour:11, min: 40), let morning12 = self.setTime(hour: 11, min: 50) , let after1330 = self.setTime(hour: 13, min: 30) , let after14 = self.setTime(hour: 13, min: 45), let after1630 = self.setTime(hour: 16, min: 30), let after17 = self.setTime(hour:16, min: 50) else {
             return false
         }
         let morningEntry =  moring0830 < self.toLocalTime() && morning0900 > self.toLocalTime()
@@ -106,7 +106,21 @@ extension Date {
     }
 
     public func  isWorkCompliant() -> Bool {
-       return !isHomeCompliant()
+        Date.dateFormatter.dateFormat = "EEEE"
+        Date.dateFormatter.locale =  NSLocale(localeIdentifier: "en_EN") as Locale
+        guard let work09 = self.setTime(hour: 09, min: 0), let work12 = self.setTime(hour: 12, min: 00), let work14 = self.setTime(hour: 14, min: 0), let work18 = self.setTime(hour: 18, min: 0) else {
+            return false
+        }
+        let morning =  work09 < self.toLocalTime() && work12 > self.toLocalTime()
+        let afternoon =  work14 < self.toLocalTime() && work18 > self.toLocalTime()
+
+        let isWeekEnd = ["Satursday","Sunday"].contains( Date.dateFormatter.string(from: self))
+        return (afternoon || morning) && !isWeekEnd
+    }
+
+    public func  isOtherCompliant() -> Bool {
+        //TODO not sure
+      return !isHomeCompliant() && !isWorkCompliant() && !isSchoolCompliant() 
     }
 
 

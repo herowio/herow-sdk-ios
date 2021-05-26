@@ -20,7 +20,7 @@ import UIKit
     private var userInfoManager: UserInfoManagerProtocol
     private var permissionsManager: PermissionsManagerProtocol
     private let cacheManager: CacheManagerProtocol
-    private let liveMomentStore: LiveMomentStoreProtocol
+    private var liveMomentStore: LiveMomentStoreProtocol?
     internal let geofenceManager: GeofenceManager
     private var detectionEngine: DetectionEngine
     private let zoneProvider: ZoneProvider
@@ -47,14 +47,20 @@ import UIKit
         cacheManager.registerCacheListener(listener: geofenceManager)
         detectionEngine.registerDetectionListener(listener: fuseManager)
         detectionEngine.registerDetectionListener(listener: geofenceManager)
-        detectionEngine.registerDetectionListener(listener: liveMomentStore)
+        if let liveMomentStore = liveMomentStore {
+            detectionEngine.registerDetectionListener(listener: liveMomentStore)
+            appStateDetector.registerAppStateDelegate(appStateDelegate: liveMomentStore)
+            cacheManager.registerCacheListener(listener: liveMomentStore)
+        }
+
         zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: eventDispatcher)
         cacheManager.registerCacheListener(listener: zoneProvider)
         detectionEngine.registerDetectionListener(listener: zoneProvider)
         analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
-        appStateDetector.registerAppStateDelegate(appStateDelegate: liveMomentStore)
+
         appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
+       
         detectionEngine.registerDetectionListener(listener: analyticsManager)
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
      
@@ -197,30 +203,38 @@ import UIKit
         return HerowZone(zone: zone)
     }
 
-    @objc public func getHerowZones() -> [HerowZone] {
-        return  cacheManager.getZones().map {
-            HerowZone(zone: $0)
+    @objc public func getHerowZones(completion:@escaping  ([HerowZone])->()) {
+        DispatchQueue.global(qos: .background).async {
+            let zones =  self.cacheManager.getZones().map {
+                HerowZone(zone: $0)
+            }
+            DispatchQueue.main.async {
+                completion(zones)
+            }
         }
     }
 
     public func getClusters() -> [NodeDescription]? {
-        return  liveMomentStore.getClusters()?.getReccursiveRects(nil)
+        return  liveMomentStore?.getClusters()?.getReccursiveRects(nil)
     }
 
+    public func registerLiveMomentStoreListener(listener: LiveMomentStoreListener) {
+        liveMomentStore?.registerLiveMomentStoreListener(listener)
+    }
     public func getHome() -> QuadTreeNode? {
-        return  liveMomentStore.getHome()
+        return  liveMomentStore?.getHome()
     }
 
     public func getWork() -> QuadTreeNode? {
-        return  liveMomentStore.getWork()
+        return  liveMomentStore?.getWork()
     }
 
     public func getSchool() -> QuadTreeNode? {
-        return  liveMomentStore.getSchool()
+        return  liveMomentStore?.getSchool()
     }
 
     public func getShoppings() -> [QuadTreeNode]? {
-        return  liveMomentStore.getShopping()
+        return  liveMomentStore?.getShopping()
     }
 
     //MARK: UTILS

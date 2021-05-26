@@ -67,17 +67,19 @@ class NotificationManager: NSObject, EventListener {
     }
 
     private func createNotificationForEvent( event: Event,  info: ZoneInfo) {
-        let zones = cacheManager.getZones(ids: [info.zoneHash])
-        for zone in zones {
+        guard let zone = info.getZone() else {return}//cacheManager.getZones(ids: [info.zoneHash])
+        //for zone in zones {
             let campaigns = cacheManager.getCampaignsForZone(zone)
             for campaign in campaigns {
                 if (trigger(event: event, campaign: campaign) ) {
                     if canCreateNotification(campaign) {
-                        createCampaignNotification(campaign, zone: zone, zoneInfo: info )
+                        DispatchQueueUtils.delay(bySeconds: 0.1, dispatchLevel: .main) {
+                            self.createCampaignNotification(campaign, zone: zone, zoneInfo: info )
+                        }
                     }
                 }
             }
-        }
+       // }
     }
 
     private func trigger(event: Event, campaign: Campaign) -> Bool {

@@ -204,7 +204,7 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
         return parameter.distanceFromUserToRegionBorder * 3
     }
 
-    func onCacheUpdate() {
+    func onCacheUpdate(forGeoHash forGeohash: String?) {
             updateMonitoringFor(location: lastLocation)
     }
 
@@ -213,13 +213,14 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
     }
 
     func updateMonitoringFor(location: CLLocation?) {
+        DispatchQueue(label: "updateMonitoringFor", qos: .background).async {
         var zones : [Zone]
         if let location = location {
-            updateRegions(location: location)
-            zones = cacheManager.getNearbyZones(location)
+            self.updateRegions(location: location)
+            zones = self.cacheManager.getNearbyZones(location)
             zones = Array(zones.sorted { (initial, next) -> Bool in
                 return initial.distanceFrom(location: location) < next.distanceFrom(location: location)
-                }.prefix(maxGeoFenceZoneCount))
+            }.prefix(self.maxGeoFenceZoneCount))
 
             var distance = Double.infinity
             if let nearestZone = zones.first {
@@ -228,12 +229,13 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
             } else {
                 GlobalLogger.shared.debug("GeofenceManager -  no zone detected distance to nearest zone = infinity")
             }
-            adjustDistanceFilterForDistanceToNearestZone(distance)
+            self.adjustDistanceFilterForDistanceToNearestZone(distance)
 
         } else {
             zones = [Zone]()
         }
-        createPlaceRegions(places: cleanPlaceMonitoredRegions(places: zones))
+            self.createPlaceRegions(places: self.cleanPlaceMonitoredRegions(places: zones))
+        }
     }
 
     private func adjustDistanceFilterForDistanceToNearestZone(_ distance : CLLocationDistance) {

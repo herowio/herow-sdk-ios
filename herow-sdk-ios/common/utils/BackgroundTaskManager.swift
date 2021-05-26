@@ -39,7 +39,7 @@ public class BackgroundTaskManager: AppStateDelegate {
     }
 
     public func start(_ expirationHandler:(() -> Void)? = nil) {
-        if isOnBackground,
+        if //isOnBackground,
             backgroundTaskId == UIBackgroundTaskIdentifier.invalid {
             self.expirationHandler = expirationHandler
             backgroundTaskId = app.beginBackgroundTask(withName: name, expirationHandler: {
@@ -55,7 +55,7 @@ public class BackgroundTaskManager: AppStateDelegate {
 
     public func updateTimeOut() {
         if timeOut != 0,
-            isOnBackground,
+          //  isOnBackground,
             backgroundTaskId != UIBackgroundTaskIdentifier.invalid {
 
             timeOutWorkItem?.cancel()
@@ -87,6 +87,7 @@ public class BackgroundTaskManager: AppStateDelegate {
 
     public func onAppInBackground() {
         isOnBackground = true
+        GlobalLogger.shared.debug("appStateDetector - inBackground \(self)")
     }
 
     public func onAppInForeground() {

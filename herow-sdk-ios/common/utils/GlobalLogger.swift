@@ -101,23 +101,24 @@ public enum MessageType: String {
 
 
     private func dispatchMessage(_ message: String , type: MessageType) {
-
-        let display = "[\(type.rawValue.uppercased())]" + " \(message)"
-        if let logger = self.logger {
-            switch type {
-            case .debug:
-                logger.debug(display)
-            case .verbose:
-                logger.verbose(display)
-            case .info:
-                logger.info(display)
-            case .warning:
-                logger.warning(display)
-            case .error:
-                logger.error(display)
+        DispatchQueue.global(qos: .background).async {
+            let display = "[\(type.rawValue.uppercased())]" + " \(message)"
+            if let logger = self.logger {
+                switch type {
+                case .debug:
+                    logger.debug(display)
+                case .verbose:
+                    logger.verbose(display)
+                case .info:
+                    logger.info(display)
+                case .warning:
+                    logger.warning(display)
+                case .error:
+                    logger.error(display)
+                }
+            } else {
+                self.log(display)
             }
-        } else {
-            log(display)
         }
     }
     public func verbose(_ message: Any,

@@ -138,23 +138,22 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     }
 
     func getConfigIfNeeded(completion:(()->())? = nil) {
+
+        let process = {
+            if let config = self.herowDataStorage.getConfig() {
+                self.dispatchConfig(config)
+            }
+            completion?()
+        }
         if self.herowDataStorage.shouldGetConfig() {
             GlobalLogger.shared.debug("APIManager - should get config")
             self.getConfig(completion: {_,_ in
-
-                if let config = self.herowDataStorage.getConfig() {
-                    self.dispatchConfig(config)
-                }
-                completion?()
+              process()
             })
         } else {
             GlobalLogger.shared.debug("APIManager - config not expired")
             self.getTokenIfNeeded {
-
-                if let config = self.herowDataStorage.getConfig() {
-                    self.dispatchConfig(config)
-                }
-                completion?()
+                process()
             }
         }
     }
@@ -266,7 +265,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
         cacheLoading = true
         authenticationFlow  {
-            if self.herowDataStorage.shouldGetCache(for: geoHash) {
+            if self.herowDataStorage.shouldGetCache(for: geoHash) /*|| true*/ {
                 GlobalLogger.shared.info("APIManager- SHOULD FETCH CACHE")
                 self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
 
@@ -277,18 +276,20 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                     GlobalLogger.shared.info("APIManager- CACHE HAS BEEN FETCHED")
                     GlobalLogger.shared.verbose("APIManager- received cache: \(cache)")
                     self.herowDataStorage.saveLastCacheFetchDate(Date())
-                    self.herowDataStorage.setLastGeohash(geoHash)
+
                     self.cacheManager.cleanCache() {
                         self.cacheManager.save(zones: cache.zones,
                                                campaigns: cache.campaigns,
                                                pois: cache.pois, completion: {
                                                 self.cacheLoading =  false
+                                                self.cacheManager.didSave(forGeoHash: geoHash)
+                                                self.herowDataStorage.setLastGeohash(geoHash)
                                                })
                         completion?(cache, error)
                     }
                 }
             } else {
-                self.cacheManager.didSave()
+                self.cacheManager.didSave(forGeoHash: nil)
                 GlobalLogger.shared.info("APIManager- NO NEED TO FETCH CACHE")
                 self.cacheLoading =  false
             }

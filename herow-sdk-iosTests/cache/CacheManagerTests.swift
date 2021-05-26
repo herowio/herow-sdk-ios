@@ -10,7 +10,7 @@ import CoreLocation
 @testable import herow_sdk_ios
 class CacheManagerTests: XCTestCase, CacheListener {
 
-    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>())
+    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>())
     override func setUpWithError() throws {
 
         cacheManager.registerCacheListener(listener: self)
@@ -24,7 +24,7 @@ class CacheManagerTests: XCTestCase, CacheListener {
         print("cache will update")
     }
     
-    func onCacheUpdate() {
+    func onCacheUpdate(forGeoHash: String?) {
         print("cache update")
     }
     override func tearDownWithError() throws {
@@ -52,10 +52,9 @@ class CacheManagerTests: XCTestCase, CacheListener {
             XCTAssertTrue(self.cacheManager.getZones(ids: ["hash"]).count == 1)
             XCTAssertTrue(self.cacheManager.getZones(ids: ["hash2"]).count == 1)
             XCTAssertTrue(self.cacheManager.getZones(ids: ["hash2","hash"]).count == 2)
-            self.cacheManager.cleanCache()
+            self.cacheManager.cleanCache ()
             XCTAssertTrue(self.cacheManager.getZones().count == 0)
             testFailExpectation.fulfill()
-
         }
 
         waitForExpectations(timeout:30) { error in

@@ -8,7 +8,7 @@
 import XCTest
 @testable import herow_sdk_ios
 class CappingFilterTest: XCTestCase {
-    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>())
+    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>())
     override func setUpWithError() throws {
         cacheManager.cleanCapping(nil)
         // Put setup code here. This method is called before the invocation of each test method in the class.

@@ -36,7 +36,7 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
     static let distanceTen: Double = 10
     static let filterDistanceStepCount = 5.0
     internal private(set) var lastLocation: CLLocation?
-
+    private let backgroundQueue =  DispatchQueue(label: "updateMonitoringFor", qos: .background)
     fileprivate var movingGeofenceParameter: MovingGeofenceParameter = MovingGeofenceParameter(distanceFromNearestPlace: 0,
                                               circleRadiusOfMovingRegion: 150,
                                 distanceFromUserForBorderOfMovingRegion: 100)
@@ -213,29 +213,30 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
     }
 
     func updateMonitoringFor(location: CLLocation?) {
-        DispatchQueue(label: "updateMonitoringFor", qos: .background).async {
-        var zones : [Zone]
+
+        var zones  = [Zone]()
         if let location = location {
             self.updateRegions(location: location)
-            zones = self.cacheManager.getNearbyZones(location)
-            zones = Array(zones.sorted { (initial, next) -> Bool in
-                return initial.distanceFrom(location: location) < next.distanceFrom(location: location)
-            }.prefix(self.maxGeoFenceZoneCount))
+            backgroundQueue.async {
+                zones = self.cacheManager.getNearbyZones(location)
+                DispatchQueue.main.async {
+                    zones = Array(zones.sorted { (initial, next) -> Bool in
+                        return initial.distanceFrom(location: location) < next.distanceFrom(location: location)
+                    }.prefix(self.maxGeoFenceZoneCount))
 
-            var distance = Double.infinity
-            if let nearestZone = zones.first {
-                distance = max (0, nearestZone.distanceFrom(location: location) - nearestZone.getRadius())
-                GlobalLogger.shared.debug("GeofenceManager - distance to nearest zone = \(distance)")
-            } else {
-                GlobalLogger.shared.debug("GeofenceManager -  no zone detected distance to nearest zone = infinity")
+                    var distance = Double.infinity
+                    if let nearestZone = zones.first {
+                        distance = max (0, nearestZone.distanceFrom(location: location) - nearestZone.getRadius())
+                        GlobalLogger.shared.debug("GeofenceManager - distance to nearest zone = \(distance)")
+                    } else {
+                        GlobalLogger.shared.debug("GeofenceManager -  no zone detected distance to nearest zone = infinity")
+                    }
+                    self.adjustDistanceFilterForDistanceToNearestZone(distance)
+                }
             }
-            self.adjustDistanceFilterForDistanceToNearestZone(distance)
+        }
+        self.createPlaceRegions(places: self.cleanPlaceMonitoredRegions(places: zones))
 
-        } else {
-            zones = [Zone]()
-        }
-            self.createPlaceRegions(places: self.cleanPlaceMonitoredRegions(places: zones))
-        }
     }
 
     private func adjustDistanceFilterForDistanceToNearestZone(_ distance : CLLocationDistance) {

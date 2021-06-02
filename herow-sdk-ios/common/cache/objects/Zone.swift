@@ -96,14 +96,18 @@ public enum LeafType: Int {
     case rightBottom = 4
 }
 public protocol QuadTreeNode: AnyObject {
+
     func redraw()
     func findNodeWithId(_ id: String)  -> QuadTreeNode?
     func getTreeId() -> String
     func setParentNode(_ parent: QuadTreeNode?)
     func getParentNode() -> QuadTreeNode?
+    func getUpdate() -> Bool
+    func setUpdated(_ value: Bool)
     func getPois() -> [Poi]?
     func setPois(_ pois: [Poi]?)
     func getLocations() -> [QuadTreeLocation]
+    func getNewLocations() -> [QuadTreeLocation]
     func getLastLocation() -> QuadTreeLocation?
     func getLeftUpChild() -> QuadTreeNode?
     func getRightUpChild() -> QuadTreeNode?
@@ -121,6 +125,8 @@ public protocol QuadTreeNode: AnyObject {
     init(id: String, locations: [QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom : QuadTreeNode?, rightBottom : QuadTreeNode?, tags: [String: Double]?, densities:  [String: Double]?, rect: Rect, pois: [Poi]?)
     func childs() -> [QuadTreeNode]
     func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode?
+    func printHierarchy()
+    func populateParentality()
    
 }
 
@@ -128,9 +134,10 @@ public protocol QuadTreeLocation {
     var lat: Double {get set}
     var lng: Double {get set}
     var time: Date {get set}
-    var pois: [Poi]? {get set}
-    func setPois( pois: [Poi]?)
+    func isNearToPoi() -> Bool
+    func setIsNearToPoi(_ near: Bool)
     init(lat: Double, lng: Double, time: Date)
-    init(lat: Double, lng: Double, time: Date, pois: [Poi]?)
 }
+
+
 

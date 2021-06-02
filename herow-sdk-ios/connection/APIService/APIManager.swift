@@ -312,6 +312,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                         GlobalLogger.shared.verbose("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self))")
                     } 
                 }
+                completion?()
             }
         }
     }
@@ -347,7 +348,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             }
 
         } catch {
-            print("error while encoding userInfo : \(error.localizedDescription)")
+             print("error while encoding userInfo : \(error.localizedDescription)")
         }
         return result ?? Data()
 
@@ -363,7 +364,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             }
 
         } catch {
-            print("error while encoding userInfo : \(error.localizedDescription)")
+             print("error while encoding userInfo : \(error.localizedDescription)")
         }
         return result
     }

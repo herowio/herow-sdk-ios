@@ -114,7 +114,7 @@ extension Date {
         let morning =  work09 < self.toLocalTime() && work12 > self.toLocalTime()
         let afternoon =  work14 < self.toLocalTime() && work18 > self.toLocalTime()
 
-        let isWeekEnd = ["Satursday","Sunday"].contains( Date.dateFormatter.string(from: self))
+        let isWeekEnd = ["Saturday","Sunday"].contains( Date.dateFormatter.string(from: self))
         return (afternoon || morning) && !isWeekEnd
     }
 

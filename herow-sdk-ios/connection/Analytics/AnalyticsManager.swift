@@ -10,12 +10,18 @@ import CoreLocation
 import Foundation
 import UserNotifications
 
-class AnalyticsManager: NSObject, UNUserNotificationCenterDelegate, EventListener, DetectionEngineListener, ClickAndConnectListener,AppStateDelegate, NotificationCreationListener  {
+protocol AnalyticsManagerProtocol:   EventListener, DetectionEngineListener, ClickAndConnectListener, AppStateDelegate,NotificationCreationListener, UNUserNotificationCenterDelegate{
+    func createlogContex(_ location: CLLocation)
+    func createlogEvent( event: Event,  info: ZoneInfo)
+}
+class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
 
     private var dataStorage: HerowDataStorageProtocol?
     private var  apiManager: APIManagerProtocol
     private var cacheManager: CacheManagerProtocol
     private var onClickAndCollect = false
+    private var backgroundTaskContext = UIBackgroundTaskIdentifier.invalid
+    private var backgroundTaskEvent = UIBackgroundTaskIdentifier.invalid
     private var appState: String = "bg"
     init(apiManager: APIManagerProtocol, cacheManager:  CacheManagerProtocol, dataStorage: HerowDataStorageProtocol?) {
         self.apiManager = apiManager
@@ -38,18 +44,48 @@ class AnalyticsManager: NSObject, UNUserNotificationCenterDelegate, EventListene
     }
 
     func createlogContex(_ location: CLLocation)  {
+
+        self.backgroundTaskContext = UIApplication.shared.beginBackgroundTask(
+        withName: "herow.io.AnalyticsManager.backgroundTaskContextID)"  ,
+              expirationHandler: {
+                DispatchQueue.main.async {
+                    UIApplication.shared.endBackgroundTask(  self.backgroundTaskContext)
+                    GlobalLogger.shared.info("AnalyticsManager ends context backgroundTask with identifier : \(   self.backgroundTaskContext)")
+                }
+
+            })
+        GlobalLogger.shared.info("AnalyticsManager starts context backgroundTask with identifier : \(   self.backgroundTaskContext)")
         GlobalLogger.shared.debug("AnalyticsManager - createlogContex: \(location.coordinate.latitude) \(location.coordinate.longitude)")
         let logContext = LogDataContext(appState: appState, location: location, cacheManager: cacheManager, dataStorage:  self.dataStorage, clickAndCollect: onClickAndCollect )
         if let data = logContext.getData() {
-            apiManager.pushLog(data) {}
+            apiManager.pushLog(data) {
+                DispatchQueue.main.async {
+                    UIApplication.shared.endBackgroundTask(  self.backgroundTaskContext)
+                    GlobalLogger.shared.info("AnalyticsManager ends context backgroundTask with identifier : \(   self.backgroundTaskContext)")
+                }
+            }
         }
     }
 
     func createlogEvent( event: Event,  info: ZoneInfo)  {
+        self.backgroundTaskEvent = UIApplication.shared.beginBackgroundTask(
+        withName: "herow.io.AnalyticsManager.backgroundTaskEventID"  ,
+              expirationHandler: {
+                DispatchQueue.main.async {
+                    UIApplication.shared.endBackgroundTask(  self.backgroundTaskEvent)
+                    GlobalLogger.shared.info("AnalyticsManager ends Event  backgroundTask with identifier : \(   self.backgroundTaskEvent)")
+                }
+            })
+        GlobalLogger.shared.info("AnalyticsManager starts Event backgroundTask with identifier : \(   self.backgroundTaskContext)")
         GlobalLogger.shared.debug("AnalyticsManager - createlogEvent event: \(event) zoneInfo: \(info.hash)")
         let logEvent = LogDataEvent(appState: appState, event: event, infos: info, cacheManager: cacheManager, dataStorage:  self.dataStorage)
         if let data = logEvent.getData() {
-            apiManager.pushLog(data) {}
+            apiManager.pushLog(data) {
+                DispatchQueue.main.async {
+                    UIApplication.shared.endBackgroundTask(  self.backgroundTaskEvent)
+                    GlobalLogger.shared.info("AnalyticsManager ends Event backgroundTask  with identifier : \(   self.backgroundTaskEvent)")
+                }
+            }
         }
 
     }

@@ -71,7 +71,6 @@ class CacheManager: CacheManagerProtocol {
                 completion()
             }
         }
-
     }
 
     static let distanceThreshold: CLLocationDistance = 20_000
@@ -89,7 +88,7 @@ class CacheManager: CacheManagerProtocol {
 
     func save(zones: [Zone]?,campaigns: [Campaign]?, pois: [Poi]?,  completion:(()->())?) {
         willSave()
-        if let zones = zones {
+    /*    if let zones = zones {
             saveZones(items: zones, completion: nil)
         }
         if let campaigns = campaigns {
@@ -99,31 +98,31 @@ class CacheManager: CacheManagerProtocol {
             savePois(items: pois, completion: nil)
         }
 
-        completion?()
+        completion?()*/
 
-       /* if let zones = zones {
+      if let zones = zones {
             saveZones(items: zones) {
                 if let campaigns = campaigns {
                     self.saveCampaigns(items: campaigns) {
                         if let pois = pois {
                             self.savePois(items: pois) {
-                                self.didSave()
+                              
                                 completion?()
                             }
                         } else {
-                            self.didSave()
+
                             completion?()
                         }
                     }
                 } else {
-                    self.didSave()
+
                     completion?()
                 }
             }
         } else {
-            self.didSave()
+
             completion?()
-        }*/
+        }
     }
 
     func saveZones(items: [Zone], completion:(()->())?)  {

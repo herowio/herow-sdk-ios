@@ -179,8 +179,6 @@ extension CLLocationCoordinate2D: Codable {
         }
     }
 
-
-
      func computeEvents(forZones: SelectionContainer) {
 
         let blockOPeration = BlockOperation { [self] in

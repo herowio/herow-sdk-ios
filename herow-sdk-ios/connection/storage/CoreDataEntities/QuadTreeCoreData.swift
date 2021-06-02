@@ -53,6 +53,7 @@ class LocationCoreData: NSManagedObject {
     @NSManaged var time: Date
     @NSManaged var lat: Double
     @NSManaged var lng: Double
+    @NSManaged var isNearToPoi: Bool
 //    @NSManaged var pois: Set<PoiCoreData>?
 
 

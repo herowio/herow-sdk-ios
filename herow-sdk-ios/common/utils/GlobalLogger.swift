@@ -43,6 +43,7 @@ public enum MessageType: String {
 
     var debug = false
     var debugInFile = false
+    private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
     @objc public static let shared = GlobalLogger()
 
 
@@ -58,7 +59,7 @@ public enum MessageType: String {
 
     private func log(_ message: Any) {
         if debug {
-            print(String(describing:message))
+            // print(String(describing:message))
         }
     }
 
@@ -101,7 +102,14 @@ public enum MessageType: String {
 
 
     private func dispatchMessage(_ message: String , type: MessageType) {
+        
         DispatchQueue.global(qos: .background).async {
+            self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
+                withName: "herow.io.GlobalLogger.backgroundTaskID",
+                expirationHandler: {
+                    UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+                })
+
             let display = "[\(type.rawValue.uppercased())]" + " \(message)"
             if let logger = self.logger {
                 switch type {
@@ -119,6 +127,7 @@ public enum MessageType: String {
             } else {
                 self.log(display)
             }
+            UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
         }
     }
     public func verbose(_ message: Any,

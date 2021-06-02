@@ -23,6 +23,7 @@
         <attribute name="razDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
     <entity name="LocationCoreData" representedClassName="LocationCoreData" syncable="YES">
+        <attribute name="isNearToPoi" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -70,7 +71,7 @@
         <element name="AccessCoreData" positionX="-54" positionY="45" width="128" height="89"/>
         <element name="CampaignCoreData" positionX="-36" positionY="63" width="128" height="164"/>
         <element name="CappingCoreData" positionX="-45" positionY="144" width="128" height="74"/>
-        <element name="LocationCoreData" positionX="-36" positionY="117" width="128" height="89"/>
+        <element name="LocationCoreData" positionX="-36" positionY="117" width="128" height="104"/>
         <element name="NodeCoreData" positionX="-27" positionY="72" width="128" height="209"/>
         <element name="NotificationCoreData" positionX="-27" positionY="54" width="128" height="134"/>
         <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="104"/>

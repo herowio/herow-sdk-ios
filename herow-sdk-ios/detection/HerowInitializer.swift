@@ -25,7 +25,7 @@ import UIKit
     private var detectionEngine: DetectionEngine
     private let zoneProvider: ZoneProvider
     private let eventDispatcher: EventDispatcher
-    private let analyticsManager: AnalyticsManager
+    private let analyticsManager: AnalyticsManagerProtocol
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
     internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol =  UNUserNotificationCenter.current()) {
@@ -220,6 +220,10 @@ import UIKit
 
     public func registerLiveMomentStoreListener(listener: LiveMomentStoreListener) {
         liveMomentStore?.registerLiveMomentStoreListener(listener)
+    }
+
+    public func registerAppStateListener(listener: AppStateDelegate) {
+        appStateDetector.registerAppStateDelegate(appStateDelegate: listener)
     }
     public func getHome() -> QuadTreeNode? {
         return  liveMomentStore?.getHome()

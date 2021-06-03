@@ -38,14 +38,15 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     var headers = [String:String]()
     var responseHeaders: [AnyHashable: Any]?
     private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
-    private let backgroundQueue =  DispatchQueue(label: "LiveMomentStoreQueue", qos: .background)
+    private var allowMultiOperation: Bool = false
     private var ready = false
-    internal init(urlType: URLType, endPoint: EndPoint = .undefined) {
+    internal init(urlType: URLType, endPoint: EndPoint = .undefined, allowMultiOperation: Bool = false) {
         self.baseURL = urlType.rawValue
         self.endPoint = endPoint
         self.sessionCfg = URLSessionConfiguration.default
         self.sessionCfg.timeoutIntervalForRequest = 30.0
         self.session = URLSession(configuration: sessionCfg)
+        self.allowMultiOperation = allowMultiOperation
         queue.qualityOfService = .background
         queue.maxConcurrentOperationCount = 1
     }
@@ -90,12 +91,12 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
             return
         }
 
-        if queue.operationCount == 0 && ready {
+        if (queue.operationCount == 0 || allowMultiOperation) && ready  {
             self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
                 withName: "herow.io.APIWorker.backgroundTaskID" + url.absoluteString,
                 expirationHandler: {
                     UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-                    GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                    GlobalLogger.shared.verbose("APIWorker ends backgroundTask with identifier : \( self.backgroundTaskId)")
                 })
             let blockOPeration = BlockOperation { [self] in
                 var request = URLRequest(url: url)
@@ -122,7 +123,6 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                             return
                         }
                         do {
-
                             self.responseHeaders = response.allHeaderFields
                             let jsonResponse = (String(decoding: data, as: UTF8.self))
                             GlobalLogger.shared.debug("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
@@ -134,7 +134,6 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                             }
                             let voidResponse = NoReply()
                             completion(Result.success(voidResponse as! ResponseType))
-
                         } catch {
                             GlobalLogger.shared.error(NetworkError.serialization)
                             completion(Result.failure(NetworkError.serialization))
@@ -149,6 +148,9 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 currentTask?.resume()
             }
             queue.addOperation(blockOPeration)
+        } else {
+            GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.requestExistsInQueue)")
+            completion(Result.failure(NetworkError.requestExistsInQueue))
         }
     }
 

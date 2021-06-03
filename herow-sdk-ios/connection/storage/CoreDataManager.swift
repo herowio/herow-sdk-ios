@@ -195,7 +195,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         catch let error as NSError {
-            // print("Could not fetch. \(error), \(error.userInfo)")
+             print("Could not fetch. \(error), \(error.userInfo)")
         }
         return zones
     }
@@ -234,7 +234,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         catch let error as NSError {
-            // print("Could not fetch. \(error), \(error.userInfo)")
+             print("Could not fetch. \(error), \(error.userInfo)")
         }
         return campaigns
     }
@@ -266,7 +266,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         catch let error as NSError {
-            // print("Could not fetch. \(error), \(error.userInfo)")
+            print("Could not fetch. \(error), \(error.userInfo)")
         }
         return capping
     }
@@ -317,7 +317,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 pois.append(createPoiObject(poiCoreData))
             }
         } catch let error as NSError {
-            // print("Could not fetch. \(error), \(error.userInfo)")
+            print("Could not fetch. \(error), \(error.userInfo)")
         }
         return pois
     }
@@ -342,7 +342,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 let  poisCoreData = try managedContext.fetch(fetchRequest)
                 pois =  Array(poisCoreData)
             } catch let error as NSError {
-                // print("Could not fetch. \(error), \(error.userInfo)")
+                print("Could not fetch. \(error), \(error.userInfo)")
             }}
         return pois
     }
@@ -358,7 +358,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 poi =  poisCoreData.first
             }
             catch let error as NSError {
-                // print("Could not fetch. \(error), \(error.userInfo)")
+                print("Could not fetch. \(error), \(error.userInfo)")
             }
         }
         return poi
@@ -447,19 +447,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func createQuadTreeRoot( completion: (()->())? = nil) {
-        if let root =  getCoreDataQuadTreeRoot()  {
-            // print("LiveMomentStore - no need to create root")
-          //  reCreateChildsForNode(root)
-           // save()
-//            let pois = getPoisInBase()
-//            let root = T(id: "\(LeafType.root.rawValue)", locations: nil, leftUp: nil, rightUp: nil, leftBottom: nil, rightBottom: nil, tags: nil, densities: nil, rect: Rect.world, pois: pois)
-//            saveQuadTree(root) {
-//                completion?()
-//            }
+        if getCoreDataQuadTreeRoot() != nil  {
             completion?()
             return
         }
-        // print("LiveMomentStore -  need to create root")
         let pois = getPoisInBase()
         let root = T(id: "\(LeafType.root.rawValue)", locations: nil, leftUp: nil, rightUp: nil, leftBottom: nil, rightBottom: nil, tags: nil, densities: nil, rect: Rect.world, pois: pois)
         saveQuadTree(root) {
@@ -551,12 +542,12 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 result = array.first
 
             } catch let error as NSError {
-                // print("Could not fetch. \(error), \(error.userInfo)")
+                print("Could not fetch. \(error), \(error.userInfo)")
             }
         }
         let endRoot = CFAbsoluteTimeGetCurrent()
         let  elapsedTime = (endRoot - start) * 1000
-        // print("LiveMomentStore -  find root in base took \(elapsedTime) ms ")
+         print("LiveMomentStore -  find root in base took \(elapsedTime) ms ")
         return result
     }
 

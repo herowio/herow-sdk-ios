@@ -49,7 +49,7 @@ extension Date {
             components.minute = min
             components.second = 0
 
-            return cal.date(from: components)?.toLocalTime()
+            return cal.date(from: components)
         }
 
     public func next(_ weekday: Weekday,

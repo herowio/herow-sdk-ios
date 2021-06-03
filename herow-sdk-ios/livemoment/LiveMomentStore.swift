@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreLocation
-
+import UIKit
 
 public protocol LiveMomentStoreListener {
     func  didCompute( rects: [NodeDescription]?, home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?, others: [QuadTreeNode]?)
@@ -63,7 +63,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         self.dataBase.createQuadTreeRoot {
             let endRoot = CFAbsoluteTimeGetCurrent()
             var  elapsedTime = (endRoot - start) * 1000
-            // print("LiveMomentStore createQuadTreeRoot took \(elapsedTime) ms ")
+            print("LiveMomentStore createQuadTreeRoot took \(elapsedTime) ms ")
             self.root = self.getClustersInBase()
             self.compute()
             let end = CFAbsoluteTimeGetCurrent()
@@ -93,13 +93,13 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         }
 
         let start = CFAbsoluteTimeGetCurrent()
-        // print("LiveMomentStore reloadNewPois ")
+         print("LiveMomentStore reloadNewPois ")
         backgroundQueue.async {
             self.dataBase.reloadNewPois {
                 self.root = self.getClustersInBase()
                 let end = CFAbsoluteTimeGetCurrent()
                 let elapsedTime = (end - start) * 1000
-                // print("LiveMomentStore reloadNewPois took \(elapsedTime) ms ")
+                print("LiveMomentStore reloadNewPois took \(elapsedTime) ms ")
             }
         }
     }
@@ -176,9 +176,9 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal func save(_ force: Bool = false, _ node: QuadTreeNode? = nil , completion: @escaping ()->()) {
-        let lastSaveDate = self.dataStorage?.getLiveMomentLastSaveDate() ?? Date(timeIntervalSince1970: 0)
-        let now = Date()
-        let shouldSave = lastSaveDate.addingTimeInterval(600) < now || force || count > 5
+       // let lastSaveDate = self.dataStorage?.getLiveMomentLastSaveDate() ?? Date(timeIntervalSince1970: 0)
+       let now = Date()
+      //  let shouldSave = lastSaveDate.addingTimeInterval(600) < now || force || count > 5
         // print("LiveMomentStore  should save \(shouldSave)")
         if true {
             if let root = self.root {

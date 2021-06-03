@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import UIKit
 
 @objc public protocol LoggerDelegate {
 

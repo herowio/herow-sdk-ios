@@ -44,6 +44,7 @@ import UIKit
         fuseManager = FuseManager(dataHolder: dataHolder, timeProvider: TimeProviderAbsolute())
         apiManager.registerConfigListener(listener: detectionEngine)
         geofenceManager = GeofenceManager(locationManager: detectionEngine, cacheManager: cacheManager, fuseManager: fuseManager)
+        appStateDetector.registerAppStateDelegate(appStateDelegate: geofenceManager)
         cacheManager.registerCacheListener(listener: geofenceManager)
         detectionEngine.registerDetectionListener(listener: fuseManager)
         detectionEngine.registerDetectionListener(listener: geofenceManager)

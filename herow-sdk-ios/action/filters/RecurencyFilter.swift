@@ -16,7 +16,7 @@ class RecurencyFilter :NotificationFilter {
     }
 
     func createNotification(campaign: Campaign, completion:(()->())? = nil) -> Bool {
-        let now = Date(timeIntervalSince1970: timeProvider.getTime()).toLocalTime()
+        let now = Date(timeIntervalSince1970: timeProvider.getTime())
         let currentDay = dateFormatter.string(from: now).uppercased()
         var result = false
         if let reccurencies = campaign.getDaysRecurrence()?.map({ $0.uppercased()}) {

@@ -350,7 +350,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
        
         var skip = false
         var distance = 0.0
-        let distpatchTimeKO = abs(dispatchTime.timeIntervalSince1970 - timeProvider.getTime()) < 5
+        let distpatchTimeKO = abs(dispatchTime.timeIntervalSince1970 - timeProvider.getTime()) < 10
         if let lastLocation = self.lastLocation {
             let distanceKO =  lastLocation.distance(from: location) < 30
             let timeKO =  (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 10
@@ -360,7 +360,9 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
         skip = skip || distpatchTimeKO
         if skip == false {
-
+            dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
+            self.lastLocation = location
+            skipCount = 0
             let blockOPeration = BlockOperation { [self] in
                 self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
                     withName: "herow.io.DetectionEngine.backgroundTaskID",
@@ -372,10 +374,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
                 if  self.lastLocation == nil {
                     GlobalLogger.shared.debug("DetectionEngine - first location : \(location), accuracy: \(location.horizontalAccuracy)")
                 }
-                skipCount = 0
-                self.lastLocation = location
                 GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
-                dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
+
                 for listener in  detectionListners {
                     listener.get()?.onLocationUpdate(location, from: from)
                 }
@@ -390,7 +390,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             GlobalLogger.shared.verbose("DetectionEngine - skip location : \(location) DISTANCE FROM LAST : \(distance)")
         }
 
-        return !skip
+        let result = !skip
+        return result
     }
 
 
@@ -435,9 +436,11 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     func didRecievedConfig(_ config: APIConfig) {
         
         if config.enabled {
+            GlobalLogger.shared.debug("DetectionEngine - start working")
             startWorking()
         } else {
             stopWorking()
+            GlobalLogger.shared.debug("DetectionEngine - stop working")
         }
     }
 

@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 import Foundation
 import UserNotifications
-
+import UIKit
 protocol AnalyticsManagerProtocol:   EventListener, DetectionEngineListener, ClickAndConnectListener, AppStateDelegate,NotificationCreationListener, UNUserNotificationCenterDelegate{
     func createlogContex(_ location: CLLocation)
     func createlogEvent( event: Event,  info: ZoneInfo)

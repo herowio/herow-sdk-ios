@@ -16,6 +16,7 @@ public enum NetworkError: Error {
     case noData
     case serialization
     case noOptin
+    case requestExistsInQueue
 }
 
 public enum URLType: String {
@@ -95,7 +96,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         self.tokenWorker = APIWorker<APIToken>(urlType: urlType, endPoint: .token)
         self.configWorker = APIWorker<APIConfig>(urlType: urlType, endPoint: .config)
         self.userInfogWorker = APIWorker<APIUserInfo>(urlType: urlType, endPoint: .userInfo)
-        self.logWorker = APIWorker<NoReply>(urlType: urlType, endPoint: .log)
+        self.logWorker = APIWorker<NoReply>(urlType: urlType, endPoint: .log, allowMultiOperation: true)
         self.cacheWorker = APIWorker<APICache>(urlType: urlType)
         super.init()
         // setting status code listening
@@ -139,12 +140,14 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     func getConfigIfNeeded(completion:(()->())? = nil) {
 
+        GlobalLogger.shared.debug("APIManager - getConfigIfNeeded")
         let process = {
             if let config = self.herowDataStorage.getConfig() {
                 self.dispatchConfig(config)
             }
             completion?()
         }
+
         if self.herowDataStorage.shouldGetConfig() {
             GlobalLogger.shared.debug("APIManager - should get config")
             self.getConfig(completion: {_,_ in
@@ -255,6 +258,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     // MARK: Cache
     internal func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)? = nil) {
+        GlobalLogger.shared.debug("APIManager - getCache")
         if  !herowDataStorage.getOptin().value {
             GlobalLogger.shared.verbose("APIManager- OPTINS ARE FALSE")
             completion?(nil, NetworkError.noOptin)
@@ -392,7 +396,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
    public func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         let currentGeoHash = GeoHashHelper.encodeBase32(lat: location.coordinate.latitude, lng: location.coordinate.longitude)[0...3]
-      
+        GlobalLogger.shared.debug("APIManager - onLocationUpdate")
         getCache(geoHash: String(currentGeoHash))
     }
 

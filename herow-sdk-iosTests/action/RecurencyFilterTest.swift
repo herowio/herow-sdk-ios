@@ -22,7 +22,7 @@ class RecurencyFilterTest: XCTestCase {
 
         let timeProvider = TimeProviderForTests()
         let filter =   RecurencyFilter(timeProvider: timeProvider)
-        timeProvider.date  = Date().next(.monday)
+        timeProvider.date  = Date().next(.monday).setTime(hour: 23, min: 01)!
         XCTAssertTrue( filter.createNotification(campaign: camp))
         timeProvider.date  = Date().next(.wednesday)
         XCTAssertTrue( filter.createNotification(campaign: camp))

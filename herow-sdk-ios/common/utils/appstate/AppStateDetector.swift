@@ -12,7 +12,7 @@ import UIKit
 
     var appStateDelegates: [WeakContainer<AppStateDelegate>]
     var isOnBackground: Bool
-//    internal var bgTaskManager = BackgroundTaskManager(app: UIApplication.shared, name: "io.herow.backgroundDetectionTask")
+    internal var backgroundTaskId = UIBackgroundTaskIdentifier.invalid
     public override init() {
         appStateDelegates = [WeakContainer<AppStateDelegate>]()
         isOnBackground = true
@@ -51,6 +51,12 @@ import UIKit
 
     public func onAppInBackground() {
 
+        self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
+            withName: "herow.io.AppStateDetector.backgroundTaskID",
+            expirationHandler: {
+                UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+                GlobalLogger.shared.verbose("AppStateDetector ends backgroundTask with identifier : \( self.backgroundTaskId)")
+            })
         if !isOnBackground {
             GlobalLogger.shared.debug("appStateDetector - inBackground")
             isOnBackground = true
@@ -58,6 +64,8 @@ import UIKit
                 delegate.get()?.onAppInBackground()
             }
         }
+        UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+        GlobalLogger.shared.verbose("AppStateDetector ends backgroundTask with identifier : \( self.backgroundTaskId)")
       
     }
 

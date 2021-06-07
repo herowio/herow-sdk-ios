@@ -350,16 +350,21 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
        
         var skip = false
         var distance = 0.0
-        let distpatchTimeKO = abs(dispatchTime.timeIntervalSince1970 - timeProvider.getTime()) < 10
+        let distpatchTimeKO = abs(dispatchTime.timeIntervalSince1970 - timeProvider.getTime()) < 3
+        var distanceKO = false
+        var timeKO = false
         if let lastLocation = self.lastLocation {
-            let distanceKO =  lastLocation.distance(from: location) < 30
-            let timeKO =  (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 10
+             distanceKO =  lastLocation.distance(from: location) < 30
+             timeKO =  (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 10
 
             distance = lastLocation.distance(from: location)
             skip = distanceKO && timeKO && skipCount < 5
         }
         skip = skip || distpatchTimeKO
+
+
         if skip == false {
+
             dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
             self.lastLocation = location
             skipCount = 0
@@ -391,6 +396,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
 
         let result = !skip
+        GlobalLogger.shared.info("dispatchLocation - skip = \(skip) distpatchTimeKO = \(distpatchTimeKO) distanceKO= \(timeKO) timeKO: \(timeKO) skipCount: \(skipCount)")
         return result
     }
 

@@ -82,10 +82,8 @@ extension Date {
         guard let evening20 = self.setTime(hour: 20, min: 0), let evening2359 = self.setTime(hour: 23, min: 59), let morning00 = self.setTime(hour: 0, min: 0), let morning06 = self.setTime(hour: 6, min: 0) else {
             return false
         }
-        let evening =  evening20 < self.toLocalTime() && evening2359 > self.toLocalTime()
-        let morning =  morning00 < self.toLocalTime() && morning06 > self.toLocalTime()
-
-      //  let isWeekEnd = ["Satursday","Sunday"].contains( Date.dateFormatter.string(from: self))
+        let evening =  evening20 < self && evening2359 > self
+        let morning =  morning00 < self && morning06 > self
         return (evening || morning)
     }
 
@@ -96,12 +94,12 @@ extension Date {
         guard let moring0830 = self.setTime(hour:8, min: 30), let morning0900 = self.setTime(hour: 8, min: 45), let morning1130 = self.setTime(hour:11, min: 40), let morning12 = self.setTime(hour: 11, min: 50) , let after1330 = self.setTime(hour: 13, min: 30) , let after14 = self.setTime(hour: 13, min: 45), let after1630 = self.setTime(hour: 16, min: 30), let after17 = self.setTime(hour:16, min: 50) else {
             return false
         }
-        let morningEntry =  moring0830 < self.toLocalTime() && morning0900 > self.toLocalTime()
-        let morningExit =  morning1130 < self.toLocalTime() && morning12 > self.toLocalTime()
-        let afterEntry =  after1330 < self.toLocalTime() && after14 > self.toLocalTime()
-        let afterExit =  after1630 < self.toLocalTime() && after17 > self.toLocalTime()
+        let morningEntry =  moring0830 < self && morning0900 > self
+        let morningExit =  morning1130 < self && morning12 > self
+        let afterEntry =  after1330 < self && after14 > self
+        let afterExit =  after1630 < self && after17 > self
 
-        let isOff = ["Satursday","Sunday","Wednesday"].contains( Date.dateFormatter.string(from: self))
+        let isOff = ["Saturday","Sunday","Wednesday"].contains( Date.dateFormatter.string(from: self))
         return (morningEntry || morningExit || afterEntry || afterExit) && !isOff
     }
 
@@ -111,8 +109,8 @@ extension Date {
         guard let work09 = self.setTime(hour: 09, min: 0), let work12 = self.setTime(hour: 12, min: 00), let work14 = self.setTime(hour: 14, min: 0), let work18 = self.setTime(hour: 18, min: 0) else {
             return false
         }
-        let morning =  work09 < self.toLocalTime() && work12 > self.toLocalTime()
-        let afternoon =  work14 < self.toLocalTime() && work18 > self.toLocalTime()
+        let morning =  work09 < self && work12 > self
+        let afternoon =  work14 < self && work18 > self
 
         let isWeekEnd = ["Saturday","Sunday"].contains( Date.dateFormatter.string(from: self))
         return (afternoon || morning) && !isWeekEnd

@@ -632,7 +632,11 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 P(id: $0.id, tags: $0.tags, lat: $0.lat, lng: $0.lng)
             }
             if let coreDataLocations = node.locations {
-                mylocations = coreDataLocations.map {L(lat: $0.lat, lng: $0.lng, time: $0.time)}
+                mylocations = coreDataLocations.map {
+                  let loc =   L(lat: $0.lat, lng: $0.lng, time: $0.time)
+                    loc.setIsNearToPoi($0.isNearToPoi)
+                    return loc
+                }
             }
             let treeId =  node.treeId
             let leftUp  = recursiveInit( node.leftUp())

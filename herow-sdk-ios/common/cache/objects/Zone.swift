@@ -127,6 +127,7 @@ public protocol QuadTreeNode: AnyObject {
     func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode?
     func printHierarchy()
     func populateParentality()
+    func recursiveCompute()
    
 }
 

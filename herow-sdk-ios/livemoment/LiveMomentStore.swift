@@ -65,7 +65,11 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             var  elapsedTime = (endRoot - start) * 1000
             print("LiveMomentStore createQuadTreeRoot took \(elapsedTime) ms ")
             self.root = self.getClustersInBase()
-            self.compute()
+          /* self.root?.recursiveCompute()
+            self.save {
+                self.compute()
+            }*/
+
             let end = CFAbsoluteTimeGetCurrent()
             elapsedTime = (end - start) * 1000
         }
@@ -295,8 +299,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             let start = CFAbsoluteTimeGetCurrent()
             print("LiveMomentStore - compute start")
             self.computeRects()
-
-            // print("LiveMomentStore - compute rect count: \(self.rects?.count ?? 0)")
             self.work = self.computeWork()
             self.home = self.computeHome()
             self.school = self.computeSchool()
@@ -307,7 +309,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             }
             let end = CFAbsoluteTimeGetCurrent()
             let elapsedTime = (end - start) * 1000
-            print("LiveMomentStore - compute took in \(elapsedTime) ms ")
+            print("LiveMomentStore - compute done in \(elapsedTime) ms ")
         }
     }
 

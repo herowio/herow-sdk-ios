@@ -175,6 +175,13 @@ class HerowQuadTreeNode: QuadTreeNode {
         }
     }
 
+    func recursiveCompute() {
+        self.computeTags(false)
+        self.updated = true
+        for child in childs() {
+            child.computeTags(false)
+        }
+    }
 
     func redraw() {
         self.leftBottomChild?.setRect( getRect().leftBottomRect())

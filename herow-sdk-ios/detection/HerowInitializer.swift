@@ -251,6 +251,10 @@ import UIKit
         notificationManager.notificationsOnExactZoneEntry(value)
     }
 
+    @objc public func getVersion() -> String {
+        return AnalyticsInfo().libInfo.version
+    }
+
 }
 
 extension UNUserNotificationCenter : NotificationCenterProtocol {

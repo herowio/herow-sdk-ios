@@ -123,13 +123,17 @@ class LiveMomentStore: LiveMomentStoreProtocol {
 
         isWorking = true
         let blockOPeration = BlockOperation { [self] in
-
+            if self.backgroundTaskId == .invalid {
             self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
                 withName: "herow.io.LiveMomentStore.backgroundTaskID",
                 expirationHandler: {
+                    if self.backgroundTaskId != .invalid {
                     UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+                        self.backgroundTaskId = .invalid
                     GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                    }
                 })
+            }
             GlobalLogger.shared.verbose("LiveMomentStore starts backgroundTask with identifier : \( self.backgroundTaskId)")
             self.currentNode = self.getNodeForLocation(location, completion: { working in
                 self.compute()
@@ -137,9 +141,10 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                 let end = CFAbsoluteTimeGetCurrent()
                 let elapsedTime = (end - start) * 1000
                 print("LiveMomentStore - onLocationUpdate done in \(elapsedTime) ms  ")
-                DispatchQueue.main.async {
-                    GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                if self.backgroundTaskId != .invalid {
                     UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+                    self.backgroundTaskId = .invalid
+                    GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
                 }
             })
             self.count = self.count + 1

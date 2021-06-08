@@ -291,7 +291,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         }.sorted {
             return $0.densities?[LivingTag.home.rawValue] ?? 0 < $1.densities?[LivingTag.home.rawValue] ?? 0
         }
-        return  nodes?.first?.node
+        let home =  nodes?.first?.node
+        return  home
     }
 
     internal func compute() {

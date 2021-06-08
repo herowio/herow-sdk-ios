@@ -691,7 +691,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
 
             nodeCoreData.treeId = node.getTreeId()
-            nodeCoreData.nodeTags = node.getDensities() ?? [String: Double]()
+            nodeCoreData.nodeTags = node.getTags() ?? [String: Double]()
             nodeCoreData.nodeDensities = node.getDensities() ?? [String: Double]()
             nodeCoreData.originLat = node.getRect().originLat
             nodeCoreData.originLng = node.getRect().originLng

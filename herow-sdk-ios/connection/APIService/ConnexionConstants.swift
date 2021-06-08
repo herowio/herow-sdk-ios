@@ -17,6 +17,7 @@ class HerowConstants {
     static let configDateKey: String = "com.herow.sdk.connection.config.date"
     static let geoHashKey: String = "com.herow.sdk.connection.cache.geoHash"
     static let lastCacheModifiedDateKey: String = "com.herow.sdk.connection.cache.lastModifiedDate"
+    static let lastUserInfoModifiedDateKey: String = "com.herow.sdk.connection.userInfo.lastModifiedDate"
     static let lastCacheFetchDateKey: String = "com.herow.sdk.connection.cache.fetchDate"
     static let customIdKey: String = "com.herow.sdk.user.customid"
     static let idfvKey: String = "com.herow.sdk.user.idfv"

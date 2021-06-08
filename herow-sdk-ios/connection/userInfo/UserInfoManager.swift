@@ -35,6 +35,8 @@ protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate {
     func setNotificationStatus( _ status: String)
     func getOptin() -> Optin
     func setOptin( optin: Optin)
+    func registerListener(listener: UserInfoListener)
+    func getUserInfo() -> UserInfo
 
 }
 class UserInfoManager: UserInfoManagerProtocol {
@@ -188,13 +190,15 @@ class UserInfoManager: UserInfoManagerProtocol {
         }
     }
 
-    init(listener: UserInfoListener, herowDataStorage: HerowDataStorageProtocol) {
-        self.userInfoListener = listener
+    init( herowDataStorage: HerowDataStorageProtocol) {
         self.herowDataHolder = herowDataStorage
         if  let herowId = getHerowId() {
             GlobalLogger.shared.registerHerowId(herowId: herowId)
         }
+    }
 
+    func registerListener(listener: UserInfoListener) {
+        self.userInfoListener = listener
     }
 
     func onAppInForeground() {
@@ -210,6 +214,10 @@ class UserInfoManager: UserInfoManagerProtocol {
     }
 
     func synchronize() {
+        self.userInfoListener?.onUserInfoUpdate(userInfo:  getUserInfo())
+    }
+
+    func getUserInfo() -> UserInfo {
         setLang( Locale.current.languageCode ?? "en")
         let optin = getOptin()
         let idfa: String?  = getIDFA()
@@ -227,8 +235,8 @@ class UserInfoManager: UserInfoManagerProtocol {
                                 customId: customId, lang: lang,
                                 offset: offset,
                                 optins:[optin])
-        
-        self.userInfoListener?.onUserInfoUpdate(userInfo: userInfo)
+
+        return userInfo
     }
 
     func reset(completion: @escaping ()->()) {

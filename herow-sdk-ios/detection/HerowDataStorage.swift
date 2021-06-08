@@ -55,8 +55,11 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         }
         self.userInfo = userInfo
         dataHolder.putData(key: HerowConstants.userInfoKey, value: data)
+        dataHolder.putDate(key:  HerowConstants.lastUserInfoModifiedDateKey,  value: Date())
         dataHolder.apply()
     }
+
+
 
     public func getUserInfo() -> APIUserInfo? {
 
@@ -117,7 +120,12 @@ public class HerowDataStorage: HerowDataStorageProtocol {
 
     public func userInfoWaitingForUpdate() -> Bool {
         if let _ = getUserInfo()?.herowId {
-            return  dataHolder.getBoolean(key: HerowConstants.userInfoStatusKey)
+            let now = Date()
+            var timeOk = true
+            if let last = dataHolder.getDate(key:  HerowConstants.userInfoStatusKey) {
+                timeOk = now.timeIntervalSince(last) > 86400
+            }
+            return  (dataHolder.getBoolean(key: HerowConstants.userInfoStatusKey) || timeOk)
         }
         return true
     }

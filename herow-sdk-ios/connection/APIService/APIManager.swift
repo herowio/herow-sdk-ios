@@ -84,11 +84,13 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     let dateFormatter = DateFormatter()
     private var listeners = [WeakContainer<ConfigListener>]()
     private  var connectInfo: ConnectionInfoProtocol
+    private var userInfoManager: UserInfoManagerProtocol?
     var user: User?
     var cacheLoading = false
-    init(connectInfo: ConnectionInfoProtocol, herowDataStorage: HerowDataStorageProtocol, cacheManager: CacheManagerProtocol) {
+    init(connectInfo: ConnectionInfoProtocol, herowDataStorage: HerowDataStorageProtocol, cacheManager: CacheManagerProtocol, userInfoManager: UserInfoManagerProtocol) {
         // setting infos storage
         self.herowDataStorage = herowDataStorage
+        self.userInfoManager = userInfoManager
         self.connectInfo = connectInfo
         self.cacheManager = cacheManager
         let urlType = self.connectInfo.getUrlType()
@@ -360,9 +362,13 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     private func userInfoParam() -> Data? {
         var result: Data?
         let encoder = JSONEncoder()
+        var userInfo = currentUserInfo
+        if let myUserInfo = userInfoManager?.getUserInfo() {
+            userInfo = myUserInfo
+        }
         do {
 
-            result = try encoder.encode(currentUserInfo)
+            result = try encoder.encode(userInfo)
             if let result = result {
             GlobalLogger.shared.debug("APIManager - userInfo to send: \(String(decoding: result, as: UTF8.self))")
             }
@@ -394,10 +400,12 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
     }
 
-   public func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
+    public func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         let currentGeoHash = GeoHashHelper.encodeBase32(lat: location.coordinate.latitude, lng: location.coordinate.longitude)[0...3]
         GlobalLogger.shared.debug("APIManager - onLocationUpdate")
-        getCache(geoHash: String(currentGeoHash))
+        getUserInfoIfNeeded { [self] in
+            getCache(geoHash: String(currentGeoHash))
+        }
     }
 
     public func onUserInfoUpdate(userInfo: UserInfo) {

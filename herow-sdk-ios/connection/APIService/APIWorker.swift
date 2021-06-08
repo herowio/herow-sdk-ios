@@ -83,7 +83,11 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
         let completion: (Result<ResponseType, Error>) -> Void = {result in
             callback?(result)
+            if self.backgroundTaskId != .invalid {
             UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+            GlobalLogger.shared.verbose("APIWorker ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                self.backgroundTaskId = .invalid
+            }
             self.currentTask = nil
         }
         guard let url = URL(string: buildURL(endPoint: endPoint)) else {
@@ -92,12 +96,17 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         }
 
         if (queue.operationCount == 0 || allowMultiOperation) && ready  {
+            if self.backgroundTaskId == .invalid {
             self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
                 withName: "herow.io.APIWorker.backgroundTaskID" + url.absoluteString,
                 expirationHandler: {
+                    if self.backgroundTaskId != .invalid {
                     UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
                     GlobalLogger.shared.verbose("APIWorker ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                        self.backgroundTaskId = .invalid
+                    }
                 })
+            }
             let blockOPeration = BlockOperation { [self] in
                 var request = URLRequest(url: url)
                 request.allHTTPHeaderFields = headers
@@ -105,6 +114,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 if let param = param {
                     request.httpBody = param
                 }
+
                 currentTask = session.dataTask(with: request, completionHandler: { [self] (data, response, error) in
                     if let _ = error {
                         completion(Result.failure(NetworkError.badUrl))

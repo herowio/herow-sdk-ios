@@ -50,13 +50,17 @@ import UIKit
     }
 
     public func onAppInBackground() {
-
+        if self.backgroundTaskId == .invalid {
         self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
             withName: "herow.io.AppStateDetector.backgroundTaskID",
             expirationHandler: {
-                UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-                GlobalLogger.shared.verbose("AppStateDetector ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                if self.backgroundTaskId != .invalid {
+                    UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+                    GlobalLogger.shared.verbose("AppStateDetector ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                    self.backgroundTaskId = .invalid
+                }
             })
+        }
         if !isOnBackground {
             GlobalLogger.shared.debug("appStateDetector - inBackground")
             isOnBackground = true
@@ -64,9 +68,12 @@ import UIKit
                 delegate.get()?.onAppInBackground()
             }
         }
-        UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-        GlobalLogger.shared.verbose("AppStateDetector ends backgroundTask with identifier : \( self.backgroundTaskId)")
-      
+        if self.backgroundTaskId != .invalid {
+            UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+            GlobalLogger.shared.verbose("AppStateDetector ends backgroundTask with identifier : \( self.backgroundTaskId)")
+            self.backgroundTaskId = .invalid
+        }
+
     }
 
     public func onAppTerminated() {

@@ -103,13 +103,12 @@ public enum MessageType: String {
 
     private func dispatchMessage(_ message: String , type: MessageType) {
         
-        DispatchQueue.global(qos: .background).async {
-            self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
+     //   DispatchQueue.global(qos: .background).async {
+       /*     self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
                 withName: "herow.io.GlobalLogger.backgroundTaskID",
                 expirationHandler: {
                     UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-                })
-
+                })*/
             let display = "[\(type.rawValue.uppercased())]" + " \(message)"
             if let logger = self.logger {
                 switch type {
@@ -127,8 +126,8 @@ public enum MessageType: String {
             } else {
                 self.log(display)
             }
-            UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-        }
+         //   UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+       // }
     }
     public func verbose(_ message: Any,
                     fileName: String = #file,

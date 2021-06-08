@@ -44,47 +44,70 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     }
 
     func createlogContex(_ location: CLLocation)  {
+        if  self.backgroundTaskContext == .invalid {
+            self.backgroundTaskContext = UIApplication.shared.beginBackgroundTask (
+                withName: "herow.io.AnalyticsManager.backgroundTaskContextID)"  ,
+                expirationHandler: {
+                    if self.backgroundTaskContext != .invalid {
+                        UIApplication.shared.endBackgroundTask(  self.backgroundTaskContext)
+                        GlobalLogger.shared.info("AnalyticsManager ends context backgroundTask with identifier : \(   self.backgroundTaskContext)")
+                        self.backgroundTaskContext = .invalid
+                    }
 
-        self.backgroundTaskContext = UIApplication.shared.beginBackgroundTask(
-        withName: "herow.io.AnalyticsManager.backgroundTaskContextID)"  ,
-              expirationHandler: {
-                DispatchQueue.main.async {
-                    UIApplication.shared.endBackgroundTask(  self.backgroundTaskContext)
-                    GlobalLogger.shared.info("AnalyticsManager ends context backgroundTask with identifier : \(   self.backgroundTaskContext)")
-                }
 
-            })
+                })
+        }
         GlobalLogger.shared.info("AnalyticsManager starts context backgroundTask with identifier : \(   self.backgroundTaskContext)")
         GlobalLogger.shared.debug("AnalyticsManager - createlogContex: \(location.coordinate.latitude) \(location.coordinate.longitude)")
         let logContext = LogDataContext(appState: appState, location: location, cacheManager: cacheManager, dataStorage:  self.dataStorage, clickAndCollect: onClickAndCollect )
         if let data = logContext.getData() {
             apiManager.pushLog(data) {
-                DispatchQueue.main.async {
+                if self.backgroundTaskContext != .invalid {
                     UIApplication.shared.endBackgroundTask(  self.backgroundTaskContext)
                     GlobalLogger.shared.info("AnalyticsManager ends context backgroundTask with identifier : \(   self.backgroundTaskContext)")
+                    self.backgroundTaskContext = .invalid
                 }
+            }
+        } else {
+            if self.backgroundTaskContext != .invalid {
+                UIApplication.shared.endBackgroundTask(  self.backgroundTaskContext)
+                GlobalLogger.shared.info("AnalyticsManager ends context backgroundTask with identifier : \(   self.backgroundTaskContext)")
+                self.backgroundTaskContext = .invalid
             }
         }
     }
 
     func createlogEvent( event: Event,  info: ZoneInfo)  {
+        if  self.backgroundTaskEvent == .invalid {
         self.backgroundTaskEvent = UIApplication.shared.beginBackgroundTask(
         withName: "herow.io.AnalyticsManager.backgroundTaskEventID"  ,
               expirationHandler: {
-                DispatchQueue.main.async {
+
+                if self.backgroundTaskEvent != .invalid {
                     UIApplication.shared.endBackgroundTask(  self.backgroundTaskEvent)
                     GlobalLogger.shared.info("AnalyticsManager ends Event  backgroundTask with identifier : \(   self.backgroundTaskEvent)")
+                    self.backgroundTaskEvent = .invalid
                 }
+
             })
+        }
         GlobalLogger.shared.info("AnalyticsManager starts Event backgroundTask with identifier : \(   self.backgroundTaskContext)")
         GlobalLogger.shared.debug("AnalyticsManager - createlogEvent event: \(event) zoneInfo: \(info.hash)")
         let logEvent = LogDataEvent(appState: appState, event: event, infos: info, cacheManager: cacheManager, dataStorage:  self.dataStorage)
         if let data = logEvent.getData() {
             apiManager.pushLog(data) {
-                DispatchQueue.main.async {
+
+                if self.backgroundTaskEvent != .invalid {
                     UIApplication.shared.endBackgroundTask(  self.backgroundTaskEvent)
-                    GlobalLogger.shared.info("AnalyticsManager ends Event backgroundTask  with identifier : \(   self.backgroundTaskEvent)")
+                    GlobalLogger.shared.info("AnalyticsManager ends Event  backgroundTask with identifier : \(   self.backgroundTaskEvent)")
+                    self.backgroundTaskEvent = .invalid
                 }
+            }
+        } else {
+            if self.backgroundTaskEvent != .invalid {
+                UIApplication.shared.endBackgroundTask(  self.backgroundTaskEvent)
+                GlobalLogger.shared.info("AnalyticsManager ends Event  backgroundTask with identifier : \(   self.backgroundTaskEvent)")
+                self.backgroundTaskEvent = .invalid
             }
         }
 

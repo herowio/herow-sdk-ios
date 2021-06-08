@@ -87,7 +87,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     private var userInfoManager: UserInfoManagerProtocol?
     var user: User?
     var cacheLoading = false
-    init(connectInfo: ConnectionInfoProtocol, herowDataStorage: HerowDataStorageProtocol, cacheManager: CacheManagerProtocol, userInfoManager: UserInfoManagerProtocol) {
+    init(connectInfo: ConnectionInfoProtocol, herowDataStorage: HerowDataStorageProtocol, cacheManager: CacheManagerProtocol, userInfoManager: UserInfoManagerProtocol? = nil ) {
         // setting infos storage
         self.herowDataStorage = herowDataStorage
         self.userInfoManager = userInfoManager

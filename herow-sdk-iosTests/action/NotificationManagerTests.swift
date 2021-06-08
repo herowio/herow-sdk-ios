@@ -17,7 +17,8 @@ class NotificationManagerTests: XCTestCase, UserInfoListener {
     var notificationManager = NotificationManager(cacheManager: CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()), notificationCenter: MockNotificationCenter(), herowDataStorage: HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest")))
     override func setUpWithError() throws {
         let herowDataStorage = HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest"))
-         userInfoManager = UserInfoManager(listener: self, herowDataStorage: herowDataStorage)
+         userInfoManager = UserInfoManager( herowDataStorage: herowDataStorage)
+        userInfoManager?.registerListener(listener: self)
         userInfoManager?.setCustomId("customID")
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }

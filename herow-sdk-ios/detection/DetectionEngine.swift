@@ -368,31 +368,39 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
             self.lastLocation = location
             skipCount = 0
-            let blockOPeration = BlockOperation { [self] in
-                if self.backgroundTaskId == .invalid {
-                self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
+            let blockOPeration = BlockOperation { [weak self] in
+
+                guard let bgId =  self?.backgroundTaskId else {
+                    return
+                }
+                var newBgId = bgId
+                if bgId == .invalid {
+                    newBgId = UIApplication.shared.beginBackgroundTask(
                     withName: "herow.io.DetectionEngine.backgroundTaskID",
                     expirationHandler: {
-                        if self.backgroundTaskId != .invalid {
-                            UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-                            GlobalLogger.shared.debug("DetectionEngine ends backgroundTask with identifier : \( self.backgroundTaskId)")
-                            self.backgroundTaskId = .invalid
+                        if self?.backgroundTaskId != .invalid {
+                            UIApplication.shared.endBackgroundTask(newBgId)
+                            GlobalLogger.shared.debug("DetectionEngine ends backgroundTask with identifier : \(newBgId)")
+                            self?.backgroundTaskId = .invalid
                         }
                     })
+                    self?.backgroundTaskId = newBgId
                 }
-                GlobalLogger.shared.debug("DetectionEngine starts backgroundTask with identifier : \( self.backgroundTaskId)")
-                if  self.lastLocation == nil {
+                GlobalLogger.shared.debug("DetectionEngine starts backgroundTask with identifier : \( newBgId)")
+                if  self?.lastLocation == nil {
                     GlobalLogger.shared.debug("DetectionEngine - first location : \(location), accuracy: \(location.horizontalAccuracy)")
                 }
                 GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
 
-                for listener in  detectionListners {
+                if let listenners = self?.detectionListners {
+                for listener in listenners {
                     listener.get()?.onLocationUpdate(location, from: from)
                 }
-                if self.backgroundTaskId != .invalid {
-                    UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-                    GlobalLogger.shared.debug("DetectionEngine ends backgroundTask with identifier : \( self.backgroundTaskId)")
-                    self.backgroundTaskId = .invalid
+                }
+                if self?.backgroundTaskId != .invalid {
+                    UIApplication.shared.endBackgroundTask(newBgId)
+                    GlobalLogger.shared.debug("DetectionEngine ends backgroundTask with identifier : \( newBgId)")
+                    self?.backgroundTaskId = .invalid
                 }
             }
             queue.addOperation(blockOPeration)

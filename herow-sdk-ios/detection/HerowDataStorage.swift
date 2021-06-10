@@ -11,14 +11,13 @@ import Foundation
 
 public class HerowDataStorage: HerowDataStorageProtocol {
 
-
-
     private var userInfo: APIUserInfo?
     private var token: APIToken?
     private var config: APIConfig?
     private var lastGeoHash: String?
     let dataHolder: DataHolder
     var timeProvider: TimeProvider
+    
     init(dataHolder: DataHolder, timeProvider: TimeProvider = TimeProviderAbsolute()) {
         self.dataHolder = dataHolder
         self.timeProvider = timeProvider
@@ -36,7 +35,6 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     public func getToken() -> APIToken? {
-
         if let token = self.token {
             return token
         }
@@ -58,10 +56,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         dataHolder.apply()
     }
 
-
-
     public func getUserInfo() -> APIUserInfo? {
-
         if let userInfo = self.userInfo {
             return userInfo
         }
@@ -86,7 +81,6 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     public func getConfig() -> APIConfig? {
-
         if let config = self.config {
             return config
         }
@@ -100,7 +94,6 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     private func getLastConfigDate() -> Date? {
-
         return dataHolder.getDate(key: HerowConstants.configDateKey)
     }
 
@@ -247,7 +240,6 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         return  getUserInfo()?.herowId
     }
 
-
     public func getLang() -> String? {
        return  dataHolder.getString(key: HerowConstants.langKey)
     }
@@ -312,18 +304,14 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     public func reset(completion : ()->()) {
-
         self.token = nil 
         dataHolder.remove(key: HerowConstants.tokenKey)
         dataHolder.remove(key: HerowConstants.configKey)
         dataHolder.remove(key: HerowConstants.userInfoKey)
         dataHolder.remove(key: HerowConstants.lastCacheModifiedDateKey)
-        dataHolder.remove(key: HerowConstants.lastCacheModifiedDateKey)
         dataHolder.remove(key: HerowConstants.configDateKey)
         dataHolder.remove(key: HerowConstants.geoHashKey)
         dataHolder.apply()
         completion()
-
     }
-
 }

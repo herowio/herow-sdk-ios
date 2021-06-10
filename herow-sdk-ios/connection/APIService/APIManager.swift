@@ -406,8 +406,8 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     public func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         let currentGeoHash = GeoHashHelper.encodeBase32(lat: location.coordinate.latitude, lng: location.coordinate.longitude)[0...3]
         GlobalLogger.shared.debug("APIManager - onLocationUpdate")
-        getUserInfoIfNeeded { [self] in
-            getCache(geoHash: String(currentGeoHash))
+        getUserInfoIfNeeded { [weak self] in
+            self?.getCache(geoHash: String(currentGeoHash))
         }
     }
 

@@ -198,10 +198,12 @@ class CacheManager: CacheManagerProtocol {
     }
 
     func cleanCache(_ completion:(()->())? = nil) {
-        db.purgeAllData() { [self] in
+        db.purgeAllData() { [weak self] in
             completion?()
-            for listener in listeners {
-                listener.get()?.onCacheUpdate(forGeoHash: nil)
+            if let listeners = self?.listeners {
+                for listener in listeners {
+                    listener.get()?.onCacheUpdate(forGeoHash: nil)
+                }
             }
         }
     }

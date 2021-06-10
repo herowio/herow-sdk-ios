@@ -288,17 +288,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         self.rects =  self.root?.getReccursiveRects(nil)
     }
 
-    internal func computeHome() -> QuadTreeNode? {
-        let nodes = getRects()?.filter {
-            $0.locations.count > 10 &&
-                ($0.densities?.count ?? 0)  > 0 &&
-                $0.densities?[LivingTag.home.rawValue] ?? 0 > 0
-        }.sorted {
-            return $0.densities?[LivingTag.home.rawValue] ?? 0 < $1.densities?[LivingTag.home.rawValue] ?? 0
-        }
-        let home =  nodes?.first?.node
-        return  home
-    }
+
 
     internal func compute() {
         backgroundQueue.async {
@@ -317,6 +307,18 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             let elapsedTime = (end - start) * 1000
             print("LiveMomentStore - compute done in \(elapsedTime) ms ")
         }
+    }
+
+    internal func computeHome() -> QuadTreeNode? {
+        let nodes = getRects()?.filter {
+            $0.locations.count > 10 &&
+                ($0.densities?.count ?? 0)  > 0 &&
+                $0.densities?[LivingTag.home.rawValue] ?? 0 > 0
+        }.sorted {
+            return $0.densities?[LivingTag.home.rawValue] ?? 0 < $1.densities?[LivingTag.home.rawValue] ?? 0
+        }
+        let home =  nodes?.first?.node
+        return  home
     }
 
     internal func computeWork() -> QuadTreeNode? {

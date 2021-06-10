@@ -426,7 +426,6 @@ class HerowQuadTreeNode: QuadTreeNode {
         var result: QuadTreeNode? = nil
         if rect.contains(location) {
             result = self
-
             for child in childs() {
                 if child.getRect().contains(location ){
                     result =  child.browseTree(location)
@@ -523,10 +522,10 @@ class HerowQuadTreeNode: QuadTreeNode {
 
     @discardableResult
     func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode? {
-        let count = self.locations.count
+        let count = self.allLocations().count
         if ((count <= getLimit() && !hasChildForLocation(location)) || rect.isMin()) {
             if !locationIsPresent(location) {
-                print("LiveMomentStore - addLocation node: \(treeId!) count: \(count) isMin? : \( rect.isMin()) limit: \(getLimit())")
+                print("© addLocation node: \(treeId!) count: \(count) isMin? : \( rect.isMin()) limit: \(getLimit())")
                 locations.append(location)
                 lastLocation = location
                 newLocations.append(location)

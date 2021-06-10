@@ -264,9 +264,11 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         if  !herowDataStorage.getOptin().value {
             GlobalLogger.shared.verbose("APIManager- OPTINS ARE FALSE")
             completion?(nil, NetworkError.noOptin)
+            self.cacheLoading =  false
             return
         }
         if cacheLoading {
+            GlobalLogger.shared.verbose("APIManager- CACHE ALREADY LOADING")
             return
         }
         cacheLoading = true
@@ -293,6 +295,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                                                })
                         completion?(cache, error)
                     }
+                    self.cacheLoading =  false
                 }
             } else {
                 self.cacheManager.didSave(forGeoHash: nil)

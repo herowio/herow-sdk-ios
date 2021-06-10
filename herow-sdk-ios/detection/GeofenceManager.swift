@@ -26,6 +26,8 @@ fileprivate struct MovingGeofenceParameter {
 class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListener, AppStateDelegate {
     func onAppInForeground() {
         onForeGround = true
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = 5.0
     }
 
     func onAppInBackground() {

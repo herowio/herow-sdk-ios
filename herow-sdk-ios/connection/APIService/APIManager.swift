@@ -17,6 +17,7 @@ public enum NetworkError: Error {
     case serialization
     case noOptin
     case requestExistsInQueue
+    case workerStillWorking
 }
 
 public enum URLType: String {
@@ -269,7 +270,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
         if cacheLoading {
             GlobalLogger.shared.verbose("APIManager- CACHE ALREADY LOADING")
-            return
+           // return
         }
         cacheLoading = true
         authenticationFlow  {

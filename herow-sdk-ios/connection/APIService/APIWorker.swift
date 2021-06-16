@@ -40,7 +40,6 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
     private var allowMultiOperation: Bool = false
     private var ready = false
-    let semaphore = DispatchSemaphore(value: 1)
     internal init(urlType: URLType, endPoint: EndPoint = .undefined, allowMultiOperation: Bool = false) {
         self.baseURL = urlType.rawValue
         self.endPoint = endPoint
@@ -81,7 +80,9 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     }
 
     internal  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?)  {
-        semaphore.wait()
+
+
+
         let completion: (Result<ResponseType, Error>) -> Void = {result in
             callback?(result)
             if self.backgroundTaskId != .invalid {
@@ -90,12 +91,20 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 self.backgroundTaskId = .invalid
             }
             self.currentTask = nil
-            self.semaphore.signal()
         }
+
+
         guard let url = URL(string: buildURL(endPoint: endPoint)) else {
             completion(Result.failure(NetworkError.badUrl))
             return
         }
+
+        if currentTask != nil && allowMultiOperation == false {
+            GlobalLogger.shared.error("APIWorker still working " + url.absoluteString)
+            completion(Result.failure(NetworkError.workerStillWorking))
+            return
+        }
+
         if (queue.operationCount == 0 || allowMultiOperation) && ready  {
             if self.backgroundTaskId == .invalid {
             self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(

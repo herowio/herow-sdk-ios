@@ -40,7 +40,7 @@ class SelectionContainer {
         }
     }
 
-    func getZone() -> Zone? {
+   public func getZone() -> HerowZone? {
         return zone
     }
 

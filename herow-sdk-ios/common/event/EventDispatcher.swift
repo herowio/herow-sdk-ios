@@ -10,6 +10,7 @@ import Foundation
 @objc public enum Event: Int {
     case GEOFENCE_ENTER
     case GEOFENCE_EXIT
+    
     case GEOFENCE_NOTIFICATION_ZONE_ENTER
     case GEOFENCE_VISIT
 

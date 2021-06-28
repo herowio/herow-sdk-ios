@@ -124,11 +124,10 @@ class HerowQuadTreeNode: QuadTreeNode {
     static let nodeSize = 100.0
     static let locationsLimitCount = 3
     static let fixedLimitLevelCount = 5
-
     private var rect: Rect =  Rect.world
     private var treeId: String?
     private var locations : [QuadTreeLocation]
-    private var newLocations : [QuadTreeLocation]
+
     private var rightUpChild : QuadTreeNode?
     private weak var parentNode : QuadTreeNode?
     private var leftUpChild : QuadTreeNode?
@@ -142,11 +141,10 @@ class HerowQuadTreeNode: QuadTreeNode {
     private var lastHomeCount: Int = -1
     private var lastWorkCount : Int = -1
     private var lastSchoolCount: Int = -1
-  
+    private var newBorn = false
     required init(id: String, locations: [QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom : QuadTreeNode?, rightBottom : QuadTreeNode?, tags: [String: Double]?, densities:  [String: Double]?, rect: Rect, pois: [Poi]?) {
         treeId = id
         self.locations = locations ?? [QuadTreeLocation]()
-        self.newLocations =  [QuadTreeLocation]()
         rightUpChild = rightUp
         leftUpChild = leftUp
         rightBottomChild = rightBottom
@@ -194,12 +192,21 @@ class HerowQuadTreeNode: QuadTreeNode {
         }
     }
 
+    func isNewBorn() -> Bool {
+        return newBorn
+    }
+
+    func setNewBorn(_ value: Bool) {
+        newBorn = value
+    }
+
     func getUpdate() -> Bool {
         return updated
     }
 
     func setUpdated(_ value: Bool) {
         updated = value
+
         if value == false {
             self.childs().forEach { child in
                 child.setUpdated(false)
@@ -222,14 +229,15 @@ class HerowQuadTreeNode: QuadTreeNode {
         return treeId ?? "0"
     }
 
+    func isMin() -> Bool {
+        return rect.isMin()
+    }
 
     func getLocations() -> [QuadTreeLocation] {
         return locations
     }
 
-    func getNewLocations() -> [QuadTreeLocation] {
-        return newLocations
-    }
+   
 
     func getLastLocation() -> QuadTreeLocation? {
         return lastLocation
@@ -525,10 +533,9 @@ class HerowQuadTreeNode: QuadTreeNode {
         let count = self.allLocations().count
         if ((count <= getLimit() && !hasChildForLocation(location)) || rect.isMin()) {
             if !locationIsPresent(location) {
-                print("© addLocation node: \(treeId!) count: \(count) isMin? : \( rect.isMin()) limit: \(getLimit())")
+                print("addLocation node: \(treeId!) count: \(count) isMin? : \( rect.isMin()) limit: \(getLimit())")
                 locations.append(location)
                 lastLocation = location
-                newLocations.append(location)
                 self.updated = true
                 computeTags()
             }
@@ -565,6 +572,7 @@ class HerowQuadTreeNode: QuadTreeNode {
             fatalError("should never append")
         }
         child.updated = true
+        child.newBorn = true
         return child
     }
 

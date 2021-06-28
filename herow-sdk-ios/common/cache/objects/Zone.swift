@@ -107,7 +107,6 @@ public protocol QuadTreeNode: AnyObject {
     func getPois() -> [Poi]?
     func setPois(_ pois: [Poi]?)
     func getLocations() -> [QuadTreeLocation]
-    func getNewLocations() -> [QuadTreeLocation]
     func getLastLocation() -> QuadTreeLocation?
     func getLeftUpChild() -> QuadTreeNode?
     func getRightUpChild() -> QuadTreeNode?
@@ -128,6 +127,9 @@ public protocol QuadTreeNode: AnyObject {
     func printHierarchy()
     func populateParentality()
     func recursiveCompute()
+    func isMin() -> Bool
+    func isNewBorn() -> Bool
+    func setNewBorn(_ value: Bool)
    
 }
 

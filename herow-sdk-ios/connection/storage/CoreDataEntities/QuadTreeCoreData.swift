@@ -47,14 +47,52 @@ class NodeCoreData: NSManagedObject {
     func isRoot() -> Bool {
         return treeId == "\(LeafType.root.rawValue)"
     }
+
+    func contains(_ loc: QuadTreeLocation) -> Bool {
+        guard let locations = self.locations else {
+            return false
+        }
+        return !locations.filter {
+            $0.lat == loc.lat && $0.lng == loc.lng && $0.time == loc.time
+        }.isEmpty
+    }
+
+    func contains(_ loc: LocationCoreData) -> Bool {
+        guard let locations = self.locations else {
+            return false
+        }
+        return !locations.filter {
+            $0.lat == loc.lat && $0.lng == loc.lng && $0.time == loc.time
+        }.isEmpty
+    }
+
+    func cleanLocations() {
+        guard let locations = self.locations , let childs = self.childs, childs.count > 0 else {return}
+        for loc in locations {
+            for child in  childs {
+                if child.contains(loc) {
+                    self.locations?.remove(loc)
+                }
+            }
+        }
+    }
 }
 @objc(LocationCoreData)
 class LocationCoreData: NSManagedObject {
     @NSManaged var time: Date
     @NSManaged var lat: Double
     @NSManaged var lng: Double
+    @NSManaged var node: NodeCoreData
+    @NSManaged var period: Period
     @NSManaged var isNearToPoi: Bool
 //    @NSManaged var pois: Set<PoiCoreData>?
 
 
+}
+
+@objc(Period)
+class Period: NSManagedObject {
+    @NSManaged var start: Date
+    @NSManaged var end: Date
+    @NSManaged var locations: Set<LocationCoreData>?
 }

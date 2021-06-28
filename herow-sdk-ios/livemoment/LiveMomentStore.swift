@@ -112,7 +112,9 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
+    
         if self.root == nil || isWorking   {
+            print("LiveMomentStore - isWorking")
             return
         }
 

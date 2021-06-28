@@ -195,7 +195,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         catch let error as NSError {
-             print("Could not fetch. \(error), \(error.userInfo)")
+            print("Could not fetch. \(error), \(error.userInfo)")
         }
         return zones
     }
@@ -234,7 +234,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         catch let error as NSError {
-             print("Could not fetch. \(error), \(error.userInfo)")
+            print("Could not fetch. \(error), \(error.userInfo)")
         }
         return campaigns
     }
@@ -407,6 +407,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         save(completion)
     }
 
+
+
     private func save( _ completion: (() ->())? = nil) {
         DispatchQueue.global(qos: .background).async {
             self.context.performAndWait {
@@ -429,11 +431,193 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                     }
                 }
             }
+            DispatchQueue.global(qos: .background).async {
+                self.computePeriods()
+            }
             completion?()
         }
     }
 
     //MARK: QUADTREE
+
+
+    func periodeForLocation(_ location: LocationCoreData , context: NSManagedObjectContext) -> Period? {
+
+        var result: Period?
+        print("Period - location: \(location.lat)   \(location.lng) \(location.time)")
+        let fetchRequest = NSFetchRequest<Period>(entityName: StorageConstants.PeriodEntityName)
+        fetchRequest.predicate = NSPredicate(format: "start <= %@ && end >= %@", location.time as NSDate, location.time as NSDate)
+        do {
+            let array = try context.fetch(fetchRequest)
+            // print("LiveMomentStore -  getCoreDataQuadTreeRoot count : \(array.count) ")
+            result = array.first
+
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+
+        if result == nil {
+            let entity =
+                NSEntityDescription.entity(forEntityName: StorageConstants.PeriodEntityName,
+                                           in: context)!
+            result = Period(entity: entity,
+                            insertInto: context)
+            result?.start = location.time.startOfDay
+            result?.end = location.time.startOfDay.addingTimeInterval(7 * 86400)
+            result?.locations = Set()
+            print("Period - creation: start: \( result?.start) end: \( result?.end) ")
+        } else {
+            print("Period - exists")
+        }
+        result?.locations?.insert(location)
+
+        return result
+
+    }
+
+    func deleteDuplicatesForLocation(_ location: LocationCoreData , context: NSManagedObjectContext)  {
+
+
+        context.performAndWait {
+
+            let time = location.time as NSDate
+            let fetch = NSFetchRequest<NSFetchRequestResult>(entityName:  StorageConstants.LocationCoreDataEntityName)
+            fetch.predicate = NSPredicate(format: "time == %@", time )
+            let request = NSBatchDeleteRequest(fetchRequest: fetch)
+
+            do {
+                let result = try context.execute(request)
+                print("delete duplicate: \(result) ")
+            } catch {
+                fatalError("Failed to execute request: \(error)")
+            }
+
+            context.insert(location)
+
+        }
+    }
+
+
+
+    func removePeriods(_ context: NSManagedObjectContext) {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: StorageConstants.PeriodEntityName)
+        // Create Batch Delete Request
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        do {
+            try  context.execute(batchDeleteRequest)
+        } catch {
+            // print("error on delete")
+        }
+
+    }
+
+
+    /*  let fetchRequest = NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
+     let lat = location.lat
+     let lng = location.lng
+     let time = location.time as NSDate
+     fetchRequest.predicate = NSPredicate(format: "time == %@", time)
+     do {
+     let array = try context.fetch(fetchRequest)
+     // print("LiveMomentStore -  getCoreDataQuadTreeRoot count : \(array.count) ")
+     result = array
+
+
+     } catch let error as NSError {
+     print("Could not fetch. \(error), \(error.userInfo)")
+     }
+     }*/
+
+    func getLocations(_ context : NSManagedObjectContext) -> [LocationCoreData] {
+        var result = [LocationCoreData]()
+
+        let fetchRequest = NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
+        do {
+            result = try context.fetch(fetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+
+        return result
+    }
+
+
+    func getPeriods(_ context : NSManagedObjectContext) -> [Period] {
+        var result = [Period]()
+
+        let fetchRequest = NSFetchRequest<Period>(entityName: StorageConstants.PeriodEntityName)
+        do {
+            result = try context.fetch(fetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+
+        return result
+    }
+
+
+
+
+    func unlikededlocation(_ context : NSManagedObjectContext) -> [LocationCoreData] {
+        var result = [LocationCoreData]()
+
+        let fetchRequest = NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
+        fetchRequest.predicate = NSPredicate(format: "node == nil")
+        do {
+            result = try context.fetch(fetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+
+        return result
+
+    }
+
+    func cleanUnLikedLocations(_ context: NSManagedObjectContext) {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: StorageConstants.LocationCoreDataEntityName)
+        fetchRequest.predicate = NSPredicate(format: "node == nil OR period == nil")
+        //           // Create Batch Delete Request
+        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        do {
+            try  context.execute(batchDeleteRequest)
+        } catch {
+            // print("error on delete")
+        }
+    }
+
+    func computePeriods() {
+
+        var context = self.bgContext
+        if Thread.isMainThread {
+            context = self.context
+        }
+
+        context.perform { [self] in
+            //  removePeriods(context)
+            let periods = getPeriods(context)
+
+            /*  let unlikedLocations = unlikededlocation(context)
+             if unlikedLocations.count > 0 {
+             print("Period - cleaning: \( unlikedLocations.count)")
+             cleanUnLikedLocations(context)
+             }*/
+            print("Period - periods count at start : \( periods.count)")
+            var i = 1
+            var total = 0
+            for period  in periods {
+                let count = period.locations?.count ?? 0
+                print("Period - period  \(i) start: \(period.start) end:\(period.end) ")
+                print("Period - period  \(i) has \(count) locations ")
+                i = i + 1
+                total = total + count
+            }
+            print("Period - total =   \(total)")
+            let  locations = getLocations(context)
+            print("Period - locations for display  count at start : \(locations.count)")
+        }
+
+    }
+
     func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())? = nil) {
         var context = self.bgContext
         if Thread.isMainThread {
@@ -460,7 +644,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     func reloadNewPois(completion: (()->())? = nil) {
         var context = self.bgContext
-         if Thread.isMainThread {
+        if Thread.isMainThread {
             // print("MAIN THREAD ! ")
             context = self.context
         }
@@ -492,28 +676,28 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     private  func reCreateChildsForNode(_ node: NodeCoreData?, contextToUse: NSManagedObjectContext? = nil) -> NodeCoreData?  {
         var context = contextToUse
         if context == nil {
-         context = self.bgContext
-        if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
-            context = self.context
-        }
-        }
-        if let context = context {
-        context.performAndWait {
-            if  let id = node?.treeId {
-                let child1 = reCreateChildsForNode(getCoreDataQuadTree("\(id)1", contextToUse: context), contextToUse: context)
-                child1?.parent = node
-                let child2 = reCreateChildsForNode(getCoreDataQuadTree("\(id)2", contextToUse: context), contextToUse: context)
-                child2?.parent = node
-                let child3 = reCreateChildsForNode(getCoreDataQuadTree("\(id)3", contextToUse: context), contextToUse: context)
-                child3?.parent = node
-                let child4 = reCreateChildsForNode(getCoreDataQuadTree("\(id)4", contextToUse: context), contextToUse: context)
-                child4?.parent = node
-                node?.childs = Set([child1, child2, child3, child4].compactMap{
-                    return $0
-                })
+            context = self.bgContext
+            if Thread.isMainThread {
+                // print("MAIN THREAD ! ")
+                context = self.context
             }
         }
+        if let context = context {
+            context.performAndWait {
+                if  let id = node?.treeId {
+                    let child1 = reCreateChildsForNode(getCoreDataQuadTree("\(id)1", contextToUse: context), contextToUse: context)
+                    child1?.parent = node
+                    let child2 = reCreateChildsForNode(getCoreDataQuadTree("\(id)2", contextToUse: context), contextToUse: context)
+                    child2?.parent = node
+                    let child3 = reCreateChildsForNode(getCoreDataQuadTree("\(id)3", contextToUse: context), contextToUse: context)
+                    child3?.parent = node
+                    let child4 = reCreateChildsForNode(getCoreDataQuadTree("\(id)4", contextToUse: context), contextToUse: context)
+                    child4?.parent = node
+                    node?.childs = Set([child1, child2, child3, child4].compactMap{
+                        return $0
+                    })
+                }
+            }
         }
         return node
     }
@@ -527,7 +711,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var result : NodeCoreData?
         var context = contextToUse
         if contextToUse == nil {
-             context = self.bgContext
+            context = self.bgContext
             if Thread.isMainThread {
                 // print("MAIN THREAD ! ")
                 context = self.context
@@ -547,15 +731,13 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
         let endRoot = CFAbsoluteTimeGetCurrent()
         let  elapsedTime = (endRoot - start) * 1000
-         print("LiveMomentStore -  find root in base took \(elapsedTime) ms ")
+        print("LiveMomentStore -  find root in base took \(elapsedTime) ms ")
         return result
     }
 
     func getQuadTreeRoot() -> QuadTreeNode? {
         if let root =  getCoreDataQuadTreeRoot() {
-
             let quadTree  = recursiveInit(root)
-          //  quadTree?.populateParentality()
             return quadTree
         }
         return nil
@@ -584,7 +766,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         catch let error as NSError {
-             print("Could not fetch. \(error), \(error.userInfo)")
+            print("Could not fetch. \(error), \(error.userInfo)")
         }
         return node
     }
@@ -633,7 +815,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
             if let coreDataLocations = node.locations {
                 mylocations = coreDataLocations.map {
-                  let loc =   L(lat: $0.lat, lng: $0.lng, time: $0.time)
+                    let loc =   L(lat: $0.lat, lng: $0.lng, time: $0.time)
                     loc.setIsNearToPoi($0.isNearToPoi)
                     return loc
                 }
@@ -653,7 +835,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
 
 
-             result =  T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags,densities: densities, rect: rect, pois: pois)
+            result =  T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags,densities: densities, rect: rect, pois: pois)
             result?.getLeftUpChild()?.setParentNode(result)
             result?.getLeftBottomChild()?.setParentNode(result)
             result?.getRightUpChild()?.setParentNode(result)
@@ -664,7 +846,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     @discardableResult
     private func recursiveSave(_ node : QuadTreeNode?, context: NSManagedObjectContext ) -> NodeCoreData? {
-
         guard let node = node else {
             return nil
         }
@@ -697,30 +878,38 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             nodeCoreData.originLng = node.getRect().originLng
             nodeCoreData.endLat = node.getRect().endLat
             nodeCoreData.endLng = node.getRect().endLng
-            let lastLocation = node.getLastLocation()
-            if let newLocation = createLocation(lastLocation, context: context) {
-                if  nodeCoreData.locations == nil {
-                    // print("no locations")
-                    nodeCoreData.locations = Set([LocationCoreData]())
-                } else {
-
-                }
-                nodeCoreData.locations?.insert(newLocation)
+            if  nodeCoreData.locations == nil {
+                // print("no locations")
+                nodeCoreData.locations = Set([LocationCoreData]())
             }
 
+            if  ( nodeCoreData.locations?.count  ?? 0  ) > 0   {
+                if let last = node.getLastLocation(), !nodeCoreData.contains(last){
+                    if let newLocation = createLocation( node.getLastLocation(), context: context) {
+                        nodeCoreData.locations?.insert(newLocation)
+                        _ = self.periodeForLocation(newLocation, context: context)
+                    }
+                }
+            } else {
+                for loc in node.getLocations() {
+                    if let newLocation = createLocation( loc, context: context) {
+                        nodeCoreData.locations?.insert(newLocation)
+                        _ = self.periodeForLocation(newLocation, context: context)
+                    }
+                }
+            }
             let bottomLeftNode = node.getLeftBottomChild()
             let bottomRightNode = node.getRightBottomChild()
             let upRightNode = node.getRightUpChild()
             let upLeftNode = node.getLeftUpChild()
             var childToUpdate = [NodeCoreData]()
 
-
             if bottomLeftNode?.getUpdate() ?? false {
                 let bottomLeft = recursiveSave(bottomLeftNode, context: context)
                 bottomLeft?.type = "\(LeafType.leftBottom.rawValue)"
                 bottomLeft?.parent = nodeCoreData
                 if let node = bottomLeft {
-                childToUpdate.append(node)
+                    childToUpdate.append(node)
                 }
             }
 
@@ -729,7 +918,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 bottomRight?.type = "\(LeafType.rightBottom.rawValue)"
                 bottomRight?.parent = nodeCoreData
                 if let node = bottomRight {
-                childToUpdate.append(node)
+                    childToUpdate.append(node)
                 }
             }
 
@@ -738,7 +927,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 upRight?.type = "\(LeafType.rightUp.rawValue)"
                 upRight?.parent = nodeCoreData
                 if let node = upRight {
-                childToUpdate.append(node)
+                    childToUpdate.append(node)
                 }
             }
 
@@ -747,7 +936,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 upLeft?.type = "\(LeafType.leftUp.rawValue)"
                 upLeft?.parent = nodeCoreData
                 if let node = upLeft {
-                childToUpdate.append(node)
+                    childToUpdate.append(node)
                 }
             }
             if childToUpdate.count > 0 {
@@ -761,11 +950,11 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 nodeCoreData.childs = Set(childToUpdate)
             }
 
+            nodeCoreData.cleanLocations()
             // print("NODE IN BASE \(nodeCoreData?.treeId ?? "Undefine") has \(nodeCoreData?.childs?.count ?? 0) child(s)")
         }
         return nodeCoreData
     }
-
 
     private func createLocation(_ location: QuadTreeLocation?, context:NSManagedObjectContext) -> LocationCoreData? {
         guard let location = location else {
@@ -783,7 +972,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return locationCoreData
     }
 
-    @discardableResult
+ /*   @discardableResult
     private func saveLocations(_ locations: [QuadTreeLocation], context: NSManagedObjectContext ) -> Set<LocationCoreData> {
         var result = [LocationCoreData]()
         for loc in locations {
@@ -807,5 +996,5 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         return Set(result)
-    }
+    }*/
 }

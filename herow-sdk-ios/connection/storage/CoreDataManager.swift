@@ -883,7 +883,18 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 nodeCoreData.locations = Set([LocationCoreData]())
             }
 
-            if  ( nodeCoreData.locations?.count  ?? 0  ) > 0   {
+
+            for loc in  nodeCoreData.locations! {
+                context.delete(loc)
+            }
+            for loc in node.getLocations() {
+                if let newLocation = createLocation( loc, context: context) {
+                    nodeCoreData.locations?.insert(newLocation)
+                    _ = self.periodeForLocation(newLocation, context: context)
+                }
+            }
+
+          /* if  ( nodeCoreData.locations?.count  ?? 0  ) > 0   {
                 if let last = node.getLastLocation(), !nodeCoreData.contains(last){
                     if let newLocation = createLocation( node.getLastLocation(), context: context) {
                         nodeCoreData.locations?.insert(newLocation)
@@ -897,7 +908,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                         _ = self.periodeForLocation(newLocation, context: context)
                     }
                 }
-            }
+         //   }*/
             let bottomLeftNode = node.getLeftBottomChild()
             let bottomRightNode = node.getRightBottomChild()
             let upRightNode = node.getRightUpChild()
@@ -972,6 +983,41 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return locationCoreData
     }
 
+
+    // MARK: analyse
+    @discardableResult
+    func getLocationsNumber() -> Int {
+        var context = self.bgContext
+        if Thread.isMainThread {
+            // print("MAIN THREAD ! ")
+            context = self.context
+        }
+        var count = 0
+        context.performAndWait {
+            let fetchRequest =
+                NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
+
+            let locations = try? context.fetch(fetchRequest)
+
+            if let locations = locations {
+                count = locations.count
+            }
+
+            print("Coredata Analyse : locationCount: \(count)")
+
+            let periods = getPeriods(context)
+            let periodlocations: [[LocationCoreData]] = Array(periods.map{Array($0.locations ?? Set<LocationCoreData>())})
+            print("Coredata Analyse : locations from period locationCount: \(Array(periodlocations.joined()).count)")
+
+        }
+
+
+
+        return count
+    }
+
+}
+
  /*   @discardableResult
     private func saveLocations(_ locations: [QuadTreeLocation], context: NSManagedObjectContext ) -> Set<LocationCoreData> {
         var result = [LocationCoreData]()
@@ -997,4 +1043,4 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
         return Set(result)
     }*/
-}
+

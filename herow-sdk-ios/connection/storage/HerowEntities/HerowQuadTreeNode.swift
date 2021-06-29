@@ -114,9 +114,6 @@ public struct NodeDescription {
 }
 
 class HerowQuadTreeNode: QuadTreeNode {
-
-
-
     static let maxLat = 90.0
     static let minLat = -90.0
     static let maxLng = 180.0
@@ -236,8 +233,6 @@ class HerowQuadTreeNode: QuadTreeNode {
     func getLocations() -> [QuadTreeLocation] {
         return locations
     }
-
-   
 
     func getLastLocation() -> QuadTreeLocation? {
         return lastLocation
@@ -517,16 +512,16 @@ class HerowQuadTreeNode: QuadTreeNode {
     func dispatchParentLocations() {
         for location in locations {
             var  child =  childForLocation(location)
-            locations = locations.filter {
-                !( location.lat == $0.lat && location.lng == $0.lng && location.time == $0.time)
-            }
+
             if child == nil {
                 child = createChildforLocation(location)
             } else {
               _ = child?.addLocation(location)
             }
         }
+        locations.removeAll()
     }
+
 
     @discardableResult
     func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode? {

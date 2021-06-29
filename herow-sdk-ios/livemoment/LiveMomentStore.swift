@@ -148,6 +148,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                     self.backgroundTaskId = .invalid
                     GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
                 }
+                self.printAnalyse()
             })
             self.count = self.count + 1
 
@@ -184,6 +185,18 @@ class LiveMomentStore: LiveMomentStoreProtocol {
 
     func getParentForNode(_ node: QuadTreeNode) -> QuadTreeNode? {
         return node.getParentNode()
+    }
+
+    func printAnalyse() {
+        dataBase.getLocationsNumber()
+        getLocationsNumberInTree()
+    }
+
+
+    func getLocationsNumberInTree() {
+        var count =  self.root?.allLocations().count ?? 0
+
+        print("LiveMomentManager Analyse: locationCount: \(count)")
     }
 
     internal func save(_ force: Bool = false, _ node: QuadTreeNode? = nil , completion: @escaping ()->()) {
@@ -250,6 +263,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                     result?.setUpdated(false)
                     nodeToSave?.setUpdated(false)
                     completion(false)
+
                 }
                  print("LiveMomentStore - tree result node: \(result?.getTreeId() ?? "none") location count: \(result?.getLocations().count ?? 0) ")
                 return result

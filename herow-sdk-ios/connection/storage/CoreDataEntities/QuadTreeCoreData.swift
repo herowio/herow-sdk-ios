@@ -52,9 +52,15 @@ class NodeCoreData: NSManagedObject {
         guard let locations = self.locations else {
             return false
         }
-        return !locations.filter {
+        let result =  !locations.filter {
             $0.lat == loc.lat && $0.lng == loc.lng && $0.time == loc.time
         }.isEmpty
+        if result {
+        print("location already in coredatanode")
+        } else {
+            print("new location in coredatanode")
+        }
+        return result
     }
 
     func contains(_ loc: LocationCoreData) -> Bool {

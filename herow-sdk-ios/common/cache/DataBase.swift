@@ -27,4 +27,8 @@ protocol DataBase {
     func getNodeForId(_ id: String) ->  QuadTreeNode? 
     func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())?)
 
+    //analyse
+    func getLocationsNumber() -> Int
+    
+
 }

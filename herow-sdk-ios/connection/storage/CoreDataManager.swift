@@ -390,14 +390,16 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func deleteEntitiesByName(_ name: String) {
-        self.bgContext.perform {
+        var context = self.bgContext
+      
+        context.performAndWait {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
             // Create Batch Delete Request
             let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
             do {
-                try  self.bgContext.execute(batchDeleteRequest)
+                try  context.execute(batchDeleteRequest)
             } catch {
-                // print("error on delete")
+                 print("error on delete")
             }
         }
     }
@@ -444,9 +446,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func periodeForLocation(_ location: LocationCoreData , context: NSManagedObjectContext) -> Period? {
 
         var result: Period?
-        print("Period - location: \(location.lat)   \(location.lng) \(location.time)")
+        let locationTime = location.time as NSDate
+        print("Period - location: \(location.lat)   \(location.lng) \(locationTime)")
         let fetchRequest = NSFetchRequest<Period>(entityName: StorageConstants.PeriodEntityName)
-        fetchRequest.predicate = NSPredicate(format: "start <= %@ && end >= %@", location.time as NSDate, location.time as NSDate)
+        fetchRequest.predicate = NSPredicate(format: "start <= %@ && end >= %@", locationTime, locationTime)
         do {
             let array = try context.fetch(fetchRequest)
             // print("LiveMomentStore -  getCoreDataQuadTreeRoot count : \(array.count) ")
@@ -462,14 +465,16 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                                            in: context)!
             result = Period(entity: entity,
                             insertInto: context)
-            result?.start = location.time.startOfDay
-            result?.end = location.time.startOfDay.addingTimeInterval(7 * 86400)
+            let start = location.time.startOfDay
+            result?.start = start
+            result?.end = start.addingTimeInterval(7 * 86400)
             result?.locations = Set()
             print("Period - creation: start: \( result?.start) end: \( result?.end) ")
         } else {
             print("Period - exists")
         }
         result?.locations?.insert(location)
+        print("Period - location count: \(result?.locations?.count ?? 0) ")
 
         return result
 
@@ -562,7 +567,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var result = [LocationCoreData]()
 
         let fetchRequest = NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
-        fetchRequest.predicate = NSPredicate(format: "node == nil")
+        fetchRequest.predicate = NSPredicate(format: "node == nil || period == nil")
         do {
             result = try context.fetch(fetchRequest)
         } catch let error as NSError {
@@ -573,34 +578,21 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     }
 
-    func cleanUnLikedLocations(_ context: NSManagedObjectContext) {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: StorageConstants.LocationCoreDataEntityName)
-        fetchRequest.predicate = NSPredicate(format: "node == nil OR period == nil")
-        //           // Create Batch Delete Request
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        do {
-            try  context.execute(batchDeleteRequest)
-        } catch {
-            // print("error on delete")
+    func reassignPeriodLocations(_ context: NSManagedObjectContext) {
+        getLocations(context).forEach{
+            loc in
+            _ = periodeForLocation(loc, context: context)
         }
+
     }
 
     func computePeriods() {
 
-        var context = self.bgContext
-        if Thread.isMainThread {
-            context = self.context
-        }
-
+        let context = self.bgContext
         context.perform { [self] in
             //  removePeriods(context)
             let periods = getPeriods(context)
-
-            /*  let unlikedLocations = unlikededlocation(context)
-             if unlikedLocations.count > 0 {
-             print("Period - cleaning: \( unlikedLocations.count)")
-             cleanUnLikedLocations(context)
-             }*/
+            reassignPeriodLocations(context)
             print("Period - periods count at start : \( periods.count)")
             var i = 1
             var total = 0
@@ -615,7 +607,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             let  locations = getLocations(context)
             print("Period - locations for display  count at start : \(locations.count)")
         }
-
     }
 
     func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())? = nil) {
@@ -894,21 +885,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 }
             }
 
-          /* if  ( nodeCoreData.locations?.count  ?? 0  ) > 0   {
-                if let last = node.getLastLocation(), !nodeCoreData.contains(last){
-                    if let newLocation = createLocation( node.getLastLocation(), context: context) {
-                        nodeCoreData.locations?.insert(newLocation)
-                        _ = self.periodeForLocation(newLocation, context: context)
-                    }
-                }
-            } else {
-                for loc in node.getLocations() {
-                    if let newLocation = createLocation( loc, context: context) {
-                        nodeCoreData.locations?.insert(newLocation)
-                        _ = self.periodeForLocation(newLocation, context: context)
-                    }
-                }
-         //   }*/
             let bottomLeftNode = node.getLeftBottomChild()
             let bottomRightNode = node.getRightBottomChild()
             let upRightNode = node.getRightUpChild()
@@ -1006,6 +982,11 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             print("Coredata Analyse : locationCount: \(count)")
 
             let periods = getPeriods(context)
+            print("Coredata Analyse : periods count: \(periods.count)")
+            for period in periods {
+                print("\nCoredata Analyse : period: start:\(period.start) end:\(period.end)")
+                print("Coredata Analyse : period location count \(period.locations?.count ?? 0) \n")
+            }
             let periodlocations: [[LocationCoreData]] = Array(periods.map{Array($0.locations ?? Set<LocationCoreData>())})
             print("Coredata Analyse : locations from period locationCount: \(Array(periodlocations.joined()).count)")
 

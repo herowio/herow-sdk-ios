@@ -182,12 +182,19 @@ public class HerowDataStorage: HerowDataStorageProtocol {
 
         if differentHash {
             GlobalLogger.shared.debug("CACHE SHOULD BE FETCH BECAUSE OF DIFFERENT HASH")
+        } else  {
+            GlobalLogger.shared.debug("CACHE SHOULD NOT  BE FETCH BECAUSE OF SAME HASH")
+
         }
         if cacheIsNotUptoDate {
             GlobalLogger.shared.debug("CACHE SHOULD BE FETCH BECAUSE OF CACHE IS NOT UP TO DATE")
+        } else  {
+            GlobalLogger.shared.debug("CACHE SHOULD NOT  BE FETCH BECAUSE OF CACHE IS  UP TO DATE")
         }
         if shouldFetchNow {
             GlobalLogger.shared.debug("CACHE SHOULD BE FETCH BECAUSE OF CACHE INTERVAL IS DONE")
+        } else {
+                GlobalLogger.shared.debug("CACHE SHOULD  NOT BE FETCH BECAUSE OF CACHE INTERVAL IS  NOT DONE")
         }
         return differentHash ||
             cacheIsNotUptoDate ||
@@ -304,13 +311,11 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     public func reset(completion : ()->()) {
-        self.token = nil 
-        dataHolder.remove(key: HerowConstants.tokenKey)
-        dataHolder.remove(key: HerowConstants.configKey)
-        dataHolder.remove(key: HerowConstants.userInfoKey)
-        dataHolder.remove(key: HerowConstants.lastCacheModifiedDateKey)
-        dataHolder.remove(key: HerowConstants.configDateKey)
-        dataHolder.remove(key: HerowConstants.geoHashKey)
+        self.token = nil
+        self.config = nil
+        self.lastGeoHash = nil
+        self.userInfo = nil
+        dataHolder.removeAll()
         dataHolder.apply()
         completion()
     }

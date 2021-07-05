@@ -119,6 +119,11 @@ import Foundation
     public func remove(key: String) {
         dhUserDefaults.removeObject(forKey: key)
     }
+
+    public func removeAll() {
+        clear()
+        apply()
+    }
 }
 
 @nonobjc extension DataHolderUserDefaults: DataHolderCodable {

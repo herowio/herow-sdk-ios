@@ -88,34 +88,19 @@ class CacheManager: CacheManagerProtocol {
 
     func save(zones: [Zone]?,campaigns: [Campaign]?, pois: [Poi]?,  completion:(()->())?) {
         willSave()
-    /*    if let zones = zones {
-            saveZones(items: zones, completion: nil)
-        }
-        if let campaigns = campaigns {
-            saveCampaigns(items: campaigns, completion: nil)
-        }
-        if let pois = pois {
-            savePois(items: pois, completion: nil)
-        }
-
-        completion?()*/
-
       if let zones = zones {
             saveZones(items: zones) {
                 if let campaigns = campaigns {
                     self.saveCampaigns(items: campaigns) {
                         if let pois = pois {
                             self.savePois(items: pois) {
-                              
                                 completion?()
                             }
                         } else {
-
                             completion?()
                         }
                     }
                 } else {
-
                     completion?()
                 }
             }

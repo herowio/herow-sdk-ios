@@ -589,6 +589,31 @@ class HerowQuadTreeNode: QuadTreeNode {
         }
         return .rightBottom
     }
+
+   /* func neighbourgs() -> [QuadTreeNode] {
+        switch type() {
+        case .leftUp:
+            <#code#>
+        default:
+            <#code#>
+        }
+    }*/
+
+    func type()-> LeafType {
+        if self.treeId?.last == "1" {
+            return .leftUp
+        }
+        if self.treeId?.last == "2" {
+            return .rightUp
+        }
+        if self.treeId?.last == "3" {
+            return .leftBottom
+        }
+        if self.treeId?.last == "4" {
+            return .rightBottom
+        }
+        return .root
+    }
 }
 
 class HerowQuadTreeLocation: QuadTreeLocation {

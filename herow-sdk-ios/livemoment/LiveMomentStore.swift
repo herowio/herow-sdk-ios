@@ -148,7 +148,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                     self.backgroundTaskId = .invalid
                     GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
                 }
-                self.printAnalyse()
+
             })
             self.count = self.count + 1
 
@@ -206,21 +206,22 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         // print("LiveMomentStore  should save \(shouldSave)")
         if true {
             if let root = self.root {
-                if isSaving {
+              /*  if isSaving {
                     // print("LiveMomentStore  will not save because isSaving : \(isSaving)")
                     completion()
                     return
-                }
+                }*/
                 isSaving = true
 
                 let nodeToSave = node ?? root
                 // print("LiveMomentStore  will save node: \(nodeToSave.getTreeId())")
                 dataBase.saveQuadTree(nodeToSave) {
                     self.isSaving = false
-                    self.dataStorage?.saveLiveMomentLastSaveDate(now)
+                   // self.dataStorage?.saveLiveMomentLastSaveDate(now)
                     // print("LiveMomentStore  did save node: \(nodeToSave.getTreeId())")
                     self.count = 0
                     completion()
+                    self.printAnalyse()
                 }
             }
         }
@@ -367,7 +368,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         let result = nodes?.map {
             return $0.node
         }.filter {
-            return  $0.getRect().circle().radius <= StorageConstants.shoppingMinRadius
+            return  $0.getRect().circle().radius <=   StorageConstants.shoppingMinRadius
         }
         return result
     }

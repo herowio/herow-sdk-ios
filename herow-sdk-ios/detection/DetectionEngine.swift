@@ -352,6 +352,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         var distance = 0.0
         let distpatchTimeKO = abs(dispatchTime.timeIntervalSince1970 - timeProvider.getTime()) < 3
         var distanceKO = false
+        let locationToOld = abs(Date().timeIntervalSince1970 - location.timestamp.timeIntervalSince1970) > 300
         var timeKO = false
         if let lastLocation = self.lastLocation {
             distanceKO =  lastLocation.distance(from: location) < 30
@@ -360,7 +361,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             distance = lastLocation.distance(from: location)
             skip = distanceKO && timeKO && skipCount < 5
         }
-        skip = skip || distpatchTimeKO
+        skip = skip || distpatchTimeKO || locationToOld
 
 
         if skip == false {

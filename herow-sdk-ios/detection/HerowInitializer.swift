@@ -101,9 +101,20 @@ import UIKit
 
 
     @objc public func reset(completion: @escaping ()->()) {
+        let optinState = self.userInfoManager.getOptin()
+        self.apiManager.reset()
         self.herowDataHolder.reset()
         self.userInfoManager.reset()
+        self.userInfoManager.setOptin(optin: optinState)
         self.cacheManager.reset(completion: completion)
+    }
+
+    @objc public func reset(platform: HerowPlatform, sdkUser: String, sdkKey: String,customID: String, completion: @escaping ((String)->())) {
+        self.reset {
+            self.configPlatform(platform) .configApp(identifier: sdkUser, sdkKey: sdkKey).synchronize()
+            self.setCustomId(customId: customID)
+            completion(customID)
+        }
     }
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {
@@ -241,6 +252,10 @@ import UIKit
 
     public func getShoppings() -> [QuadTreeNode]? {
         return  liveMomentStore?.getShopping()
+    }
+
+    public func getPOIs() -> [Poi] {
+        return cacheManager.getPois()
     }
 
     //MARK: UTILS

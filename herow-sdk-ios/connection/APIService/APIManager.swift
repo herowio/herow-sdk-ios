@@ -143,7 +143,9 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     private func authenticationFlow(completion: @escaping ()->()) {
         self.getTokenIfNeeded {
-            completion()
+            self.getUserInfoIfNeeded {
+                self.getConfigIfNeeded(completion: completion)
+            }
         }
     }
 
@@ -224,9 +226,13 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     // MARK: Config
     internal func getConfig(completion: ( (APIConfig?, NetworkError?) -> Void)? = nil) {
-        authenticationFlow {
-            self.getUserInfoIfNeeded() {
-                self.configWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login, token: self.herowDataStorage.getToken()?.accessToken,herowId: self.herowDataStorage.getUserInfo()?.herowId)
+        guard let user = self.user else {
+            completion?(nil, .invalidInPut)
+            return
+        }
+        getTokenIfNeeded {
+
+                self.configWorker.headers = RequestHeaderCreator.createHeaders(sdk:  user.login, token: self.herowDataStorage.getToken()?.accessToken,herowId: self.herowDataStorage.getUserInfo()?.herowId)
                 self.configWorker.getData() {
                     config, error in
                     if let config = config {
@@ -243,14 +249,17 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                     }
                     completion?(config, error)
                 }
-            }
         }
     }
     
     // MARK: UserInfo
     internal func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)? = nil) {
-        authenticationFlow {
-            self.userInfogWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login, token: self.herowDataStorage.getToken()?.accessToken)
+        guard let user = self.user, let token =  self.herowDataStorage.getToken()?.accessToken else {
+            completion?(nil, .invalidInPut)
+            return
+        }
+        getTokenIfNeeded {
+            self.userInfogWorker.headers = RequestHeaderCreator.createHeaders(sdk:  user.login, token: self.herowDataStorage.getToken()?.accessToken)
             self.userInfogWorker.putData(param:self.userInfoParam()) { userInfo, error in
                 if let userInfo = userInfo {
                     self.herowDataStorage.saveUserInfo(userInfo)
@@ -265,6 +274,10 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     // MARK: Cache
     internal func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)? = nil) {
+        guard let user = self.user else {
+            completion?(nil, .invalidInPut)
+            return
+        }
         GlobalLogger.shared.debug("APIManager - getCache")
         if  !herowDataStorage.getOptin().value {
             GlobalLogger.shared.verbose("APIManager- OPTINS ARE FALSE")
@@ -280,7 +293,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         authenticationFlow  {
             if self.herowDataStorage.shouldGetCache(for: geoHash) /*|| true*/ {
                 GlobalLogger.shared.info("APIManager- SHOULD FETCH CACHE")
-                self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
+                self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
 
                 self.cacheWorker.getData(endPoint: .cache(geoHash)) { cache, error in
                     guard let cache = cache else {
@@ -315,15 +328,18 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             GlobalLogger.shared.info("APIManager- OPTINS ARE FALSE")
             return
         }
+        guard let user = self.user else {
+            return
+        }
         authenticationFlow  {
-            self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: self.user?.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
+            self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
             self.logWorker.postData(param: log) {
                 response, error in
 
                 if error == nil {
                     if let json = try? JSONSerialization.jsonObject(with: log, options: .mutableContainers),
                        let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                        GlobalLogger.shared.verbose("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self))")
+                        GlobalLogger.shared.verbose("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self)) response:\(String(describing: response))")
                     } 
                 }
                 completion?()

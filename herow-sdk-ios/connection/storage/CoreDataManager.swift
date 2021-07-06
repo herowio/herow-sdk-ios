@@ -9,6 +9,10 @@ import Foundation
 import CoreData
 
 class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping,T: QuadTreeNode, L: QuadTreeLocation>: DataBase {
+    func getLocationsNumber() -> Int {
+        return getLocationsNumber(context: self.bgContext)
+    }
+
 
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(for: Self.self)
@@ -433,9 +437,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                     }
                 }
             }
-            DispatchQueue.global(qos: .background).async {
-                self.computePeriods()
-            }
             completion?()
         }
     }
@@ -452,7 +453,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         fetchRequest.predicate = NSPredicate(format: "start <= %@ && end >= %@", locationTime, locationTime)
         do {
             let array = try context.fetch(fetchRequest)
-            // print("LiveMomentStore -  getCoreDataQuadTreeRoot count : \(array.count) ")
             result = array.first
 
         } catch let error as NSError {
@@ -475,16 +475,12 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
         result?.locations?.insert(location)
         print("Period - location count: \(result?.locations?.count ?? 0) ")
-
         return result
 
     }
 
     func deleteDuplicatesForLocation(_ location: LocationCoreData , context: NSManagedObjectContext)  {
-
-
         context.performAndWait {
-
             let time = location.time as NSDate
             let fetch = NSFetchRequest<NSFetchRequestResult>(entityName:  StorageConstants.LocationCoreDataEntityName)
             fetch.predicate = NSPredicate(format: "time == %@", time )
@@ -496,9 +492,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             } catch {
                 fatalError("Failed to execute request: \(error)")
             }
-
             context.insert(location)
-
         }
     }
 
@@ -515,23 +509,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
 
     }
-
-
-    /*  let fetchRequest = NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
-     let lat = location.lat
-     let lng = location.lng
-     let time = location.time as NSDate
-     fetchRequest.predicate = NSPredicate(format: "time == %@", time)
-     do {
-     let array = try context.fetch(fetchRequest)
-     // print("LiveMomentStore -  getCoreDataQuadTreeRoot count : \(array.count) ")
-     result = array
-
-
-     } catch let error as NSError {
-     print("Could not fetch. \(error), \(error.userInfo)")
-     }
-     }*/
 
     func getLocations(_ context : NSManagedObjectContext) -> [LocationCoreData] {
         var result = [LocationCoreData]()
@@ -579,20 +556,18 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func reassignPeriodLocations(_ context: NSManagedObjectContext) {
+        removePeriods(context)
         getLocations(context).forEach{
             loc in
             _ = periodeForLocation(loc, context: context)
         }
-
     }
 
     func computePeriods() {
-
         let context = self.bgContext
         context.perform { [self] in
-            //  removePeriods(context)
-            let periods = getPeriods(context)
             reassignPeriodLocations(context)
+            let periods = getPeriods(context)
             print("Period - periods count at start : \( periods.count)")
             var i = 1
             var total = 0
@@ -607,6 +582,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             let  locations = getLocations(context)
             print("Period - locations for display  count at start : \(locations.count)")
         }
+        save()
     }
 
     func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())? = nil) {
@@ -729,6 +705,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func getQuadTreeRoot() -> QuadTreeNode? {
         if let root =  getCoreDataQuadTreeRoot() {
             let quadTree  = recursiveInit(root)
+            DispatchQueue.global(qos: .utility).async {
+               self.computePeriods()
+            }
             return quadTree
         }
         return nil
@@ -874,7 +853,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 nodeCoreData.locations = Set([LocationCoreData]())
             }
 
-
             for loc in  nodeCoreData.locations! {
                 context.delete(loc)
             }
@@ -962,12 +940,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     // MARK: analyse
     @discardableResult
-    func getLocationsNumber() -> Int {
-        var context = self.bgContext
-        if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
-            context = self.context
-        }
+    func getLocationsNumber(context: NSManagedObjectContext) -> Int {
+
         var count = 0
         context.performAndWait {
             let fetchRequest =
@@ -992,36 +966,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
         }
 
-
-
         return count
     }
 
 }
 
- /*   @discardableResult
-    private func saveLocations(_ locations: [QuadTreeLocation], context: NSManagedObjectContext ) -> Set<LocationCoreData> {
-        var result = [LocationCoreData]()
-        for loc in locations {
-            let fetchRequest =
-                NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
-            fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.locationLat) == %lf AND \(StorageConstants.locationLng) == %lf AND \(StorageConstants.locationTime) == %@", loc.lat, loc.lng, loc.time as NSDate)
-            var  locationCoreData = try? context.fetch(fetchRequest).first
-            if locationCoreData == nil {
-                // print("saveLocations by creating")
-                let entity =
-                    NSEntityDescription.entity(forEntityName: StorageConstants.LocationCoreDataEntityName,
-                                               in: context)!
-                locationCoreData = LocationCoreData(entity: entity,
-                                                    insertInto: context)
-                locationCoreData?.lat = loc.lat
-                locationCoreData?.lng = loc.lng
-                locationCoreData?.time = loc.time
-            }
-            if let location = locationCoreData {
-                result.append(location)
-            }
-        }
-        return Set(result)
-    }*/
 

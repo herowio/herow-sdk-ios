@@ -250,7 +250,6 @@ class UserInfoManager: UserInfoManagerProtocol {
         self.locationStatus = nil
         self.accuracyStatus = nil
         self.notificationStatus = nil
-        self.herowDataHolder.reset(completion:completion)
     }
 
 }

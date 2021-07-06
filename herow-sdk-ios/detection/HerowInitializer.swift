@@ -101,19 +101,21 @@ import UIKit
 
 
     @objc public func reset(completion: @escaping ()->()) {
-        let optinState = self.userInfoManager.getOptin()
+
         self.apiManager.reset()
         self.herowDataHolder.reset()
         self.userInfoManager.reset()
-        self.userInfoManager.setOptin(optin: optinState)
         self.cacheManager.reset(completion: completion)
     }
 
     @objc public func reset(platform: HerowPlatform, sdkUser: String, sdkKey: String,customID: String, completion: @escaping ((String)->())) {
+        let optinState = self.userInfoManager.getOptin()
         self.reset {
             self.configPlatform(platform) .configApp(identifier: sdkUser, sdkKey: sdkKey).synchronize()
             self.setCustomId(customId: customID)
             completion(customID)
+
+            self.userInfoManager.setOptin(optin: optinState)
         }
     }
     //MARK: EVENTLISTENERS MANAGEMENT

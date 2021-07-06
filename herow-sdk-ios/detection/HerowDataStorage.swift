@@ -44,6 +44,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         guard let token = APIToken.decode(data: data)  else {
             return nil
         }
+       saveToken(token)
         return token
     }
     

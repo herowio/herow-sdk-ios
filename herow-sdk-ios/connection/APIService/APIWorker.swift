@@ -100,7 +100,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         }
 
         if currentTask != nil && allowMultiOperation == false {
-            GlobalLogger.shared.error("APIWorker still working " + url.absoluteString)
+            GlobalLogger.shared.info("APIWorker still working " + url.absoluteString)
             completion(Result.failure(NetworkError.workerStillWorking))
             return
         }

@@ -142,7 +142,9 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        let id = response.notification.request.identifier
+        guard let id = response.notification.request.identifier.components(separatedBy: "_").first else {
+            return
+        }
         let zID = response.notification.request.content.userInfo["zoneID"]
         let camp = cacheManager.getCampaigns().first {
             $0.getId() == id

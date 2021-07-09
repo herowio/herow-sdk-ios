@@ -95,6 +95,14 @@ public enum LeafType: Int {
     case leftBottom = 3
     case rightBottom = 4
 }
+
+public enum LeafDirection: String {
+    case root = "0"
+    case NW = "1"
+    case NE = "2"
+    case SW = "3"
+    case SE = "4"
+}
 public protocol QuadTreeNode: AnyObject {
 
     func redraw()
@@ -131,6 +139,19 @@ public protocol QuadTreeNode: AnyObject {
     func isMin() -> Bool
     func isNewBorn() -> Bool
     func setNewBorn(_ value: Bool)
+    func walkLeft() -> QuadTreeNode?
+    func walkRight() -> QuadTreeNode?
+    func walkUp() -> QuadTreeNode?
+    func walkDown() -> QuadTreeNode?
+    func walkUpLeft() -> QuadTreeNode?
+    func walkUpRight() -> QuadTreeNode?
+    func walkDownLeft() -> QuadTreeNode?
+    func walkDownRight() -> QuadTreeNode?
+    func type()-> LeafType
+    func neighbourgs() -> [QuadTreeNode]
+    func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode]
+    func isParentLinkedTo(_ node: QuadTreeNode) -> Bool
+    func isEqual(_ node: QuadTreeNode) -> Bool 
 
    
 }

@@ -10,7 +10,7 @@ import CoreLocation
 import UIKit
 
 public protocol LiveMomentStoreListener {
-    func  didCompute( rects: [NodeDescription]?, home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?, others: [QuadTreeNode]?)
+    func  didCompute( rects: [NodeDescription]?, home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?, others: [QuadTreeNode]?, neighbours:[QuadTreeNode]?)
 }
 
 protocol LiveMomentStoreProtocol: DetectionEngineListener, AppStateDelegate, CacheListener {
@@ -318,7 +318,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             self.shoppings = self.computeShopping()
             self.others = nil
             for listener in self.listeners {
-                listener.get()?.didCompute(rects: self.rects, home: self.home, work:  self.work, school: self.school, shoppings: self.shoppings, others: self.others)
+                listener.get()?.didCompute(rects: self.rects, home: self.home, work:  self.work, school: self.school, shoppings: self.shoppings, others: self.others, neighbours: self.currentNode?.neighbourgs())
             }
             let end = CFAbsoluteTimeGetCurrent()
             let elapsedTime = (end - start) * 1000

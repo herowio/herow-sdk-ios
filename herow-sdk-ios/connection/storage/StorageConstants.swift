@@ -29,11 +29,6 @@ class StorageConstants {
 
     //quadtree
     static let treeId = "treeId"
-    static let treeRootId = "0"
-    static let treeLeftUptId = "1"
-    static let treeRightUptId = "2"
-    static let treeLeftBottomId = "3"
-    static let treeRightBottomId = "4"
     static let locationLat = "lat"
     static let locationLng = "lng"
     static let locationTime = "time"

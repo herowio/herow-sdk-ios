@@ -118,7 +118,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 })
             }
             let blockOPeration = BlockOperation { [weak self] in
-                var request = URLRequest(url: url)
+                var request = URLRequest(url: url, cachePolicy: .reloadIgnoringCacheData, timeoutInterval: 30)
                 request.allHTTPHeaderFields = self?.headers
                 request.httpMethod = method.rawValue
                 if let param = param {
@@ -148,7 +148,8 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                             GlobalLogger.shared.debug("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
                             if type != NoReply.self {
                                 if let responseObject  = try self?.decoder.decode(type, from: data) {
-                                    GlobalLogger.shared.verbose("APIWorker - \(url) success : \(statusCode) headers:\((self?.headers) ?? [String:String]() )")
+                                    GlobalLogger.shared.verbose("APIWorker - \(url) success : \(statusCode) headers:\(( request.allHTTPHeaderFields) ?? [String:String]() ), response:\(responseObject)")
+                                    
                                 completion(Result.success(responseObject))
                                 return
                                 } else {

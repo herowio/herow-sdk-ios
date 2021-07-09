@@ -496,8 +496,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
     }
 
-
-
     func removePeriods(_ context: NSManagedObjectContext) {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: StorageConstants.PeriodEntityName)
         // Create Batch Delete Request
@@ -507,13 +505,15 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         } catch {
             // print("error on delete")
         }
-
     }
 
     func getLocations(_ context : NSManagedObjectContext) -> [LocationCoreData] {
         var result = [LocationCoreData]()
 
         let fetchRequest = NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
+        let sort = NSSortDescriptor(key: "time", ascending: true)
+        fetchRequest.sortDescriptors = [sort]
+
         do {
             result = try context.fetch(fetchRequest)
         } catch let error as NSError {

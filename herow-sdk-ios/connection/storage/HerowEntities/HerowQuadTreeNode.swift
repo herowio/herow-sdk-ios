@@ -99,6 +99,14 @@ public struct Rect {
     func isMin() -> Bool {
         return CLLocation(latitude: originLat, longitude: originLng).distance(from: CLLocation(latitude: endLat, longitude: endLng)) <= HerowQuadTreeNode.nodeSize
     }
+
+    func isEqual(_ rect: Rect) -> Bool {
+        return originLat == rect.originLat && endLat == rect.endLat && originLng == rect.originLng && endLng == rect.originLng
+    }
+
+    func contains(_ rect: Rect) -> Bool {
+        return originLat <= rect.originLat && endLat >= rect.endLat && originLng <= rect.originLng && endLng >= rect.originLng && !isEqual(rect)
+    }
 }
 
 public struct NodeDescription {
@@ -590,29 +598,210 @@ class HerowQuadTreeNode: QuadTreeNode {
         return .rightBottom
     }
 
-   /* func neighbourgs() -> [QuadTreeNode] {
+    func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode] {
+
+
+        var result = [QuadTreeNode]()
+        guard let treeID = self.treeId, let list = list else {
+            return result
+        }
+         result = Array(list)
+        let idsList = list.map {$0.getTreeId()}
+        if  !idsList.contains(treeID) {
+          /*  var shouldAdd = true
+            for node in result {
+                if( isParentLinkedTo( node)  ) {
+                    shouldAdd = false
+                    break
+                }
+            }
+            if shouldAdd {
+
+            }*/
+            result.append(self)
+        }
+
+        return result
+    }
+
+    func isEqual(_ node: QuadTreeNode) -> Bool {
+        return self.getRect().isEqual(node.getRect())
+    }
+    func isParentLinkedTo(_ node: QuadTreeNode) -> Bool {
+
+        return (node.getParentNode()?.isEqual(self)  ?? false) || (self.getParentNode()?.isEqual(node) ?? false)
+    }
+
+    func neighbourgs() -> [QuadTreeNode] {
+        var candidates = [QuadTreeNode]()
+        candidates = walkUp()?.addInList(candidates) ?? candidates
+        candidates = walkDown()?.addInList(candidates) ?? candidates
+        candidates = walkRight()?.addInList(candidates) ?? candidates
+        candidates = walkLeft()?.addInList(candidates) ?? candidates
+        candidates = walkDownLeft()?.addInList(candidates) ?? candidates
+        candidates = walkUpRight()?.addInList(candidates) ?? candidates
+        candidates = walkUpLeft()?.addInList(candidates) ?? candidates
+        candidates = walkDownRight()?.addInList(candidates) ?? candidates
+        candidates = candidates.compactMap{$0}
+        return candidates
+    }
+
+
+
+    func walkLeft() -> QuadTreeNode? {
+        switch type() {
+        case .rightUp:
+            return getParentNode()?.getLeftUpChild()
+        case .rightBottom:
+            return getParentNode()?.getLeftBottomChild()
+        case .leftUp:
+            let leftParent = getParentNode()?.walkLeft()
+            return leftParent?.getRightUpChild() ?? leftParent
+        case .leftBottom:
+            let leftParent = getParentNode()?.walkLeft()
+            return leftParent?.getRightBottomChild() ?? leftParent
+        default:
+            return nil
+        }
+    }
+
+    func walkRight() -> QuadTreeNode? {
+        switch type() {
+        case .rightUp:
+            let rightParent = getParentNode()?.walkRight()
+            return rightParent?.getLeftUpChild() ??  rightParent
+        case .rightBottom:
+            let rightParent = getParentNode()?.walkRight()
+            return rightParent?.getLeftBottomChild() ?? rightParent
+        case .leftUp:
+            return  getParentNode()?.getRightUpChild()
+        case .leftBottom:
+            return  getParentNode()?.getRightBottomChild()
+        default:
+            return nil
+        }
+    }
+
+    func walkUp() -> QuadTreeNode? {
+        switch type() {
+        case .rightUp:
+            let upParent = getParentNode()?.walkUp()
+            return upParent?.getRightBottomChild() ??  upParent
+        case .rightBottom:
+           return getParentNode()?.getRightUpChild()
+        case .leftUp:
+            let upParent = getParentNode()?.walkUp()
+            return upParent?.getLeftBottomChild() ??  upParent
+        case .leftBottom:
+            return  getParentNode()?.getLeftUpChild()
+        default:
+            return nil
+        }
+    }
+
+    func walkDown() -> QuadTreeNode? {
+        switch type() {
+        case .rightUp:
+            return getParentNode()?.getRightBottomChild()
+        case .rightBottom:
+            let bottomParent = getParentNode()?.walkDown()
+            return bottomParent?.getRightUpChild() ?? bottomParent
+        case .leftUp:
+            return getParentNode()?.getLeftBottomChild()
+        case .leftBottom:
+            let bottomParent = getParentNode()?.walkDown()
+            return bottomParent?.getLeftUpChild() ?? bottomParent
+        default:
+            return nil
+        }
+    }
+
+    func walkUpLeft() -> QuadTreeNode? {
         switch type() {
         case .leftUp:
-            <#code#>
+            let upLeftParent = getParentNode()?.walkUpLeft()
+            return upLeftParent?.getRightBottomChild() ?? upLeftParent
+        case .rightBottom:
+            return getParentNode()?.getLeftUpChild()
+        case .rightUp:
+            let upParent = getParentNode()?.walkUp()
+            return upParent?.getLeftBottomChild() ?? upParent
+        case .leftBottom:
+            let bottomParent = getParentNode()?.walkLeft()
+            return bottomParent?.getRightUpChild() ?? bottomParent
         default:
-            <#code#>
+            return nil
         }
-    }*/
+    }
+
+    func walkDownLeft() -> QuadTreeNode? {
+        switch type() {
+        case .leftUp:
+            let leftParent = getParentNode()?.walkLeft()
+            return leftParent?.getRightBottomChild() ?? leftParent
+        case .rightBottom:
+            let bottomParent = getParentNode()?.walkDown()
+            return bottomParent?.getLeftUpChild() ?? bottomParent
+        case .rightUp:
+            return getParentNode()?.getLeftBottomChild()
+        case .leftBottom:
+            let leftBottomParent = getParentNode()?.walkDownLeft()
+            return leftBottomParent?.getRightUpChild() ?? leftBottomParent
+        default:
+            return nil
+        }
+    }
+
+    func walkUpRight() -> QuadTreeNode? {
+        switch type() {
+        case .leftUp:
+            let upParent = getParentNode()?.walkUp()
+            return upParent?.getRightBottomChild() ?? upParent
+        case .rightBottom:
+            let rightParent = getParentNode()?.walkRight()
+            return rightParent?.getLeftUpChild() ?? rightParent
+        case .rightUp:
+            let rightUpParent = getParentNode()?.walkUpRight()
+            return rightUpParent?.getLeftBottomChild() ?? rightUpParent
+        case .leftBottom:
+            return getParentNode()?.getRightUpChild()
+        default:
+            return nil
+        }
+    }
+
+    func walkDownRight() -> QuadTreeNode? {
+        switch type() {
+        case .leftUp:
+            return getParentNode()?.getRightBottomChild()
+        case .rightBottom:
+            let rightBottomParent = getParentNode()?.walkDownRight()
+            return rightBottomParent?.getLeftUpChild() ?? rightBottomParent
+        case .rightUp:
+            let rightParent = getParentNode()?.walkRight()
+            return rightParent?.getLeftBottomChild() ?? rightParent
+        case .leftBottom:
+            let bottomParent = getParentNode()?.walkDown()
+            return bottomParent?.getRightBottomChild() ?? bottomParent
+        default:
+            return nil
+        }
+    }
 
     func type()-> LeafType {
-        if self.treeId?.last == "1" {
+        let last: String = String(self.treeId?.last ?? "0")
+        switch  LeafDirection(rawValue: last) {
+        case .NW:
             return .leftUp
-        }
-        if self.treeId?.last == "2" {
+        case .NE:
             return .rightUp
-        }
-        if self.treeId?.last == "3" {
+        case .SW:
             return .leftBottom
-        }
-        if self.treeId?.last == "4" {
+        case .SE:
             return .rightBottom
+        default:
+            return .root
         }
-        return .root
     }
 }
 

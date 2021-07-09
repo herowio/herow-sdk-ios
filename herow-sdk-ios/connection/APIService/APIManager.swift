@@ -172,7 +172,6 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     public func getUserInfoIfNeeded(completion: (() -> Void)? = nil) {
         if self.herowDataStorage.userInfoWaitingForUpdate()  {
             GlobalLogger.shared.debug("APIManager - should get userInfo")
-
             self.getUserInfo(completion: { userInfo, error in
                 if let userInfo = userInfo  {
                     self.herowDataStorage.saveUserInfo(userInfo)

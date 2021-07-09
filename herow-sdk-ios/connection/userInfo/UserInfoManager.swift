@@ -37,6 +37,7 @@ protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate {
     func setOptin( optin: Optin)
     func registerListener(listener: UserInfoListener)
     func getUserInfo() -> UserInfo
+    func resetOptinsAndCustomId(optin:Optin, customId:String)
 
 }
 class UserInfoManager: UserInfoManagerProtocol {
@@ -188,6 +189,14 @@ class UserInfoManager: UserInfoManagerProtocol {
             herowDataHolder.saveUserInfoWaitingForUpdate(true)
             synchronize()
         }
+    }
+
+    func resetOptinsAndCustomId(optin:Optin, customId:String) {
+        self.herowDataHolder.setOptin(optin:optin)
+        self.customId = customId
+        herowDataHolder.setCustomId(customId)
+        synchronize()
+
     }
 
     init( herowDataStorage: HerowDataStorageProtocol) {

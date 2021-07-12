@@ -280,7 +280,7 @@ class HerowQuadTreeNode: QuadTreeNode {
         if(computeParent) {
             print("LiveMomentStore - computeTags start")
         }
-        let allLocations = allLocations()
+        let _allLocations = allLocations()
         var tags =  self.tags ?? [String: Double] ()
         var densities =  self.densities ?? [String: Double] ()
         tags[LivingTag.home.rawValue] = 0.0
@@ -292,11 +292,11 @@ class HerowQuadTreeNode: QuadTreeNode {
         densities[LivingTag.work.rawValue] = 0.0
         densities[LivingTag.shopping.rawValue] = 0.0
 
-        let _schoolCount =  schoolCount(allLocations)
-        let _homeCount = homeCount(allLocations)
-        let _workCount = workCount(allLocations)
-        let _shoppingCount = shoppingCount(allLocations)
-        let locationCount = allLocations.count
+        let _schoolCount =  schoolCount(_allLocations)
+        let _homeCount = homeCount(_allLocations)
+        let _workCount = workCount(_allLocations)
+        let _shoppingCount = shoppingCount(_allLocations)
+        let locationCount = _allLocations.count
         let area = getRect().area()
         if _schoolCount > 0 {
             tags[LivingTag.school.rawValue] = Double(_schoolCount) / Double(locationCount)

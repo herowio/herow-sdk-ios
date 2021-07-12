@@ -292,27 +292,27 @@ class HerowQuadTreeNode: QuadTreeNode {
         densities[LivingTag.work.rawValue] = 0.0
         densities[LivingTag.shopping.rawValue] = 0.0
 
-        let schoolCount =  schoolCount(allLocations)
-        let homeCount = homeCount(allLocations)
-        let workCount = workCount(allLocations)
-        let shoppingCount = shoppingCount(allLocations)
+        let _schoolCount =  schoolCount(allLocations)
+        let _homeCount = homeCount(allLocations)
+        let _workCount = workCount(allLocations)
+        let _shoppingCount = shoppingCount(allLocations)
         let locationCount = allLocations.count
         let area = getRect().area()
-        if schoolCount > 0 {
-            tags[LivingTag.school.rawValue] = Double(schoolCount) / Double(locationCount)
-            densities[LivingTag.school.rawValue] = area / Double(schoolCount)
+        if _schoolCount > 0 {
+            tags[LivingTag.school.rawValue] = Double(_schoolCount) / Double(locationCount)
+            densities[LivingTag.school.rawValue] = area / Double(_schoolCount)
         }
-        if homeCount > 0 {
-            tags[LivingTag.home.rawValue] = Double(homeCount) / Double(locationCount)
-            densities[LivingTag.home.rawValue] = area / Double(homeCount)
+        if _homeCount > 0 {
+            tags[LivingTag.home.rawValue] = Double(_homeCount) / Double(locationCount)
+            densities[LivingTag.home.rawValue] = area / Double(_homeCount)
         }
-        if workCount > 0 {
-            tags[LivingTag.work.rawValue] = Double(workCount) / Double(locationCount)
-            densities[LivingTag.work.rawValue] = area / Double(workCount)
+        if _workCount > 0 {
+            tags[LivingTag.work.rawValue] = Double(_workCount) / Double(locationCount)
+            densities[LivingTag.work.rawValue] = area / Double(_workCount)
         }
-        if shoppingCount > 0 {
-            tags[LivingTag.shopping.rawValue] = Double(shoppingCount) / Double(locationCount)
-            densities[LivingTag.shopping.rawValue] = area / Double(shoppingCount)
+        if _shoppingCount > 0 {
+            tags[LivingTag.shopping.rawValue] = Double(_shoppingCount) / Double(locationCount)
+            densities[LivingTag.shopping.rawValue] = area / Double(_shoppingCount)
         }
         self.tags = tags
         self.densities = densities

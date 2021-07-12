@@ -373,12 +373,23 @@ class HerowQuadTreeNode: QuadTreeNode {
         }
     }
 
+
+    func poisInProximity() -> [Poi] {
+        var allpois = [Poi]()
+        allpois.append(contentsOf:getPois())
+        for neighbour in self.neighbourgs() {
+            allpois.append(contentsOf:neighbour.getPois())
+        }
+        return allpois
+    }
+
     func shoppingCount(_ locations: [QuadTreeLocation]) -> Int {
         var filteredLocations = [QuadTreeLocation]()
         for loc in allLocations() {
-            if let pois = self.pois  {
+
+
                 var poisForlocation = [Poi]()
-                for poi in pois {
+                for poi in poisInProximity() {
                     let distance = CLLocation(latitude: poi.getLat(), longitude: poi.getLng()).distance(from: CLLocation(latitude: loc.lat, longitude: loc.lng))
                     if distance < StorageConstants.shoppingMinRadius {
                         poisForlocation.append(poi)
@@ -388,7 +399,7 @@ class HerowQuadTreeNode: QuadTreeNode {
                 if poisForlocation.count > 0 {
                     filteredLocations.append(loc)
                 }
-            }
+
         }
         return filteredLocations.count
     }
@@ -446,8 +457,8 @@ class HerowQuadTreeNode: QuadTreeNode {
         return result
     }
 
-    func getPois() -> [Poi]? {
-        return self.pois
+    func getPois() -> [Poi] {
+        return self.pois ?? [Poi]()
     }
 
     func setPois(_ pois: [Poi]?) {
@@ -599,8 +610,6 @@ class HerowQuadTreeNode: QuadTreeNode {
     }
 
     func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode] {
-
-
         var result = [QuadTreeNode]()
         guard let treeID = self.treeId, let list = list else {
             return result
@@ -608,16 +617,6 @@ class HerowQuadTreeNode: QuadTreeNode {
          result = Array(list)
         let idsList = list.map {$0.getTreeId()}
         if  !idsList.contains(treeID) {
-          /*  var shouldAdd = true
-            for node in result {
-                if( isParentLinkedTo( node)  ) {
-                    shouldAdd = false
-                    break
-                }
-            }
-            if shouldAdd {
-
-            }*/
             result.append(self)
         }
 
@@ -625,11 +624,7 @@ class HerowQuadTreeNode: QuadTreeNode {
     }
 
     func isEqual(_ node: QuadTreeNode) -> Bool {
-        return self.getRect().isEqual(node.getRect())
-    }
-    func isParentLinkedTo(_ node: QuadTreeNode) -> Bool {
-
-        return (node.getParentNode()?.isEqual(self)  ?? false) || (self.getParentNode()?.isEqual(node) ?? false)
+        return self.treeId == node.getTreeId()
     }
 
     func neighbourgs() -> [QuadTreeNode] {
@@ -645,8 +640,6 @@ class HerowQuadTreeNode: QuadTreeNode {
         candidates = candidates.compactMap{$0}
         return candidates
     }
-
-
 
     func walkLeft() -> QuadTreeNode? {
         switch type() {

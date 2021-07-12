@@ -28,8 +28,6 @@ protocol LiveMomentStoreProtocol: DetectionEngineListener, AppStateDelegate, Cac
 
 class LiveMomentStore: LiveMomentStoreProtocol {
 
-
-
     private var isWorking = false
     private var isOnBackground = false
     private var isSaving = false
@@ -48,14 +46,13 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     private var listeners = [WeakContainer<LiveMomentStoreListener>]()
     private let backgroundQueue =  DispatchQueue(label: "LiveMomentStoreQueue", qos: .background)
     private let queue = OperationQueue()
+
     required init(db: DataBase, storage: HerowDataStorageProtocol) {
         self.dataBase = db
         self.dataStorage = storage
         queue.qualityOfService = .background
         queue.maxConcurrentOperationCount = 1
         self.setup()
-
-        
     }
 
     func setup() {
@@ -65,11 +62,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             var  elapsedTime = (endRoot - start) * 1000
             print("LiveMomentStore createQuadTreeRoot took \(elapsedTime) ms ")
             self.root = self.getClustersInBase()
-          /* self.root?.recursiveCompute()
-            self.save {
-                self.compute()
-            }*/
-
             let end = CFAbsoluteTimeGetCurrent()
             elapsedTime = (end - start) * 1000
         }
@@ -121,8 +113,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         let start = CFAbsoluteTimeGetCurrent()
         print("LiveMomentStore - onLocationUpdate start")
 
-
-
         isWorking = true
         let blockOPeration = BlockOperation { [self] in
             if self.backgroundTaskId == .invalid {
@@ -148,14 +138,9 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                     self.backgroundTaskId = .invalid
                     GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
                 }
-
             })
             self.count = self.count + 1
-
         }
-
-
-
         queue.addOperation(blockOPeration)
     }
 
@@ -188,48 +173,34 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     func printAnalyse() {
-        dataBase.getLocationsNumber()
-        getLocationsNumberInTree()
+        DispatchQueue.global(qos: .background).async {
+            _ = self.dataBase.getLocationsNumber()
+            self.getLocationsNumberInTree()
+        }
     }
 
-
     func getLocationsNumberInTree() {
-        var count =  self.root?.allLocations().count ?? 0
+        let count =  self.root?.allLocations().count ?? 0
 
         print("LiveMomentManager Analyse: locationCount: \(count)")
     }
 
     internal func save(_ force: Bool = false, _ node: QuadTreeNode? = nil , completion: @escaping ()->()) {
-       // let lastSaveDate = self.dataStorage?.getLiveMomentLastSaveDate() ?? Date(timeIntervalSince1970: 0)
-       let now = Date()
-      //  let shouldSave = lastSaveDate.addingTimeInterval(600) < now || force || count > 5
-        // print("LiveMomentStore  should save \(shouldSave)")
-        if true {
-            if let root = self.root {
-              /*  if isSaving {
-                    // print("LiveMomentStore  will not save because isSaving : \(isSaving)")
-                    completion()
-                    return
-                }*/
-                isSaving = true
 
-                let nodeToSave = node ?? root
-                // print("LiveMomentStore  will save node: \(nodeToSave.getTreeId())")
-                dataBase.saveQuadTree(nodeToSave) {
-                    self.isSaving = false
-                   // self.dataStorage?.saveLiveMomentLastSaveDate(now)
-                    // print("LiveMomentStore  did save node: \(nodeToSave.getTreeId())")
-                    self.count = 0
-                    completion()
-                    self.printAnalyse()
-                }
+        if let root = self.root {
+            isSaving = true
+            let nodeToSave = node ?? root
+            dataBase.saveQuadTree(nodeToSave) {
+                self.isSaving = false
+                self.count = 0
+                completion()
+                self.printAnalyse()
             }
         }
     }
 
     func reverseExploration(node: QuadTreeNode, location: QuadTreeLocation) -> QuadTreeNode? {
         if node.getRect().contains(location) {
-            // print("LiveMomentStore reverseExploration for node :\(node.getTreeId())")
             return node
         } else {
             if let parent = node.getParentNode() {
@@ -238,6 +209,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         }
         return self.root
     }
+
     @discardableResult
     internal  func getNodeForLocation(_ location: CLLocation, completion: @escaping (Bool)->())  -> QuadTreeNode? {
         var result : QuadTreeNode?
@@ -245,10 +217,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
           if let nodeToUse =  self.currentNode ?? self.root {
             let rootToUse:QuadTreeNode? = reverseExploration(node: nodeToUse, location: quadLocation)
             if let rootToUse = rootToUse {
-                // print("LiveMomentStore will  browse node: \(rootToUse.getTreeId())")
-
-
-
                 let start = CFAbsoluteTimeGetCurrent()
                 print("LiveMomentStore - browseTree start")
                 let node = rootToUse.browseTree(quadLocation)
@@ -256,8 +224,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                 let end = CFAbsoluteTimeGetCurrent()
                 let elapsedTime = (end - start) * 1000
                 print("LiveMomentStore - browseTree  result node: \(rootToUse.getTreeId()) in \(elapsedTime) ms  ")
-
-
                 let nodeToSave = result?.getParentNode() ?? result
                 self.currentNode = result
                 self.save(false, nodeToSave) {
@@ -276,10 +242,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             completion(false)
             return nil
         }
-
-
     }
-
 
     internal func getClustersInBase() ->  QuadTreeNode? {
         let start = CFAbsoluteTimeGetCurrent()
@@ -299,13 +262,9 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         return result
     }
 
-
     internal func computeRects()  {
-       // self.root = self.getClustersInBase()
         self.rects =  self.root?.getReccursiveRects(nil)
     }
-
-
 
     internal func compute() {
         backgroundQueue.async {
@@ -361,7 +320,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal func computeShopping() -> [QuadTreeNode]? {
-        let nodes = getRects()?.filter {
+        let nodes = getRects()?.filter {$0.locations.filter{$0.isNearToPoi()}.count  > 10 &&
             ($0.densities?.count ?? 0)  > 0 &&
                 $0.densities?[LivingTag.shopping.rawValue] ?? 0 > 0
         }

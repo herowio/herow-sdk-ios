@@ -112,7 +112,7 @@ public protocol QuadTreeNode: AnyObject {
     func getParentNode() -> QuadTreeNode?
     func getUpdate() -> Bool
     func setUpdated(_ value: Bool)
-    func getPois() -> [Poi]?
+    func getPois() -> [Poi]
     func setPois(_ pois: [Poi]?)
     func getLocations() -> [QuadTreeLocation]
     func allLocations() -> [QuadTreeLocation]
@@ -150,7 +150,6 @@ public protocol QuadTreeNode: AnyObject {
     func type()-> LeafType
     func neighbourgs() -> [QuadTreeNode]
     func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode]
-    func isParentLinkedTo(_ node: QuadTreeNode) -> Bool
     func isEqual(_ node: QuadTreeNode) -> Bool 
 
    

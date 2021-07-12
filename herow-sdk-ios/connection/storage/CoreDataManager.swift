@@ -450,7 +450,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         let locationTime = location.time as NSDate
         print("Period - location: \(location.lat)   \(location.lng) \(locationTime)")
         let fetchRequest = NSFetchRequest<Period>(entityName: StorageConstants.PeriodEntityName)
-        fetchRequest.predicate = NSPredicate(format: "start <= %@ && end >= %@", locationTime, locationTime)
+        fetchRequest.predicate = NSPredicate(format: "start < %@ && end > %@", locationTime, locationTime)
         do {
             let array = try context.fetch(fetchRequest)
             result = array.first
@@ -483,7 +483,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         context.performAndWait {
             let time = location.time as NSDate
             let fetch = NSFetchRequest<NSFetchRequestResult>(entityName:  StorageConstants.LocationCoreDataEntityName)
-            fetch.predicate = NSPredicate(format: "time == %@", time )
+            fetch.predicate = NSPredicate(format: "time == %@ || time == nil", time )
             let request = NSBatchDeleteRequest(fetchRequest: fetch)
 
             do {
@@ -544,7 +544,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var result = [LocationCoreData]()
 
         let fetchRequest = NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
-        fetchRequest.predicate = NSPredicate(format: "node == nil || period == nil")
+        fetchRequest.predicate = NSPredicate(format: "node == nil")
         do {
             result = try context.fetch(fetchRequest)
         } catch let error as NSError {
@@ -559,6 +559,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         removePeriods(context)
         getLocations(context).forEach{
             loc in
+           // deleteDuplicatesForLocation(loc, context: context)
             _ = periodeForLocation(loc, context: context)
         }
     }
@@ -797,13 +798,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             let rightBottom  =  recursiveInit(node.rightBottom())
             let tags = node.nodeTags
             let densities = node.nodeDensities
-            if node.isRoot() {
-                // print("ROOT CREATION")
-            }
-            if node.treeId == "021333" {
-                // print("WTF ???")
-            }
-
 
             result =  T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags,densities: densities, rect: rect, pois: pois)
             result?.getLeftUpChild()?.setParentNode(result)
@@ -832,9 +826,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                                                in: context)!
                 nodeCoreData = NodeCoreData(entity: entity,
                                             insertInto: context)
-                let pois = node.getPois()?.compactMap {
+                let pois = node.getPois().compactMap {
                     return getPoiCoreData(id: $0.getId(), context: context)
-                } ?? [PoiCoreData]()
+                }
                 nodeCoreData?.pois = Set(pois)
             }
             guard let nodeCoreData = nodeCoreData else {

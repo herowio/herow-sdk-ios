@@ -15,16 +15,15 @@ struct APIZone: Codable, Zone {
     var radius: Double
     var campaigns: [String]
     var access: APIAccess?
-    var liveEvent: Bool
 
-    init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?, liveEvent: Bool) {
+
+    init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access? ) {
      self.hash = hash
      self.lat = lat
      self.lng = lng
      self.radius = radius
      self.campaigns = campaigns
      self.access = access as? APIAccess
-     self.liveEvent = liveEvent
      }
 
     func getHash() -> String {
@@ -45,9 +44,7 @@ struct APIZone: Codable, Zone {
     func getAccess() -> Access? {
         return access
     }
-    func getLiveEvent() -> Bool {
-        return liveEvent
-    }
+   
 
     static public func decode(data: Data) -> Zone? {
         let decoder = JSONDecoder()

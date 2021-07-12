@@ -10,7 +10,7 @@ import AppTrackingTransparency
 import AdSupport
 
 
-protocol UserInfoListener: class {
+protocol UserInfoListener: AnyObject {
     func  onUserInfoUpdate(userInfo: UserInfo)
 }
 protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate {
@@ -35,6 +35,9 @@ protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate {
     func setNotificationStatus( _ status: String)
     func getOptin() -> Optin
     func setOptin( optin: Optin)
+    func registerListener(listener: UserInfoListener)
+    func getUserInfo() -> UserInfo
+    func resetOptinsAndCustomId(optin:Optin, customId:String)
 
 }
 class UserInfoManager: UserInfoManagerProtocol {
@@ -188,13 +191,23 @@ class UserInfoManager: UserInfoManagerProtocol {
         }
     }
 
-    init(listener: UserInfoListener, herowDataStorage: HerowDataStorageProtocol) {
-        self.userInfoListener = listener
+    func resetOptinsAndCustomId(optin:Optin, customId:String) {
+        self.herowDataHolder.setOptin(optin:optin)
+        self.customId = customId
+        herowDataHolder.setCustomId(customId)
+        synchronize()
+
+    }
+
+    init( herowDataStorage: HerowDataStorageProtocol) {
         self.herowDataHolder = herowDataStorage
         if  let herowId = getHerowId() {
             GlobalLogger.shared.registerHerowId(herowId: herowId)
         }
+    }
 
+    func registerListener(listener: UserInfoListener) {
+        self.userInfoListener = listener
     }
 
     func onAppInForeground() {
@@ -210,6 +223,10 @@ class UserInfoManager: UserInfoManagerProtocol {
     }
 
     func synchronize() {
+        self.userInfoListener?.onUserInfoUpdate(userInfo:  getUserInfo())
+    }
+
+    func getUserInfo() -> UserInfo {
         setLang( Locale.current.languageCode ?? "en")
         let optin = getOptin()
         let idfa: String?  = getIDFA()
@@ -227,11 +244,12 @@ class UserInfoManager: UserInfoManagerProtocol {
                                 customId: customId, lang: lang,
                                 offset: offset,
                                 optins:[optin])
-        
-        self.userInfoListener?.onUserInfoUpdate(userInfo: userInfo)
+
+        return userInfo
     }
 
-    func reset() {
+    func reset(completion: @escaping ()->()) {
+        removeCustomId()
         self.customId = nil
         self.idfv = nil
         self.idfa = nil
@@ -241,7 +259,6 @@ class UserInfoManager: UserInfoManagerProtocol {
         self.locationStatus = nil
         self.accuracyStatus = nil
         self.notificationStatus = nil
-        self.herowDataHolder.reset()
     }
 
 }

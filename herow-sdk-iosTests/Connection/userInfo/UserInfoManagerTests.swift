@@ -15,7 +15,8 @@ class UserInfoManagerTests: XCTestCase, UserInfoListener {
     var userInfoManager : UserInfoManager?
     override func setUpWithError() throws {
         let herowDataStorage =  HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest"), timeProvider: TimeProviderForTests())
-        userInfoManager = UserInfoManager(listener: self, herowDataStorage: herowDataStorage)
+        userInfoManager = UserInfoManager( herowDataStorage: herowDataStorage)
+        userInfoManager?.registerListener(listener: self)
         userInfoManager?.reset()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }

@@ -7,6 +7,12 @@
 
 import Foundation
 import CoreLocation
+
+enum  SubType: String {
+    case  GEOFENCE_ZONE_NOTIFICATION = "GEOFENCE_ZONE_NOTIFICATION"
+    case  REDIRECT = "REDIRECT"
+}
+
 class LogData {
     var appState: String
     var cacheManager: CacheManagerProtocol?

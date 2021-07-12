@@ -9,6 +9,8 @@ import Foundation
 import CoreLocation
 
 class MockLocationManager: LocationManager {
+
+
     var monitoredRegions = Set<CLRegion>()
     var location: CLLocation?
 
@@ -112,11 +114,8 @@ class MockLocationManager: LocationManager {
 
     }
 
-    public func dispatchFakeLocation() {
+    func dispatchFakeLocation(_ location: CLLocation) {
 
     }
-
-    
-
 
 }

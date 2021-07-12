@@ -17,6 +17,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     private var lastGeoHash: String?
     let dataHolder: DataHolder
     var timeProvider: TimeProvider
+    
     init(dataHolder: DataHolder, timeProvider: TimeProvider = TimeProviderAbsolute()) {
         self.dataHolder = dataHolder
         self.timeProvider = timeProvider
@@ -34,7 +35,6 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     public func getToken() -> APIToken? {
-
         if let token = self.token {
             return token
         }
@@ -44,6 +44,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         guard let token = APIToken.decode(data: data)  else {
             return nil
         }
+       saveToken(token)
         return token
     }
     
@@ -57,7 +58,6 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     public func getUserInfo() -> APIUserInfo? {
-
         if let userInfo = self.userInfo {
             return userInfo
         }
@@ -82,7 +82,6 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     public func getConfig() -> APIConfig? {
-
         if let config = self.config {
             return config
         }
@@ -96,18 +95,34 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     private func getLastConfigDate() -> Date? {
-
         return dataHolder.getDate(key: HerowConstants.configDateKey)
     }
 
     public func saveUserInfoWaitingForUpdate(_ waitForUpdate: Bool) {
        dataHolder.putBoolean(key: HerowConstants.userInfoStatusKey, value: waitForUpdate)
+        if( waitForUpdate == false ) {
+        dataHolder.putDate(key:  HerowConstants.lastUserInfoModifiedDateKey,  value: Date())
+        }
        dataHolder.apply()
+    }
+
+    public func saveLiveMomentLastSaveDate(_ date: Date) {
+        dataHolder.putDate(key:  HerowConstants.liveMomentSavingDate, value: date)
+    }
+
+    public func getLiveMomentLastSaveDate() -> Date? {
+        dataHolder.getDate(key: HerowConstants.liveMomentSavingDate)
     }
 
     public func userInfoWaitingForUpdate() -> Bool {
         if let _ = getUserInfo()?.herowId {
-            return  dataHolder.getBoolean(key: HerowConstants.userInfoStatusKey)
+            let now = Date()
+            var last = Date(timeIntervalSince1970: 0)
+            if let mylast = dataHolder.getDate(key:  HerowConstants.lastUserInfoModifiedDateKey) {
+                last = mylast
+            }
+           let timeOk = now.timeIntervalSince(last) > 86400
+            return  (dataHolder.getBoolean(key: HerowConstants.userInfoStatusKey) || timeOk)
         }
         return true
     }
@@ -168,12 +183,19 @@ public class HerowDataStorage: HerowDataStorageProtocol {
 
         if differentHash {
             GlobalLogger.shared.debug("CACHE SHOULD BE FETCH BECAUSE OF DIFFERENT HASH")
+        } else  {
+            GlobalLogger.shared.debug("CACHE SHOULD NOT  BE FETCH BECAUSE OF SAME HASH")
+
         }
         if cacheIsNotUptoDate {
             GlobalLogger.shared.debug("CACHE SHOULD BE FETCH BECAUSE OF CACHE IS NOT UP TO DATE")
+        } else  {
+            GlobalLogger.shared.debug("CACHE SHOULD NOT  BE FETCH BECAUSE OF CACHE IS  UP TO DATE")
         }
         if shouldFetchNow {
             GlobalLogger.shared.debug("CACHE SHOULD BE FETCH BECAUSE OF CACHE INTERVAL IS DONE")
+        } else {
+                GlobalLogger.shared.debug("CACHE SHOULD  NOT BE FETCH BECAUSE OF CACHE INTERVAL IS  NOT DONE")
         }
         return differentHash ||
             cacheIsNotUptoDate ||
@@ -225,7 +247,6 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     public func getHerowId() -> String? {
         return  getUserInfo()?.herowId
     }
-
 
     public func getLang() -> String? {
        return  dataHolder.getString(key: HerowConstants.langKey)
@@ -290,17 +311,13 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         dataHolder.apply()
     }
 
-    public func reset() {
-
-        dataHolder.remove(key: HerowConstants.tokenKey)
-        dataHolder.remove(key: HerowConstants.configKey)
-        dataHolder.remove(key: HerowConstants.userInfoKey)
-        dataHolder.remove(key: HerowConstants.lastCacheModifiedDateKey)
-        dataHolder.remove(key: HerowConstants.lastCacheModifiedDateKey)
-        dataHolder.remove(key: HerowConstants.configDateKey)
-        dataHolder.remove(key: HerowConstants.geoHashKey)
+    public func reset(completion : ()->()) {
+        self.token = nil
+        self.config = nil
+        self.lastGeoHash = nil
+        self.userInfo = nil
+        dataHolder.removeAll()
         dataHolder.apply()
-
+        completion()
     }
-
 }

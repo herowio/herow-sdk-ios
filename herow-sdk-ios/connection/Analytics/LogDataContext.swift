@@ -27,7 +27,7 @@ class LogDataContext: LogData {
         let places: [NearbyPlace] = cacheManager?.getNearbyZones( self.location).map {
             let distance = location.distance(from: CLLocation(latitude: $0.getLat(), longitude: $0.getLng()))
 
-           return NearbyPlace(placeId: $0.getHash(), distance: distance, radius: $0.getRadius(), lat: $0.getLat(), lng: $0.getLng())
+            return NearbyPlace(placeId: $0.getHash(), distance: distance, radius: $0.getRadius(), lat: $0.getLat(), lng: $0.getLng(),confidence: nil )
         } ?? [NearbyPlace]()
 
         let logData = LogDataContextStruct(location: location, pois: pois, places: places, appState: self.appState, subtype: self.clickAndCollect ? "CONTEXT_REALTIME" : "CONTEXT", dataStorage: self.dataStorage)
@@ -51,12 +51,14 @@ struct NearbyPlace: Encodable {
     let radius: Double
     let lat: Double
     let lng: Double
+    let confidence: Double?
     enum CodingKeys: String, CodingKey {
         case placeId = "place_id"
         case distance
         case radius
         case lat
         case lng
+        case confidence
     }
 
     func encode(to encoder: Encoder) throws {
@@ -66,6 +68,7 @@ struct NearbyPlace: Encodable {
         try container.encode(radius, forKey: .radius)
         try container.encode(lat, forKey: .lat)
         try container.encode(lng, forKey: .lng)
+        try container.encodeIfPresent(confidence, forKey: .confidence)
     }
 }
 

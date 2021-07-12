@@ -10,7 +10,7 @@ import CoreLocation
 @testable import herow_sdk_ios
 class CacheManagerTests: XCTestCase, CacheListener {
 
-    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowInterval, HerowNotification>())
+    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>())
     override func setUpWithError() throws {
 
         cacheManager.registerCacheListener(listener: self)
@@ -24,7 +24,7 @@ class CacheManagerTests: XCTestCase, CacheListener {
         print("cache will update")
     }
     
-    func onCacheUpdate() {
+    func onCacheUpdate(forGeoHash: String?) {
         print("cache update")
     }
     override func tearDownWithError() throws {
@@ -45,17 +45,16 @@ class CacheManagerTests: XCTestCase, CacheListener {
         let campaigns = ["1","2","3","4"]
         let testFailExpectation = expectation(description: "testFailExpectation")
         let access = APIAccess(id: "access1", name: "access1Name", address: "accessAdress1")
-        let zone = APIZone(hash: "hash", lat: 49.371864318847656, lng: 3.8972530364990234, radius: 30, campaigns: campaigns, access: access, liveEvent: false)
-        let zone2 = APIZone(hash: "hash2", lat: 49.371864318847656, lng: 3.8972530364990234, radius: 30, campaigns: campaigns, access: access, liveEvent: false)
+        let zone = APIZone(hash: "hash", lat: 49.371864318847656, lng: 3.8972530364990234, radius: 30, campaigns: campaigns, access: access)
+        let zone2 = APIZone(hash: "hash2", lat: 49.371864318847656, lng: 3.8972530364990234, radius: 30, campaigns: campaigns, access: access)
         cacheManager.saveZones(items: [zone, zone2]) { [self] in
             XCTAssertTrue(self.cacheManager.getZones().count == 2)
             XCTAssertTrue(self.cacheManager.getZones(ids: ["hash"]).count == 1)
             XCTAssertTrue(self.cacheManager.getZones(ids: ["hash2"]).count == 1)
             XCTAssertTrue(self.cacheManager.getZones(ids: ["hash2","hash"]).count == 2)
-            self.cacheManager.cleanCache()
+            self.cacheManager.cleanCache ()
             XCTAssertTrue(self.cacheManager.getZones().count == 0)
             testFailExpectation.fulfill()
-
         }
 
         waitForExpectations(timeout:30) { error in
@@ -83,26 +82,45 @@ class CacheManagerTests: XCTestCase, CacheListener {
         }
     }
 
+    func testCapping() throws {
+        let testFailExpectation = expectation(description: "testFailExpectation")
+        let capping = HerowCapping(id: "id", razDate: Date(), count: 0)
+        cacheManager.saveCapping(capping) {
+            if  let savedCapping =   self.cacheManager.getCapping(id: "id") {
+                XCTAssertTrue(savedCapping.getId() == "id")
+                XCTAssertTrue(savedCapping.getCount() == 0)
+
+                savedCapping.setCount(count: 2)
+                self.cacheManager.saveCapping(savedCapping) {
+                    let savedCapping =   self.cacheManager.getCapping(id: "id")
+                    XCTAssertTrue(savedCapping?.getId() == "id")
+                    XCTAssertTrue(savedCapping?.getCount() == 2)
+
+                    testFailExpectation.fulfill()
+                }
+            }
+
+        }
+        waitForExpectations(timeout:30) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
+    }
+
+
     func testCampaign() throws {
         let testFailExpectation = expectation(description: "testFailExpectation")
-        let interval = APIInterval(start: 0, end: 1000)
+
         let campaign: APICampaign = APICampaign(id: "ggggg",
-                                                company: "company",
                                                 name: "name",
-                                                createdDate: 0,
-                                                modifiedDate: 0,
-                                                deleted: false,
-                                                simpleId: "id",
                                                 begin: 0,
                                                 end: nil,
-                                                realTimeContent: false,
-                                                intervals: [interval],
                                                 cappings: nil,
-                                                triggers: ["exit" : 0],
                                                 daysRecurrence: [""],
-                                                recurrenceEnabled: false,
-                                                tz: "tz",
-                                                notification: nil)
+                                                notification: nil,
+                                                startHour: "",
+                                                stopHour: "")
 
 
         self.cacheManager.saveCampaigns(items: [campaign]) { [self] in

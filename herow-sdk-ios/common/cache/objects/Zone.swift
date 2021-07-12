@@ -7,7 +7,8 @@
 
 import Foundation
 import CoreLocation
-protocol Zone  {
+
+protocol Zone: Codable {
 
     func getHash() -> String
     func getLat() -> Double
@@ -15,8 +16,8 @@ protocol Zone  {
     func getRadius() -> Double
     func getCampaigns() -> [String]
     func getAccess() -> Access?
-    func getLiveEvent() -> Bool
-    init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?, liveEvent: Bool)
+
+    init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?)
 
 }
 
@@ -27,7 +28,7 @@ extension Zone {
     }
 }
 
-public protocol Access {
+public protocol Access: Codable {
     
     func getId() -> String
     func getName() -> String
@@ -35,57 +36,26 @@ public protocol Access {
     init(id: String, name: String, address: String)
 }
 
-protocol Campaign {
+ protocol Campaign {
 
     func getId() -> String
-    func getCompany() -> String
-    func getCreatedDate() -> Double
-    func getModifiedDate() -> Double
-    func getDeleted() -> Bool
     func getName() -> String
-    func getSimpleId() -> String
     func getBegin() -> Double
     func getEnd() -> Double?
-    func getRealTimeContent() -> Bool
-    func getIntervals() -> [Interval]?
-    func getTriggers() -> [String: Int]
     func getCappings() -> [String: Int]?
-    func getTz() -> String
     func getNotification() -> Notification?
     func getDaysRecurrence() -> [String]?
-    func getReccurenceEnable() -> Bool
+    func getStartHour() -> String?
+    func getStopHour() -> String?
 
 
     init(id: String,
-         company: String,
          name: String,
-         createdDate: Double,
-         modifiedDate: Double,
-         deleted: Bool,
-         simpleId: String,
          begin: Double,
          end: Double?,
-         realTimeContent: Bool,
-         intervals: [Interval]?,
          cappings: [String: Int]?,
-         triggers:[String: Int],
          daysRecurrence: [String],
-         recurrenceEnabled:Bool,
-         tz:String,
-         notification: Notification?)
-}
-
-extension Campaign {
-    func isExit() -> Bool {
-        return getTriggers()["onExit"] == 1
-    }
-}
-
- protocol Interval {
-
-    func getStart() -> Int64
-    func getEnd() -> Int64?
-    init(start: Int64, end: Int64)
+         notification: Notification?, startHour: String?, stopHour: String?)
 }
 
  protocol Notification {
@@ -100,7 +70,7 @@ extension Campaign {
     func getUri() -> String?
 }
 
-protocol Poi {
+public protocol Poi {
 
     func getId() -> String
     func getTags() -> [String]
@@ -108,3 +78,91 @@ protocol Poi {
     func getLng() -> Double
     init(id: String, tags: [String],lat: Double, lng: Double)
 }
+
+public protocol Capping {
+    func getId() -> String
+    func getRazDate() -> Date
+    func getCount() -> Int64
+    func setRazDate(date: Date)
+    func setCount(count: Int64)
+    init(id: String, razDate: Date, count: Int64)
+}
+
+public enum LeafType: Int {
+    case root = 0
+    case leftUp = 1
+    case rightUp = 2
+    case leftBottom = 3
+    case rightBottom = 4
+}
+
+public enum LeafDirection: String {
+    case root = "0"
+    case NW = "1"
+    case NE = "2"
+    case SW = "3"
+    case SE = "4"
+}
+public protocol QuadTreeNode: AnyObject {
+
+    func redraw()
+    func findNodeWithId(_ id: String)  -> QuadTreeNode?
+    func getTreeId() -> String
+    func setParentNode(_ parent: QuadTreeNode?)
+    func getParentNode() -> QuadTreeNode?
+    func getUpdate() -> Bool
+    func setUpdated(_ value: Bool)
+    func getPois() -> [Poi]
+    func setPois(_ pois: [Poi]?)
+    func getLocations() -> [QuadTreeLocation]
+    func allLocations() -> [QuadTreeLocation]
+    func getLastLocation() -> QuadTreeLocation?
+    func getLeftUpChild() -> QuadTreeNode?
+    func getRightUpChild() -> QuadTreeNode?
+    func getRightBottomChild() -> QuadTreeNode?
+    func getLeftBottomChild() -> QuadTreeNode?
+    func getTags() -> [String: Double]?
+    func getDensities() -> [String: Double]?
+    func computeTags(_ computeParent: Bool)
+    func setRect(_ rect: Rect)
+    func getRect() -> Rect
+    func nodeForLocation(_ location: QuadTreeLocation) -> QuadTreeNode?
+    func browseTree(_ location: QuadTreeLocation) -> QuadTreeNode?
+    func getReccursiveRects(_ rects: [NodeDescription]?) -> [NodeDescription]
+    func getReccursiveNodes(_ nodes: [QuadTreeNode]?) -> [QuadTreeNode]
+    init(id: String, locations: [QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom : QuadTreeNode?, rightBottom : QuadTreeNode?, tags: [String: Double]?, densities:  [String: Double]?, rect: Rect, pois: [Poi]?)
+    func childs() -> [QuadTreeNode]
+    func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode?
+    func printHierarchy()
+    func populateParentality()
+    func recursiveCompute()
+    func isMin() -> Bool
+    func isNewBorn() -> Bool
+    func setNewBorn(_ value: Bool)
+    func walkLeft() -> QuadTreeNode?
+    func walkRight() -> QuadTreeNode?
+    func walkUp() -> QuadTreeNode?
+    func walkDown() -> QuadTreeNode?
+    func walkUpLeft() -> QuadTreeNode?
+    func walkUpRight() -> QuadTreeNode?
+    func walkDownLeft() -> QuadTreeNode?
+    func walkDownRight() -> QuadTreeNode?
+    func type()-> LeafType
+    func neighbourgs() -> [QuadTreeNode]
+    func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode]
+    func isEqual(_ node: QuadTreeNode) -> Bool 
+
+   
+}
+
+public protocol QuadTreeLocation {
+    var lat: Double {get set}
+    var lng: Double {get set}
+    var time: Date {get set}
+    func isNearToPoi() -> Bool
+    func setIsNearToPoi(_ near: Bool)
+    init(lat: Double, lng: Double, time: Date)
+}
+
+
+

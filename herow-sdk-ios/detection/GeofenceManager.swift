@@ -20,10 +20,20 @@ fileprivate struct MovingGeofenceParameter {
     }
 }
 
-@objc public protocol GeofenceManagerListener: class {
+@objc public protocol GeofenceManagerListener: AnyObject {
     func onMovingZoneUpdated(regions:  [CLRegion])
 }
-class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListener {
+class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListener, AppStateDelegate {
+    func onAppInForeground() {
+        onForeGround = true
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = 5.0
+    }
+
+    func onAppInBackground() {
+        onForeGround = false
+    }
+
 
     private let movingRegionBearings: [Double] = [0, 90, 180, 270]
     private let maxGeoFenceZoneCount = 10
@@ -34,9 +44,10 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
     static let distanceHundred: Double = 100
     static let distance250: Double = 250
     static let distanceTen: Double = 10
-    static let filterDistanceStepCount = 5.0
+    static let filterDistanceStepCount = 10.0
+    private var onForeGround = false
     internal private(set) var lastLocation: CLLocation?
-
+    private let backgroundQueue =  DispatchQueue(label: "updateMonitoringFor", qos: .background)
     fileprivate var movingGeofenceParameter: MovingGeofenceParameter = MovingGeofenceParameter(distanceFromNearestPlace: 0,
                                               circleRadiusOfMovingRegion: 150,
                                 distanceFromUserForBorderOfMovingRegion: 100)
@@ -204,7 +215,7 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
         return parameter.distanceFromUserToRegionBorder * 3
     }
 
-    func onCacheUpdate() {
+    func onCacheUpdate(forGeoHash forGeohash: String?) {
             updateMonitoringFor(location: lastLocation)
     }
 
@@ -213,48 +224,59 @@ class GeofenceManager: CacheListener, DetectionEngineListener, FuseManagerListen
     }
 
     func updateMonitoringFor(location: CLLocation?) {
-        var zones : [Zone]
+
+        var zones  = [Zone]()
         if let location = location {
-            updateRegions(location: location)
-            zones = cacheManager.getNearbyZones(location)
-            zones = Array(zones.sorted { (initial, next) -> Bool in
-                return initial.distanceFrom(location: location) < next.distanceFrom(location: location)
-                }.prefix(maxGeoFenceZoneCount))
+            self.updateRegions(location: location)
+            backgroundQueue.async {
+                zones = self.cacheManager.getNearbyZones(location)
+                DispatchQueue.main.async {
+                    zones = Array(zones.sorted { (initial, next) -> Bool in
+                        return initial.distanceFrom(location: location) < next.distanceFrom(location: location)
+                    }.prefix(self.maxGeoFenceZoneCount))
 
-            var distance = Double.infinity
-            if let nearestZone = zones.first {
-                distance = max (0, nearestZone.distanceFrom(location: location) - nearestZone.getRadius())
-                GlobalLogger.shared.debug("GeofenceManager - distance to nearest zone = \(distance)")
-            } else {
-                GlobalLogger.shared.debug("GeofenceManager -  no zone detected distance to nearest zone = infinity")
+                    var distance = Double.infinity
+                    if let nearestZone = zones.first {
+                        distance = max (0, nearestZone.distanceFrom(location: location) - nearestZone.getRadius())
+                        GlobalLogger.shared.debug("GeofenceManager - distance to nearest zone = \(distance)")
+                    } else {
+                        GlobalLogger.shared.debug("GeofenceManager -  no zone detected distance to nearest zone = infinity")
+                    }
+                    self.adjustDistanceFilterForDistanceToNearestZone(distance)
+                }
             }
-            adjustDistanceFilterForDistanceToNearestZone(distance)
-
-        } else {
-            zones = [Zone]()
         }
-        createPlaceRegions(places: cleanPlaceMonitoredRegions(places: zones))
+        self.createPlaceRegions(places: self.cleanPlaceMonitoredRegions(places: zones))
+
     }
 
     private func adjustDistanceFilterForDistanceToNearestZone(_ distance : CLLocationDistance) {
 
-        let distanceStep =  max(distance / GeofenceManager.filterDistanceStepCount, GeofenceManager.minDistanceFilter)
-        let distanceFilter = min(GeofenceManager.maxDistanceFilter, distanceStep)
-        locationManager.distanceFilter = distanceFilter
         var desiredAccuracy = kCLLocationAccuracyBest
-        if distance > GeofenceManager.distance3Thousand {
-            desiredAccuracy = kCLLocationAccuracyKilometer
-        }
-        if distance < GeofenceManager.distance3Thousand && distance > GeofenceManager.distance250 {
-            desiredAccuracy = kCLLocationAccuracyHundredMeters
-        }
-        if distance < GeofenceManager.distance250 && distance > GeofenceManager.distanceHundred {
-            desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+        var distanceFilter = 5.0
+
+        if !onForeGround {
+            movingGeofenceParameter = MovingGeofenceParameter(distanceFromNearestPlace: 0,
+                                                              circleRadiusOfMovingRegion:150,
+                                                              distanceFromUserForBorderOfMovingRegion: 100)
+            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            let distanceStep =  min(500.0 ,max(distance / GeofenceManager.filterDistanceStepCount, GeofenceManager.minDistanceFilter))
+            distanceFilter = min(GeofenceManager.maxDistanceFilter, distanceStep)
+            if distance > GeofenceManager.distance3Thousand {
+                desiredAccuracy = kCLLocationAccuracyKilometer
+            }
+            if distance < GeofenceManager.distance3Thousand && distance > GeofenceManager.distance250 {
+                desiredAccuracy = kCLLocationAccuracyHundredMeters
+            }
+            if distance < GeofenceManager.distance250 && distance > GeofenceManager.distanceHundred {
+                desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            }
         }
         movingGeofenceParameter = MovingGeofenceParameter(distanceFromNearestPlace: 0,
                                                   circleRadiusOfMovingRegion: max (150, distanceFilter),
                                     distanceFromUserForBorderOfMovingRegion: 100)
         locationManager.desiredAccuracy = desiredAccuracy
+        locationManager.distanceFilter = distanceFilter
         GlobalLogger.shared.debug("GeofenceManager - desiredAccuracy = \(locationManager.desiredAccuracy)")
         GlobalLogger.shared.debug("GeofenceManager - distanceFilter = \(locationManager.distanceFilter)")
     }

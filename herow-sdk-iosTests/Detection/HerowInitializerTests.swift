@@ -16,7 +16,7 @@ class HerowInitializerTests: XCTestCase {
     }
 
     func setup() {
-        herowInitializer = HerowInitializer(locationManager: locationManager)
+        herowInitializer = HerowInitializer(locationManager: locationManager, notificationCenter: MockNotificationCenter())
         herowInitializer?.reset()
         herowInitializer?.getDetectionEngine().startWorking()
         _ = herowInitializer?.configPlatform(.preprod)

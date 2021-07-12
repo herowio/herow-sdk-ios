@@ -13,7 +13,8 @@ class GeofenceManagerTests: XCTestCase {
     var herowInitializer : HerowInitializer?
 
     override func setUpWithError() throws {
-        herowInitializer = HerowInitializer(locationManager: locationManager)
+        NotificationDelegateHolder.shared.useNotificationCenter = false
+        herowInitializer = HerowInitializer(locationManager: locationManager, notificationCenter: MockNotificationCenter())
         herowInitializer?.reset()
         _ = herowInitializer?.configPlatform(.preprod)
             .configApp(identifier: "appdemo98", sdkKey: "4WQmEg3I6tAsFQG9ZN8T")

@@ -97,13 +97,14 @@ class EventDispatcherTests: XCTestCase {
     func testPost() throws {
         let listener1 = TestEventListener()
         eventDispatcher.registerListener(listener1)
-        eventDispatcher.post(event: .GEOFENCE_ENTER, infos: [ZoneInfo(hash: "hash")])
+        let zone = HerowZone(hash: "hash", lat: 0.0, lng: 0.0, radius: 50, campaigns: [String](), access: nil)
+        eventDispatcher.post(event: .GEOFENCE_ENTER, infos: [ZoneInfo(zone: zone)])
         XCTAssertTrue(listener1.event == .GEOFENCE_ENTER)
         XCTAssertTrue(listener1.infos?.first?.zoneHash == "hash")
-        eventDispatcher.post(event: .GEOFENCE_EXIT, infos: [ZoneInfo(hash: "hash")])
+        eventDispatcher.post(event: .GEOFENCE_EXIT, infos: [ZoneInfo(zone: zone)])
         XCTAssertTrue(listener1.event == .GEOFENCE_EXIT)
         XCTAssertTrue(listener1.infos?.first?.zoneHash == "hash")
-        eventDispatcher.post(event: .GEOFENCE_VISIT, infos: [ZoneInfo(hash: "hash")])
+        eventDispatcher.post(event: .GEOFENCE_VISIT, infos: [ZoneInfo(zone: zone)])
         XCTAssertTrue(listener1.event == .GEOFENCE_VISIT)
         XCTAssertTrue(listener1.infos?.first?.zoneHash == "hash")
     }

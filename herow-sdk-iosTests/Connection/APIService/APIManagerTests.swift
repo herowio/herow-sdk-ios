@@ -17,7 +17,7 @@ class APIManagerTests: XCTestCase, ConfigListener  {
     var apiManager: APIManager?
 
     override func setUpWithError() throws {
-        apiManager = APIManager(connectInfo: connectionInfos, herowDataStorage: HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "Test")), cacheManager: CacheManager(db: CoreDataManager<APIZone, APIAccess, APIPoi, APICampaign, APIInterval, APINotification>()))
+        apiManager = APIManager(connectInfo: connectionInfos, herowDataStorage: HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "Test")), cacheManager: CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping,HerowQuadTreeNode, HerowQuadTreeLocation>()))
         apiManager?.configure(connectInfo: connectionInfos)
         apiManager?.registerConfigListener(listener: self)
         self.apiManager?.user = User(login: "toto", password: "toto")

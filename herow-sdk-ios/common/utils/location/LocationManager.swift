@@ -147,7 +147,7 @@ public protocol LocationManager {
 
     func setIsOnClickAndCollect(_ value: Bool)
 
-    func dispatchFakeLocation()
+    func dispatchFakeLocation(_ location: CLLocation)
 
     
 }
@@ -235,7 +235,7 @@ extension CLLocationManager: LocationManager {
 
     }
 
-    public func dispatchFakeLocation() {
+    public func dispatchFakeLocation(_ location : CLLocation) {
 
     }
 

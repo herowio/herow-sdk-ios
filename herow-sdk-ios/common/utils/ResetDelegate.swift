@@ -8,6 +8,16 @@
 
 import Foundation
 
-@objc public protocol ResetDelegate: class {
-    func reset()
+@objc public protocol ResetDelegate: AnyObject {
+     func reset(completion: @escaping ()->())
 }
+
+extension ResetDelegate {
+    func reset() {
+        reset {
+            // do nothing
+        }
+    }
+}
+
+

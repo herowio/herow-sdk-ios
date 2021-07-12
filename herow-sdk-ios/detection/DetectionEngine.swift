@@ -14,7 +14,7 @@ import UIKit
     case fake
     case undefined
 }
-@objc public protocol DetectionEngineListener: class {
+@objc public protocol DetectionEngineListener: AnyObject {
     func onLocationUpdate(_ location: CLLocation, from: UpdateType)
     
 }
@@ -26,7 +26,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     internal var isUpdatingSignificantChanges = false
     internal var isMonitoringRegion = false
     internal  var isMonitoringVisit = false
-    internal var bgTaskManager = BackgroundTaskManager(app: UIApplication.shared, name: "io.herow.backgroundDetectionTask")
+    private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
     private let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
     private let dataHolder =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")
     private var locationManager: LocationManager
@@ -36,6 +36,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     internal var detectionListners: [WeakContainer<DetectionEngineListener>] = [WeakContainer<DetectionEngineListener>]()
     internal var dispatchTime = Date(timeIntervalSince1970: 0)
     private var timeProvider: TimeProvider
+    private let queue = OperationQueue()
 
 
     public var showsBackgroundLocationIndicator: Bool {
@@ -133,6 +134,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         initBackgroundCapabilities()
         self.updateClickAndCollectState()
         self.locationManager.delegate = self
+        queue.qualityOfService = .background
     }
 
     func initBackgroundCapabilities() {
@@ -342,37 +344,75 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             ($0.get() === listener) == false
         }
     }
-
+    
+    @discardableResult
     func dispatchLocation(_ location: CLLocation, from: UpdateType = .undefined) -> Bool{
-        bgTaskManager.start()
+
         var skip = false
         var distance = 0.0
         let distpatchTimeKO = abs(dispatchTime.timeIntervalSince1970 - timeProvider.getTime()) < 3
+        var distanceKO = false
+        let locationToOld = abs(Date().timeIntervalSince1970 - location.timestamp.timeIntervalSince1970) > 300
+        var timeKO = false
         if let lastLocation = self.lastLocation {
-            let distanceKO =  lastLocation.distance(from: location) < 30
-            let timeKO = (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 10
+            distanceKO =  lastLocation.distance(from: location) < 30
+            timeKO =  (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 10
 
             distance = lastLocation.distance(from: location)
             skip = distanceKO && timeKO && skipCount < 5
         }
-        skip = skip || distpatchTimeKO
+        skip = skip || distpatchTimeKO || locationToOld
+
+
         if skip == false {
-            if  self.lastLocation == nil {
-                GlobalLogger.shared.debug("DetectionEngine - first location : \(location), accuracy: \(location.horizontalAccuracy)")
-            }
-            skipCount = 0
-            self.lastLocation = location
-            GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
+
             dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
-            for listener in  detectionListners {
-                listener.get()?.onLocationUpdate(location, from: from)
+            self.lastLocation = location
+            skipCount = 0
+            let blockOPeration = BlockOperation { [weak self] in
+
+                guard let bgId =  self?.backgroundTaskId else {
+                    return
+                }
+                var newBgId = bgId
+                if bgId == .invalid {
+                    newBgId = UIApplication.shared.beginBackgroundTask(
+                    withName: "herow.io.DetectionEngine.backgroundTaskID",
+                    expirationHandler: {
+                        if self?.backgroundTaskId != .invalid {
+                            UIApplication.shared.endBackgroundTask(newBgId)
+                            GlobalLogger.shared.debug("DetectionEngine ends backgroundTask with identifier : \(newBgId)")
+                            self?.backgroundTaskId = .invalid
+                        }
+                    })
+                    self?.backgroundTaskId = newBgId
+                }
+                GlobalLogger.shared.debug("DetectionEngine starts backgroundTask with identifier : \( newBgId)")
+                if  self?.lastLocation == nil {
+                    GlobalLogger.shared.debug("DetectionEngine - first location : \(location), accuracy: \(location.horizontalAccuracy)")
+                }
+                GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
+
+                if let listenners = self?.detectionListners {
+                for listener in listenners {
+                    listener.get()?.onLocationUpdate(location, from: from)
+                }
+                }
+                if self?.backgroundTaskId != .invalid {
+                    UIApplication.shared.endBackgroundTask(newBgId)
+                    GlobalLogger.shared.debug("DetectionEngine ends backgroundTask with identifier : \( newBgId)")
+                    self?.backgroundTaskId = .invalid
+                }
             }
+            queue.addOperation(blockOPeration)
         } else {
             skipCount = skipCount + 1
-            GlobalLogger.shared.debug("DetectionEngine - skip location : \(location) DISTANCE FROM LAST : \(distance)")
+            GlobalLogger.shared.verbose("DetectionEngine - skip location : \(location) DISTANCE FROM LAST : \(distance)")
         }
-        bgTaskManager.stop()
-        return !skip
+
+        let result = !skip
+        GlobalLogger.shared.info("dispatchLocation - skip = \(skip) distpatchTimeKO = \(distpatchTimeKO) distanceKO= \(timeKO) timeKO: \(timeKO) skipCount: \(skipCount)")
+        return result
     }
 
 
@@ -384,7 +424,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             if location.timestamp.timeIntervalSince(Date()) < 20 {
                 GlobalLogger.shared.debug("didUpdate - last location: \(location.coordinate.latitude),"
                                             + "\(location.coordinate.longitude) - \(location.timestamp)")
-            _ = dispatchLocation(location, from: .update)
+                _ = dispatchLocation(location, from: .update)
             }
         }
     }
@@ -417,9 +457,11 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     func didRecievedConfig(_ config: APIConfig) {
         
         if config.enabled {
+            GlobalLogger.shared.debug("DetectionEngine - start working")
             startWorking()
         } else {
             stopWorking()
+            GlobalLogger.shared.debug("DetectionEngine - stop working")
         }
     }
 
@@ -434,18 +476,16 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     public func onAppInForeground() {
-        bgTaskManager.onAppInForeground()
+
     }
 
     public func onAppInBackground() {
-        bgTaskManager.onAppInBackground()
+
+        GlobalLogger.shared.debug("appStateDetector - inBackground \(self)")
     }
 
-   @objc public func dispatchFakeLocation() {
-        let location = LocationUtils.randomLocation()
-        for listener in  detectionListners {
-            listener.get()?.onLocationUpdate(location, from: .fake)
-        }
+    @objc public func dispatchFakeLocation(_ location : CLLocation) {
+        dispatchLocation( location, from: .update)
     }
 
 }

@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 
-protocol RequestStatusListener: class {
+protocol RequestStatusListener: AnyObject {
     func didReceiveResponse(_ statusCode: Int)
 }
 internal enum Method: String {
@@ -37,15 +37,18 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     weak  var  statusCodeListener: RequestStatusListener?
     var headers = [String:String]()
     var responseHeaders: [AnyHashable: Any]?
-
+    private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
+    private var allowMultiOperation: Bool = false
     private var ready = false
-    internal init(urlType: URLType, endPoint: EndPoint = .undefined) {
+    internal init(urlType: URLType, endPoint: EndPoint = .undefined, allowMultiOperation: Bool = false) {
         self.baseURL = urlType.rawValue
         self.endPoint = endPoint
         self.sessionCfg = URLSessionConfiguration.default
         self.sessionCfg.timeoutIntervalForRequest = 30.0
         self.session = URLSession(configuration: sessionCfg)
+        self.allowMultiOperation = allowMultiOperation
         queue.qualityOfService = .background
+        queue.maxConcurrentOperationCount = 1
     }
 
     public func setUrlType(_ urlType: URLType) {
@@ -77,77 +80,104 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     }
 
     internal  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?)  {
-        let blockOPeration = BlockOperation { [self] in
+
+
 
         let completion: (Result<ResponseType, Error>) -> Void = {result in
             callback?(result)
+            if self.backgroundTaskId != .invalid {
+            UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+            GlobalLogger.shared.verbose("APIWorker ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                self.backgroundTaskId = .invalid
+            }
             self.currentTask = nil
         }
+
 
         guard let url = URL(string: buildURL(endPoint: endPoint)) else {
             completion(Result.failure(NetworkError.badUrl))
             return
         }
 
-        if ready == false {
-            GlobalLogger.shared.warning("APIWorker - \(url) not ready will return without working")
+        if currentTask != nil && allowMultiOperation == false {
+            GlobalLogger.shared.info("APIWorker still working " + url.absoluteString)
+            completion(Result.failure(NetworkError.workerStillWorking))
             return
         }
 
-        var request = URLRequest(url: url)
-
-        request.allHTTPHeaderFields = headers
-        request.httpMethod = method.rawValue
-        if let param = param {
-            request.httpBody = param
-        }
-        currentTask = session.dataTask(with: request, completionHandler: { [self] (data, response, error) in
-            if let _ = error {
-                completion(Result.failure(NetworkError.badUrl))
-                return
+        if (queue.operationCount == 0 || allowMultiOperation) && ready  {
+            if self.backgroundTaskId == .invalid {
+            self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
+                withName: "herow.io.APIWorker.backgroundTaskID" + url.absoluteString,
+                expirationHandler: {
+                    if self.backgroundTaskId != .invalid {
+                    UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+                    GlobalLogger.shared.verbose("APIWorker ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                        self.backgroundTaskId = .invalid
+                    }
+                })
             }
-            guard let response = response as? HTTPURLResponse  else {
-                GlobalLogger.shared.error(NetworkError.invalidResponse)
-                completion(Result.failure(NetworkError.invalidResponse))
-                return
-            }
-            let statusCode = response.statusCode
-            self.statusCodeListener?.didReceiveResponse(statusCode)
-            if (HttpStatusCode.HTTP_OK..<HttpStatusCode.HTTP_MULT_CHOICE) ~= statusCode {
-                guard let data = data  else {
-                    completion(Result.failure(NetworkError.noData))
-                    return
+            let blockOPeration = BlockOperation { [weak self] in
+                var request = URLRequest(url: url, cachePolicy: .reloadIgnoringCacheData, timeoutInterval: 30)
+                request.allHTTPHeaderFields = self?.headers
+                request.httpMethod = method.rawValue
+                if let param = param {
+                    request.httpBody = param
                 }
-                do {
 
-                    self.responseHeaders = response.allHeaderFields
-                    let jsonResponse = (String(decoding: data, as: UTF8.self))
-                    GlobalLogger.shared.debug("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
-                    if type != NoReply.self {
-                     let responseObject  = try self.decoder.decode(type, from: data)
-                        GlobalLogger.shared.verbose("APIWorker - \(url) success : \(statusCode) headers:\(headers )")
-                        completion(Result.success(responseObject))
+                self?.currentTask = self?.session.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
+                    if let _ = error {
+                        completion(Result.failure(NetworkError.badUrl))
                         return
                     }
-                    let voidResponse = NoReply()
-                    completion(Result.success(voidResponse as! ResponseType))
+                    guard let response = response as? HTTPURLResponse  else {
+                        GlobalLogger.shared.error(NetworkError.invalidResponse)
+                        completion(Result.failure(NetworkError.invalidResponse))
+                        return
+                    }
+                    let statusCode = response.statusCode
+                    self?.statusCodeListener?.didReceiveResponse(statusCode)
+                    if (HttpStatusCode.HTTP_OK..<HttpStatusCode.HTTP_MULT_CHOICE) ~= statusCode {
+                        guard let data = data  else {
+                            completion(Result.failure(NetworkError.noData))
+                            return
+                        }
+                        do {
+                            self?.responseHeaders = response.allHeaderFields
+                            let jsonResponse = (String(decoding: data, as: UTF8.self))
+                            GlobalLogger.shared.debug("APIWorker - \(endPoint.value) response: \n\(jsonResponse)")
+                            if type != NoReply.self {
+                                if let responseObject  = try self?.decoder.decode(type, from: data) {
+                                    GlobalLogger.shared.verbose("APIWorker - \(url) success : \(statusCode) headers:\(( request.allHTTPHeaderFields) ?? [String:String]() ), response:\(responseObject)")
+                                    
+                                completion(Result.success(responseObject))
+                                return
+                                } else {
+                                    GlobalLogger.shared.verbose("APIWorker - \(url) fail : responseObject nil")
+                                    completion(Result.failure(NetworkError.noData))
+                                    return
+                                }
+                            }
+                            let voidResponse = NoReply()
+                            completion(Result.success(voidResponse as! ResponseType))
+                        } catch {
+                            GlobalLogger.shared.error(NetworkError.serialization)
+                            completion(Result.failure(NetworkError.serialization))
+                            self?.currentTask = nil
+                        }
+                    } else {
+                        GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.invalidStatusCode) : \(statusCode) headers:\((self?.headers) ?? [String:String]() )")
+                        completion(Result.failure(NetworkError.invalidStatusCode))
 
-                } catch {
-                    GlobalLogger.shared.error(NetworkError.serialization)
-                    completion(Result.failure(NetworkError.serialization))
-                    self.currentTask = nil
-                }
-            } else {
-                GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.invalidStatusCode) : \(statusCode) headers:\(headers )")
-                completion(Result.failure(NetworkError.invalidStatusCode))
-
+                    }
+                })
+                self?.currentTask?.resume()
             }
-        })
-        currentTask?.resume()
+            queue.addOperation(blockOPeration)
+        } else {
+            GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.requestExistsInQueue)")
+            completion(Result.failure(NetworkError.requestExistsInQueue))
         }
-        queue.maxConcurrentOperationCount = 1
-        queue.addOperation(blockOPeration)
-
     }
 
     internal func getData(endPoint: EndPoint = .undefined, completion: @escaping (ResponseType?, NetworkError?) -> Void) {

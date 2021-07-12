@@ -47,4 +47,9 @@ public protocol HerowDataStorageProtocol: ResetDelegate {
     func getOptin() -> Optin
     func setOptin(optin: Optin)
 
+
+    //LiveMoment
+    func saveLiveMomentLastSaveDate(_ date: Date)
+    func getLiveMomentLastSaveDate() -> Date?
+
 }

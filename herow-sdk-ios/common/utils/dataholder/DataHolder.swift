@@ -102,6 +102,8 @@ public typealias DataHolder = DataHolderObjc & DataHolderCodable & GenericHolder
     func contains(key: String) -> Bool
 
     func remove(key: String)
+    
+    func removeAll()
 }
 
 public protocol DataHolderCodable {

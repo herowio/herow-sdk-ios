@@ -16,13 +16,15 @@ public enum NetworkError: Error {
     case noData
     case serialization
     case noOptin
+    case requestExistsInQueue
+    case workerStillWorking
 }
 
 public enum URLType: String {
     case  badURL = ""
     case  test = "https://herow-sdk-backend-poc.ew.r.appspot.com"
-    case  preprod = "https://m-preprod.herow.io"
-    case  prod = "https://m.herow.io"
+    case  preprod = "https://sdk7-preprod.herow.io"
+    case  prod = "https://sdk7.herow.io"
 }
 
 public enum EndPoint {
@@ -56,7 +58,7 @@ protocol ConfigDispatcher {
     func dispatchConfig( _ config: APIConfig)
 }
 
-protocol ConfigListener:  class {
+protocol ConfigListener:  AnyObject {
     func didRecievedConfig( _ config: APIConfig)
 }
 
@@ -68,9 +70,15 @@ protocol APIManagerProtocol:ConfigDispatcher {
     func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)?)
     func getUserInfoIfNeeded(completion: (() -> Void)?)
     func pushLog(_ log: Data ,completion: (() -> Void)?)
+    func reset()
 }
 
 public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, RequestStatusListener, UserInfoListener {
+    func reset() {
+        self.user = nil
+        self.currentUserInfo = nil
+    }
+
 
     let tokenWorker: APIWorker<APIToken>
     let configWorker: APIWorker<APIConfig>
@@ -82,19 +90,22 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     let cacheManager: CacheManagerProtocol
     let dateFormatter = DateFormatter()
     private var listeners = [WeakContainer<ConfigListener>]()
-    private  var connectInfo: ConnectionInfoProtocol
+    private  var connectInfo: ConnectionInfoProtocol?
+    private var userInfoManager: UserInfoManagerProtocol?
     var user: User?
-    init(connectInfo: ConnectionInfoProtocol, herowDataStorage: HerowDataStorageProtocol, cacheManager: CacheManagerProtocol) {
+    var cacheLoading = false
+    init(connectInfo: ConnectionInfoProtocol, herowDataStorage: HerowDataStorageProtocol, cacheManager: CacheManagerProtocol, userInfoManager: UserInfoManagerProtocol? = nil ) {
         // setting infos storage
         self.herowDataStorage = herowDataStorage
+        self.userInfoManager = userInfoManager
         self.connectInfo = connectInfo
         self.cacheManager = cacheManager
-        let urlType = self.connectInfo.getUrlType()
+        let urlType = self.connectInfo?.getUrlType() ?? .prod
         // workers initialization
         self.tokenWorker = APIWorker<APIToken>(urlType: urlType, endPoint: .token)
         self.configWorker = APIWorker<APIConfig>(urlType: urlType, endPoint: .config)
         self.userInfogWorker = APIWorker<APIUserInfo>(urlType: urlType, endPoint: .userInfo)
-        self.logWorker = APIWorker<NoReply>(urlType: urlType, endPoint: .log)
+        self.logWorker = APIWorker<NoReply>(urlType: urlType, endPoint: .log, allowMultiOperation: true)
         self.cacheWorker = APIWorker<APICache>(urlType: urlType)
         super.init()
         // setting status code listening
@@ -131,37 +142,36 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     }
 
     private func authenticationFlow(completion: @escaping ()->()) {
-        getConfigIfNeeded {
-            completion()
+        self.getTokenIfNeeded {
+            self.getUserInfoIfNeeded {
+                self.getConfigIfNeeded(completion: completion)
+            }
         }
     }
 
     func getConfigIfNeeded(completion:(()->())? = nil) {
+
+        GlobalLogger.shared.debug("APIManager - getConfigIfNeeded")
+        let process = {
+            if let config = self.herowDataStorage.getConfig() {
+                self.dispatchConfig(config)
+            }
+            completion?()
+        }
+
         if self.herowDataStorage.shouldGetConfig() {
             GlobalLogger.shared.debug("APIManager - should get config")
             self.getConfig(completion: {_,_ in
-
-                if let config = self.herowDataStorage.getConfig() {
-                    self.dispatchConfig(config)
-                }
-                completion?()
+              process()
             })
         } else {
-            GlobalLogger.shared.debug("APIManager - config not expired")
-            self.getTokenIfNeeded {
-
-                if let config = self.herowDataStorage.getConfig() {
-                    self.dispatchConfig(config)
-                }
-                completion?()
-            }
+            process()
         }
     }
 
     public func getUserInfoIfNeeded(completion: (() -> Void)? = nil) {
         if self.herowDataStorage.userInfoWaitingForUpdate()  {
             GlobalLogger.shared.debug("APIManager - should get userInfo")
-
             self.getUserInfo(completion: { userInfo, error in
                 if let userInfo = userInfo  {
                     self.herowDataStorage.saveUserInfo(userInfo)
@@ -215,32 +225,40 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     // MARK: Config
     internal func getConfig(completion: ( (APIConfig?, NetworkError?) -> Void)? = nil) {
+        guard let user = self.user else {
+            completion?(nil, .invalidInPut)
+            return
+        }
+        getTokenIfNeeded {
 
-        getUserInfoIfNeeded() {
-            self.configWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login, token: self.herowDataStorage.getToken()?.accessToken,herowId: self.herowDataStorage.getUserInfo()?.herowId)
-            self.configWorker.getData() {
-                config, error in
-                if let config = config {
-                    self.herowDataStorage.saveConfig(config)
-                    if let lastTimeCacheWasModified =  self.configWorker.responseHeaders?[Headers.lastTimeCacheModified] as? String {
-                        self.dateFormatter.dateFormat = DateFormat.lastModifiedDateFormat
-                        if let date = self.dateFormatter.date(from: lastTimeCacheWasModified) {
-                            self.herowDataStorage.saveLastCacheModifiedDate(date)
+                self.configWorker.headers = RequestHeaderCreator.createHeaders(sdk:  user.login, token: self.herowDataStorage.getToken()?.accessToken,herowId: self.herowDataStorage.getUserInfo()?.herowId)
+                self.configWorker.getData() {
+                    config, error in
+                    if let config = config {
+                        self.herowDataStorage.saveConfig(config)
+                        if let lastTimeCacheWasModified =  self.configWorker.responseHeaders?[Headers.lastTimeCacheModified] as? String {
+                            self.dateFormatter.dateFormat = DateFormat.lastModifiedDateFormat
+                            if let date = self.dateFormatter.date(from: lastTimeCacheWasModified) {
+                                self.herowDataStorage.saveLastCacheModifiedDate(date)
+                            }
                         }
                     }
+                    if error == nil {
+                        GlobalLogger.shared.debug("APIManager - config request: \(String(describing: config)) error: \(String(describing: error))")
+                    }
+                    completion?(config, error)
                 }
-                if error == nil {
-                    GlobalLogger.shared.debug("APIManager - config request: \(String(describing: config)) error: \(String(describing: error))")
-                }
-                completion?(config, error)
-            }
         }
     }
     
     // MARK: UserInfo
     internal func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)? = nil) {
+        guard let user = self.user, let token =  self.herowDataStorage.getToken()?.accessToken else {
+            completion?(nil, .invalidInPut)
+            return
+        }
         getTokenIfNeeded {
-            self.userInfogWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login, token: self.herowDataStorage.getToken()?.accessToken)
+            self.userInfogWorker.headers = RequestHeaderCreator.createHeaders(sdk:  user.login, token: self.herowDataStorage.getToken()?.accessToken)
             self.userInfogWorker.putData(param:self.userInfoParam()) { userInfo, error in
                 if let userInfo = userInfo {
                     self.herowDataStorage.saveUserInfo(userInfo)
@@ -255,33 +273,51 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     // MARK: Cache
     internal func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)? = nil) {
+        guard let user = self.user else {
+            completion?(nil, .invalidInPut)
+            return
+        }
+        GlobalLogger.shared.debug("APIManager - getCache")
         if  !herowDataStorage.getOptin().value {
             GlobalLogger.shared.verbose("APIManager- OPTINS ARE FALSE")
             completion?(nil, NetworkError.noOptin)
+            self.cacheLoading =  false
             return
         }
+        if cacheLoading {
+            GlobalLogger.shared.verbose("APIManager- CACHE ALREADY LOADING")
+           // return
+        }
+        cacheLoading = true
         authenticationFlow  {
-            if self.herowDataStorage.shouldGetCache(for: geoHash) {
+            if self.herowDataStorage.shouldGetCache(for: geoHash) /*|| true*/ {
                 GlobalLogger.shared.info("APIManager- SHOULD FETCH CACHE")
-                self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk:  self.user?.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
+                self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
 
                 self.cacheWorker.getData(endPoint: .cache(geoHash)) { cache, error in
                     guard let cache = cache else {
                         return
                     }
                     GlobalLogger.shared.info("APIManager- CACHE HAS BEEN FETCHED")
+                    GlobalLogger.shared.verbose("APIManager- received cache: \(cache)")
                     self.herowDataStorage.saveLastCacheFetchDate(Date())
-                    self.herowDataStorage.setLastGeohash(geoHash)
+
                     self.cacheManager.cleanCache() {
                         self.cacheManager.save(zones: cache.zones,
                                                campaigns: cache.campaigns,
-                                               pois: cache.pois, completion: nil)
+                                               pois: cache.pois, completion: {
+                                                self.cacheLoading =  false
+                                                self.cacheManager.didSave(forGeoHash: geoHash)
+                                                self.herowDataStorage.setLastGeohash(geoHash)
+                                               })
                         completion?(cache, error)
                     }
+                    self.cacheLoading =  false
                 }
             } else {
-                self.cacheManager.didSave()
+                self.cacheManager.didSave(forGeoHash: nil)
                 GlobalLogger.shared.info("APIManager- NO NEED TO FETCH CACHE")
+                self.cacheLoading =  false
             }
         }
     }
@@ -291,38 +327,32 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             GlobalLogger.shared.info("APIManager- OPTINS ARE FALSE")
             return
         }
+        guard let user = self.user else {
+            return
+        }
         authenticationFlow  {
-            self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: self.user?.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
+            self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
             self.logWorker.postData(param: log) {
                 response, error in
 
                 if error == nil {
                     if let json = try? JSONSerialization.jsonObject(with: log, options: .mutableContainers),
                        let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                        GlobalLogger.shared.verbose("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self))")
+                        GlobalLogger.shared.verbose("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self)) response:\(String(describing: response))")
                     } 
                 }
+                completion?()
             }
         }
     }
     // MARK: Params
-   /* private func tokenParam(_ user: User) -> Data {
-        
-        let credentials = self.connectInfo.platform.credentials
-        let params = [Parameters.username: user.login,
-                      Parameters.password: user.password,
-                      Parameters.clientId:  credentials.clientId,
-                      Parameters.clientSecret: credentials.clientSecret,
-                      Parameters.redirectUri: credentials.redirectURI,
-                      Parameters.grantType : "password"]
-        return self.encodeFormParams(dictionary: params)
-    }*/
-    
 
     private func tokenParams(_ user: User) -> Data {
         var result: Data?
         let encoder = JSONEncoder()
-        let credentials = self.connectInfo.platform.credentials
+        guard  let credentials = self.connectInfo?.platform.credentials else {
+            return Data()
+        }
         do {
             let params = [Parameters.username: user.login,
                           Parameters.password: user.password,
@@ -337,7 +367,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             }
 
         } catch {
-            print("error while encoding userInfo : \(error.localizedDescription)")
+             print("error while encoding userInfo : \(error.localizedDescription)")
         }
         return result ?? Data()
 
@@ -345,15 +375,19 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     private func userInfoParam() -> Data? {
         var result: Data?
         let encoder = JSONEncoder()
+        var userInfo = currentUserInfo
+        if let myUserInfo = userInfoManager?.getUserInfo() {
+            userInfo = myUserInfo
+        }
         do {
 
-            result = try encoder.encode(currentUserInfo)
+            result = try encoder.encode(userInfo)
             if let result = result {
             GlobalLogger.shared.debug("APIManager - userInfo to send: \(String(decoding: result, as: UTF8.self))")
             }
 
         } catch {
-            print("error while encoding userInfo : \(error.localizedDescription)")
+             print("error while encoding userInfo : \(error.localizedDescription)")
         }
         return result
     }
@@ -379,10 +413,14 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
     }
 
-   public func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
+    public func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         let currentGeoHash = GeoHashHelper.encodeBase32(lat: location.coordinate.latitude, lng: location.coordinate.longitude)[0...3]
-      
-        getCache(geoHash: String(currentGeoHash))
+        GlobalLogger.shared.debug("APIManager - onLocationUpdate")
+        getConfigIfNeeded {
+            self.getUserInfoIfNeeded {
+                self.getCache(geoHash: String(currentGeoHash))
+            }
+        }
     }
 
     public func onUserInfoUpdate(userInfo: UserInfo) {

@@ -35,7 +35,8 @@ import UIKit
         connectionInfo = ConnectionInfo()
         let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
         cacheManager = CacheManager(db: db)
-        liveMomentStore = LiveMomentStore(db: db, storage: herowDataHolder)
+        //uncomment for V8.0.0
+        //liveMomentStore = LiveMomentStore(db: db, storage: herowDataHolder)
         userInfoManager = UserInfoManager(herowDataStorage: herowDataHolder)
         apiManager = APIManager(connectInfo: connectionInfo, herowDataStorage: herowDataHolder, cacheManager: cacheManager, userInfoManager: userInfoManager)
         userInfoManager.registerListener(listener: apiManager)

@@ -74,7 +74,7 @@ end
 
 ##### Swift
 ```
-import herow-sdk-ios
+import herow_sdk_ios
 ```
 ##### Objectiv-C
 ```

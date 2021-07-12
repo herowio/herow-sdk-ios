@@ -77,7 +77,7 @@ class APIManagerTests: XCTestCase, ConfigListener  {
             }
             testExpectation.fulfill()
         })
-        waitForExpectations(timeout: 30) { error in
+        waitForExpectations(timeout: 60) { error in
             if let error = error {
                 print("Error: \(error.localizedDescription)")
             }

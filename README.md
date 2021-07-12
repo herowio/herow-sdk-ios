@@ -5,9 +5,6 @@
   <a href="https://github.com/herowio/herow-sdk-ios/workflows/Build%20and%20Test/badge.svg?">
 	<img alt="Unit Tests" src="https://github.com/herowio/herow-sdk-ios/workflows/Build%20and%20Test//badge.svg"/>
   </a>
-  <a href="https://sonarcloud.io/dashboard?id=herowio_herow-sdk-ios">
-	<img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=herowio_herow-sdk-ios&metric=alert_status"/>
-  </a>
 </p>
 
 
@@ -26,7 +23,7 @@ platform :ios, '11.0'
 
 target 'YourtTarget' do
   use_frameworks!
-  pod 'Herow', '~> 7.0.0'
+  pod 'Herow', '~> 7.1.0'
   # Pods for QuickComplete
 
   # Pods for testing

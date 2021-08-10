@@ -5,17 +5,18 @@
   <a href="https://github.com/herowio/herow-sdk-ios/workflows/Build%20and%20Test/badge.svg?">
 	<img alt="Unit Tests" src="https://github.com/herowio/herow-sdk-ios/workflows/Build%20and%20Test//badge.svg"/>
   </a>
-  <a href="https://sonarcloud.io/dashboard?id=herowio_herow-sdk-ios">
-	<img alt="Quality Gate Status" src="https://sonarcloud.io/api/project_badges/measure?project=herowio_herow-sdk-ios&metric=alert_status"/>
-  </a>
 </p>
 
+# SDK Setup - GitHub Packages
 
+In order to use our SDK you need to configure your Github account.
 
 ## Installation with CocoaPod
 
 * Install CocoaPods  ```$ gem install cocoapods```
-* At the root of the sample repository, check if a **Podfile** already exists and if not, create it. This can be done by running: ```$ touch Podfile```
+
+* At the sample repository' root, check if a **Podfile** already exists, if not, create it. This can be done by running: ```$ touch Podfile```
+
 * Add the following parameters to your Podfile:
 
 ```
@@ -26,7 +27,7 @@ platform :ios, '11.0'
 
 target 'YourtTarget' do
   use_frameworks!
-  pod 'Herow', '~> 7.0.0'
+  pod 'Herow', '~> 7.1.0'
   # Pods for QuickComplete
 
   # Pods for testing
@@ -55,12 +56,12 @@ end
 * Run ```$ pod update``` in your project directory
 
 
->**Note:**
+>Note:
 >
 >Your project is linked to the CoreLocation and CoreData frameworks
-<!--{blockquote:.note}-->
+<br>
 
-## Installation with SwifPackage
+# SwiftPackage Installation
 
 * open Xcode swift package Manager and enter the following url:
 
@@ -68,40 +69,29 @@ end
 
 ![image](swiftPackage.png)
 
-## Configure the SDK inside the AppDelegate
+# Configure the SDK
 
-### Initialize the SDK
+## Initialize the SDK
 
-* Import HerowConnection module
+Inside the AppDelegate:
 
+* Import the HerowConnection module
+<br> 
 
-##### Swift
 ```
-import herow-sdk-ios
-```
-##### Objectiv-C
-```
-@import herow-sdk-ios;
+import herow_sdk_ios
 ```
 
 * Add a HerowInitializer parameter to your AppDelegate
 
-##### Swift
 ```
 var herowInitializer: HerowInitializer?
 ```
-##### Objectiv-C
-```
-@implementation AppDelegate {
-    HerowInitializer *herowInitializer;
-}
-```
 
 
-* In the **didFinishLaunchingWithOptions** method, initialize and configure the **HerowInitializer** object with your SDK credentials & environment, and launch synchronization with the **Herow Platform**
+* In the **didFinishLaunchingWithOptions** method, initialize and configure the **HerowInitializer** object with your SDK Access Key (SDK ID & an SDK Key) & environment, and launch synchronization with the **Herow Platform**
 
 
-##### Swift
 ```
 var herowInitializer: HerowInitializer?
 ```
@@ -112,93 +102,92 @@ func application(_ application: UIApplication, didFinishLaunchingWithOptions lau
     return true
 }
 ```
-##### Objectiv-C
+
+>Note 1:
+>
+>The synchronize method allows the SDK set up with a configuration file downloaded from the Herow platform. The SDK will start the place detection process only when the file download is complete.
+
+>Note 2:
+>
+>The HerowInitializer allows you to configure your access to the HEROW platform. HEROW gives you access to the following environments:
+>
+>- PRE_PROD: pre-production environment used for tests
+>- PROD: production environment used for release
+
+>Warnings:
+>
+>- You will get one Access Key: This Access Key is composed of an SDK ID & an SDK Key and is used to configure your SDK.
+>
+>- Please make sure you use the right platform depending on your objective (test or release). Otherwise your SDK won't load/be synced with the right content.
+
+# GDPR Opt-ins
+
+The HEROW SDK has an in-built mandatory GDPR method.
+
+**Update the opt-ins permissions**
+
 ```
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    herowInitializer = HerowInitializer.instance;
-    [[[herowInitializer configPlatform: HerowPlatform.prod]
-        configAppWithIdentifier:@"your SDK ID" sdkKey:@"your SDK Key"] synchronize];
-    return YES;
-}
-```
-
-> **Note 1:**
->
-> The **synchronize** method allows to set up the SDK with a configuration file downloaded from the **Herow platform**.
->
-> The SDK will start the zone detection process only when the file download is complete.
->
-> This configuration file is saved in cache, and the SDK checks for updates at regular intervals.
-<!--{blockquote:.note}-->
-
->**Note 2:**
->
->The HerowInitializer allows you to configure your access to the **HEROW** platform.
-> HEROW gives you access to one or several of the following environments:
->
->  - **preProd**: The pre-production platform of the **HEROW** platform
->  - **prod**: The production platform of the **HEROW** platform
-<!--{blockquote:.note}-->
-
->**Warning:**
->
-> You will get two different access keys:
->
->   - An access key to log into the HEROW Platform
->   - An access key to use with our mobile SDK. This access key is composed of an SDK ID and SDK Key on Herow. Please make sure you use the good credentials to connect the SDK to the **correct** Herow Platform, otherwise your application won't be able to detect zones.
-<!--{blockquote:.warning}-->
-
-## GDPR Opt-ins
-
-The HEROW SDK only works if the GDPR opt-in is given by the end-user. The SDK can share some informations as user datas 
-
-
-
-#### Update the opt-ins permissions
-
-
-##### Swift
-```
- HerowInitializer.instance.acceptOptin()
+ HerowInitializer.instance.acceptOptin() // Opt-in accepted
  or
- HerowInitializer.instance.refuseOptin() 
-```
-##### Objectiv-C
-
-```
-[HerowInitializer.instance  acceptOptin];
-or 
-[HerowInitializer.instance  refuseOptin];
+ HerowInitializer.instance.refuseOptin() // Opt-in refused
 ```
 
+>Note: The HEROW SDK will only work if the GDPR opt-ins are given by the end-users.
 
-> **Note 1:**
+# Location permissions
+
+The HEROW SDK requires access to the Operating System permissions to work.
+
+To access user's continuous location in the background, you need the **always** permission. The **whenInUse** permission will allow you to access the user's position in the foreground AND  in the background if using the **clickAndCollect** feature.
+
+Anyway, you will need to declare background mode in Xcode.
+![image](background.png)
+
+In addition, the operating sytem requires the application to provide descriptions as of the level of permission required.
+
+These descriptions can be configured in the **info.plist** file, by adding the following keys:
+
+* The three keys for the location permission
+
+```xml
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Your app should state here the reason (with clear user benefit) for using foreground and background location.</string>
+
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Your app should state here the reason (with clear user benefit) for using foreground location.</string>
+
+<key>NSLocationAlwaysUsageDescription</key>
+<string>Your app should state here the reason (with clear user benefit) for using background location.</string>
+```
+> **Note**:
+>HEROW has an in-built **ClickAndCollect** method enabling you to perform temporary background location with access to foreground permission only. More information in our **ClickAndCollect** section.
 >
-> If the user is refuse the optin the sdk will not work
+
+We provide methods for requesting permissions directly through the sdk.
+
+```
+HerowInitializer.instance.getPermissionsManager().requestLocation(.always, completion: nil)
+   
+HerowInitializer.instance.getPermissionsManager().requestLocation(.whenInUse, completion: nil)
+```
 
 
-## Setting a Custom ID
+# Setting a Custom ID
+
 To set a custom ID, make the following call as soon as the user logs in.
 If the user logout, you can use the removeCustomId method.
 
-##### Swift
 ```
 HerowInitializer.instance.setCustomId("customId")
 
 HerowInitializer.instance.removeCustomId()
 ```
-##### Objectiv-C
 
-```
-[HerowInitializer.instance setCustomId: "customId"];
+# ClickAndCollect
 
-[HerowInitializer.instance  removeCustomId];
-```
-## HEROW Click & Collect
+To enable the HEROW SDK to continue **tracking end-users location events** (such as geofences' detection and position statements) happening in a **Click & Collect context** when the app is in the background (but not closed).
 
-To enable the HEROW SDK to continue **tracking end-users location events** (such as geofences' detection and position statements) happening in a **Click & Collect context** when the app is in the background.
-
-These methods are to be **called during an active session** (app in Foreground) which will enable the SDK to **continue tracking the end-user when the app is put in background.** 
+This method is to be **called during an active session** (app open) which will enable the SDK to **continue tracking the end-user when the app is put in background.** 
 
 >**Note 1:**
 >
@@ -210,129 +199,47 @@ These methods are to be **called during an active session** (app in Foreground) 
 >
 > By default, the **Click & Collect background service will timeout after 2 hours**. This is meant to preserve the initial objective of this feature to locate end-users in the background for Click & Collect scenarios and not provide continuous background tracking.
 
+**How to start Click and Collect**
 
-### How to start the Click & Collect
-
-Call the following method to enable the background service:
-
-* launch clickAndCollect
-
-
-##### Swift
 ```
 HerowInitializer.instance.launchClickAndCollect()
 ```
-##### Objectiv-C
-```
-[HerowInitializer.instance  launchClickAndCollect];
-```
 
-### How to stop the Click & Collect
+**How to stop Click and Collect**
 
-Call the following method to disable the background service:
-* stop clickAndCollect
 
-##### Swift
 ```
 HerowInitializer.instance.stopClickAndCollect()
 ```
-##### Objectiv-C
-```
-[HerowInitializer.instance g stopClickAndCollect];
-```
-
-## Location Permissions
-
-The sdk needs some permissions to work.
-To be able to take background position readings by activating the **clickAndCollect** feature you will need the **whenInUse** permission.
-If you want to take readings permanently the **always** permissions will be required.
-
-In these two cases you will also need to activate background mode in Xcode.
-![image](background.png)
-In addition, the iOS system requires an application to provide a description of the framework usage.
-
-These descriptions can be configured in the **info.plist** file, by adding the following keys:
-
-* The three keys for the location permission
-
-```xml
-<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-<string>This text is shown when permission to use the location of the device is requested. Note that for the app to be accepted in the App Store, the description why the app needs location services must be clear to the end user.</string>
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>This text is shown when permission to use the location of the device is requested. Note that for the app to be accepted in the App Store, the description why the app needs location services must be clear to the end user.</string>
-<key>NSLocationAlwaysUsageDescription</key>
-<string>This text is shown when permission to use the location of the device is requested. Note that for the app to be accepted in the App Store, the description why the app needs location services must be clear to the end user.</string>
-```
-> **Note**:
->
-> From the HEROW SDK version 6.3 onwards, a click and collect feature running as a **background service** is available for temporary user tracking when the app is in the background. This feature does not work with the Always Location permission.
 
 
+# IDFA Access
 
+From iOS 14+, the OS requires authorization to access the **IDFA** (ID For Advertisers) and HEROW provides a native method to facilitate its collection.
 
-We provide methods for requesting permissions directly through the sdk.
-##### Swift
-```
-HerowInitializer.instance.getPermissionsManager().requestLocation(.always, completion: nil)
-   
-HerowInitializer.instance.getPermissionsManager().requestLocation(.whenInUse, completion: nil)
-```
-
-##### Objectiv-C
-```
-[[HerowInitializer.instance getPermissionManager] requestLocation:LocationPermissionAlways completion: nil];
- 
-[[HerowInitializer.instance getPermissionManager] requestLocation:LocationPermissionWhenInUse completion: nil];
-```
-
-
-## IDFA Permission
-From iOS 14 to have access to **idfa** you must ask for authorization.
-The sdk also provides a method to access it more easily.
-
-##### Swift
 ```        
 HerowInitializer.instance.getPermissionsManager().requestIDFA(completion: nil)
 ```
+>Note: 
+>This method has no effect on the core SDK features and is therefore **not mandatory**.
 
-##### Objectiv-C
-```
- [[HerowInitializer.instance getPermissionManager] requestIDFAWithCompletion: nil];
-```
 
-## Debug Mode
+# Debug Mode
 You can now follow the execution logs with this method.
-##### Swift
+
+// add description
 ```        
 GlobalLogger.shared.startDebug()
 ```
+// add description
 
-##### Objectiv-C
-```
- [[GlobalLogger.shared startDebug];
-```
-You can stop this mode with this command
-
-##### Swift
 ```        
 GlobalLogger.shared.stopDebug()
 ```
+// add description
 
-##### Objectiv-C
-```
-[[GlobalLogger.shared stopDebug];
-```
-If you want to save this logs locally or on remote storage system, you can by implementing this interface: **LoggerDelegate** and register it on the GlobalLogger.
-In this exemple HerowLogger is a class which implements the LoggerDelegate protocol
-
-##### Swift
 ```        
 GlobalLogger.shared.registerLogger(logger: HerowLogger())
-```
-
-##### Objectiv-C
-```
-[[GlobalLogger.shared registerLogger:[HerowLogger new]];
 ```
 
 

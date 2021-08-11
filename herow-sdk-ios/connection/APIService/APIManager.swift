@@ -23,7 +23,8 @@ public enum NetworkError: Error {
 public enum URLType: String {
     case  badURL = ""
     case  test = "https://herow-sdk-backend-poc.ew.r.appspot.com"
-    case  preprod = "https://sdk7-preprod.herow.io"
+   case  preprod = "https://sdk7-preprod.herow.io"
+    //case  preprod =  "https://m-preprod.herow.io"
     case  prod = "https://sdk7.herow.io"
 }
 
@@ -225,13 +226,13 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     // MARK: Config
     internal func getConfig(completion: ( (APIConfig?, NetworkError?) -> Void)? = nil) {
-        guard let user = self.user else {
+        guard let user = self.user, let herowid = self.herowDataStorage.getUserInfo()?.herowId else {
             completion?(nil, .invalidInPut)
             return
         }
         getTokenIfNeeded {
 
-                self.configWorker.headers = RequestHeaderCreator.createHeaders(sdk:  user.login, token: self.herowDataStorage.getToken()?.accessToken,herowId: self.herowDataStorage.getUserInfo()?.herowId)
+                self.configWorker.headers = RequestHeaderCreator.createHeaders(sdk:  user.login, token: self.herowDataStorage.getToken()?.accessToken,herowId: herowid)
                 self.configWorker.getData() {
                     config, error in
                     if let config = config {
@@ -273,10 +274,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
     // MARK: Cache
     internal func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)? = nil) {
-        guard let user = self.user else {
-            completion?(nil, .invalidInPut)
-            return
-        }
+
         GlobalLogger.shared.debug("APIManager - getCache")
         if  !herowDataStorage.getOptin().value {
             GlobalLogger.shared.verbose("APIManager- OPTINS ARE FALSE")
@@ -290,9 +288,13 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
         cacheLoading = true
         authenticationFlow  {
+            guard let user = self.user, let herowid = self.herowDataStorage.getUserInfo()?.herowId else {
+                completion?(nil, .invalidInPut)
+                return
+            }
             if self.herowDataStorage.shouldGetCache(for: geoHash) /*|| true*/ {
                 GlobalLogger.shared.info("APIManager- SHOULD FETCH CACHE")
-                self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
+                self.cacheWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login , token:self.herowDataStorage.getToken()?.accessToken, herowId: herowid)
 
                 self.cacheWorker.getData(endPoint: .cache(geoHash)) { cache, error in
                     guard let cache = cache else {
@@ -327,11 +329,12 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             GlobalLogger.shared.info("APIManager- OPTINS ARE FALSE")
             return
         }
-        guard let user = self.user else {
+        guard let user = self.user, let herowid = self.herowDataStorage.getUserInfo()?.herowId else {
+            completion?()
             return
         }
         authenticationFlow  {
-            self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: self.herowDataStorage.getUserInfo()?.herowId)
+            self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: herowid)
             self.logWorker.postData(param: log) {
                 response, error in
 

@@ -23,8 +23,8 @@ public enum NetworkError: Error {
 public enum URLType: String {
     case  badURL = ""
     case  test = "https://herow-sdk-backend-poc.ew.r.appspot.com"
-   case  preprod = "https://sdk7-preprod.herow.io"
-    //case  preprod =  "https://m-preprod.herow.io"
+    case  preprod = "https://sdk7-preprod.herow.io"
+   // case  preprod =  "https://m-preprod.herow.io"
     case  prod = "https://sdk7.herow.io"
 }
 
@@ -237,7 +237,9 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
                     config, error in
                     if let config = config {
                         self.herowDataStorage.saveConfig(config)
-                        if let lastTimeCacheWasModified =  self.configWorker.responseHeaders?[Headers.lastTimeCacheModified] as? String {
+
+                        let tmpValue = self.configWorker.responseHeaders?[Headers.lastTimeCacheModified] ?? self.configWorker.responseHeaders?[Headers.lastTimeCacheModifiedUpper]
+                        if let lastTimeCacheWasModified =  tmpValue as? String {
                             self.dateFormatter.dateFormat = DateFormat.lastModifiedDateFormat
                             if let date = self.dateFormatter.date(from: lastTimeCacheWasModified) {
                                 self.herowDataStorage.saveLastCacheModifiedDate(date)

@@ -57,6 +57,7 @@ public struct Headers {
     public static let userAgent = "User-Agent"
     public static let refDate = "x-ref-date"
     public static let lastTimeCacheModified = "x-cache-last-modified"
+    public static let lastTimeCacheModifiedUpper = "X-Cache-Last-Modified"
 }
 
 struct DateFormat {

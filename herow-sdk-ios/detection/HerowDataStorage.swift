@@ -174,6 +174,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
               let lastCacheModifiedDate = getLastCacheModifiedDate(),
               let cacheInterval = getConfig()?.cacheInterval,
               let lastFetchDate = getLastCacheFetchDate() else {
+            GlobalLogger.shared.debug("CACHE SHOULD BE FETCH BECAUSE OF ISSUE")
             return true
         }
         let now = Date(timeIntervalSince1970: timeProvider.getTime())

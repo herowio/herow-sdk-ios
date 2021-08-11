@@ -55,8 +55,9 @@ public struct Headers {
     public static let herowId = "X-HEROW-ID"
     public static let userId = "X-USER-ID"
     public static let userAgent = "User-Agent"
-    public static let refDate = "X-Ref-Date"
-    public static let lastTimeCacheModified = "X-Cache-Last-Modified"
+    public static let refDate = "x-ref-date"
+    public static let lastTimeCacheModified = "x-cache-last-modified"
+    public static let lastTimeCacheModifiedUpper = "X-Cache-Last-Modified"
 }
 
 struct DateFormat {

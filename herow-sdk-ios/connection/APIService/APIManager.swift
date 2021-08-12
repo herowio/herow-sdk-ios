@@ -142,7 +142,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
     }
 
-    private func authenticationFlow(completion: @escaping ()->()) {
+    public func authenticationFlow(completion: @escaping ()->()) {
         self.getTokenIfNeeded {
             self.getUserInfoIfNeeded {
                 self.getConfigIfNeeded(completion: completion)

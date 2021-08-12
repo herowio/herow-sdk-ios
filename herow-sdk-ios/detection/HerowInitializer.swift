@@ -91,7 +91,7 @@ import UIKit
     }
 
     @objc public func synchronize(completion:(()->())? = nil) {
-        self.apiManager.getConfigIfNeeded {
+        self.apiManager.authenticationFlow {
             completion?()
         }
     }

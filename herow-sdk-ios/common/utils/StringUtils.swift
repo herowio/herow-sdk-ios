@@ -8,6 +8,8 @@
 
 import Foundation
 
+
+
 public class StringUtils {
     public static func isEmpty(string: String?) -> Bool {
         return string == nil || string == ""
@@ -24,6 +26,7 @@ public class StringUtils {
         GlobalLogger.shared.warning("Can't find the device default language")
         return "unknown"
     }
+    
 }
 
 extension String {

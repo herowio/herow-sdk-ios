@@ -8,10 +8,11 @@
 import Foundation
 import UserNotifications
 
-
-protocol NotificationCreationListener: AnyObject {
+public protocol NotificationCreationListener: AnyObject {
     func  didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String, zoneInfo: ZoneInfo)
 }
+
+
 
 
 @available(iOS 10.0, *)
@@ -38,7 +39,7 @@ public class NotificationDelegateDispatcher: NSObject, UNUserNotificationCenterD
         }
     }
 
-     func registerCreationListener(listener: NotificationCreationListener) {
+    public func registerCreationListener(listener: NotificationCreationListener) {
         let weakValue = WeakContainer(value: listener)
         if !creationListeners.contains(weakValue) {
             creationListeners.append(weakValue)

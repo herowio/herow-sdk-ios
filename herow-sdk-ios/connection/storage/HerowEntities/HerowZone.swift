@@ -19,7 +19,7 @@ import Foundation
     convenience init( zone: Zone) {
         self.init(hash: zone.getHash(), lat: zone.getLat(), lng: zone.getLng(), radius: zone.getRadius(), campaigns: zone.getCampaigns(), access: zone.getAccess())
     }
-    required init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?) {
+    required public init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?) {
      self.zonehash = hash
      self.lat = lat
      self.lng = lng

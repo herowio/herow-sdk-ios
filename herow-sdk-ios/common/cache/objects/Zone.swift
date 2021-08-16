@@ -8,7 +8,7 @@
 import Foundation
 import CoreLocation
 
-protocol Zone: Codable {
+public protocol Zone: Codable {
 
     func getHash() -> String
     func getLat() -> Double
@@ -36,7 +36,7 @@ public protocol Access: Codable {
     init(id: String, name: String, address: String)
 }
 
- protocol Campaign {
+ public protocol Campaign {
 
     func getId() -> String
     func getName() -> String
@@ -58,7 +58,9 @@ public protocol Access: Codable {
          notification: Notification?, startHour: String?, stopHour: String?)
 }
 
- protocol Notification {
+
+
+ public protocol Notification {
 
     func getTitle() -> String
     func getDescription() -> String

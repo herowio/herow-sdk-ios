@@ -272,7 +272,40 @@ import UIKit
         return AnalyticsInfo().libInfo.version
     }
 
+
+    public  func computeDynamicContent(_ text:  String, zone: Zone, campaign: Campaign) -> String {
+        let dynamicValues =  text.dynamicValues(for: "\\{\\{(.*?)\\}\\}")
+        var result = dynamicValues.newText
+        let defaultValues = dynamicValues.defaultValues
+        GlobalLogger.shared.debug("create dynamic content notification: \(campaign.getId())")
+        DynamicKeys.allCases.forEach() { key in
+            var value = ""
+            switch key {
+            case .name:
+                value = zone.getAccess()?.getName() ?? (defaultValues[key.rawValue] ?? "")
+            case .radius:
+                value = "\(zone.getRadius())"
+            case .address:
+                value = zone.getAccess()?.getAddress() ??  (defaultValues[key.rawValue] ?? "")
+            case .customId:
+                value = herowDataHolder.getCustomId() ??  (defaultValues[key.rawValue] ?? "")
+            }
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.name.rawValue) with \( String(describing: zone.getAccess()?.getName()))")
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.radius.rawValue) with \(zone.getRadius())")
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.address.rawValue) with \(String(describing: zone.getAccess()?.getAddress()))")
+            GlobalLogger.shared.debug("dynamic content replacing by key : \(DynamicKeys.customId.rawValue) with \( String(describing: herowDataHolder.getCustomId()))")
+            GlobalLogger.shared.debug("dynamic content replacing: \(key.rawValue) with \(value)")
+            result = result.replacingOccurrences(of: key.rawValue, with: value)
+        }
+        GlobalLogger.shared.debug("create dynamic content notification: \(text)")
+        GlobalLogger.shared.debug("create dynamic content notification tupple: \(dynamicValues)")
+        GlobalLogger.shared.debug("create dynamic content notification result: \(result)")
+        return result
+    }
+
 }
+
+
 
 extension UNUserNotificationCenter : NotificationCenterProtocol {
 

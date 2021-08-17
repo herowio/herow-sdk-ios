@@ -7,14 +7,14 @@
 //
 import Foundation
 
-@objc public enum Event: Int {
+@objc public enum Event: Int, Codable {
     case GEOFENCE_ENTER
     case GEOFENCE_EXIT
     
     case GEOFENCE_NOTIFICATION_ZONE_ENTER
     case GEOFENCE_VISIT
 
-    func toString() -> String {
+    public func toString() -> String {
         switch self {
         case .GEOFENCE_EXIT:
             return "GEOFENCE_EXIT"

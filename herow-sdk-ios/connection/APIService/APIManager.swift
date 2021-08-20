@@ -21,10 +21,11 @@ public enum NetworkError: Error {
 }
 
 public enum URLType: String {
+
     case  badURL = ""
     case  test = "https://herow-sdk-backend-poc.ew.r.appspot.com"
     case  preprod = "https://sdk7-preprod.herow.io"
-   // case  preprod =  "https://m-preprod.herow.io"
+    case  preprodOld = "https://m-preprod.herow.io"
     case  prod = "https://sdk7.herow.io"
 }
 
@@ -72,6 +73,7 @@ protocol APIManagerProtocol:ConfigDispatcher {
     func getUserInfoIfNeeded(completion: (() -> Void)?)
     func pushLog(_ log: Data ,completion: (() -> Void)?)
     func reset()
+    func reloadUrls()
 }
 
 public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, RequestStatusListener, UserInfoListener {
@@ -206,6 +208,13 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     public func configure(connectInfo: ConnectionInfoProtocol) {
         let urlType = connectInfo.getUrlType()
         self.connectInfo = connectInfo
+        reloadUrls()
+    }
+
+    func reloadUrls() {
+        guard let urlType = self.connectInfo?.getUrlType() else {
+            return
+        }
         self.tokenWorker.setUrlType(urlType)
         self.configWorker.setUrlType(urlType)
         self.userInfogWorker .setUrlType(urlType)

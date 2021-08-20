@@ -53,6 +53,11 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
     public func setUrlType(_ urlType: URLType) {
         self.baseURL = urlType.rawValue
+        if urlType == .preprod {
+            if HerowInitializer.instance.useOldAPI() {
+                self.baseURL = URLType.preprodOld.rawValue
+            }
+        }
         ready = true
     }
 

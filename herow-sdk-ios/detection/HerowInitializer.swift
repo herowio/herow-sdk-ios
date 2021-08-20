@@ -28,11 +28,13 @@ import UIKit
     private let analyticsManager: AnalyticsManagerProtocol
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
+
     internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol =  UNUserNotificationCenter.current()) {
         eventDispatcher = EventDispatcher()
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
+
         let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
         cacheManager = CacheManager(db: db)
         //uncomment for V8.0.0
@@ -75,9 +77,33 @@ import UIKit
         registerEventListener(listener: analyticsManager)
         detectionEngine.registerDetectionListener(listener: apiManager)
         registerEventListener(listener: notificationManager)
+        notificationsOnExactZoneEntry(isNotificationsOnExactZoneEntry())
     }
 
 
+    public func useOldAPI() -> Bool {
+       return  herowDataHolder.useOldAPI()
+    }
+
+    public func setUseOldAPI(_ value: Bool) {
+        let optins = getOptinValue()
+        let config = connectionInfo
+        let user = self.apiManager.user
+        let exactEntry = self.isNotificationsOnExactZoneEntry()
+        reset()
+        self.notificationsOnExactZoneEntry(exactEntry)
+        apiManager.configure(connectInfo: config)
+        apiManager.user = user
+        herowDataHolder.setUseOldAPI(value)
+        apiManager.reloadUrls()
+        synchronize()
+        if optins {
+            acceptOptin()
+        } else {
+            refuseOptin()
+        }
+
+    }
 
     @objc public func configPlatform(_ platform: HerowPlatform) -> HerowInitializer {
         connectionInfo.updatePlateform(platform)
@@ -102,6 +128,7 @@ import UIKit
 
 
     @objc public func reset(completion: @escaping ()->()) {
+
 
         self.apiManager.reset()
         self.herowDataHolder.reset()
@@ -265,7 +292,14 @@ import UIKit
     }
 
     @objc public func notificationsOnExactZoneEntry(_ value: Bool) {
+        herowDataHolder.setUseExactEntry(value)
         notificationManager.notificationsOnExactZoneEntry(value)
+    }
+
+     @objc public func isNotificationsOnExactZoneEntry() -> Bool {
+      return  herowDataHolder.useExactEntry()
+
+
     }
 
     @objc public func getVersion() -> String {

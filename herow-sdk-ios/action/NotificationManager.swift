@@ -127,4 +127,8 @@ class NotificationManager: NSObject, EventListener {
     func notificationsOnExactZoneEntry(_ value: Bool) {
         onExactZoneEntry = value
     }
+
+    func isNotificationsOnExactZoneEntry() -> Bool {
+        return onExactZoneEntry
+    }
 }

@@ -10,7 +10,7 @@ public class WeakContainer<T>: Equatable{
     public  init (value: T) {
         internalValue = value as AnyObject
     }
-    func get() -> T? {
+    public func get() -> T? {
         return internalValue as? T
     }
     public static func == (lhs: WeakContainer, rhs: WeakContainer) -> Bool {

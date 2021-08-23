@@ -90,12 +90,16 @@ import UIKit
         let config = connectionInfo
         let user = self.apiManager.user
         let exactEntry = self.isNotificationsOnExactZoneEntry()
+        let customId = herowDataHolder.getCustomId()
         reset()
         self.notificationsOnExactZoneEntry(exactEntry)
         apiManager.configure(connectInfo: config)
         apiManager.user = user
         herowDataHolder.setUseOldAPI(value)
         apiManager.reloadUrls()
+        if let customId = customId {
+            setCustomId(customId: customId)
+        }
         synchronize()
         if optins {
             acceptOptin()

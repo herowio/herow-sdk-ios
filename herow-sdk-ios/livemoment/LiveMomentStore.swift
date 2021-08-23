@@ -104,7 +104,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
-    
+
+        
         if self.root == nil || isWorking   {
             print("LiveMomentStore - isWorking")
             return
@@ -267,6 +268,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal func compute() {
+
         backgroundQueue.async {
             let start = CFAbsoluteTimeGetCurrent()
             print("LiveMomentStore - compute start")

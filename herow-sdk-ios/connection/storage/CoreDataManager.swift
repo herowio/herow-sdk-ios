@@ -469,12 +469,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             result?.start = start
             result?.end = start.addingTimeInterval(7 * 86400)
             result?.locations = Set()
-            print("Period - creation: start: \( result?.start) end: \( result?.end) ")
-        } else {
-            print("Period - exists")
-        }
+                   } 
         result?.locations?.insert(location)
-        print("Period - location count: \(result?.locations?.count ?? 0) ")
         return result
 
     }

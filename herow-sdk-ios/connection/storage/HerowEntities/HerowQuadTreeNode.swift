@@ -24,7 +24,7 @@ public struct Circle {
     }
 }
 
-public struct Rect {
+public struct Rect: Equatable {
     var originLat: Double
     var endLat: Double
     var originLng: Double
@@ -117,9 +117,8 @@ public struct NodeDescription {
     public var densities : [String: Double]?
     public var isMin: Bool
     public var node: QuadTreeNode
-
-
 }
+
 
 class HerowQuadTreeNode: QuadTreeNode {
     static let maxLat = 90.0
@@ -627,6 +626,38 @@ class HerowQuadTreeNode: QuadTreeNode {
 
     func isEqual(_ node: QuadTreeNode) -> Bool {
         return self.treeId == node.getTreeId()
+    }
+
+    func isNearToPoi() -> Bool {
+        return self.locations.filter{$0.isNearToPoi()}.count  > 10 &&
+            (self.densities?.count ?? 0)  > 0 &&
+            self.densities?[LivingTag.shopping.rawValue] ?? 0 > 0
+    }
+
+    func mergeFromNeighBourgs() -> Rect {
+        let neighbourgs = neighbourgs().filter {
+            $0.isNearToPoi()
+        }
+
+        let minLat = min( neighbourgs.map { $0.getRect()}.map {
+            $0.originLat
+        }.min() ?? 90.0, self.getRect().originLat)
+
+        let maxLat = max(neighbourgs.map { $0.getRect()}.map {
+            $0.endLat
+        }.max() ?? -90 ,self.getRect().endLat)
+
+        let minLng = min( neighbourgs.map { $0.getRect()}.map {
+            $0.originLng
+        }.min() ?? 180.0, self.getRect().originLng)
+
+        let maxLng = max(neighbourgs.map { $0.getRect()}.map {
+            $0.endLng
+        }.max() ?? -180.0 ,self.getRect().endLng)
+
+        return Rect(originLat: minLat, endLat: maxLat, originLng: minLng, endLng: maxLng)
+
+
     }
 
     func neighbourgs() -> [QuadTreeNode] {

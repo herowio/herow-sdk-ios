@@ -322,15 +322,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal func computeShopping() -> [QuadTreeNode]? {
-        let nodes = getRects()?.filter {$0.locations.filter{$0.isNearToPoi()}.count  > 10 &&
-            ($0.densities?.count ?? 0)  > 0 &&
-                $0.densities?[LivingTag.shopping.rawValue] ?? 0 > 0
-        }
-        let result = nodes?.map {
-            return $0.node
-        }.filter {
-            return  $0.getRect().circle().radius <=   StorageConstants.shoppingMinRadius
-        }
-        return result
+        let nodes = getRects()?.map {$0.node}.filter{$0.isNearToPoi() &&  $0.getRect().circle().radius <=   StorageConstants.shoppingMinRadius}
+        return nodes
     }
+
 }

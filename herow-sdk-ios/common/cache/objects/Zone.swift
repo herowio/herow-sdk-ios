@@ -151,8 +151,11 @@ public protocol QuadTreeNode: AnyObject {
     func walkDownRight() -> QuadTreeNode?
     func type()-> LeafType
     func neighbourgs() -> [QuadTreeNode]
+    func isNearToPoi() -> Bool
     func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode]
-    func isEqual(_ node: QuadTreeNode) -> Bool 
+    func isEqual(_ node: QuadTreeNode) -> Bool
+    func mergeFromNeighBourgs() -> Rect
+
 
    
 }

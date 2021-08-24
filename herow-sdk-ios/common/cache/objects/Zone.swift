@@ -119,6 +119,7 @@ public protocol QuadTreeNode: AnyObject {
     func getLocations() -> [QuadTreeLocation]
     func allLocations() -> [QuadTreeLocation]
     func getLastLocation() -> QuadTreeLocation?
+    func setLastLocation(_ location :QuadTreeLocation?)
     func getLeftUpChild() -> QuadTreeNode?
     func getRightUpChild() -> QuadTreeNode?
     func getRightBottomChild() -> QuadTreeNode?

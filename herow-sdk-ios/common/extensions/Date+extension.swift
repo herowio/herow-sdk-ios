@@ -10,6 +10,7 @@ import Foundation
 extension Date {
 
  public static var  dateFormatter = DateFormatter()
+ public static var  monthdateFormatter = DateFormatter()
     var startOfDay: Date
         {
             return Calendar.current.startOfDay(for: self)
@@ -99,7 +100,7 @@ extension Date {
         let afterEntry =  after1330 < self && after14 > self
         let afterExit =  after1630 < self && after17 > self
 
-        let isOff = ["Saturday","Sunday","Wednesday"].contains( Date.dateFormatter.string(from: self))
+        let isOff = ["Saturday","Sunday","Wednesday"].contains( Date.dateFormatter.string(from: self)) || ["July","August"].contains(self.month)
         return (morningEntry || morningExit || afterEntry || afterExit) && !isOff
     }
 
@@ -120,6 +121,12 @@ extension Date {
         //TODO not sure
       return !isHomeCompliant() && !isWorkCompliant() && !isSchoolCompliant() 
     }
+}
 
+extension Date {
+    var month: String {
 
+        Date.monthdateFormatter.dateFormat = "MMMM"
+        return Date.monthdateFormatter.string(from: self)
+    }
 }

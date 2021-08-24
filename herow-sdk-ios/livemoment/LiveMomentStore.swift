@@ -15,7 +15,7 @@ public protocol LiveMomentStoreListener {
 
 protocol LiveMomentStoreProtocol: DetectionEngineListener, AppStateDelegate, CacheListener {
     init(db: DataBase, storage: HerowDataStorageProtocol)
-    func getNodeForLocation(_ location: CLLocation, completion: @escaping (Bool)->()) -> QuadTreeNode?
+    func getNodeForLocation(_ location: CLLocation, completion: @escaping (Bool)->())
     func getClusters() ->  QuadTreeNode?
     func getNodeForId(_ id: String) ->  QuadTreeNode?
     func getParentForNode(_ node: QuadTreeNode) -> QuadTreeNode?
@@ -89,7 +89,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         }
 
         let start = CFAbsoluteTimeGetCurrent()
-         print("LiveMomentStore reloadNewPois ")
+        print("LiveMomentStore reloadNewPois ")
         backgroundQueue.async {
             self.dataBase.reloadNewPois {
                 self.root = self.getClustersInBase()
@@ -117,18 +117,18 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         isWorking = true
         let blockOPeration = BlockOperation { [self] in
             if self.backgroundTaskId == .invalid {
-            self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
-                withName: "herow.io.LiveMomentStore.backgroundTaskID",
-                expirationHandler: {
-                    if self.backgroundTaskId != .invalid {
-                    UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-                        self.backgroundTaskId = .invalid
-                    GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
-                    }
-                })
+                self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
+                    withName: "herow.io.LiveMomentStore.backgroundTaskID",
+                    expirationHandler: {
+                        if self.backgroundTaskId != .invalid {
+                            UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
+                            self.backgroundTaskId = .invalid
+                            GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                        }
+                    })
             }
             GlobalLogger.shared.verbose("LiveMomentStore starts backgroundTask with identifier : \( self.backgroundTaskId)")
-            self.currentNode = self.getNodeForLocation(location, completion: { working in
+            self.getNodeForLocation(location, completion: { working in
                 self.compute()
                 isWorking = working
                 let end = CFAbsoluteTimeGetCurrent()
@@ -173,18 +173,9 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         return node.getParentNode()
     }
 
-    func printAnalyse() {
-        DispatchQueue.global(qos: .background).async {
-            _ = self.dataBase.getLocationsNumber()
-            self.getLocationsNumberInTree()
-        }
-    }
 
-    func getLocationsNumberInTree() {
-        let count =  self.root?.allLocations().count ?? 0
 
-        print("LiveMomentManager Analyse: locationCount: \(count)")
-    }
+
 
     internal func save(_ force: Bool = false, _ node: QuadTreeNode? = nil , completion: @escaping ()->()) {
 
@@ -192,10 +183,11 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             isSaving = true
             let nodeToSave = node ?? root
             dataBase.saveQuadTree(nodeToSave) {
+                nodeToSave.setLastLocation(nil)
                 self.isSaving = false
                 self.count = 0
                 completion()
-                self.printAnalyse()
+
             }
         }
     }
@@ -211,47 +203,53 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         return self.root
     }
 
-    @discardableResult
-    internal  func getNodeForLocation(_ location: CLLocation, completion: @escaping (Bool)->())  -> QuadTreeNode? {
-        var result : QuadTreeNode?
-        let quadLocation = HerowQuadTreeLocation(lat: location.coordinate.latitude, lng: location.coordinate.longitude, time: location.timestamp)
-          if let nodeToUse =  self.currentNode ?? self.root {
-            let rootToUse:QuadTreeNode? = reverseExploration(node: nodeToUse, location: quadLocation)
-            if let rootToUse = rootToUse {
-                let start = CFAbsoluteTimeGetCurrent()
-                print("LiveMomentStore - browseTree start")
-                let node = rootToUse.browseTree(quadLocation)
-                result = node?.addLocation(quadLocation)
-                let end = CFAbsoluteTimeGetCurrent()
-                let elapsedTime = (end - start) * 1000
-                print("LiveMomentStore - browseTree  result node: \(rootToUse.getTreeId()) in \(elapsedTime) ms  ")
-                let nodeToSave = result?.getParentNode() ?? result
-                self.currentNode = result
-                self.save(false, nodeToSave) {
-                    result?.setUpdated(false)
-                    nodeToSave?.setUpdated(false)
+    internal  func getNodeForLocation(_ location: CLLocation, completion: @escaping (Bool)->())  {
+       backgroundQueue.async {
+
+            var result : QuadTreeNode?
+            let quadLocation = HerowQuadTreeLocation(lat: location.coordinate.latitude, lng: location.coordinate.longitude, time: location.timestamp)
+            if let nodeToUse =  self.currentNode ?? self.root {
+                let rootToUse:QuadTreeNode? = self.reverseExploration(node: nodeToUse, location: quadLocation)
+
+                if let rootToUse = rootToUse {
+                    let start = CFAbsoluteTimeGetCurrent()
+                    print("LiveMomentStore - browseTree start")
+                    let node = rootToUse.browseTree(quadLocation)
+
+                    result = node?.addLocation(quadLocation)
+                    let end = CFAbsoluteTimeGetCurrent()
+                    let elapsedTime = (end - start) * 1000
+                    print("LiveMomentStore - browseTree  result node: \(rootToUse.getTreeId()) in \(elapsedTime) ms  ")
+                    let nodeToSave = result?.getParentNode() ?? result
+                    self.currentNode = result
+
+                    self.save(false, nodeToSave) {
+                        result?.setUpdated(false)
+                        nodeToSave?.setUpdated(false)
+                        completion(false)
+
+                    }
+                    print("LiveMomentStore - tree result node: \(result?.getTreeId() ?? "none") location count: \(result?.getLocations().count ?? 0) ")
+
+                } else {
                     completion(false)
 
                 }
-                 print("LiveMomentStore - tree result node: \(result?.getTreeId() ?? "none") location count: \(result?.getLocations().count ?? 0) ")
-                return result
             } else {
                 completion(false)
-                return nil
+
             }
-        } else {
-            completion(false)
-            return nil
+
         }
     }
 
     internal func getClustersInBase() ->  QuadTreeNode? {
         let start = CFAbsoluteTimeGetCurrent()
-         print("LiveMomentStore - getClustersInBase start")
+        print("LiveMomentStore - getClustersInBase start")
         let result = dataBase.getQuadTreeRoot()
         let end = CFAbsoluteTimeGetCurrent()
         let elapsedTime = (end - start) * 1000
-         print("LiveMomentStore - getClustersInBase took in \(elapsedTime) ms ")
+        print("LiveMomentStore - getClustersInBase took in \(elapsedTime) ms ")
         return result
     }
 
@@ -268,7 +266,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal func compute() {
-
         backgroundQueue.async {
             let start = CFAbsoluteTimeGetCurrent()
             print("LiveMomentStore - compute start")
@@ -283,7 +280,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             }
             let end = CFAbsoluteTimeGetCurrent()
             let elapsedTime = (end - start) * 1000
-            print("LiveMomentStore - compute done in \(elapsedTime) ms ")
         }
     }
 

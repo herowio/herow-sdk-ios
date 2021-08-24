@@ -28,14 +28,13 @@ import UIKit
     private let analyticsManager: AnalyticsManagerProtocol
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
+    private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
 
     internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol =  UNUserNotificationCenter.current()) {
         eventDispatcher = EventDispatcher()
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
-
-        let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
         cacheManager = CacheManager(db: db)
         //uncomment for V8.0.0
         liveMomentStore = LiveMomentStore(db: db, storage: herowDataHolder)
@@ -107,6 +106,10 @@ import UIKit
             refuseOptin()
         }
 
+    }
+
+    @objc public func getLocationsNumber() -> Int {
+        return  db.getLocationsNumber()
     }
 
     @objc public func configPlatform(_ platform: HerowPlatform) -> HerowInitializer {

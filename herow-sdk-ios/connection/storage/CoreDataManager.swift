@@ -555,7 +555,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         removePeriods(context)
         getLocations(context).forEach{
             loc in
-           // deleteDuplicatesForLocation(loc, context: context)
             _ = periodeForLocation(loc, context: context)
         }
     }
@@ -563,7 +562,15 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func computePeriods() {
         let context = self.bgContext
         context.perform { [self] in
-           // reassignPeriodLocations(context)
+
+            //  reassignPeriodLocations(context)
+           // let unliked = unlikededlocation(context)
+           // if unliked.count > 0 {
+            //    for loc in unliked {
+               //     context.delete(loc)
+              //  }
+          //  }
+
             let periods = getPeriods(context)
             print("Period - periods count at start : \( periods.count)")
             var i = 1
@@ -839,19 +846,29 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             nodeCoreData.endLat = node.getRect().endLat
             nodeCoreData.endLng = node.getRect().endLng
             if  nodeCoreData.locations == nil {
-                // print("no locations")
                 nodeCoreData.locations = Set([LocationCoreData]())
             }
 
-            for loc in  nodeCoreData.locations! {
+            //there is something to do here
+            
+            /*  for loc in  nodeCoreData.locations! {
                 context.delete(loc)
             }
-            for loc in node.getLocations() {
+          for loc in node.getLocations() {
                 if let newLocation = createLocation( loc, context: context) {
                     nodeCoreData.locations?.insert(newLocation)
                     _ = self.periodeForLocation(newLocation, context: context)
                 }
+            }*/
+
+            if let lastLocation = node.getLastLocation() {
+                if let newLocation = createLocation( lastLocation, context: context) {
+                    newLocation.node = nodeCoreData
+                    nodeCoreData.locations?.insert(newLocation)
+                    _ = self.periodeForLocation(newLocation, context: context)
+                }
             }
+
 
             let bottomLeftNode = node.getLeftBottomChild()
             let bottomRightNode = node.getRightBottomChild()
@@ -905,7 +922,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 nodeCoreData.childs = Set(childToUpdate)
             }
 
-            nodeCoreData.cleanLocations()
+          //  nodeCoreData.cleanLocations()
             // print("NODE IN BASE \(nodeCoreData?.treeId ?? "Undefine") has \(nodeCoreData?.childs?.count ?? 0) child(s)")
         }
         return nodeCoreData
@@ -929,9 +946,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
 
     // MARK: analyse
+
     @discardableResult
     func getLocationsNumber(context: NSManagedObjectContext) -> Int {
-
         var count = 0
         context.performAndWait {
             let fetchRequest =

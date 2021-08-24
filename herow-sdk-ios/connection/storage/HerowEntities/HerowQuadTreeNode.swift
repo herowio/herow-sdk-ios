@@ -121,6 +121,7 @@ public struct NodeDescription {
 
 
 class HerowQuadTreeNode: QuadTreeNode {
+
     static let maxLat = 90.0
     static let minLat = -90.0
     static let maxLng = 180.0
@@ -245,6 +246,10 @@ class HerowQuadTreeNode: QuadTreeNode {
         return lastLocation
     }
 
+    func setLastLocation(_ location :QuadTreeLocation?)  {
+         lastLocation = location
+    }
+
     func getLeftUpChild() -> QuadTreeNode? {
         return leftUpChild
     }
@@ -330,8 +335,8 @@ class HerowQuadTreeNode: QuadTreeNode {
 
     func allLocations() -> [QuadTreeLocation] {
 
-        let allDescr = getReccursiveRects()
-        return Array(allDescr.map {$0.locations}.joined())
+        let nodes = getReccursiveNodes()
+        return Array(nodes.map {$0.getLocations()}.joined())
     }
 
 

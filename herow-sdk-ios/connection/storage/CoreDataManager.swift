@@ -849,10 +849,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
             //there is something to do here
             
-            for loc in  nodeCoreData.locations! {
+            /*  for loc in  nodeCoreData.locations! {
                 context.delete(loc)
             }
-          /*  for loc in node.getLocations() {
+          for loc in node.getLocations() {
                 if let newLocation = createLocation( loc, context: context) {
                     nodeCoreData.locations?.insert(newLocation)
                     _ = self.periodeForLocation(newLocation, context: context)
@@ -861,7 +861,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
             if let lastLocation = node.getLastLocation() {
                 if let newLocation = createLocation( lastLocation, context: context) {
-                  //  newLocation.node = nodeCoreData
+                    newLocation.node = nodeCoreData
                     nodeCoreData.locations?.insert(newLocation)
                     _ = self.periodeForLocation(newLocation, context: context)
                 }

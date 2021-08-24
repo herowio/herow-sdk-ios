@@ -335,8 +335,10 @@ class HerowQuadTreeNode: QuadTreeNode {
 
     func allLocations() -> [QuadTreeLocation] {
 
-        let nodes = getReccursiveNodes()
-        return Array(nodes.map {$0.getLocations()}.joined())
+         let allDescr = getReccursiveRects()
+         return Array(allDescr.map {$0.locations}.joined())
+
+      
     }
 
 

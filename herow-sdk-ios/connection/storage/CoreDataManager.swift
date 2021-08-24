@@ -563,7 +563,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func computePeriods() {
         let context = self.bgContext
         context.perform { [self] in
-            reassignPeriodLocations(context)
+           // reassignPeriodLocations(context)
             let periods = getPeriods(context)
             print("Period - periods count at start : \( periods.count)")
             var i = 1
@@ -588,7 +588,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             // print("MAIN THREAD ! ")
             context = self.context
         }
-        self.context.perform {
+       context.perform {
             self.recursiveSave(node,context:  context)
             self.save(completion)
         }
@@ -702,7 +702,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func getQuadTreeRoot() -> QuadTreeNode? {
         if let root =  getCoreDataQuadTreeRoot() {
             let quadTree  = recursiveInit(root)
-            DispatchQueue.global(qos: .utility).async {
+            DispatchQueue.global(qos: .background).async {
                self.computePeriods()
             }
             return quadTree

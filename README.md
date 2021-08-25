@@ -170,7 +170,23 @@ HerowInitializer.instance.getPermissionsManager().requestLocation(.always, compl
    
 HerowInitializer.instance.getPermissionsManager().requestLocation(.whenInUse, completion: nil)
 ```
+#Using IDFA
+If you need IDFA usage you have to put this line in your plist file 
 
+```xml
+<key>NSUserTrackingUsageDescription</key>
+<string>App would like to access IDFA for tracking purpose</string>
+```
+We also provide methods for requesting permissions directly through the sdk.
+```
+HerowInitializer.instance.getPermissionsManager().requestIDFA(completion: nil) 
+```
+
+#Asking for notifications
+We  provide methods for requesting permissions directly through the sdk but you can ask by yourself 
+```
+HerowInitializer.instance.getPermissionsManager().requestNotificationPermission(completion: nil) 
+```
 
 # Setting a Custom ID
 

@@ -170,17 +170,6 @@ HerowInitializer.instance.getPermissionsManager().requestLocation(.always, compl
    
 HerowInitializer.instance.getPermissionsManager().requestLocation(.whenInUse, completion: nil)
 ```
-# Using IDFA
-If you need IDFA usage you have to put this line in your plist file 
-
-```xml
-<key>NSUserTrackingUsageDescription</key>
-<string>App would like to access IDFA for tracking purpose</string>
-```
-We also provide methods for requesting permissions directly through the sdk.
-```
-HerowInitializer.instance.getPermissionsManager().requestIDFA(completion: nil) 
-```
 
 # Asking for notifications
 We  provide methods for requesting permissions directly through the sdk but you can ask by yourself 
@@ -231,8 +220,14 @@ HerowInitializer.instance.stopClickAndCollect()
 
 # IDFA Access
 
-From iOS 14+, the OS requires authorization to access the **IDFA** (ID For Advertisers) and HEROW provides a native method to facilitate its collection.
+From iOS 14+, the OS requires authorization to access the **IDFA** (ID For Advertisers) 
 
+First you have to put this line in your plist file
+```xml
+<key>NSUserTrackingUsageDescription</key>
+<string>App would like to access IDFA for tracking purpose</string>
+```
+and HEROW provides a native method to facilitate its collection.
 ```        
 HerowInitializer.instance.getPermissionsManager().requestIDFA(completion: nil)
 ```

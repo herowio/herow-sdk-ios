@@ -170,7 +170,7 @@ HerowInitializer.instance.getPermissionsManager().requestLocation(.always, compl
    
 HerowInitializer.instance.getPermissionsManager().requestLocation(.whenInUse, completion: nil)
 ```
-#Using IDFA
+# Using IDFA
 If you need IDFA usage you have to put this line in your plist file 
 
 ```xml
@@ -182,7 +182,7 @@ We also provide methods for requesting permissions directly through the sdk.
 HerowInitializer.instance.getPermissionsManager().requestIDFA(completion: nil) 
 ```
 
-#Asking for notifications
+# Asking for notifications
 We  provide methods for requesting permissions directly through the sdk but you can ask by yourself 
 ```
 HerowInitializer.instance.getPermissionsManager().requestNotificationPermission(completion: nil) 

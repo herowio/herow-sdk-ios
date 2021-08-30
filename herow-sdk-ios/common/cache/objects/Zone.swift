@@ -107,7 +107,6 @@ public enum LeafDirection: String {
 }
 public protocol QuadTreeNode: AnyObject {
 
-    func redraw()
     func findNodeWithId(_ id: String)  -> QuadTreeNode?
     func getTreeId() -> String
     func setParentNode(_ parent: QuadTreeNode?)
@@ -136,7 +135,6 @@ public protocol QuadTreeNode: AnyObject {
     init(id: String, locations: [QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom : QuadTreeNode?, rightBottom : QuadTreeNode?, tags: [String: Double]?, densities:  [String: Double]?, rect: Rect, pois: [Poi]?)
     func childs() -> [QuadTreeNode]
     func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode?
-    func printHierarchy()
     func populateParentality()
     func recursiveCompute()
     func isMin() -> Bool

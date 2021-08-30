@@ -101,6 +101,9 @@ extension Date {
         let afterExit =  after1630 < self && after17 > self
 
         let isOff = ["Saturday","Sunday","Wednesday"].contains( Date.dateFormatter.string(from: self)) || ["July","August"].contains(self.month)
+        if !isOff {
+            print ("schoolCompliant")
+        }
         return (morningEntry || morningExit || afterEntry || afterExit) && !isOff
     }
 

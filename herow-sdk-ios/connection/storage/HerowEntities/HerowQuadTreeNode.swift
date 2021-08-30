@@ -132,7 +132,6 @@ class HerowQuadTreeNode: QuadTreeNode {
     private var rect: Rect =  Rect.world
     private var treeId: String?
     private var locations : [QuadTreeLocation]
-
     private var rightUpChild : QuadTreeNode?
     private weak var parentNode : QuadTreeNode?
     private var leftUpChild : QuadTreeNode?
@@ -147,6 +146,7 @@ class HerowQuadTreeNode: QuadTreeNode {
     private var lastWorkCount : Int = -1
     private var lastSchoolCount: Int = -1
     private var newBorn = false
+
     required init(id: String, locations: [QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom : QuadTreeNode?, rightBottom : QuadTreeNode?, tags: [String: Double]?, densities:  [String: Double]?, rect: Rect, pois: [Poi]?) {
         treeId = id
         self.locations = locations ?? [QuadTreeLocation]()
@@ -158,12 +158,10 @@ class HerowQuadTreeNode: QuadTreeNode {
         self.tags = tags
         self.densities = densities
         self.pois = pois
-     
     }
 
     func findNodeWithId(_ id: String)  -> QuadTreeNode? {
         let mytreeId = treeId ?? "0"
-
         if mytreeId == id {
             return self
         } else {
@@ -183,17 +181,6 @@ class HerowQuadTreeNode: QuadTreeNode {
         self.updated = true
         for child in childs() {
             child.computeTags(false)
-        }
-    }
-
-    func redraw() {
-        self.leftBottomChild?.setRect( getRect().leftBottomRect())
-        self.rightBottomChild?.setRect( getRect().rigthBottomRect())
-        self.leftUpChild?.setRect( getRect().leftUpRect())
-        self.getRightUpChild()?.setRect( getRect().rightUpRect())
-
-        for child in childs() {
-            child.redraw()
         }
     }
 
@@ -394,24 +381,20 @@ class HerowQuadTreeNode: QuadTreeNode {
     func shoppingCount(_ locations: [QuadTreeLocation]) -> Int {
         var filteredLocations = [QuadTreeLocation]()
         for loc in allLocations() {
-
-
-                var poisForlocation = [Poi]()
-                for poi in poisInProximity() {
-                    let distance = CLLocation(latitude: poi.getLat(), longitude: poi.getLng()).distance(from: CLLocation(latitude: loc.lat, longitude: loc.lng))
-                    if distance < StorageConstants.shoppingMinRadius {
-                        poisForlocation.append(poi)
-                    }
+            var poisForlocation = [Poi]()
+            for poi in poisInProximity() {
+                let distance = CLLocation(latitude: poi.getLat(), longitude: poi.getLng()).distance(from: CLLocation(latitude: loc.lat, longitude: loc.lng))
+                if distance < StorageConstants.shoppingMinRadius {
+                    poisForlocation.append(poi)
                 }
-                loc.setIsNearToPoi(poisForlocation.count > 0)
-                if poisForlocation.count > 0 {
-                    filteredLocations.append(loc)
-                }
-
+            }
+            loc.setIsNearToPoi(poisForlocation.count > 0)
+            if poisForlocation.count > 0 {
+                filteredLocations.append(loc)
+            }
         }
         return filteredLocations.count
     }
-
 
     func childs() -> [QuadTreeNode] {
         return [leftUpChild, leftBottomChild, rightUpChild, rightBottomChild].compactMap{$0}
@@ -435,24 +418,15 @@ class HerowQuadTreeNode: QuadTreeNode {
         return nil
     }
 
-
-
-    func printHierarchy()  {
-        print("HerowQuadTreeNode node: \(self.treeId ?? "no id") with parent: \(self.parentNode?.getTreeId() ?? "no parent ")")
-
-    }
-
     func populateParentality() {
         for child in childs() {
             child.setParentNode(self)
             child.populateParentality()
         }
-        printHierarchy()
     }
 
     @discardableResult
     func  browseTree(_ location: QuadTreeLocation) -> QuadTreeNode? {
-
         var result: QuadTreeNode? = nil
         if rect.contains(location) {
             result = self
@@ -472,6 +446,7 @@ class HerowQuadTreeNode: QuadTreeNode {
     func setPois(_ pois: [Poi]?) {
         self.pois = pois
     }
+
     func getDescription() ->NodeDescription {
 
         return NodeDescription( treeId: treeId ?? "\(LeafType.root.rawValue)", rect: getRect(), locations: locations, tags: tags, densities: densities, isMin: getRect().isMin(), node: self)
@@ -494,14 +469,11 @@ class HerowQuadTreeNode: QuadTreeNode {
         return result
     }
 
-
     func nodeForLocation(_ location: QuadTreeLocation) -> QuadTreeNode? {
-
         if !rect.contains(location) {
             return nil
         }
         let result =  addLocation(location)
-
         return result
     }
 
@@ -516,7 +488,6 @@ class HerowQuadTreeNode: QuadTreeNode {
         return  max(1,result - 1)
     }
 
-
     @discardableResult
     func splitNode(_ newLocation: QuadTreeLocation) -> QuadTreeNode? {
         dispatchParentLocations()
@@ -525,7 +496,6 @@ class HerowQuadTreeNode: QuadTreeNode {
             child.setUpdated(true)
             return child
         } else {
-
             return createChildforLocation(newLocation)
         }
     }
@@ -549,7 +519,6 @@ class HerowQuadTreeNode: QuadTreeNode {
         locations.removeAll()
     }
 
-
     @discardableResult
     func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode? {
         let count = self.allLocations().count
@@ -566,7 +535,6 @@ class HerowQuadTreeNode: QuadTreeNode {
           return  splitNode(location)
         }
     }
-
 
     func createChildforType(_ type: LeafType, location: QuadTreeLocation?) ->  QuadTreeNode? {
         let treeId  = getTreeId() + "\(type.rawValue)"
@@ -627,7 +595,6 @@ class HerowQuadTreeNode: QuadTreeNode {
         if  !idsList.contains(treeID) {
             result.append(self)
         }
-
         return result
     }
 
@@ -638,6 +605,7 @@ class HerowQuadTreeNode: QuadTreeNode {
     func isNearToPoi() -> Bool {
         return self.locations.filter{$0.isNearToPoi()}.count  > 10 &&
             (self.densities?.count ?? 0)  > 0 &&
+            self.getRect().circle().radius <=   StorageConstants.shoppingMinRadius &&
             self.densities?[LivingTag.shopping.rawValue] ?? 0 > 0
     }
 
@@ -645,26 +613,19 @@ class HerowQuadTreeNode: QuadTreeNode {
         let neighbourgs = neighbourgs().filter {
             $0.isNearToPoi()
         }
-
         let minLat = min( neighbourgs.map { $0.getRect()}.map {
             $0.originLat
         }.min() ?? 90.0, self.getRect().originLat)
-
         let maxLat = max(neighbourgs.map { $0.getRect()}.map {
             $0.endLat
         }.max() ?? -90 ,self.getRect().endLat)
-
         let minLng = min( neighbourgs.map { $0.getRect()}.map {
             $0.originLng
         }.min() ?? 180.0, self.getRect().originLng)
-
         let maxLng = max(neighbourgs.map { $0.getRect()}.map {
             $0.endLng
         }.max() ?? -180.0 ,self.getRect().endLng)
-
         return Rect(originLat: minLat, endLat: maxLat, originLng: minLng, endLng: maxLng)
-
-
     }
 
     func neighbourgs() -> [QuadTreeNode] {
@@ -840,6 +801,10 @@ class HerowQuadTreeNode: QuadTreeNode {
 
 class HerowQuadTreeLocation: QuadTreeLocation {
 
+    var lat: Double
+    var lng: Double
+    var time: Date
+    var nearToPoi = false
 
     func isNearToPoi() -> Bool {
         return nearToPoi
@@ -854,9 +819,4 @@ class HerowQuadTreeLocation: QuadTreeLocation {
         self.lng = lng
         self.time = time
     }
-
-    var lat: Double
-    var lng: Double
-    var time: Date
-    var nearToPoi = false
 }

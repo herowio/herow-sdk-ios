@@ -13,6 +13,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return getLocationsNumber(context: self.bgContext)
     }
 
+    private var reassignPeriodISDone = false
 
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(for: Self.self)
@@ -421,6 +422,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 if self.context.hasChanges {
                     do {
                         // print("saving main context")
+                        self.removeUnlikeLocations(self.context)
                         try self.context.save()
                     } catch {
                         print ("Error saving main managed object context! \(error)")
@@ -431,6 +433,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 if self.bgContext.hasChanges {
                     do {
                         // print("saving bg context")
+                        self.removeUnlikeLocations(self.bgContext)
                         try self.bgContext.save()
                     } catch {
                         print ("Error saving bg managed object context! \(error)")
@@ -450,7 +453,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         let locationTime = location.time as NSDate
         print("Period - location: \(location.lat)   \(location.lng) \(locationTime)")
         let fetchRequest = NSFetchRequest<Period>(entityName: StorageConstants.PeriodEntityName)
-        fetchRequest.predicate = NSPredicate(format: "start < %@ && end > %@", locationTime, locationTime)
+        fetchRequest.predicate = NSPredicate(format: "start <= %@ && end > %@", locationTime, locationTime)
         do {
             let array = try context.fetch(fetchRequest)
             result = array.first
@@ -469,8 +472,13 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             result?.start = start
             result?.end = start.addingTimeInterval(7 * 86400)
             result?.locations = Set()
-                   } 
+        }
         result?.locations?.insert(location)
+        guard let result = result else {
+            return nil
+        }
+        location.period = result
+        save()
         return result
 
     }
@@ -540,7 +548,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var result = [LocationCoreData]()
 
         let fetchRequest = NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
-        fetchRequest.predicate = NSPredicate(format: "node == nil")
+        fetchRequest.predicate = NSPredicate(format: "node == nil || time == nil")
         do {
             result = try context.fetch(fetchRequest)
         } catch let error as NSError {
@@ -551,26 +559,41 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     }
 
-    func reassignPeriodLocations(_ context: NSManagedObjectContext) {
-        removePeriods(context)
-        getLocations(context).forEach{
-            loc in
-            _ = periodeForLocation(loc, context: context)
+    func reassignPeriodLocations() {
+        if reassignPeriodISDone  {
+            return
+        }
+
+        var contextToUse = self.bgContext
+         if Thread.isMainThread {
+            contextToUse = self.context
+         }
+        contextToUse.perform {
+            self.removePeriods(contextToUse)
+            self.getLocations(contextToUse).forEach{
+                loc in
+                _ = self.periodeForLocation(loc, context: contextToUse)
+            }
+            self.reassignPeriodISDone = true
+            self.save()
+        }
+    }
+
+    func removeUnlikeLocations(_ context: NSManagedObjectContext) {
+        context.perform { [self] in
+            let unliked = unlikededlocation(context)
+            if unliked.count > 0 {
+                for loc in unliked {
+                    context.delete(loc)
+                }
+            }
         }
     }
 
     func computePeriods() {
         let context = self.bgContext
         context.perform { [self] in
-
-            //  reassignPeriodLocations(context)
-           // let unliked = unlikededlocation(context)
-           // if unliked.count > 0 {
-            //    for loc in unliked {
-               //     context.delete(loc)
-              //  }
-          //  }
-
+          //  reassignPeriodLocations()
             let periods = getPeriods(context)
             print("Period - periods count at start : \( periods.count)")
             var i = 1
@@ -674,6 +697,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     private  func getCoreDataQuadTreeRoot() -> NodeCoreData? {
+
         return getCoreDataQuadTree("\(LeafType.root.rawValue)")
     }
 

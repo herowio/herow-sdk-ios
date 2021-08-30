@@ -200,6 +200,10 @@ import UIKit
     }
 
     //MARK: CACHELISTENERS  MANAGEMENT
+
+    @objc public func getLastGeoHash() -> String? {
+        return herowDataHolder.getLastGeoHash()
+    }
     @objc public func  registerCacheListener(listener: CacheListener) {
         cacheManager.registerCacheListener(listener: listener)
     }

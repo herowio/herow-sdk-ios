@@ -83,11 +83,9 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     func onCacheUpdate(forGeoHash: String?) {
-
         guard forGeoHash != nil   else {
             return
         }
-
         let start = CFAbsoluteTimeGetCurrent()
         print("LiveMomentStore reloadNewPois ")
         backgroundQueue.async {
@@ -104,16 +102,12 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
-
-        
         if self.root == nil || isWorking   {
             print("LiveMomentStore - isWorking")
             return
         }
-
         let start = CFAbsoluteTimeGetCurrent()
         print("LiveMomentStore - onLocationUpdate start")
-
         isWorking = true
         let blockOPeration = BlockOperation { [self] in
             if self.backgroundTaskId == .invalid {
@@ -173,10 +167,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         return node.getParentNode()
     }
 
-
-
-
-
     internal func save(_ force: Bool = false, _ node: QuadTreeNode? = nil , completion: @escaping ()->()) {
 
         if let root = self.root {
@@ -192,7 +182,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         }
     }
 
-    func reverseExploration(node: QuadTreeNode, location: QuadTreeLocation) -> QuadTreeNode? {
+    internal func reverseExploration(node: QuadTreeNode, location: QuadTreeLocation) -> QuadTreeNode? {
         if node.getRect().contains(location) {
             return node
         } else {
@@ -205,17 +195,14 @@ class LiveMomentStore: LiveMomentStoreProtocol {
 
     internal  func getNodeForLocation(_ location: CLLocation, completion: @escaping (Bool)->())  {
        backgroundQueue.async {
-
             var result : QuadTreeNode?
             let quadLocation = HerowQuadTreeLocation(lat: location.coordinate.latitude, lng: location.coordinate.longitude, time: location.timestamp)
             if let nodeToUse =  self.currentNode ?? self.root {
                 let rootToUse:QuadTreeNode? = self.reverseExploration(node: nodeToUse, location: quadLocation)
-
                 if let rootToUse = rootToUse {
                     let start = CFAbsoluteTimeGetCurrent()
                     print("LiveMomentStore - browseTree start")
                     let node = rootToUse.browseTree(quadLocation)
-
                     result = node?.addLocation(quadLocation)
                     let end = CFAbsoluteTimeGetCurrent()
                     let elapsedTime = (end - start) * 1000
@@ -227,7 +214,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                         result?.setUpdated(false)
                         nodeToSave?.setUpdated(false)
                         completion(false)
-
                     }
                     print("LiveMomentStore - tree result node: \(result?.getTreeId() ?? "none") location count: \(result?.getLocations().count ?? 0) ")
 
@@ -239,7 +225,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                 completion(false)
 
             }
-
         }
     }
 
@@ -262,6 +247,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal func computeRects()  {
+        self.root = self.getClustersInBase()
         self.rects =  self.root?.getReccursiveRects(nil)
     }
 
@@ -280,6 +266,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             }
             let end = CFAbsoluteTimeGetCurrent()
             let elapsedTime = (end - start) * 1000
+
+            print("LiveMomentStore - compute took in \(elapsedTime) ms ")
         }
     }
 
@@ -318,8 +306,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal func computeShopping() -> [QuadTreeNode]? {
-        let nodes = getRects()?.map {$0.node}.filter{$0.isNearToPoi() &&  $0.getRect().circle().radius <=   StorageConstants.shoppingMinRadius}
+        let nodes = getRects()?.map {$0.node}.filter{$0.isNearToPoi() }
         return nodes
     }
-
 }

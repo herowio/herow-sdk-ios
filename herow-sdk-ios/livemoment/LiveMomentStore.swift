@@ -10,7 +10,9 @@ import CoreLocation
 import UIKit
 
 public protocol LiveMomentStoreListener {
-    func  didCompute( rects: [NodeDescription]?, home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?, others: [QuadTreeNode]?, neighbours:[QuadTreeNode]?)
+
+    func liveMomentStoreStartComputing()
+    func  didCompute( rects: [NodeDescription]?, home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?, others: [QuadTreeNode]?, neighbours:[QuadTreeNode]?, periods:[PeriodProtocol])
 }
 
 protocol LiveMomentStoreProtocol: DetectionEngineListener, AppStateDelegate, CacheListener {
@@ -194,6 +196,9 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal  func getNodeForLocation(_ location: CLLocation, completion: @escaping (Bool)->())  {
+        for listener in self.listeners {
+            listener.get()?.liveMomentStoreStartComputing()
+        }
        backgroundQueue.async {
             var result : QuadTreeNode?
             let quadLocation = HerowQuadTreeLocation(lat: location.coordinate.latitude, lng: location.coordinate.longitude, time: location.timestamp)
@@ -261,13 +266,16 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             self.school = self.computeSchool()
             self.shoppings = self.computeShopping()
             self.others = nil
-            for listener in self.listeners {
-                listener.get()?.didCompute(rects: self.rects, home: self.home, work:  self.work, school: self.school, shoppings: self.shoppings, others: self.others, neighbours: self.currentNode?.neighbourgs())
-            }
-            let end = CFAbsoluteTimeGetCurrent()
-            let elapsedTime = (end - start) * 1000
+            self.dataBase.getPeriods(dispatchLocation: true) { periods in
+                for listener in self.listeners {
+                    listener.get()?.didCompute(rects: self.rects, home: self.home, work:  self.work, school: self.school, shoppings: self.shoppings, others: self.others, neighbours: self.currentNode?.neighbourgs(), periods: periods)
+                }
+                let end = CFAbsoluteTimeGetCurrent()
+                let elapsedTime = (end - start) * 1000
 
-            GlobalLogger.shared.debug("LiveMomentStore - compute took in \(elapsedTime) ms ")
+                GlobalLogger.shared.debug("LiveMomentStore - compute took in \(elapsedTime) ms ")
+            }
+
         }
     }
 

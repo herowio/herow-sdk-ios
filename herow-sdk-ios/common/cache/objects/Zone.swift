@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreLocation
-
+import UIKit
 public protocol Zone: Codable {
 
     func getHash() -> String
@@ -166,7 +166,25 @@ public protocol QuadTreeLocation {
     func isNearToPoi() -> Bool
     func setIsNearToPoi(_ near: Bool)
     init(lat: Double, lng: Double, time: Date)
+
 }
+
+public protocol PeriodProtocol {
+    var start: Date {get set}
+    var end: Date {get set}
+    var locations: [QuadTreeLocation] {get set}
+    var workLocations: [QuadTreeLocation] {get set}
+    var homeLocations: [QuadTreeLocation] {get set}
+    var schoolLocations: [QuadTreeLocation] {get set}
+    var otherLocations: [QuadTreeLocation] {get set}
+    var poiLocations: [QuadTreeLocation] {get set}
+    func getAllLocations() ->  [QuadTreeLocation]
+    init(locations: [QuadTreeLocation], start: Date, end: Date ,dispatchLocation: Bool)
+    func disPatchLocations(locations: [QuadTreeLocation])
+
+}
+
+
 
 
 

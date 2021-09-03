@@ -28,7 +28,7 @@ import UIKit
     private let analyticsManager: AnalyticsManagerProtocol
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
-    private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
+    private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>()
 
     internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol =  UNUserNotificationCenter.current()) {
         eventDispatcher = EventDispatcher()
@@ -250,6 +250,12 @@ import UIKit
     }
 
     //MARK: DATABASE MANAGEMENT
+
+    public   func reassignPeriodLocations(_ completion: @escaping()->()) {
+        self.db.reassignPeriodLocations {
+            completion()
+        }
+    }
     @objc public func getHerowZoneForId(id: String) -> HerowZone? {
         guard let zone =  cacheManager.getZones(ids: [id]).first else { return nil }
         return HerowZone(zone: zone)
@@ -277,6 +283,8 @@ import UIKit
     public func registerAppStateListener(listener: AppStateDelegate) {
         appStateDetector.registerAppStateDelegate(appStateDelegate: listener)
     }
+
+    //MARK Objects accessors
     public func getHome() -> QuadTreeNode? {
         return  liveMomentStore?.getHome()
     }
@@ -295,6 +303,27 @@ import UIKit
 
     public func getPOIs() -> [Poi] {
         return cacheManager.getPois()
+    }
+
+    public func getAllLocations(completion: @escaping ([QuadTreeLocation]) -> ())  {
+        db.getLocations { locations in
+            completion(locations)
+        }
+    }
+
+    public func getPeriods(dispatchLocation: Bool, completion: @escaping ([PeriodProtocol]) -> ())  {
+
+        db.getPeriods(dispatchLocation: dispatchLocation, completion: completion)
+
+    }
+
+    public func getPeriods( completion: @escaping ([PeriodProtocol]) -> ())  {
+
+        getPeriods(dispatchLocation: true) { periods in
+            completion(periods)
+        }
+
+
     }
 
     //MARK: UTILS

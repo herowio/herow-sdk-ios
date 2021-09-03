@@ -16,7 +16,7 @@ class ZoneProviderTests: XCTestCase {
 
     override func setUpWithError() throws {
 
-       let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>())
+       let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>())
         cacheManager.cleanCache()
         coordinatesEntry = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
         let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinatesEntry, distance: 75)

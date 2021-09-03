@@ -8,12 +8,10 @@
 import Foundation
 import CoreData
 
-class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping,T: QuadTreeNode, L: QuadTreeLocation>: DataBase {
+class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping,T: QuadTreeNode, L: QuadTreeLocation, K: PeriodProtocol>: DataBase {
     func getLocationsNumber() -> Int {
         return getLocationsNumber(context: self.bgContext)
     }
-
-    private var reassignPeriodISDone = false
 
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(for: Self.self)
@@ -387,7 +385,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func purgeAllData(completion: (()->())? = nil) {
-        let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name }).filter({$0 != StorageConstants.CappingCoreDataEntityName && $0 != StorageConstants.NodeCoreDataEntityName && $0 != StorageConstants.LocationCoreDataEntityName})
+        let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name }).filter({$0 != StorageConstants.CappingCoreDataEntityName && $0 != StorageConstants.NodeCoreDataEntityName && $0 != StorageConstants.LocationCoreDataEntityName && $0 !=  StorageConstants.PeriodEntityName})
         uniqueNames.forEach { (name) in
             deleteEntitiesByName(name)
         }
@@ -395,7 +393,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func deleteEntitiesByName(_ name: String) {
-        var context = self.bgContext
+        let context = self.bgContext
       
         context.performAndWait {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
@@ -527,6 +525,47 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return result
     }
 
+    func getLocations(completion: @escaping ([QuadTreeLocation]) ->() )  {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            contextToUse = self.context
+        }
+        contextToUse.perform {
+            let locations: [QuadTreeLocation] = self.getLocations(contextToUse).map {
+                let location =  L(lat: $0.lat, lng: $0.lng, time: $0.time)
+                location.setIsNearToPoi($0.isNearToPoi)
+                return location
+            }
+            DispatchQueue.main.async {
+                completion(locations)
+            }
+        }
+    }
+
+    func getPeriods(completion: @escaping ([PeriodProtocol]) ->() )  {
+       getPeriods(dispatchLocation: true, completion: completion)
+    }
+
+    func getPeriods(dispatchLocation:Bool, completion: @escaping ([PeriodProtocol]) ->() )  {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            contextToUse = self.context
+        }
+        contextToUse.perform {
+            let periods: [PeriodProtocol] = self.getPeriods(contextToUse).map {
+                let locations: [QuadTreeLocation]?  = $0.locations?.map {
+                    let p =  L(lat: $0.lat, lng: $0.lng, time: $0.time)
+                    p.setIsNearToPoi($0.isNearToPoi)
+                    return  p
+                }.sorted {$0.time > $1.time}
+                return K(locations: locations ?? [], start: $0.start, end: $0.end, dispatchLocation: dispatchLocation )
+            }
+            DispatchQueue.main.async {
+                completion(periods)
+            }
+        }
+    }
+
 
     func getPeriods(_ context : NSManagedObjectContext) -> [Period] {
         var result = [Period]()
@@ -559,23 +598,21 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     }
 
-    func reassignPeriodLocations() {
-        if reassignPeriodISDone  {
-            return
-        }
-
+    func reassignPeriodLocations(_ completion: @escaping ()->()) {
         var contextToUse = self.bgContext
-         if Thread.isMainThread {
+        if Thread.isMainThread {
             contextToUse = self.context
-         }
+        }
         contextToUse.perform {
             self.removePeriods(contextToUse)
             self.getLocations(contextToUse).forEach{
                 loc in
                 _ = self.periodeForLocation(loc, context: contextToUse)
             }
-            self.reassignPeriodISDone = true
             self.save()
+            DispatchQueue.main.async {
+                completion()
+            }
         }
     }
 
@@ -591,23 +628,26 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func computePeriods() {
-        let context = self.bgContext
-        context.perform { [self] in
-          //  reassignPeriodLocations()
-            let periods = getPeriods(context)
-            print("Period - periods count at start : \( periods.count)")
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            contextToUse = self.context
+        }
+        contextToUse.perform { [self] in
+            //reassignPeriodLocations()
+            let periods = getPeriods(contextToUse)
+            GlobalLogger.shared.debug("Period - periods count at start : \( periods.count)")
             var i = 1
             var total = 0
             for period  in periods {
                 let count = period.locations?.count ?? 0
-                print("Period - period  \(i) start: \(period.start) end:\(period.end) ")
-                print("Period - period  \(i) has \(count) locations ")
+                GlobalLogger.shared.debug("Period - period  \(i) start: \(period.start) end:\(period.end) ")
+                GlobalLogger.shared.debug("Period - period - count\(i) has \(count) locations ")
                 i = i + 1
                 total = total + count
             }
-            print("Period - total =   \(total)")
-            let  locations = getLocations(context)
-            print("Period - locations for display  count at start : \(locations.count)")
+            GlobalLogger.shared.debug("Period - total =   \(total)")
+            let  locations = getLocations(contextToUse)
+            GlobalLogger.shared.debug("Period - locations for display  count at start : \(locations.count)")
         }
         save()
     }
@@ -721,21 +761,21 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 result = array.first
 
             } catch let error as NSError {
-                print("Could not fetch. \(error), \(error.userInfo)")
+                GlobalLogger.shared.debug("Could not fetch. \(error), \(error.userInfo)")
             }
         }
         let endRoot = CFAbsoluteTimeGetCurrent()
         let  elapsedTime = (endRoot - start) * 1000
-        print("LiveMomentStore -  find root in base took \(elapsedTime) ms ")
+        GlobalLogger.shared.debug("LiveMomentStore -  find root in base took \(elapsedTime) ms ")
         return result
     }
 
     func getQuadTreeRoot() -> QuadTreeNode? {
         if let root =  getCoreDataQuadTreeRoot() {
             let quadTree  = recursiveInit(root)
-            DispatchQueue.global(qos: .background).async {
-               self.computePeriods()
-            }
+                DispatchQueue.global(qos: .background).async {
+                    self.computePeriods()
+                }
             return quadTree
         }
         return nil
@@ -764,7 +804,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+            GlobalLogger.shared.debug("Could not fetch. \(error), \(error.userInfo)")
         }
         return node
     }
@@ -790,7 +830,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             var array : [PoiCoreData] =  [PoiCoreData]()
 
             if let fromParent = node.parent?.pois {
-                print ("NODE \(node.treeId ) WITH PARENT \(node.parent?.treeId ?? "no parent") poi count: \(fromParent.count)")
                 array = Array(fromParent)
             } else   if node.isRoot() {
                 if let rootSet = node.pois  {
@@ -873,18 +912,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 nodeCoreData.locations = Set([LocationCoreData]())
             }
 
-            //there is something to do here
-            
-            /*  for loc in  nodeCoreData.locations! {
-                context.delete(loc)
-            }
-          for loc in node.getLocations() {
-                if let newLocation = createLocation( loc, context: context) {
-                    nodeCoreData.locations?.insert(newLocation)
-                    _ = self.periodeForLocation(newLocation, context: context)
-                }
-            }*/
-
             if let lastLocation = node.getLastLocation() {
                 if let newLocation = createLocation( lastLocation, context: context) {
                     newLocation.node = nodeCoreData
@@ -945,9 +972,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 childToUpdate.append(contentsOf: childToKeep)
                 nodeCoreData.childs = Set(childToUpdate)
             }
-
-          //  nodeCoreData.cleanLocations()
-            // print("NODE IN BASE \(nodeCoreData?.treeId ?? "Undefine") has \(nodeCoreData?.childs?.count ?? 0) child(s)")
         }
         return nodeCoreData
     }
@@ -984,22 +1008,19 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 count = locations.count
             }
 
-            print("Coredata Analyse : locationCount: \(count)")
+            GlobalLogger.shared.debug("Coredata Analyse : locationCount: \(count)")
 
             let periods = getPeriods(context)
-            print("Coredata Analyse : periods count: \(periods.count)")
+            GlobalLogger.shared.debug("Coredata Analyse : periods count: \(periods.count)")
             for period in periods {
-                print("\nCoredata Analyse : period: start:\(period.start) end:\(period.end)")
-                print("Coredata Analyse : period location count \(period.locations?.count ?? 0) \n")
+                GlobalLogger.shared.debug("\nCoredata Analyse : period: start:\(period.start) end:\(period.end)")
+                GlobalLogger.shared.debug("Coredata Analyse : period location count \(period.locations?.count ?? 0) \n")
             }
             let periodlocations: [[LocationCoreData]] = Array(periods.map{Array($0.locations ?? Set<LocationCoreData>())})
-            print("Coredata Analyse : locations from period locationCount: \(Array(periodlocations.joined()).count)")
-
+            GlobalLogger.shared.debug("Coredata Analyse : locations from period locationCount: \(Array(periodlocations.joined()).count)")
         }
-
         return count
     }
-
 }
 
 

@@ -60,7 +60,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         self.dataBase.createQuadTreeRoot {
             let endRoot = CFAbsoluteTimeGetCurrent()
             var  elapsedTime = (endRoot - start) * 1000
-            print("LiveMomentStore createQuadTreeRoot took \(elapsedTime) ms ")
+            GlobalLogger.shared.debug("LiveMomentStore createQuadTreeRoot took \(elapsedTime) ms ")
             self.root = self.getClustersInBase()
             let end = CFAbsoluteTimeGetCurrent()
             elapsedTime = (end - start) * 1000
@@ -87,13 +87,13 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             return
         }
         let start = CFAbsoluteTimeGetCurrent()
-        print("LiveMomentStore reloadNewPois ")
+        GlobalLogger.shared.debug("LiveMomentStore reloadNewPois ")
         backgroundQueue.async {
             self.dataBase.reloadNewPois {
                 self.root = self.getClustersInBase()
                 let end = CFAbsoluteTimeGetCurrent()
                 let elapsedTime = (end - start) * 1000
-                print("LiveMomentStore reloadNewPois took \(elapsedTime) ms ")
+                GlobalLogger.shared.debug("LiveMomentStore reloadNewPois took \(elapsedTime) ms ")
             }
         }
     }
@@ -103,11 +103,11 @@ class LiveMomentStore: LiveMomentStoreProtocol {
 
     func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         if self.root == nil || isWorking   {
-            print("LiveMomentStore - isWorking")
+            GlobalLogger.shared.debug("LiveMomentStore - isWorking")
             return
         }
         let start = CFAbsoluteTimeGetCurrent()
-        print("LiveMomentStore - onLocationUpdate start")
+        GlobalLogger.shared.debug("LiveMomentStore - onLocationUpdate start")
         isWorking = true
         let blockOPeration = BlockOperation { [self] in
             if self.backgroundTaskId == .invalid {
@@ -127,7 +127,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                 isWorking = working
                 let end = CFAbsoluteTimeGetCurrent()
                 let elapsedTime = (end - start) * 1000
-                print("LiveMomentStore - onLocationUpdate done in \(elapsedTime) ms  ")
+                GlobalLogger.shared.debug("LiveMomentStore - onLocationUpdate done in \(elapsedTime) ms  ")
                 if self.backgroundTaskId != .invalid {
                     UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
                     self.backgroundTaskId = .invalid
@@ -201,12 +201,12 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                 let rootToUse:QuadTreeNode? = self.reverseExploration(node: nodeToUse, location: quadLocation)
                 if let rootToUse = rootToUse {
                     let start = CFAbsoluteTimeGetCurrent()
-                    print("LiveMomentStore - browseTree start")
+                    GlobalLogger.shared.debug("LiveMomentStore - browseTree start")
                     let node = rootToUse.browseTree(quadLocation)
                     result = node?.addLocation(quadLocation)
                     let end = CFAbsoluteTimeGetCurrent()
                     let elapsedTime = (end - start) * 1000
-                    print("LiveMomentStore - browseTree  result node: \(rootToUse.getTreeId()) in \(elapsedTime) ms  ")
+                    GlobalLogger.shared.debug("LiveMomentStore - browseTree  result node: \(rootToUse.getTreeId()) in \(elapsedTime) ms  ")
                     let nodeToSave = result?.getParentNode() ?? result
                     self.currentNode = result
 
@@ -215,7 +215,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                         nodeToSave?.setUpdated(false)
                         completion(false)
                     }
-                    print("LiveMomentStore - tree result node: \(result?.getTreeId() ?? "none") location count: \(result?.getLocations().count ?? 0) ")
+                    GlobalLogger.shared.debug("LiveMomentStore - tree result node: \(result?.getTreeId() ?? "none") location count: \(result?.getLocations().count ?? 0) ")
 
                 } else {
                     completion(false)
@@ -230,11 +230,11 @@ class LiveMomentStore: LiveMomentStoreProtocol {
 
     internal func getClustersInBase() ->  QuadTreeNode? {
         let start = CFAbsoluteTimeGetCurrent()
-        print("LiveMomentStore - getClustersInBase start")
+        GlobalLogger.shared.debug("LiveMomentStore - getClustersInBase start")
         let result = dataBase.getQuadTreeRoot()
         let end = CFAbsoluteTimeGetCurrent()
         let elapsedTime = (end - start) * 1000
-        print("LiveMomentStore - getClustersInBase took in \(elapsedTime) ms ")
+        GlobalLogger.shared.debug("LiveMomentStore - getClustersInBase took in \(elapsedTime) ms ")
         return result
     }
 
@@ -254,7 +254,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     internal func compute() {
         backgroundQueue.async {
             let start = CFAbsoluteTimeGetCurrent()
-            print("LiveMomentStore - compute start")
+            GlobalLogger.shared.debug("LiveMomentStore - compute start")
             self.computeRects()
             self.work = self.computeWork()
             self.home = self.computeHome()
@@ -267,7 +267,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             let end = CFAbsoluteTimeGetCurrent()
             let elapsedTime = (end - start) * 1000
 
-            print("LiveMomentStore - compute took in \(elapsedTime) ms ")
+            GlobalLogger.shared.debug("LiveMomentStore - compute took in \(elapsedTime) ms ")
         }
     }
 

@@ -28,7 +28,9 @@ protocol DataBase {
     func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())?)
 
     //analyse
+    func getLocations(completion: @escaping ([QuadTreeLocation]) ->() )
     func getLocationsNumber() -> Int
+    func reassignPeriodLocations(_ completion:  @escaping ()->())
     
 
 }

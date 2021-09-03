@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreLocation
+import UIKit
 public enum LivingTag: String {
     case home
     case work
@@ -269,7 +270,7 @@ class HerowQuadTreeNode: QuadTreeNode {
 
         let start = CFAbsoluteTimeGetCurrent()
         if(computeParent) {
-            print("LiveMomentStore - computeTags start")
+            GlobalLogger.shared.debug("LiveMomentStore - computeTags start")
         }
         let _allLocations = allLocations()
         var tags =  self.tags ?? [String: Double] ()
@@ -315,19 +316,15 @@ class HerowQuadTreeNode: QuadTreeNode {
         let end = CFAbsoluteTimeGetCurrent()
         let elapsedTime = (end - start) * 1000
         if(computeParent) {
-        print("LiveMomentStore - computeTags done in \(elapsedTime) ms  ")
+            GlobalLogger.shared.debug("LiveMomentStore - computeTags done in \(elapsedTime) ms  ")
         }
     }
-
 
     func allLocations() -> [QuadTreeLocation] {
 
          let allDescr = getReccursiveRects()
          return Array(allDescr.map {$0.locations}.joined())
-
-      
     }
-
 
     func schoolCount(_ locations: [QuadTreeLocation]) -> Int {
         if lastSchoolCount == -1 {
@@ -367,7 +364,6 @@ class HerowQuadTreeNode: QuadTreeNode {
             return lastWorkCount
         }
     }
-
 
     func poisInProximity() -> [Poi] {
         var allpois = [Poi]()
@@ -454,7 +450,6 @@ class HerowQuadTreeNode: QuadTreeNode {
 
     func getReccursiveRects(_ rects: [NodeDescription]? = nil) -> [NodeDescription] {
         var result =  [getDescription()]
-
         for child in childs() {
             result.append(contentsOf: child.getReccursiveRects(result))
         }
@@ -524,7 +519,7 @@ class HerowQuadTreeNode: QuadTreeNode {
         let count = self.allLocations().count
         if ((count <= getLimit() && !hasChildForLocation(location)) || rect.isMin()) {
             if !locationIsPresent(location) {
-                print("addLocation node: \(treeId!) count: \(count) isMin? : \( rect.isMin()) limit: \(getLimit())")
+                GlobalLogger.shared.debug("addLocation node: \(treeId!) count: \(count) isMin? : \( rect.isMin()) limit: \(getLimit())")
                 locations.append(location)
                 lastLocation = location
                 self.updated = true
@@ -799,24 +794,60 @@ class HerowQuadTreeNode: QuadTreeNode {
     }
 }
 
-class HerowQuadTreeLocation: QuadTreeLocation {
+public class HerowQuadTreeLocation: QuadTreeLocation {
 
-    var lat: Double
-    var lng: Double
-    var time: Date
-    var nearToPoi = false
+    public var lat: Double
+    public var lng: Double
+    public var time: Date
+    public var nearToPoi = false
 
-    func isNearToPoi() -> Bool {
+    public func isNearToPoi() -> Bool {
         return nearToPoi
     }
 
-    func setIsNearToPoi(_ near: Bool)  {
+    public func setIsNearToPoi(_ near: Bool)  {
         nearToPoi = near
     }
 
-    required init(lat: Double, lng: Double, time: Date) {
+    required public init(lat: Double, lng: Double, time: Date) {
         self.lat = lat
         self.lng = lng
         self.time = time
     }
 }
+
+public class HerowPeriod: PeriodProtocol {
+
+    public var workLocations: [QuadTreeLocation] = [QuadTreeLocation]()
+    public  var homeLocations: [QuadTreeLocation] = [QuadTreeLocation]()
+    public var schoolLocations: [QuadTreeLocation] = [QuadTreeLocation]()
+    public  var otherLocations: [QuadTreeLocation] = [QuadTreeLocation]()
+    public  var poiLocations: [QuadTreeLocation] = [QuadTreeLocation]()
+    public var locations: [QuadTreeLocation] = [QuadTreeLocation]()
+    public var start: Date
+    public var end: Date
+    required public init(locations: [QuadTreeLocation], start: Date, end: Date ,dispatchLocation: Bool = true ) {
+        self.start = start
+        self.end = end
+        if dispatchLocation {
+            self.disPatchLocations(locations: locations)
+        }
+    }
+
+    public func disPatchLocations(locations: [QuadTreeLocation]) {
+        self.locations = locations
+        self.homeLocations = locations.filter {$0.time.isHomeCompliant()}
+        self.workLocations = locations.filter {$0.time.isWorkCompliant()}
+        self.schoolLocations = locations.filter {$0.time.isSchoolCompliant()}
+        self.otherLocations = locations.filter {$0.time.isOtherCompliant()}
+        self.poiLocations = locations.filter {$0.isNearToPoi()}
+    }
+
+    public func getAllLocations() ->  [QuadTreeLocation] {
+        return Array([ self.homeLocations,  self.workLocations,self.schoolLocations,self.otherLocations].joined()).sorted {$0.time > $1.time }
+    }
+}
+
+
+
+

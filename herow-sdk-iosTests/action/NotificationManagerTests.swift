@@ -14,7 +14,7 @@ class NotificationManagerTests: XCTestCase, UserInfoListener {
     }
 
     let herowDataStorage = HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest"))
-    var notificationManager = NotificationManager(cacheManager: CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()), notificationCenter: MockNotificationCenter(), herowDataStorage: HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest")))
+    var notificationManager = NotificationManager(cacheManager: CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>()), notificationCenter: MockNotificationCenter(), herowDataStorage: HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest")))
     override func setUpWithError() throws {
         let herowDataStorage = HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "HerowTest"))
          userInfoManager = UserInfoManager( herowDataStorage: herowDataStorage)

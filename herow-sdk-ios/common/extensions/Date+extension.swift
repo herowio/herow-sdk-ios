@@ -92,7 +92,7 @@ extension Date {
     public func  isSchoolCompliant() -> Bool {
         Date.dateFormatter.dateFormat = "EEEE"
         Date.dateFormatter.locale =  NSLocale(localeIdentifier: "en_EN") as Locale
-        guard let moring0830 = self.setTime(hour:8, min: 30), let morning0900 = self.setTime(hour: 8, min: 45), let morning1130 = self.setTime(hour:11, min: 40), let morning12 = self.setTime(hour: 11, min: 50) , let after1330 = self.setTime(hour: 13, min: 30) , let after14 = self.setTime(hour: 13, min: 45), let after1630 = self.setTime(hour: 16, min: 30), let after17 = self.setTime(hour:16, min: 50) else {
+        guard let moring0830 = self.setTime(hour:8, min: 40), let morning0900 = self.setTime(hour: 8, min: 50), let morning1130 = self.setTime(hour:11, min: 30), let morning12 = self.setTime(hour: 12, min: 00) , let after1330 = self.setTime(hour: 13, min: 20) , let after14 = self.setTime(hour: 13, min: 50), let after1630 = self.setTime(hour: 16, min: 30), let after17 = self.setTime(hour:17, min: 00) else {
             return false
         }
         let morningEntry =  moring0830 < self && morning0900 > self
@@ -101,9 +101,6 @@ extension Date {
         let afterExit =  after1630 < self && after17 > self
 
         let isOff = ["Saturday","Sunday","Wednesday"].contains( Date.dateFormatter.string(from: self)) || ["July","August"].contains(self.month)
-        if !isOff {
-            print ("schoolCompliant")
-        }
         return (morningEntry || morningExit || afterEntry || afterExit) && !isOff
     }
 
@@ -117,7 +114,7 @@ extension Date {
         let afternoon =  work14 < self && work18 > self
 
         let isWeekEnd = ["Saturday","Sunday"].contains( Date.dateFormatter.string(from: self))
-        return (afternoon || morning) && !isWeekEnd
+        return (afternoon || morning) && !isWeekEnd &&  !isSchoolCompliant()
     }
 
     public func  isOtherCompliant() -> Bool {

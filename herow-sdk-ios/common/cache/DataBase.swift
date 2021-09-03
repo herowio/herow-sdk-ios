@@ -31,6 +31,10 @@ protocol DataBase {
     func getLocations(completion: @escaping ([QuadTreeLocation]) ->() )
     func getLocationsNumber() -> Int
     func reassignPeriodLocations(_ completion:  @escaping ()->())
+
+    //historicMethod
+
+    func getPeriods(dispatchLocation:Bool, completion: @escaping ([PeriodProtocol]) ->() )
     
 
 }

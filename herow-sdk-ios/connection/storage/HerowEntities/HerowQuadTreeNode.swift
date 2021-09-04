@@ -432,6 +432,12 @@ class HerowQuadTreeNode: QuadTreeNode {
                 }
             }
         }
+        let locations : [QuadTreeLocation]? = result?.getLocations()
+
+        let pois = locations?.filter {
+            $0.isNearToPoi()
+        }
+
         return result
     }
 
@@ -520,8 +526,10 @@ class HerowQuadTreeNode: QuadTreeNode {
         if ((count <= getLimit() && !hasChildForLocation(location)) || rect.isMin()) {
             if !locationIsPresent(location) {
                 GlobalLogger.shared.debug("addLocation node: \(treeId!) count: \(count) isMin? : \( rect.isMin()) limit: \(getLimit())")
+                populateLocation(location)
                 locations.append(location)
                 lastLocation = location
+                
                 self.updated = true
                 computeTags()
             }
@@ -529,6 +537,17 @@ class HerowQuadTreeNode: QuadTreeNode {
         } else {
           return  splitNode(location)
         }
+    }
+
+    func populateLocation(_ loc : QuadTreeLocation) {
+        var poisForlocation = [Poi]()
+        for poi in poisInProximity() {
+            let distance = CLLocation(latitude: poi.getLat(), longitude: poi.getLng()).distance(from: CLLocation(latitude: loc.lat, longitude: loc.lng))
+            if distance < StorageConstants.shoppingMinRadius {
+                poisForlocation.append(poi)
+            }
+        }
+        loc.setIsNearToPoi(poisForlocation.count > 0)
     }
 
     func createChildforType(_ type: LeafType, location: QuadTreeLocation?) ->  QuadTreeNode? {

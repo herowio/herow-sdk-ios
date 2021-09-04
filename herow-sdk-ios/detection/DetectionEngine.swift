@@ -37,6 +37,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     internal var dispatchTime = Date(timeIntervalSince1970: 0)
     private var timeProvider: TimeProvider
     private let queue = OperationQueue()
+    
 
 
     public var showsBackgroundLocationIndicator: Bool {

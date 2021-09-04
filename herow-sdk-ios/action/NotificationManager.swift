@@ -25,11 +25,14 @@ protocol NotificationCenterProtocol {
 }
 class NotificationManager: NSObject, EventListener {
 
+
+
     internal var filters: [NotificationFilter] = [NotificationFilter]()
     private var onExactZoneEntry: Bool = false
     private var cacheManager: CacheManagerProtocol
     private var notificationCenter: NotificationCenterProtocol
     private var herowDataStorage: HerowDataStorageProtocol
+
     init(cacheManager: CacheManagerProtocol, notificationCenter: NotificationCenterProtocol, herowDataStorage: HerowDataStorageProtocol) {
         self.cacheManager = cacheManager
         self.notificationCenter = notificationCenter
@@ -131,4 +134,5 @@ class NotificationManager: NSObject, EventListener {
     func isNotificationsOnExactZoneEntry() -> Bool {
         return onExactZoneEntry
     }
+
 }

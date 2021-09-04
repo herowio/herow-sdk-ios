@@ -912,7 +912,18 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 nodeCoreData.locations = Set([LocationCoreData]())
             }
 
-            if let lastLocation = node.getLastLocation() {
+            if node.isNewBorn() {
+
+                //TODO remove from  parent
+                for loc in node.getLocations() {
+                    if let newLocation = createLocation( loc, context: context) {
+                        newLocation.node = nodeCoreData
+                        nodeCoreData.locations?.insert(newLocation)
+                        _ = self.periodeForLocation(newLocation, context: context)
+                    }
+                }
+            }
+           else if let lastLocation = node.getLastLocation() {
                 if let newLocation = createLocation( lastLocation, context: context) {
                     newLocation.node = nodeCoreData
                     nodeCoreData.locations?.insert(newLocation)

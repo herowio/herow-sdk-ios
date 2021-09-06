@@ -90,15 +90,35 @@ class LocationCoreData: NSManagedObject {
     @NSManaged var lng: Double
     @NSManaged var node: NodeCoreData
     @NSManaged var period: Period
+    @NSManaged var containers:  Set<LocationContainer>
     @NSManaged var isNearToPoi: Bool
 //    @NSManaged var pois: Set<PoiCoreData>?
 
+    func getType() -> String {
+        if time.isHomeCompliant() {
+            return "home"
+        }
+       else if time.isSchoolCompliant() {
+            return "school"
+        }
+       else if time.isWorkCompliant() {
+            return "work"
+        }
+        return "other"
+    }
 
 }
 
+@objc (LocationContainer)
+class LocationContainer: NSManagedObject {
+    @NSManaged var  type: String
+    @NSManaged var  locations: Set<LocationCoreData>?
+    @NSManaged var period: Period?
+}
 @objc(Period)
 class Period: NSManagedObject {
     @NSManaged var start: Date
     @NSManaged var end: Date
     @NSManaged var locations: Set<LocationCoreData>?
+    @NSManaged var containers: Set<LocationContainer>?
 }

@@ -13,6 +13,7 @@ class StorageConstants {
     static let ZoneCoreDataEntityName = "ZoneCoreData"
     static let PoiCoreDataEntityName = "PoiCoreData"
     static let PeriodEntityName = "Period"
+    static let LocationContainerEntityName = "LocationContainer"
     static let AccessCoreDataEntityName = "AccessCoreData"
     static let CampaignCoreDataEntityName = "CampaignCoreData"
     static let CappingCoreDataEntityName = "CappingCoreData"

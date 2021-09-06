@@ -385,7 +385,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func purgeAllData(completion: (()->())? = nil) {
-        let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name }).filter({$0 != StorageConstants.CappingCoreDataEntityName && $0 != StorageConstants.NodeCoreDataEntityName && $0 != StorageConstants.LocationCoreDataEntityName && $0 !=  StorageConstants.PeriodEntityName})
+        let uniqueNames = persistentContainer.managedObjectModel.entities.compactMap({ $0.name }).filter({$0 != StorageConstants.CappingCoreDataEntityName && $0 != StorageConstants.NodeCoreDataEntityName && $0 != StorageConstants.LocationCoreDataEntityName && $0 !=  StorageConstants.PeriodEntityName && $0 !=  StorageConstants.LocationContainerEntityName})
         uniqueNames.forEach { (name) in
             deleteEntitiesByName(name)
         }
@@ -431,7 +431,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 if self.bgContext.hasChanges {
                     do {
                         // print("saving bg context")
-                        self.removeUnlikeLocations(self.bgContext)
+                       // self.removeUnlikeLocations(self.bgContext)
                         try self.bgContext.save()
                     } catch {
                         print ("Error saving bg managed object context! \(error)")
@@ -469,17 +469,64 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             let start = location.time.startOfDay
             result?.start = start
             result?.end = start.addingTimeInterval(7 * 86400)
-            result?.locations = Set()
+            result?.locations = Set<LocationCoreData>()
+            result?.containers = Set<LocationContainer>()
         }
-        result?.locations?.insert(location)
         guard let result = result else {
             return nil
         }
+
+
+        let locationType = location.getType()
+        let isNearToPoi = location.isNearToPoi
+        getOrCreateContainerFor(period: result, location: location, type: locationType, context: context)
+        if location.isNearToPoi {
+            getOrCreateContainerFor(period: result, location: location, type: "poi", context: context)
+        }
+        result.locations?.insert(location)
+
         location.period = result
         save()
         return result
 
     }
+
+    func getOrCreateContainerFor( period: Period, location: LocationCoreData, type: String, context: NSManagedObjectContext)  {
+        var container: LocationContainer? = nil
+        let fetchContainerRequest = NSFetchRequest<LocationContainer>(entityName: StorageConstants.LocationContainerEntityName)
+         fetchContainerRequest.predicate = NSPredicate(format: "type LIKE %@", type)
+        do {
+            let array = try context.fetch(fetchContainerRequest)
+            container = array.filter {$0.period == period }.first
+
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+
+        if container == nil {
+            let entity =
+                NSEntityDescription.entity(forEntityName: StorageConstants.LocationContainerEntityName,
+                                           in: context)!
+            container = LocationContainer(entity: entity,
+                            insertInto: context)
+
+            container?.locations = Set<LocationCoreData>()
+            container?.period = period
+            container?.type = type
+
+        }
+        if let container = container {
+        container.locations?.insert(location)
+            if location.containers == nil {
+                location.containers = Set<LocationContainer>()
+            }
+        location.containers.insert(container)
+        period.containers?.insert(container)
+        }
+
+    }
+
+
 
     func deleteDuplicatesForLocation(_ location: LocationCoreData , context: NSManagedObjectContext)  {
         context.performAndWait {
@@ -499,9 +546,18 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func removePeriods(_ context: NSManagedObjectContext) {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: StorageConstants.PeriodEntityName)
+        var fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: StorageConstants.PeriodEntityName)
         // Create Batch Delete Request
-        let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        var batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        do {
+            try  context.execute(batchDeleteRequest)
+        } catch {
+            // print("error on delete")
+        }
+
+         fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: StorageConstants.LocationContainerEntityName)
+        // Create Batch Delete Request
+         batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         do {
             try  context.execute(batchDeleteRequest)
         } catch {
@@ -546,19 +602,42 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
        getPeriods(dispatchLocation: true, completion: completion)
     }
 
+    func transFormeLocations(_ coreDataLocations:Set<LocationCoreData>?) -> [QuadTreeLocation] {
+        return coreDataLocations?.map {
+            let p =  L(lat: $0.lat, lng: $0.lng, time: $0.time)
+            p.setIsNearToPoi($0.isNearToPoi)
+            return  p
+        }.sorted {$0.time > $1.time} ??  [QuadTreeLocation]()
+    }
+
     func getPeriods(dispatchLocation:Bool, completion: @escaping ([PeriodProtocol]) ->() )  {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
             contextToUse = self.context
         }
+
         contextToUse.perform {
-            let periods: [PeriodProtocol] = self.getPeriods(contextToUse).map {
-                let locations: [QuadTreeLocation]?  = $0.locations?.map {
-                    let p =  L(lat: $0.lat, lng: $0.lng, time: $0.time)
-                    p.setIsNearToPoi($0.isNearToPoi)
-                    return  p
-                }.sorted {$0.time > $1.time}
-                return K(locations: locations ?? [], start: $0.start, end: $0.end, dispatchLocation: dispatchLocation )
+            var periods =  [PeriodProtocol]()
+            let periodsCoreData = self.getPeriods(contextToUse)
+            for p in periodsCoreData {
+                let workLocation =  self.transFormeLocations( p.containers?.filter {
+                    $0.type == "work"
+                }.first?.locations)
+                let homeLocation =  self.transFormeLocations( p.containers?.filter {
+                    $0.type == "home"
+                }.first?.locations)
+                let schoolLocation =  self.transFormeLocations( p.containers?.filter {
+                    $0.type == "school"
+                }.first?.locations)
+                let otherLocation  =  self.transFormeLocations( p.containers?.filter {
+                    $0.type == "other"
+                }.first?.locations)
+                let poiLocation =  self.transFormeLocations( p.containers?.filter {
+                    $0.type == "poi"
+                }.first?.locations)
+                let period = K(workLocations: workLocation, homeLocations: homeLocation, schoolLocations: schoolLocation, otherLocations: otherLocation, poiLocations: poiLocation, start: p.start, end: p.end)
+                periods.append(period)
+
             }
             DispatchQueue.main.async {
                 completion(periods)
@@ -587,14 +666,16 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var result = [LocationCoreData]()
 
         let fetchRequest = NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
-        fetchRequest.predicate = NSPredicate(format: "node == nil || time == nil")
+
         do {
             result = try context.fetch(fetchRequest)
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
 
-        return result
+        return result.filter{
+            $0.containers.count == 0
+        }
 
     }
 
@@ -604,6 +685,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             contextToUse = self.context
         }
         contextToUse.perform {
+            self.cleanAllLocations(context: contextToUse)
             self.removePeriods(contextToUse)
             self.getLocations(contextToUse).forEach{
                 loc in
@@ -633,7 +715,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             contextToUse = self.context
         }
         contextToUse.perform { [self] in
-            //reassignPeriodLocations()
+           let unlikedLocations =  unlikededlocation(contextToUse)
             let periods = getPeriods(contextToUse)
             GlobalLogger.shared.debug("Period - periods count at start : \( periods.count)")
             var i = 1
@@ -913,11 +995,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
 
             if node.isNewBorn() {
-
-                //TODO remove from  parent
                 for loc in node.getLocations() {
                     if let newLocation = createLocation( loc, context: context) {
                         newLocation.node = nodeCoreData
+
                         nodeCoreData.locations?.insert(newLocation)
                         _ = self.periodeForLocation(newLocation, context: context)
                     }
@@ -991,15 +1072,27 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         guard let location = location else {
             return nil
         }
-        let entity =
-            NSEntityDescription.entity(forEntityName: StorageConstants.LocationCoreDataEntityName,
-                                       in: context)!
-        let locationCoreData = LocationCoreData(entity: entity,
+        var locationCoreData :LocationCoreData?
+        let fetchRequest =
+            NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
+        let lat = location .lat
+        let lng = location.lng
+        let date = location.time as NSDate
+        fetchRequest.predicate = NSPredicate(format: "time == %@", date)
+        locationCoreData = try? context.fetch(fetchRequest).first
+        if locationCoreData == nil {
+            let entity =
+                NSEntityDescription.entity(forEntityName: StorageConstants.LocationCoreDataEntityName,
+                                           in: context)!
+            locationCoreData = LocationCoreData(entity: entity,
                                                 insertInto: context)
-        locationCoreData.lat = location.lat
-        locationCoreData.lng = location.lng
-        locationCoreData.time = location.time
-        locationCoreData.isNearToPoi = location.isNearToPoi()
+            locationCoreData?.lat = location.lat
+            locationCoreData?.lng = location.lng
+            locationCoreData?.time = location.time
+            locationCoreData?.containers = Set<LocationContainer>()
+            let isNearToPoi = location.isNearToPoi()
+            locationCoreData?.isNearToPoi = isNearToPoi
+        }
         return locationCoreData
     }
 
@@ -1031,6 +1124,34 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             GlobalLogger.shared.debug("Coredata Analyse : locations from period locationCount: \(Array(periodlocations.joined()).count)")
         }
         return count
+    }
+
+    func cleanAllLocations(context: NSManagedObjectContext) {
+        context.performAndWait {
+            let fetchRequest =
+                NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
+
+          let locations = try? context.fetch(fetchRequest)
+            var locationToKeep = [LocationCoreData]()
+             var locationToDelete = [LocationCoreData]()
+            if let locations = locations {
+
+
+                for l in locations {
+                    if locationToKeep.filter({$0.time == l.time && $0.lat == l.lat && $0.lng == l.lng }).count == 0  {
+                        locationToKeep.append(l)
+                    } else {
+                        locationToDelete.append(l)
+                    }
+                }
+
+            }
+            let locationsWithoutCaontainers = locationToKeep.filter({$0.containers.count == 0})
+            for l in locationToDelete {
+              context.delete( l)
+            }
+            save()
+        }
     }
 }
 

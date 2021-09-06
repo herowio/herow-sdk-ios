@@ -837,30 +837,26 @@ public class HerowQuadTreeLocation: QuadTreeLocation {
 
 public class HerowPeriod: PeriodProtocol {
 
+
+
     public var workLocations: [QuadTreeLocation] = [QuadTreeLocation]()
     public  var homeLocations: [QuadTreeLocation] = [QuadTreeLocation]()
     public var schoolLocations: [QuadTreeLocation] = [QuadTreeLocation]()
     public  var otherLocations: [QuadTreeLocation] = [QuadTreeLocation]()
     public  var poiLocations: [QuadTreeLocation] = [QuadTreeLocation]()
-    public var locations: [QuadTreeLocation] = [QuadTreeLocation]()
     public var start: Date
     public var end: Date
-    required public init(locations: [QuadTreeLocation], start: Date, end: Date ,dispatchLocation: Bool = true ) {
+    public required init(workLocations: [QuadTreeLocation], homeLocations: [QuadTreeLocation], schoolLocations: [QuadTreeLocation], otherLocations: [QuadTreeLocation], poiLocations: [QuadTreeLocation], start: Date, end: Date) {
         self.start = start
         self.end = end
-        if dispatchLocation {
-            self.disPatchLocations(locations: locations)
-        }
+        self.homeLocations = homeLocations
+        self.workLocations = workLocations
+        self.schoolLocations = schoolLocations
+        self.otherLocations = otherLocations
+        self.poiLocations = poiLocations
     }
 
-    public func disPatchLocations(locations: [QuadTreeLocation]) {
-        self.locations = locations
-        self.homeLocations = locations.filter {$0.time.isHomeCompliant()}
-        self.workLocations = locations.filter {$0.time.isWorkCompliant()}
-        self.schoolLocations = locations.filter {$0.time.isSchoolCompliant()}
-        self.otherLocations = locations.filter {$0.time.isOtherCompliant()}
-        self.poiLocations = locations.filter {$0.isNearToPoi()}
-    }
+
 
     public func getAllLocations() ->  [QuadTreeLocation] {
         return Array([ self.homeLocations,  self.workLocations,self.schoolLocations,self.otherLocations].joined()).sorted {$0.time > $1.time }

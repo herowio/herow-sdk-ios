@@ -24,16 +24,16 @@
     </entity>
     <entity name="LocationContainer" representedClassName="LocationContainer" syncable="YES">
         <attribute name="type" optional="YES" attributeType="String"/>
-        <relationship name="locations" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocationCoreData" inverseName="container" inverseEntity="LocationCoreData"/>
-        <relationship name="period" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Period" inverseName="containers" inverseEntity="Period"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="LocationCoreData" inverseName="containers" inverseEntity="LocationCoreData"/>
+        <relationship name="period" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Period" inverseName="containers" inverseEntity="Period"/>
     </entity>
     <entity name="LocationCoreData" representedClassName="LocationCoreData" syncable="YES">
         <attribute name="isNearToPoi" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="container" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="LocationContainer" inverseName="locations" inverseEntity="LocationContainer"/>
-        <relationship name="node" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="locations" inverseEntity="NodeCoreData"/>
+        <relationship name="containers" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="LocationContainer" inverseName="locations" inverseEntity="LocationContainer"/>
+        <relationship name="node" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="NodeCoreData" inverseName="locations" inverseEntity="NodeCoreData"/>
         <relationship name="period" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Period" inverseName="locations" inverseEntity="Period"/>
     </entity>
     <entity name="NodeCoreData" representedClassName="NodeCoreData" syncable="YES">
@@ -62,7 +62,7 @@
     <entity name="Period" representedClassName="Period" syncable="YES">
         <attribute name="end" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="start" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="containers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationContainer" inverseName="period" inverseEntity="LocationContainer"/>
+        <relationship name="containers" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="LocationContainer" inverseName="period" inverseEntity="LocationContainer"/>
         <relationship name="locations" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="LocationCoreData" inverseName="period" inverseEntity="LocationCoreData"/>
     </entity>
     <entity name="PoiCoreData" representedClassName="PoiCoreData" syncable="YES">
@@ -90,6 +90,6 @@
         <element name="Period" positionX="-36" positionY="126" width="128" height="89"/>
         <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="104"/>
         <element name="ZoneCoreData" positionX="-63" positionY="-18" width="128" height="119"/>
-        <element name="LocationContainer" positionX="-36" positionY="126" width="128" height="74"/>
+        <element name="LocationContainer" positionX="-27" positionY="135" width="128" height="74"/>
     </elements>
 </model>

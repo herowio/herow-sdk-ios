@@ -27,8 +27,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     internal var isMonitoringRegion = false
     internal  var isMonitoringVisit = false
     private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
-    private let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
-    private let dataHolder =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")
+   
+    private var dataHolder : DataHolderUserDefaults
     private var locationManager: LocationManager
     private var skipCount = 0
     internal var lastLocation: CLLocation?
@@ -128,9 +128,10 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         return self.locationManager.getMonitoredRegions()
     }
 
-    public init(_ locationManager: LocationManager, timeProvider: TimeProvider = TimeProviderAbsolute()) {
+    public init(_ locationManager: LocationManager, timeProvider: TimeProvider = TimeProviderAbsolute(),dataHolder: DataHolderUserDefaults =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")) {
         self.locationManager = locationManager
         self.timeProvider = timeProvider
+        self.dataHolder = dataHolder
         super.init()
         initBackgroundCapabilities()
         self.updateClickAndCollectState()
@@ -174,6 +175,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
         self.dataHolder.putDate(key: "lastClickAndCollectActivationDate", value: value)
         self.dataHolder.apply()
+        print (getLastClickAndCollectActivationDate())
     }
 
     private func getLastClickAndCollectActivationDate() -> Date? {
@@ -187,7 +189,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         guard let date = getLastClickAndCollectActivationDate() else {
             return true
         }
-        return Date() < Date(timeInterval: timeIntervalLimit, since: date)
+        return Date() < Date(timeInterval: StorageConstants.timeIntervalLimit, since: date)
     }
 
 

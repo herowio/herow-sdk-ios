@@ -15,7 +15,7 @@ import UIKit
     private var appStateDetector = AppStateDetector()
     private var apiManager: APIManager
     private var herowDataHolder: HerowDataStorageProtocol
-    private var dataHolder: DataHolder
+    private var dataHolder: DataHolderUserDefaults
     private var connectionInfo : ConnectionInfoProtocol
     private var userInfoManager: UserInfoManagerProtocol
     private var permissionsManager: PermissionsManagerProtocol
@@ -43,7 +43,7 @@ import UIKit
         userInfoManager.registerListener(listener: apiManager)
         permissionsManager = PermissionsManager(userInfoManager: userInfoManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: userInfoManager)
-        detectionEngine = DetectionEngine(locationManager)
+        detectionEngine = DetectionEngine(locationManager, dataHolder:  dataHolder)
         fuseManager = FuseManager(dataHolder: dataHolder, timeProvider: TimeProviderAbsolute())
         apiManager.registerConfigListener(listener: detectionEngine)
         geofenceManager = GeofenceManager(locationManager: detectionEngine, cacheManager: cacheManager, fuseManager: fuseManager)
@@ -188,6 +188,17 @@ import UIKit
 
     @objc public func unregisterDetectionListener(listener: DetectionEngineListener) {
         detectionEngine.unregisterDetectionListener(listener: listener)
+    }
+
+    public func getClickAndCollectDelay() -> TimeInterval {
+
+        if let activation = dataHolder.getDate(key: "lastClickAndCollectActivationDate") {
+            let limit = Date(timeInterval: StorageConstants.timeIntervalLimit, since: activation)
+            let delay = DateInterval(start: Date(), end: limit).duration
+        return delay
+        }
+        return 0
+
     }
 
     //MARK: FUSEMANAGERLISTENERS  MANAGEMENT

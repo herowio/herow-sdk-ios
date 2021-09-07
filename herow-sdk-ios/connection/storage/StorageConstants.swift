@@ -25,7 +25,8 @@ class StorageConstants {
     static let campaignId = "campaignId"
     static let id = "id"
 
-
+  //clickANdCollect
+    static let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
 
 
     //quadtree

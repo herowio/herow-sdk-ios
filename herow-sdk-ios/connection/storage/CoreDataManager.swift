@@ -508,7 +508,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 NSEntityDescription.entity(forEntityName: StorageConstants.LocationContainerEntityName,
                                            in: context)!
             container = LocationContainer(entity: entity,
-                            insertInto: context)
+                                          insertInto: context)
 
             container?.locations = Set<LocationCoreData>()
             container?.period = period
@@ -516,14 +516,11 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
         }
         if let container = container {
-        container.locations?.insert(location)
-            if location.containers == nil {
-                location.containers = Set<LocationContainer>()
-            }
-        location.containers.insert(container)
-        period.containers?.insert(container)
+            container.locations?.insert(location)
+            location.containers.insert(container)
+            period.containers?.insert(container)
         }
-
+        save()
     }
 
 

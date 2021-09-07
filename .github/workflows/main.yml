@@ -12,10 +12,14 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
-    - name: add platform_secrets 
-      env:
-          PLATFORM_SECRETS: ${{ secrets.PLATFORM_SECRETS }}
-      run: pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/Connection/platform-secrets.plist;cd  herow-sdk-ios/Connection;ls
+    - name: Checkout secrets
+      uses: actions/checkout@v2
+      with:
+          repository: 'herowio/herow-api-secrets'
+          token: ${{ secrets.PAT_READ_PRIVATE_REPO }}
+          path: secrets
+    - name: copy platform-secrets.plits
+      run: cp secrets/platform-secrets.plist ./herow-sdk-ios/connection/platform-secrets.plist
     - name: Start xcodebuild test
       run: |
           xcodebuild clean test -workspace herow_sdk_ios.xcworkspace -scheme herow_sdk_ios -destination "platform=iOS Simulator,name=iPhone 11 Pro"

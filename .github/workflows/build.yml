@@ -8,13 +8,14 @@ jobs:
     - uses: actions/checkout@v1
       with:
         xcode-version: latest-stable
-    - name: add platform_secrets 
-      env:
-          PLATFORM_SECRETS: ${{ secrets.PLATFORM_SECRETS }}
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      run: 
-           pwd;ls;echo $PLATFORM_SECRETS >  herow-sdk-ios/connection/platform-secrets.plist;
-           echo "RELEASE_VERSION=v$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)" >> $GITHUB_ENV
+    - name: Checkout secrets
+      uses: actions/checkout@v2
+      with:
+          repository: 'herowio/herow-api-secrets'
+          token: ${{ secrets.PAT_READ_PRIVATE_REPO }}
+          path: secrets
+    - name: copy platform-secrets.plits
+      run: cp secrets/platform-secrets.plist ./herow-sdk-ios/connection/platform-secrets.plist
     - name: pod installation
       run: | 
           rm -rf Pods;

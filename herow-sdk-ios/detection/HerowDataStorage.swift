@@ -11,6 +11,8 @@ import Foundation
 
 public class HerowDataStorage: HerowDataStorageProtocol {
 
+
+
     private var userInfo: APIUserInfo?
     private var token: APIToken?
     private var config: APIConfig?
@@ -46,6 +48,11 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         }
        saveToken(token)
         return token
+    }
+
+    public func removeToken() {
+        dataHolder.remove(key: HerowConstants.tokenKey)
+        dataHolder.apply()
     }
     
     public func saveUserInfo( _ userInfo: APIUserInfo) {

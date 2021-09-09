@@ -10,6 +10,7 @@ import CoreLocation
 
 public enum NetworkError: Error {
     case badUrl
+    case noNetwork
     case invalidStatusCode
     case invalidInPut
     case invalidResponse
@@ -112,6 +113,8 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         self.cacheWorker = APIWorker<APICache>(urlType: urlType)
         super.init()
         // setting status code listening
+        self.tokenWorker.statusCodeListener = self
+        self.logWorker.statusCodeListener = self
         self.cacheWorker.statusCodeListener = self
         self.configWorker.statusCodeListener = self
         self.userInfogWorker.statusCodeListener = self
@@ -120,6 +123,11 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     func didReceiveResponse(_ statusCode: Int) {
         if statusCode == HttpStatusCode.HTTP_TOO_MANY_REQUESTS {
             // TODO:  save date and retry after delais
+        }
+        if statusCode == HttpStatusCode.HTTP_BAD_REQUEST || statusCode == HttpStatusCode.HTTP_UNAUTHORIZED {
+
+            GlobalLogger.shared.error("Remove API token")
+            self.herowDataStorage.removeToken()
         }
     }
 

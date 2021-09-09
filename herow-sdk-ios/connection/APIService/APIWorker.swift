@@ -21,6 +21,7 @@ internal enum Method: String {
 protocol APIWorkerProtocol {
     associatedtype ResponseType
     func getData(endPoint: EndPoint , completion: @escaping (ResponseType?, NetworkError?) -> Void)
+    
 }
 
 internal class APIWorker<T: Decodable>: APIWorkerProtocol {
@@ -51,6 +52,10 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         queue.maxConcurrentOperationCount = 1
     }
 
+    func reset() {
+        self.currentTask = nil
+        self.queue.cancelAllOperations()
+    }
     public func setUrlType(_ urlType: URLType) {
         self.baseURL = urlType.rawValue
         ready = true

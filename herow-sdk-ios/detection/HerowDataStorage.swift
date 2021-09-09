@@ -51,6 +51,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
     }
 
     public func removeToken() {
+        self.token = nil
         dataHolder.remove(key: HerowConstants.tokenKey)
         dataHolder.apply()
     }

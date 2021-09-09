@@ -81,8 +81,6 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
     internal  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?)  {
 
-
-
         let completion: (Result<ResponseType, Error>) -> Void = {result in
             callback?(result)
             if self.backgroundTaskId != .invalid {
@@ -93,6 +91,11 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
             self.currentTask = nil
         }
 
+        if !Reachability.isConnectedToNetwork() {
+            GlobalLogger.shared.error(NetworkError.noNetwork)
+            completion(Result.failure(NetworkError.noNetwork))
+            return
+        }
 
         guard let url = URL(string: buildURL(endPoint: endPoint)) else {
             completion(Result.failure(NetworkError.badUrl))
@@ -100,7 +103,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         }
 
         if currentTask != nil && allowMultiOperation == false {
-            GlobalLogger.shared.info("APIWorker still working " + url.absoluteString)
+            GlobalLogger.shared.error(NetworkError.workerStillWorking)
             completion(Result.failure(NetworkError.workerStillWorking))
             return
         }

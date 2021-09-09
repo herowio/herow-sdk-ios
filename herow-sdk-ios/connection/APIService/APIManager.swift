@@ -19,6 +19,7 @@ public enum NetworkError: Error {
     case noOptin
     case requestExistsInQueue
     case workerStillWorking
+    case backgroundTaskExpiration
 }
 
 public enum URLType: String {

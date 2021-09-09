@@ -88,16 +88,18 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
         let completion: (Result<ResponseType, Error>) -> Void = {result in
             callback?(result)
+            self.queue.cancelAllOperations()
+            self.currentTask = nil
             if self.backgroundTaskId != .invalid {
             UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
             GlobalLogger.shared.verbose("APIWorker ends backgroundTask with identifier : \( self.backgroundTaskId)")
                 self.backgroundTaskId = .invalid
             }
-            self.currentTask = nil
         }
 
         if !Reachability.isConnectedToNetwork() {
-            GlobalLogger.shared.error(NetworkError.noNetwork)
+            GlobalLogger.shared.error("APIWorker - \(self.endPoint.value) response: \(NetworkError.noNetwork)")
+
             completion(Result.failure(NetworkError.noNetwork))
             return
         }
@@ -108,7 +110,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         }
 
         if currentTask != nil && allowMultiOperation == false {
-            GlobalLogger.shared.error(NetworkError.workerStillWorking)
+            GlobalLogger.shared.error("APIWorker - \(self.endPoint.value) response: \(NetworkError.workerStillWorking)")
             completion(Result.failure(NetworkError.workerStillWorking))
             return
         }
@@ -119,9 +121,8 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 withName: "herow.io.APIWorker.backgroundTaskID" + url.absoluteString,
                 expirationHandler: {
                     if self.backgroundTaskId != .invalid {
-                    UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-                    GlobalLogger.shared.verbose("APIWorker ends backgroundTask with identifier : \( self.backgroundTaskId)")
-                        self.backgroundTaskId = .invalid
+                        GlobalLogger.shared.error("APIWorker - \(self.endPoint.value) response: \n\(NetworkError.backgroundTaskExpiration)")
+                        completion(Result.failure(NetworkError.backgroundTaskExpiration))
                     }
                 })
             }
@@ -171,7 +172,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                         } catch {
                             GlobalLogger.shared.error(NetworkError.serialization)
                             completion(Result.failure(NetworkError.serialization))
-                            self?.currentTask = nil
+
                         }
                     } else {
                         GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.invalidStatusCode) : \(statusCode) headers:\((self?.headers) ?? [String:String]() )")

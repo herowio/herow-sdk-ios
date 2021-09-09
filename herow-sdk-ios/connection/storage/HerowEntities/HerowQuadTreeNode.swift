@@ -432,12 +432,6 @@ class HerowQuadTreeNode: QuadTreeNode {
                 }
             }
         }
-        let locations : [QuadTreeLocation]? = result?.getLocations()
-
-        let pois = locations?.filter {
-            $0.isNearToPoi()
-        }
-
         return result
     }
 

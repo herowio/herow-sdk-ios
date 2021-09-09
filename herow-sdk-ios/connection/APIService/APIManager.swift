@@ -214,7 +214,6 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
 
     public func configure(connectInfo: ConnectionInfoProtocol) {
-        let urlType = connectInfo.getUrlType()
         self.connectInfo = connectInfo
         reloadUrls()
     }
@@ -273,7 +272,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     
     // MARK: UserInfo
     internal func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)? = nil) {
-        guard let user = self.user, let token =  self.herowDataStorage.getToken()?.accessToken else {
+        guard let user = self.user, let _ =  self.herowDataStorage.getToken()?.accessToken else {
             completion?(nil, .invalidInPut)
             return
         }

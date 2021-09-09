@@ -74,13 +74,11 @@ public class NotificationDelegateDispatcher: NSObject, UNUserNotificationCenterD
             delegate?.userNotificationCenter?(center, didReceive: response, withCompletionHandler: completionHandler)
         }
     }
-
+    @available(iOS 12.0, *)
     public func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {
-        if #available(iOS 12.0, *) {
             for delegate in delegates() {
                 delegate?.userNotificationCenter?(center, openSettingsFor: notification)
             }
-        }
     }
 
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
@@ -136,14 +134,6 @@ public class MockNotificationCenter: NotificationCenterProtocol {
     public func add(_ request: UNNotificationRequest, withCompletionHandler completionHandler: ((Error?) -> Void)?) {
         GlobalLogger.shared.debug("Add notification...")
         completionHandler?(nil)
-      /*  let trigger  = request.trigger as? UNTimeIntervalNotificationTrigger
-        if let trigger = trigger {
-            let interval  = trigger.timeInterval
-            /*let userInfo: [AnyHashable: Any] = request.content.userInfo
-            DispatchQueue.main.asyncAfter(deadline: .now() + interval) {
-                self.notifyDisplayToNotificationManager(userInfo)
-            }*/
-        }*/
     }
 
     public func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {

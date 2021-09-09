@@ -175,7 +175,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
         self.dataHolder.putDate(key: "lastClickAndCollectActivationDate", value: value)
         self.dataHolder.apply()
-        print (getLastClickAndCollectActivationDate())
     }
 
     private func getLastClickAndCollectActivationDate() -> Date? {

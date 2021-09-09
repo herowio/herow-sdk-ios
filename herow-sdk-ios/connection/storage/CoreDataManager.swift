@@ -478,7 +478,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
 
         let locationType = location.getType()
-        let isNearToPoi = location.isNearToPoi
         getOrCreateContainerFor(period: result, location: location, type: locationType, context: context)
         if location.isNearToPoi {
             getOrCreateContainerFor(period: result, location: location, type: "poi", context: context)
@@ -712,7 +711,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             contextToUse = self.context
         }
         contextToUse.perform { [self] in
-           let unlikedLocations =  unlikededlocation(contextToUse)
             let periods = getPeriods(contextToUse)
             GlobalLogger.shared.debug("Period - periods count at start : \( periods.count)")
             var i = 1
@@ -1072,8 +1070,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var locationCoreData :LocationCoreData?
         let fetchRequest =
             NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
-        let lat = location .lat
-        let lng = location.lng
         let date = location.time as NSDate
         fetchRequest.predicate = NSPredicate(format: "time == %@", date)
         locationCoreData = try? context.fetch(fetchRequest).first
@@ -1127,13 +1123,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         context.performAndWait {
             let fetchRequest =
                 NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
-
-          let locations = try? context.fetch(fetchRequest)
+            let locations = try? context.fetch(fetchRequest)
             var locationToKeep = [LocationCoreData]()
-             var locationToDelete = [LocationCoreData]()
+            var locationToDelete = [LocationCoreData]()
             if let locations = locations {
-
-
                 for l in locations {
                     if locationToKeep.filter({$0.time == l.time && $0.lat == l.lat && $0.lng == l.lng }).count == 0  {
                         locationToKeep.append(l)
@@ -1141,11 +1134,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                         locationToDelete.append(l)
                     }
                 }
-
             }
-            let locationsWithoutCaontainers = locationToKeep.filter({$0.containers.count == 0})
             for l in locationToDelete {
-              context.delete( l)
+                context.delete( l)
             }
             save()
         }

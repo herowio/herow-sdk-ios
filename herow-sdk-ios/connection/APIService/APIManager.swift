@@ -79,10 +79,6 @@ protocol APIManagerProtocol:ConfigDispatcher {
 }
 
 public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, RequestStatusListener, UserInfoListener {
-    func reset() {
-        self.user = nil
-        self.currentUserInfo = nil
-    }
 
 
     let tokenWorker: APIWorker<APIToken>
@@ -121,6 +117,20 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         self.userInfogWorker.statusCodeListener = self
     }
 
+    func reset() {
+        self.user = nil
+        self.currentUserInfo = nil
+        resetWorkers()
+    }
+
+    func resetWorkers() {
+        self.tokenWorker.reset()
+        self.cacheWorker.reset()
+        self.configWorker.reset()
+        self.logWorker.reset()
+        self.userInfogWorker.reset()
+    }
+
     func didReceiveResponse(_ statusCode: Int) {
         if statusCode == HttpStatusCode.HTTP_TOO_MANY_REQUESTS {
             // TODO:  save date and retry after delais
@@ -129,6 +139,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
             GlobalLogger.shared.error("Remove API token")
             self.herowDataStorage.removeToken()
+            resetWorkers()
         }
     }
 

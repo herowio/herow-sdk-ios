@@ -16,11 +16,52 @@ public enum Platform {
     }
 }
 // visible objectiv C
-@objc public enum HerowPlatform: Int {
-    case prod
-    case preprod
-    case test
+@objc public enum HerowPlatform: Int, Codable{
+
+        case prod
+        case preprod
+        case test
+
+    enum Key: CodingKey {
+        case rawValue
+    }
+
+    enum CodingError: Error {
+        case unknownValue
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: Key.self)
+        let rawValue = try container.decode(Int.self, forKey: .rawValue)
+        switch rawValue {
+        case HerowPlatform.prod.rawValue:
+            self = .prod
+        case HerowPlatform.preprod.rawValue:
+            self = .preprod
+        case HerowPlatform.test.rawValue:
+            self = .test
+
+        default:
+            throw CodingError.unknownValue
+        }
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: Key.self)
+        switch self {
+        case .prod:
+            try container.encode(HerowPlatform.prod.rawValue, forKey: .rawValue)
+        case .preprod:
+            try container.encode(HerowPlatform.preprod.rawValue, forKey: .rawValue)
+        case .test:
+            try container.encode(HerowPlatform.test.rawValue, forKey: .rawValue)
+
+        }
+    }
 }
+
+
+
 
 public protocol ConnectionInfoProtocol {
     var platform: Platform {get set}

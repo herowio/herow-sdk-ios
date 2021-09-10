@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-@objc public protocol LoggerDelegate {
+@objc public protocol LoggerDelegate: AnyObject {
 
     @objc func startDebug()
 
@@ -38,6 +38,7 @@ public enum MessageType: String {
     case info = "🟡 info"
     case warning = "🟠 warning"
     case error = "🔴 error"
+    case all = "all"
 }
 @objc public class GlobalLogger: NSObject {
 
@@ -47,15 +48,30 @@ public enum MessageType: String {
     @objc public static let shared = GlobalLogger()
 
 
-    var logger: LoggerDelegate?
+    var loggers = [LoggerDelegate]()
 
     @objc public func registerHerowId(herowId: String) {
-        self.logger?.registerHerowId(herowId: herowId)
+
+        for logger in loggers {
+            logger.registerHerowId(herowId: herowId)
+        }
     }
 
     @objc public func registerLogger( logger: LoggerDelegate) {
-        self.logger = logger
+        let first = loggers.first {
+            ($0 === logger) == true
+        }
+        if first == nil {
+            loggers.append(logger)
+        }
     }
+
+    @objc public func unRegisterLogger(logger: LoggerDelegate) {
+        self.loggers =  self.loggers.filter {
+          ($0 === logger) == false
+      }
+  }
+
 
     private func log(_ message: Any) {
         if debug {
@@ -65,7 +81,7 @@ public enum MessageType: String {
 
     @objc public func startDebug() {
         debug = true
-        if let logger = self.logger {
+        for logger in loggers {
             logger.startDebug()
         }
 
@@ -73,14 +89,14 @@ public enum MessageType: String {
 
     @objc public func stopDebug() {
         debug = false
-        if let logger = self.logger {
+        for logger in loggers {
             logger.stopDebug()
         }
     }
 
     @objc public func startLogInFile() {
         debugInFile = true
-        if let logger = self.logger {
+        for logger in loggers {
             logger.startLogInFile()
         }
     }
@@ -88,7 +104,7 @@ public enum MessageType: String {
 
     @objc public func stopLogInFile() {
         debugInFile = false
-        if let logger = self.logger {
+        for logger in loggers {
             logger.stopLogInFile()
         }
     }
@@ -110,7 +126,9 @@ public enum MessageType: String {
                     UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
                 })*/
             let display = "[\(type.rawValue.uppercased())]" + " \(message)"
-            if let logger = self.logger {
+            self.log(display)
+
+            for logger in loggers {
                 switch type {
                 case .debug:
                     logger.debug(display)
@@ -122,12 +140,10 @@ public enum MessageType: String {
                     logger.warning(display)
                 case .error:
                     logger.error(display)
+                default:
+                    return
                 }
-            } else {
-                self.log(display)
-            }
-         //   UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-       // }
+        }
     }
     public func verbose(_ message: Any,
                     fileName: String = #file,

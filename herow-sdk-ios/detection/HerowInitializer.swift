@@ -193,9 +193,11 @@ import UIKit
     public func getClickAndCollectDelay() -> TimeInterval {
 
         if let activation = dataHolder.getDate(key: "lastClickAndCollectActivationDate") {
+            let now = Date()
             let limit = Date(timeInterval: StorageConstants.timeIntervalLimit, since: activation)
-            let delay = DateInterval(start: Date(), end: limit).duration
-        return delay
+            let delay =
+                (now <  limit ) ? DateInterval(start: now, end: limit).duration : 0
+            return delay
         }
         return 0
 

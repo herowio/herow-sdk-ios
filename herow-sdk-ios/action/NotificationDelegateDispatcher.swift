@@ -12,13 +12,9 @@ public protocol NotificationCreationListener: AnyObject {
     func  didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String, zoneInfo: ZoneInfo)
 }
 
-
-
-
 @available(iOS 10.0, *)
 public class NotificationDelegateDispatcher: NSObject, UNUserNotificationCenterDelegate {
     public static let instance = NotificationDelegateDispatcher()
-
     private var delegateWeakList = [WeakContainer<UNUserNotificationCenterDelegate>]()
     private var creationListeners = [WeakContainer<NotificationCreationListener>]()
 
@@ -50,7 +46,6 @@ public class NotificationDelegateDispatcher: NSObject, UNUserNotificationCenterD
         for listener in creationListeners {
             listener.get()?.didCreateNotificationForCampaign(campaign, zoneID: zoneID, zoneInfo: zoneInfo)
         }
-
     }
 
     public func foregroundNotificationEnabled() -> Bool {
@@ -74,6 +69,7 @@ public class NotificationDelegateDispatcher: NSObject, UNUserNotificationCenterD
             delegate?.userNotificationCenter?(center, didReceive: response, withCompletionHandler: completionHandler)
         }
     }
+
     @available(iOS 12.0, *)
     public func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {
             for delegate in delegates() {
@@ -86,16 +82,13 @@ public class NotificationDelegateDispatcher: NSObject, UNUserNotificationCenterD
         for delegate in delegates() {
             delegate?.userNotificationCenter?(center, willPresent: notification, withCompletionHandler: completionHandler)
         }
-
         completionHandler([])
-
     }
 }
 
 @available(iOS 10.0, *)
 class NotificationDelegateHolder {
     public static let shared: NotificationDelegateHolder = NotificationDelegateHolder()
-
     var useNotificationCenter = true
 
     public var delegate: UNUserNotificationCenterDelegate? {
@@ -154,6 +147,4 @@ public class MockNotificationCenter: NotificationCenterProtocol {
     public func getDelegate() -> UNUserNotificationCenterDelegate? {
         return self.delegate
     }
-
 }
-

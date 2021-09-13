@@ -13,7 +13,13 @@ import UIKit
 protocol AnalyticsManagerProtocol:   EventListener, DetectionEngineListener, ClickAndConnectListener, AppStateDelegate,NotificationCreationListener, UNUserNotificationCenterDelegate{
     func createlogContex(_ location: CLLocation)
     func createlogEvent( event: Event,  info: ZoneInfo)
+    func registeOpeningListener (_ listener: NotificationOpeningListener)
 }
+
+public protocol NotificationOpeningListener: AnyObject {
+    func didOpenNotificationForCampaign(_ campaign: Campaign, zoneID: String)
+}
+
 class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
 
     private var dataStorage: HerowDataStorageProtocol?
@@ -23,6 +29,8 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     private var backgroundTaskContext = UIBackgroundTaskIdentifier.invalid
     private var backgroundTaskEvent = UIBackgroundTaskIdentifier.invalid
     private var appState: String = "bg"
+    private weak var  openingListener: NotificationOpeningListener?
+
     init(apiManager: APIManagerProtocol, cacheManager:  CacheManagerProtocol, dataStorage: HerowDataStorageProtocol?) {
         self.apiManager = apiManager
         self.cacheManager =  cacheManager
@@ -43,6 +51,10 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         createlogContex(location)
 
+    }
+
+    func registeOpeningListener (_ listener: NotificationOpeningListener) {
+        self.openingListener = listener
     }
 
     func createlogContex(_ location: CLLocation)  {
@@ -158,6 +170,8 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
         if let data = log.getData() {
            apiManager.pushLog(data) {}
         }
+
+        self.openingListener?.didOpenNotificationForCampaign(campaign, zoneID: zoneID)
 
     }
 

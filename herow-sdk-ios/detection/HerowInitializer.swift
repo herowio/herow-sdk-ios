@@ -154,7 +154,13 @@ import UIKit
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {
        eventDispatcher.registerListener(listener)
+
+
    }
+    public func registerOpeningListener(_ listener: NotificationOpeningListener) {
+        self.analyticsManager.registeOpeningListener(listener)
+
+    }
     //MARK: CLICKANDCOLLECT MANAGEMENT
     @objc public func isOnClickAndCollect() -> Bool {
         return detectionEngine.getIsOnClickAndCollect()

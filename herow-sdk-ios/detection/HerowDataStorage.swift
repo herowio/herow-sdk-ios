@@ -84,7 +84,7 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         }
         let shouldRefresh = date.timeIntervalSince1970 < timeProvider.getTime()
         if shouldRefresh {
-            self.token = nil
+            self.removeToken()
         }
         return shouldRefresh
     }

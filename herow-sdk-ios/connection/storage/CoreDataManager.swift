@@ -43,19 +43,24 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     // MARK: - Core Data read and write
 
     func savePoisInBase(items: [Poi], completion: (()->())? = nil) {
-        self.bgContext.perform {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            // print("MAIN THREAD ! ")
+            contextToUse = self.context
+        }
+        contextToUse.perform {
             for item in items {
                 var  poiCoreData :PoiCoreData?
                 let fetchRequest =
                     NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
                 fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.id) == %@", item.getId())
-                poiCoreData = try?  self.bgContext.fetch(fetchRequest).first
+                poiCoreData = try?  contextToUse.fetch(fetchRequest).first
                 if poiCoreData == nil {
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.PoiCoreDataEntityName,
-                                                   in:  self.bgContext)!
+                                                   in: contextToUse)!
                     poiCoreData = PoiCoreData(entity: entity,
-                                              insertInto:  self.bgContext)
+                                              insertInto:  contextToUse)
                 }
                 poiCoreData?.id = item.getId()
                 poiCoreData?.lat = item.getLat()
@@ -67,19 +72,24 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func saveCampaignsInBase(items: [Campaign],  completion: (()->())? = nil) {
-        self.bgContext.perform {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            // print("MAIN THREAD ! ")
+            contextToUse = self.context
+        }
+        contextToUse.perform {
             for item in items {
                 var campaignCoreData: CampaignCoreData?
                 let  fetchRequest =
                     NSFetchRequest<CampaignCoreData>(entityName: StorageConstants.CampaignCoreDataEntityName)
                 fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.id) == %@", item.getId())
-                campaignCoreData = try? self.bgContext.fetch(fetchRequest).first
+                campaignCoreData = try? contextToUse.fetch(fetchRequest).first
                 if campaignCoreData == nil {
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.CampaignCoreDataEntityName,
-                                                   in: self.bgContext)!
+                                                   in: contextToUse)!
                     campaignCoreData = CampaignCoreData(entity: entity,
-                                                        insertInto: self.bgContext)
+                                                        insertInto: contextToUse)
                 }
                 campaignCoreData?.id = item.getId()
                 campaignCoreData?.name = item.getName()
@@ -92,9 +102,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 var notificationCoreData: NotificationCoreData?
                 if let notification = item.getNotification() {
                     let entity = NSEntityDescription.entity(forEntityName: StorageConstants.NotificationCoreDataEntityName,
-                                                            in: self.bgContext)!
+                                                            in: contextToUse)!
                     notificationCoreData = NotificationCoreData(entity: entity,
-                                                                insertInto: self.bgContext)
+                                                                insertInto: contextToUse)
                     notificationCoreData?.title = notification.getTitle()
                     notificationCoreData?.content = notification.getDescription()
                     notificationCoreData?.image = notification.getImage() ?? ""
@@ -110,19 +120,24 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func saveZonesInBase(items: [Zone], completion: (()->())? = nil) {
-        self.bgContext.perform {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            // print("MAIN THREAD ! ")
+            contextToUse = self.context
+        }
+        contextToUse.perform {
             for item in items {
                 var  zoneCoreData :ZoneCoreData?
                 let fetchRequest =
                     NSFetchRequest<ZoneCoreData>(entityName: StorageConstants.ZoneCoreDataEntityName)
                 fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.zoneHash) == %@", item.getHash())
-                zoneCoreData = try?  self.bgContext.fetch(fetchRequest).first
+                zoneCoreData = try?  contextToUse.fetch(fetchRequest).first
                 if zoneCoreData == nil {
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.ZoneCoreDataEntityName,
-                                                   in:  self.bgContext)!
+                                                   in:  contextToUse)!
                     zoneCoreData = ZoneCoreData(entity: entity,
-                                                insertInto:  self.bgContext)
+                                                insertInto:  contextToUse)
                 }
                 zoneCoreData?.zoneHash = item.getHash()
                 var accessInBase =  zoneCoreData?.access
@@ -130,9 +145,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 if accessInBase  == nil {
                     let entity =
                         NSEntityDescription.entity(forEntityName: StorageConstants.AccessCoreDataEntityName,
-                                                   in:  self.bgContext)!
+                                                   in:  contextToUse)!
                     accessInBase = AccessCoreData(entity: entity,
-                                                  insertInto:  self.bgContext)
+                                                  insertInto:  contextToUse)
                 }
                 if let access = item.getAccess() {
                     GlobalLogger.shared.debug("CoreDataManager:  zone has access")
@@ -275,23 +290,23 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func saveCapping(_ capping: Capping, completion: (()->())? = nil) {
-        var context = self.bgContext
+        var contextToUse = self.bgContext
         if Thread.isMainThread {
             // print("MAIN THREAD ! ")
-            context = self.context
+            contextToUse = self.context
         }
-        context.performAndWait {
+        contextToUse.performAndWait {
             var  cappingCoreData :CappingCoreData?
             let fetchRequest =
                 NSFetchRequest<CappingCoreData>(entityName: StorageConstants.CappingCoreDataEntityName)
             fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.campaignId) == %@", capping.getId())
-            cappingCoreData = try? bgContext.fetch(fetchRequest).first
+            cappingCoreData = try? contextToUse.fetch(fetchRequest).first
             if cappingCoreData == nil {
                 let entity =
                     NSEntityDescription.entity(forEntityName: StorageConstants.CappingCoreDataEntityName,
-                                               in: bgContext)!
+                                               in: contextToUse)!
                 cappingCoreData = CappingCoreData(entity: entity,
-                                                  insertInto: bgContext)
+                                                  insertInto: contextToUse)
             }
             cappingCoreData?.campaignId = capping.getId()
             cappingCoreData?.razDate = capping.getRazDate()
@@ -303,19 +318,24 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func getPoisInBase() -> [Poi] {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            // print("MAIN THREAD ! ")
+            contextToUse = self.context
+        }
         var pois = [Poi]()
-        self.context.performAndWait {
-            pois = _getPoisInBase()
+        contextToUse.performAndWait {
+            pois = _getPoisInBase(contextToUse)
         }
         return pois
     }
 
-    private  func _getPoisInBase() -> [Poi] {
+    private  func _getPoisInBase(_ context: NSManagedObjectContext) -> [Poi] {
         var pois = [Poi]()
-        let managedContext = context
+
         let fetchRequest = NSFetchRequest<PoiCoreData>(entityName: StorageConstants.PoiCoreDataEntityName)
         do {
-            let  poisCoreData = try managedContext.fetch(fetchRequest)
+            let  poisCoreData = try context.fetch(fetchRequest)
             for poiCoreData in poisCoreData {
                 pois.append(createPoiObject(poiCoreData))
             }
@@ -393,14 +413,18 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func deleteEntitiesByName(_ name: String) {
-        let context = self.bgContext
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            // print("MAIN THREAD ! ")
+            contextToUse = self.context
+        }
       
-        context.performAndWait {
+        contextToUse.performAndWait {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)
             // Create Batch Delete Request
             let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
             do {
-                try  context.execute(batchDeleteRequest)
+                try  contextToUse.execute(batchDeleteRequest)
             } catch {
                  print("error on delete")
             }

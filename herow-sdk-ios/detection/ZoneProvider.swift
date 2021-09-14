@@ -248,7 +248,7 @@ extension CLLocationCoordinate2D: Codable {
             savePlaceHistory(input)
             savePlaceNotificationHistory(notificationInput)
 
-            GlobalLogger.shared.verbose("ZoneEventGenerator computeEvents oldZonesIds =\(oldZonesIds.count), entries=\(entriesids), exits=\(exitesids)")
+            GlobalLogger.shared.debug("ZoneEventGenerator computeEvents oldZonesIds =\(oldZonesIds.count), entries=\(entriesids), exits=\(exitesids)")
             DispatchQueue.global().async {
                 eventDisPatcher.post(event: .GEOFENCE_ENTER, infos: entries)
                 eventDisPatcher.post(event: .GEOFENCE_EXIT, infos: exits)

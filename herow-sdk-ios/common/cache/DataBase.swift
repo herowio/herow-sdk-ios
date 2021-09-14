@@ -34,7 +34,7 @@ protocol DataBase {
 
     //historicMethod
 
-    func getPeriods(dispatchLocation:Bool, completion: @escaping ([PeriodProtocol]) ->() )
+    func getPeriods(completion: @escaping ([PeriodProtocol]) ->() )
     
 
 }

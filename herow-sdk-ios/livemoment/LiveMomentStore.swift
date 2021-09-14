@@ -119,11 +119,11 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                         if self.backgroundTaskId != .invalid {
                             UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
                             self.backgroundTaskId = .invalid
-                            GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                            GlobalLogger.shared.info("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
                         }
                     })
             }
-            GlobalLogger.shared.verbose("LiveMomentStore starts backgroundTask with identifier : \( self.backgroundTaskId)")
+            GlobalLogger.shared.info("LiveMomentStore starts backgroundTask with identifier : \( self.backgroundTaskId)")
             self.getNodeForLocation(location, completion: { working in
                 self.compute()
                 isWorking = working
@@ -133,7 +133,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                 if self.backgroundTaskId != .invalid {
                     UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
                     self.backgroundTaskId = .invalid
-                    GlobalLogger.shared.verbose("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                    GlobalLogger.shared.info("LiveMomentStore ends backgroundTask with identifier : \( self.backgroundTaskId)")
                 }
             })
             self.count = self.count + 1
@@ -266,7 +266,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             self.school = self.computeSchool()
             self.shoppings = self.computeShopping()
             self.others = nil
-            self.dataBase.getPeriods(dispatchLocation: true) { periods in
+            self.dataBase.getPeriods { periods in
                 for listener in self.listeners {
                     listener.get()?.didCompute(rects: self.rects, home: self.home, work:  self.work, school: self.school, shoppings: self.shoppings, others: self.others, neighbours: self.currentNode?.neighbourgs(), periods: periods)
                 }

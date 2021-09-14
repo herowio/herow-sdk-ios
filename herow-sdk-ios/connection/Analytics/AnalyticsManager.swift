@@ -13,11 +13,13 @@ import UIKit
 protocol AnalyticsManagerProtocol:   EventListener, DetectionEngineListener, ClickAndConnectListener, AppStateDelegate,NotificationCreationListener, UNUserNotificationCenterDelegate{
     func createlogContex(_ location: CLLocation)
     func createlogEvent( event: Event,  info: ZoneInfo)
-    func registeOpeningListener (_ listener: NotificationOpeningListener)
+    func registerListener(listener: AnalyticsManagerListener)
+    func unregisterListener(listener: AnalyticsManagerListener)
 }
 
-public protocol NotificationOpeningListener: AnyObject {
+public protocol AnalyticsManagerListener: AnyObject {
     func didOpenNotificationForCampaign(_ campaign: Campaign, zoneID: String)
+    func didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String, zoneInfo: ZoneInfo)
 }
 
 class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
@@ -29,7 +31,7 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     private var backgroundTaskContext = UIBackgroundTaskIdentifier.invalid
     private var backgroundTaskEvent = UIBackgroundTaskIdentifier.invalid
     private var appState: String = "bg"
-    private weak var  openingListener: NotificationOpeningListener?
+    private var  listeners = [WeakContainer<AnalyticsManagerListener>]()
 
     init(apiManager: APIManagerProtocol, cacheManager:  CacheManagerProtocol, dataStorage: HerowDataStorageProtocol?) {
         self.apiManager = apiManager
@@ -38,6 +40,12 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
         super.init()
         NotificationDelegateDispatcher.instance.registerDelegate(self)
         NotificationDelegateDispatcher.instance.registerCreationListener(listener: self)
+    }
+
+    deinit {
+        for listener in listeners {
+            self.unregisterListener(listener: listener.get()!)
+        }
     }
 
     func didReceivedEvent(_ event: Event, infos: [ZoneInfo]) {
@@ -53,10 +61,20 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
 
     }
 
-    func registeOpeningListener (_ listener: NotificationOpeningListener) {
-        self.openingListener = listener
-    }
+    func registerListener(listener: AnalyticsManagerListener) {
+      let first = listeners.first {
+          ($0.get() === listener) == true
+      }
+      if first == nil {
+          listeners.append(WeakContainer<AnalyticsManagerListener>(value: listener))
+      }
+  }
 
+    func unregisterListener(listener: AnalyticsManagerListener) {
+      listeners = listeners.filter {
+          ($0.get() === listener) == false
+      }
+  }
     func createlogContex(_ location: CLLocation)  {
         if  self.backgroundTaskContext == .invalid {
             self.backgroundTaskContext = UIApplication.shared.beginBackgroundTask (
@@ -151,6 +169,10 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
         if let data = log.getData() {
            apiManager.pushLog(data) {}
         }
+
+        for listener in listeners {
+            listener.get()?.didCreateNotificationForCampaign(campaign, zoneID: zoneID, zoneInfo: zoneInfo)
+        }
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
@@ -171,7 +193,9 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
            apiManager.pushLog(data) {}
         }
 
-        self.openingListener?.didOpenNotificationForCampaign(campaign, zoneID: zoneID)
+        for listener in listeners {
+            listener.get()?.didOpenNotificationForCampaign(campaign, zoneID: zoneID)
+        }
 
     }
 

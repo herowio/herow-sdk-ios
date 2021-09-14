@@ -618,9 +618,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
     }
 
-    func getPeriods(completion: @escaping ([PeriodProtocol]) ->() )  {
-       getPeriods(dispatchLocation: true, completion: completion)
-    }
+
 
     func transFormeLocations(_ coreDataLocations:Set<LocationCoreData>?) -> [QuadTreeLocation] {
         return coreDataLocations?.map {
@@ -630,7 +628,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }.sorted {$0.time > $1.time} ??  [QuadTreeLocation]()
     }
 
-    func getPeriods(dispatchLocation:Bool, completion: @escaping ([PeriodProtocol]) ->() )  {
+    func getPeriods(completion: @escaping ([PeriodProtocol]) ->() )  {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
             contextToUse = self.context

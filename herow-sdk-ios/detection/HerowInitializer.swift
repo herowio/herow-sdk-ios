@@ -157,8 +157,8 @@ import UIKit
 
 
    }
-    public func registerOpeningListener(_ listener: NotificationOpeningListener) {
-        self.analyticsManager.registeOpeningListener(listener)
+    public func registerAnalyticsListener(_ listener: AnalyticsManagerListener) {
+        self.analyticsManager.registerListener(listener: listener)
 
     }
     //MARK: CLICKANDCOLLECT MANAGEMENT
@@ -330,19 +330,10 @@ import UIKit
         }
     }
 
-    public func getPeriods(dispatchLocation: Bool, completion: @escaping ([PeriodProtocol]) -> ())  {
-
-        db.getPeriods(dispatchLocation: dispatchLocation, completion: completion)
-
-    }
-
     public func getPeriods( completion: @escaping ([PeriodProtocol]) -> ())  {
-
-        getPeriods(dispatchLocation: true) { periods in
+        db.getPeriods{ periods in
             completion(periods)
         }
-
-
     }
 
     //MARK: UTILS

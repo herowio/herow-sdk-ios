@@ -137,7 +137,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
         if statusCode == HttpStatusCode.HTTP_BAD_REQUEST || statusCode == HttpStatusCode.HTTP_UNAUTHORIZED {
 
-            GlobalLogger.shared.error("Remove API token")
+            GlobalLogger.shared.info("Remove API token")
             self.herowDataStorage.removeToken()
             resetWorkers()
         }
@@ -307,13 +307,13 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
         GlobalLogger.shared.debug("APIManager - getCache")
         if  !herowDataStorage.getOptin().value {
-            GlobalLogger.shared.verbose("APIManager- OPTINS ARE FALSE")
+            GlobalLogger.shared.info("APIManager- OPTINS ARE FALSE")
             completion?(nil, NetworkError.noOptin)
             self.cacheLoading =  false
             return
         }
         if cacheLoading {
-            GlobalLogger.shared.verbose("APIManager- CACHE ALREADY LOADING")
+            GlobalLogger.shared.info("APIManager- CACHE ALREADY LOADING")
            // return
         }
         cacheLoading = true

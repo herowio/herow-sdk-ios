@@ -302,7 +302,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     private func didStartClickAndCollect() {
         self.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-        GlobalLogger.shared.verbose("DetectionEngine - didStartClickAndCollect")
+        GlobalLogger.shared.info("DetectionEngine - didStartClickAndCollect")
         for listener in monitoringListeners {
             listener.get()?.didStartClickAndConnect()
         }
@@ -310,7 +310,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     private func didStopClickAndCollect() {
         self.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        GlobalLogger.shared.verbose("DetectionEngine - didStopClickAndCollect")
+        GlobalLogger.shared.info("DetectionEngine - didStopClickAndCollect")
         for listener in monitoringListeners {
             listener.get()?.didStopClickAndConnect()
         }
@@ -408,7 +408,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             queue.addOperation(blockOPeration)
         } else {
             skipCount = skipCount + 1
-            GlobalLogger.shared.verbose("DetectionEngine - skip location : \(location) DISTANCE FROM LAST : \(distance)")
+            GlobalLogger.shared.info("DetectionEngine - skip location : \(location) DISTANCE FROM LAST : \(distance)")
         }
 
         let result = !skip

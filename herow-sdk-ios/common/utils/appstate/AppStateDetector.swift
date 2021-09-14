@@ -56,7 +56,7 @@ import UIKit
             expirationHandler: {
                 if self.backgroundTaskId != .invalid {
                     UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-                    GlobalLogger.shared.verbose("AppStateDetector ends backgroundTask with identifier : \( self.backgroundTaskId)")
+                    GlobalLogger.shared.info("AppStateDetector ends backgroundTask with identifier : \( self.backgroundTaskId)")
                     self.backgroundTaskId = .invalid
                 }
             })
@@ -70,7 +70,7 @@ import UIKit
         }
         if self.backgroundTaskId != .invalid {
             UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-            GlobalLogger.shared.verbose("AppStateDetector ends backgroundTask with identifier : \( self.backgroundTaskId)")
+            GlobalLogger.shared.info("AppStateDetector ends backgroundTask with identifier : \( self.backgroundTaskId)")
             self.backgroundTaskId = .invalid
         }
 

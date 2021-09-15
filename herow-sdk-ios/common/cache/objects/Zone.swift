@@ -107,6 +107,7 @@ public enum LeafDirection: String {
 }
 public protocol QuadTreeNode: AnyObject {
 
+    var merged: Bool {get set}
     func findNodeWithId(_ id: String)  -> QuadTreeNode?
     func getTreeId() -> String
     func setParentNode(_ parent: QuadTreeNode?)
@@ -153,11 +154,10 @@ public protocol QuadTreeNode: AnyObject {
     func isNearToPoi() -> Bool
     func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode]
     func isEqual(_ node: QuadTreeNode) -> Bool
-    func mergeFromNeighBourgs() -> Rect
-
-
-   
 }
+
+
+
 
 public protocol QuadTreeLocation {
     var lat: Double {get set}

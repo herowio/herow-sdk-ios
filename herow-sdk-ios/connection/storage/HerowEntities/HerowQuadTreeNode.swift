@@ -26,17 +26,23 @@ public struct Circle {
 }
 
 public struct Rect: Equatable {
-    var originLat: Double
-    var endLat: Double
-    var originLng: Double
-    var endLng: Double
+    public var originLat: Double
+    public var endLat: Double
+    public var originLng: Double
+    public var endLng: Double
 
     static let world = Rect(originLat: HerowQuadTreeNode.minLat, endLat: HerowQuadTreeNode.maxLat, originLng: HerowQuadTreeNode.minLng, endLng: HerowQuadTreeNode.maxLng)
-
+    public  init(originLat: Double, endLat: Double, originLng: Double, endLng: Double) {
+        self.originLat = originLat
+        self.endLat = endLat
+        self.originLng = originLng
+        self.endLng = endLng
+    }
     func contains(_ location: QuadTreeLocation) -> Bool {
         let lat = location.lat
         let lng = location.lng
         return originLat <= lat && endLat >= lat && originLng <= lng && endLng >= lng
+
     }
 
 
@@ -101,11 +107,11 @@ public struct Rect: Equatable {
         return CLLocation(latitude: originLat, longitude: originLng).distance(from: CLLocation(latitude: endLat, longitude: endLng)) <= HerowQuadTreeNode.nodeSize
     }
 
-    func isEqual(_ rect: Rect) -> Bool {
-        return originLat == rect.originLat && endLat == rect.endLat && originLng == rect.originLng && endLng == rect.originLng
+   public func isEqual(_ rect: Rect) -> Bool {
+        return originLat == rect.originLat && endLat == rect.endLat && originLng == rect.originLng && endLng == rect.endLng
     }
 
-    func contains(_ rect: Rect) -> Bool {
+   public func contains(_ rect: Rect) -> Bool {
         return originLat <= rect.originLat && endLat >= rect.endLat && originLng <= rect.originLng && endLng >= rect.originLng && !isEqual(rect)
     }
 }
@@ -122,6 +128,8 @@ public struct NodeDescription {
 
 
 class HerowQuadTreeNode: QuadTreeNode {
+    var merged: Bool = false
+
 
     static let maxLat = 90.0
     static let minLat = -90.0
@@ -134,7 +142,7 @@ class HerowQuadTreeNode: QuadTreeNode {
     private var treeId: String?
     private var locations : [QuadTreeLocation]
     private var rightUpChild : QuadTreeNode?
-    private weak var parentNode : QuadTreeNode?
+    private var parentNode : QuadTreeNode?
     private var leftUpChild : QuadTreeNode?
     private var rightBottomChild : QuadTreeNode?
     private var leftBottomChild : QuadTreeNode?
@@ -159,6 +167,22 @@ class HerowQuadTreeNode: QuadTreeNode {
         self.tags = tags
         self.densities = densities
         self.pois = pois
+        self.setParentality()
+    }
+
+    deinit {
+     print( "node denit")
+        rightUpChild?.setParentNode(nil)
+        leftUpChild?.setParentNode(nil)
+        rightBottomChild?.setParentNode(nil)
+        leftBottomChild?.setParentNode(nil)
+    }
+
+    func setParentality() {
+        rightUpChild?.setParentNode(self)
+        leftUpChild?.setParentNode(self)
+        rightBottomChild?.setParentNode(self)
+        leftBottomChild?.setParentNode(self)
     }
 
     func findNodeWithId(_ id: String)  -> QuadTreeNode? {
@@ -617,24 +641,7 @@ class HerowQuadTreeNode: QuadTreeNode {
             self.densities?[LivingTag.shopping.rawValue] ?? 0 > 0
     }
 
-    func mergeFromNeighBourgs() -> Rect {
-        let neighbourgs = neighbourgs().filter {
-            $0.isNearToPoi()
-        }
-        let minLat = min( neighbourgs.map { $0.getRect()}.map {
-            $0.originLat
-        }.min() ?? 90.0, self.getRect().originLat)
-        let maxLat = max(neighbourgs.map { $0.getRect()}.map {
-            $0.endLat
-        }.max() ?? -90 ,self.getRect().endLat)
-        let minLng = min( neighbourgs.map { $0.getRect()}.map {
-            $0.originLng
-        }.min() ?? 180.0, self.getRect().originLng)
-        let maxLng = max(neighbourgs.map { $0.getRect()}.map {
-            $0.endLng
-        }.max() ?? -180.0 ,self.getRect().endLng)
-        return Rect(originLat: minLat, endLat: maxLat, originLng: minLng, endLng: maxLng)
-    }
+   
 
     func neighbourgs() -> [QuadTreeNode] {
         var candidates = [QuadTreeNode]()

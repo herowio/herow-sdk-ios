@@ -54,3 +54,16 @@ public protocol HerowDataStorageProtocol: ResetDelegate {
     func getLiveMomentLastSaveDate() -> Date?
 
 }
+
+extension HerowDataStorageProtocol {
+
+    func useExactEntry() -> Bool {
+        return UserDefaults.standard.bool(forKey: "exactEntry")
+    }
+
+    func setUseExactEntry(_ value: Bool)  {
+        UserDefaults.standard.set(value, forKey: "exactEntry")
+        UserDefaults.standard.synchronize()
+    }
+}
+

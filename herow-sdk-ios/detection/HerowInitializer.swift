@@ -148,23 +148,34 @@ import UIKit
     }
 
     @objc public func setProdCustomURL(_ url: String) {
-        URLType.setProdCustomURL(url)
-        if self.connectionInfo.platform == .prod {
-        resetUrls()
+        if URL(string: url) != nil {
+            URLType.setProdCustomURL(url)
+            if self.connectionInfo.platform == .prod {
+                resetUrls()
+            }
         }
         
     }
 
     @objc public func setPreProdCustomURL(_ url: String) {
-        URLType.setPreProdCustomURL(url)
-        if self.connectionInfo.platform == .preprod {
-        resetUrls()
+        if URL(string: url) != nil {
+            URLType.setPreProdCustomURL(url)
+            if self.connectionInfo.platform == .preprod {
+                resetUrls()
+            }
         }
     }
 
     @objc public func removeCustomURL() {
         URLType.removeCustomURLS()
        resetUrls()
+    }
+
+    @objc public func getCurrentURL() -> String {
+        if self.connectionInfo.platform == .preprod {
+            return URLType.getPreProdCustomURL()
+        }
+        return URLType.getProdCustomURL()
     }
 
     //MARK: EVENTLISTENERS MANAGEMENT

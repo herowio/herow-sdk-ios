@@ -42,7 +42,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     private var allowMultiOperation: Bool = false
     private var ready = false
     internal init(urlType: URLType, endPoint: EndPoint = .undefined, allowMultiOperation: Bool = false) {
-        self.baseURL = urlType.rawValue
+        self.baseURL = urlType.value
         self.endPoint = endPoint
         self.sessionCfg = URLSessionConfiguration.default
         self.sessionCfg.timeoutIntervalForRequest = 30.0
@@ -57,12 +57,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         self.queue.cancelAllOperations()
     }
     public func setUrlType(_ urlType: URLType) {
-        self.baseURL = urlType.rawValue
-        if urlType == .preprod {
-            if HerowInitializer.instance.useOldAPI() {
-                self.baseURL = URLType.preprodOld.rawValue
-            }
-        }
+        self.baseURL = urlType.value
         ready = true
     }
 

@@ -22,16 +22,60 @@ public enum NetworkError: Error {
     case backgroundTaskExpiration
 }
 
-public enum URLType: String {
+public enum URLType {
+    static let prodCustomURLKey = "prodCustomURLKey"
+    static let preProdCustomURLKey = "prodCustomURLKey"
+    static let userDefault =  UserDefaults.init(suiteName: "URLType")
+    case  badURL
+    case  test
+    case  preprod
+    case  preprodOld
+    case  prod
 
-    case  badURL = ""
-    case  test = "https://herow-sdk-backend-poc.ew.r.appspot.com"
-    case  preprod = "https://sdk7-preprod.herow.io"
-    case  preprodOld = "https://m-preprod.herow.io"
-    case  prod = "https://sdk7.herow.io"
+    var value: String {
+        switch self {
+        case .badURL:
+            return ""
+        case .test:
+            return "https://herow-sdk-backend-poc.ew.r.appspot.com"
+        case .preprod:
+            return URLType.getPreProdCustomURL() ?? "https://sdk7-preprod.herow.io"
+        case .preprodOld:
+            return "https://m-preprod.herow.io"
+        case .prod:
+            return  URLType.getProdCustomURL() ?? "https://sdk7.herow.io"
+        }
+    }
+
+
+
+    public static func setProdCustomURL(_ url: String) {
+
+        URLType.userDefault?.setValue(url, forKey: URLType.prodCustomURLKey)
+        URLType.userDefault?.synchronize()
+    }
+    public static func setPreProdCustomURL(_ url: String) {
+
+        URLType.userDefault?.setValue(url, forKey: URLType.preProdCustomURLKey)
+        URLType.userDefault?.synchronize()
+    }
+
+    public static func  removeCustomURLS() {
+
+        URLType.userDefault?.removeObject(forKey: URLType.prodCustomURLKey)
+        URLType.userDefault?.removeObject(forKey: URLType.preProdCustomURLKey)
+        URLType.userDefault?.synchronize()
+    }
+    public static func getProdCustomURL() -> String? {
+       return  URLType.userDefault?.string(forKey: URLType.prodCustomURLKey)
+    }
+    public static func getPreProdCustomURL() -> String? {
+        return URLType.userDefault?.string(forKey: URLType.preProdCustomURLKey)
+    }
 }
 
 public enum EndPoint {
+    
     case undefined
     case test
     case token
@@ -76,6 +120,8 @@ protocol APIManagerProtocol:ConfigDispatcher {
     func pushLog(_ log: Data ,completion: (() -> Void)?)
     func reset()
     func reloadUrls()
+
+
 }
 
 public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, RequestStatusListener, UserInfoListener {

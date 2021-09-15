@@ -80,34 +80,6 @@ import UIKit
     }
 
 
-    public func useOldAPI() -> Bool {
-       return  herowDataHolder.useOldAPI()
-    }
-
-    public func setUseOldAPI(_ value: Bool) {
-        let optins = getOptinValue()
-        let config = connectionInfo
-        let user = self.apiManager.user
-        let exactEntry = self.isNotificationsOnExactZoneEntry()
-        let customId = herowDataHolder.getCustomId()
-        reset()
-        self.notificationsOnExactZoneEntry(exactEntry)
-        apiManager.configure(connectInfo: config)
-        apiManager.user = user
-        herowDataHolder.setUseOldAPI(value)
-        apiManager.reloadUrls()
-        if let customId = customId {
-            setCustomId(customId: customId)
-        }
-        synchronize()
-        if optins {
-            acceptOptin()
-        } else {
-            refuseOptin()
-        }
-
-    }
-
     @objc public func getLocationsNumber() -> Int {
         return  db.getLocationsNumber()
     }
@@ -151,6 +123,50 @@ import UIKit
             completion(customID)
         }
     }
+    //MARK: CUSTOM URLS MANAGEMENT
+
+    func resetUrls() {
+        let optins = getOptinValue()
+        let config = connectionInfo
+        let user = self.apiManager.user
+        let exactEntry = self.isNotificationsOnExactZoneEntry()
+        let customId = herowDataHolder.getCustomId()
+        reset()
+        self.notificationsOnExactZoneEntry(exactEntry)
+        apiManager.configure(connectInfo: config)
+        apiManager.user = user
+        apiManager.reloadUrls()
+        if let customId = customId {
+            setCustomId(customId: customId)
+        }
+        synchronize()
+        if optins {
+            acceptOptin()
+        } else {
+            refuseOptin()
+        }
+    }
+
+    @objc public func setProdCustomURL(_ url: String) {
+        URLType.setProdCustomURL(url)
+        if self.connectionInfo.platform == .prod {
+        resetUrls()
+        }
+        
+    }
+
+    @objc public func setPreProdCustomURL(_ url: String) {
+        URLType.setPreProdCustomURL(url)
+        if self.connectionInfo.platform == .preprod {
+        resetUrls()
+        }
+    }
+
+    @objc public func removeCustomURL() {
+        URLType.removeCustomURLS()
+       resetUrls()
+    }
+
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {
        eventDispatcher.registerListener(listener)

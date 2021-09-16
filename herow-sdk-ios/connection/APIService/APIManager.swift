@@ -270,14 +270,20 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
 
     public func configure(connectInfo: ConnectionInfoProtocol) {
-        let urlType = connectInfo.getUrlType()
         self.connectInfo = connectInfo
-        self.tokenWorker.setUrlType(urlType)
-        self.configWorker.setUrlType(urlType)
-        self.userInfogWorker .setUrlType(urlType)
-        self.logWorker.setUrlType(urlType)
-        self.cacheWorker .setUrlType(urlType)
+              reloadUrls()
     }
+
+    func reloadUrls() {
+            guard let urlType = self.connectInfo?.getUrlType() else {
+                return
+            }
+            self.tokenWorker.setUrlType(urlType)
+            self.configWorker.setUrlType(urlType)
+            self.userInfogWorker .setUrlType(urlType)
+            self.logWorker.setUrlType(urlType)
+            self.cacheWorker .setUrlType(urlType)
+        }
     // MARK: Token
     private func getToken(completion: @escaping (APIToken?, NetworkError?) -> Void) {
         guard let user = user  else {

@@ -9,6 +9,8 @@ import Foundation
 import CoreData
 
 class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping,T: QuadTreeNode, L: QuadTreeLocation>: DataBase {
+
+
     func getLocationsNumber() -> Int {
         return getLocationsNumber(context: self.bgContext)
     }

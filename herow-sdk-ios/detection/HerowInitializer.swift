@@ -142,6 +142,11 @@ import UIKit
         }
     }
 
+
+    @objc public func isNotificationsOnExactZoneEntry() -> Bool {
+          return  herowDataHolder.useExactEntry()
+        }
+
     @objc public func setProdCustomURL(_ url: String) {
         URLType.setProdCustomURL(url)
         if self.connectionInfo.platform == .prod {

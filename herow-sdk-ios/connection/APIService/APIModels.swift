@@ -15,9 +15,8 @@ public enum Platform {
         return SDKCredential(self)
     }
 }
-// visible objectiv C
-@objc public enum HerowPlatform: Int, Codable{
 
+@objc public enum HerowPlatform: Int, Codable{
         case prod
         case preprod
         case test
@@ -60,16 +59,13 @@ public enum Platform {
     }
 }
 
-
-
-
-public protocol ConnectionInfoProtocol {
+ public protocol ConnectionInfoProtocol {
     var platform: Platform {get set}
     func getUrlType() -> URLType
     mutating func updatePlateform(_ platform: HerowPlatform)
 }
 
-public struct ConnectionInfo: ConnectionInfoProtocol {
+ struct ConnectionInfo: ConnectionInfoProtocol {
     public var platform = Platform.prod
     mutating public func updatePlateform(_ platform: HerowPlatform) {
         switch platform {
@@ -82,7 +78,7 @@ public struct ConnectionInfo: ConnectionInfoProtocol {
         }
     }
 
-    public func getUrlType() -> URLType {
+     func getUrlType() -> URLType {
         var urlType: URLType = .prod
         switch self.platform {
         case .preprod:
@@ -96,7 +92,7 @@ public struct ConnectionInfo: ConnectionInfoProtocol {
     }
 }
 
-public  class SDKCredential {
+  class SDKCredential {
 
     let clientId: String
     let clientSecret: String

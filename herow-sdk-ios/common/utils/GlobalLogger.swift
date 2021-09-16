@@ -118,13 +118,6 @@ public enum MessageType: String {
 
 
     private func dispatchMessage(_ message: String , type: MessageType) {
-        
-     //   DispatchQueue.global(qos: .background).async {
-       /*     self.backgroundTaskId = UIApplication.shared.beginBackgroundTask(
-                withName: "herow.io.GlobalLogger.backgroundTaskID",
-                expirationHandler: {
-                    UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
-                })*/
             let display = "[\(type.rawValue.uppercased())]" + " \(message)"
             self.log(display)
 
@@ -145,6 +138,7 @@ public enum MessageType: String {
                 }
         }
     }
+
     public func verbose(_ message: Any,
                     fileName: String = #file,
                 functionName: String = #function,
@@ -152,7 +146,6 @@ public enum MessageType: String {
 
         let message = format(fileName: fileName, functionName: functionName, lineNumber: lineNumber, message)
         dispatchMessage(message,type: .verbose)
-
     }
 
     public func debug(_ message: Any,

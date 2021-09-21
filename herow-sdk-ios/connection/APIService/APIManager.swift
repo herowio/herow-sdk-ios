@@ -24,8 +24,6 @@ public enum NetworkError: Error {
 
 public enum URLType {
     static let prodCustomURLKey = "prodCustomURLKey"
-    static let preProdCustomURLKey = "prodCustomURLKey"
-
     static let preProdCustomURLKey = "preProdCustomURLKey"
     static let defaultPreprodURL = "https://sdk7-preprod.herow.io"
     static let defaultProdURL = "https://sdk7.herow.io"

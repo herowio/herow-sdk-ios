@@ -28,7 +28,7 @@ import UIKit
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
 
-    private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>()
+    private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
 
     internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol? = NotificationDelegateHolder.shared.useNotificationCenter ? UNUserNotificationCenter.current() : nil) {
 

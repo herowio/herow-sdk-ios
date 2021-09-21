@@ -13,7 +13,7 @@ class ZoneProviderTests: XCTestCase {
     var zoneProvider: ZoneProvider?
     var coordinatesEntry = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
     var coordinatesExit = CLLocationCoordinate2D(latitude: 0, longitude: 0)
-    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>())
+    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>())
 
     override func setUpWithError() throws {
 

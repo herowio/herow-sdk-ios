@@ -10,7 +10,6 @@ import CoreLocation
 import UIKit
 
 @objc public class HerowInitializer: NSObject, ResetDelegate {
-
     @objc public static let instance = HerowInitializer()
     private var appStateDetector = AppStateDetector()
     private var apiManager: APIManager
@@ -28,7 +27,11 @@ import UIKit
     private let analyticsManager: AnalyticsManagerProtocol
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
-    internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol =  UNUserNotificationCenter.current()) {
+
+    private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>()
+
+    internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol? = NotificationDelegateHolder.shared.useNotificationCenter ? UNUserNotificationCenter.current() : nil) {
+
         eventDispatcher = EventDispatcher()
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
@@ -152,7 +155,6 @@ import UIKit
         if self.connectionInfo.platform == .prod {
         resetUrls()
         }
-        
     }
 
     @objc public func setPreProdCustomURL(_ url: String) {

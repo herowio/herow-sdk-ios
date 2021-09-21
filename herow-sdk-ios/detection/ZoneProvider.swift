@@ -7,7 +7,7 @@
 
 import Foundation
 import CoreData
-
+import CoreLocation
 
 class SelectionContainer {
     let location: CLLocation?

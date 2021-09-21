@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import CoreLocation
 
 class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping,T: QuadTreeNode, L: QuadTreeLocation, K: PeriodProtocol>: DataBase {
     func getLocationsNumber() -> Int {
@@ -748,7 +749,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             let  locations = getLocations(contextToUse)
             GlobalLogger.shared.debug("Period - locations for display  count at start : \(locations.count)")
         }
-        save()
+
     }
 
     func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())? = nil) {

@@ -30,10 +30,10 @@ class NotificationManager: NSObject, EventListener {
     internal var filters: [NotificationFilter] = [NotificationFilter]()
     private var onExactZoneEntry: Bool = false
     private var cacheManager: CacheManagerProtocol
-    private var notificationCenter: NotificationCenterProtocol
+    private var notificationCenter: NotificationCenterProtocol?
     private var herowDataStorage: HerowDataStorageProtocol
 
-    init(cacheManager: CacheManagerProtocol, notificationCenter: NotificationCenterProtocol, herowDataStorage: HerowDataStorageProtocol) {
+    init(cacheManager: CacheManagerProtocol, notificationCenter: NotificationCenterProtocol?, herowDataStorage: HerowDataStorageProtocol) {
         self.cacheManager = cacheManager
         self.notificationCenter = notificationCenter
         self.herowDataStorage = herowDataStorage
@@ -107,7 +107,7 @@ class NotificationManager: NSObject, EventListener {
         let uuidString = campaign.getId() + "_\(zone.getHash())"
         let request = UNNotificationRequest(identifier: uuidString,
                                             content: content, trigger: nil)
-        notificationCenter.add(request) { (error) in
+        notificationCenter?.add(request) { (error) in
             if error != nil {
                 // Handle any errors.
             } else {

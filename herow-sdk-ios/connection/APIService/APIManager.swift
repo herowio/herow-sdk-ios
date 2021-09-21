@@ -25,11 +25,13 @@ public enum NetworkError: Error {
 public enum URLType {
     static let prodCustomURLKey = "prodCustomURLKey"
     static let preProdCustomURLKey = "preProdCustomURLKey"
+    static let defaultPreprodURL = "https://sdk7-preprod.herow.io"
+    static let defaultProdURL = "https://sdk7.herow.io"
+    static let defaultTestURL = "https://herow-sdk-backend-poc.ew.r.appspot.com"
     static let userDefault =  UserDefaults.init(suiteName: "URLType")
     case  badURL
     case  test
     case  preprod
-    case  preprodOld
     case  prod
 
     var value: String {
@@ -37,17 +39,13 @@ public enum URLType {
         case .badURL:
             return ""
         case .test:
-            return "https://herow-sdk-backend-poc.ew.r.appspot.com"
+            return URLType.defaultTestURL
         case .preprod:
             return URLType.getPreProdCustomURL()
-        case .preprodOld:
-            return "https://m-preprod.herow.io"
         case .prod:
             return  URLType.getProdCustomURL()
         }
     }
-
-
 
     public static func setProdCustomURL(_ url: String) {
 
@@ -67,10 +65,10 @@ public enum URLType {
         URLType.userDefault?.synchronize()
     }
     public static func getProdCustomURL() -> String {
-        return  URLType.userDefault?.string(forKey: URLType.prodCustomURLKey) ??  "https://sdk7.herow.io"
+        return  URLType.userDefault?.string(forKey: URLType.prodCustomURLKey) ??  URLType.defaultProdURL
     }
     public static func getPreProdCustomURL() -> String {
-        return URLType.userDefault?.string(forKey: URLType.preProdCustomURLKey) ?? "https://sdk7-preprod.herow.io"
+        return URLType.userDefault?.string(forKey: URLType.preProdCustomURLKey) ?? URLType.defaultPreprodURL
     }
 }
 

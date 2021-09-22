@@ -169,6 +169,17 @@ import UIKit
        resetUrls()
     }
 
+    @objc public func useCustomURL() -> Bool {
+        return URLType.useCustomURL()
+    }
+    
+    @objc public func getCurrentURL() -> String {
+        if self.connectionInfo.platform == .preprod {
+            return URLType.getPreProdCustomURL()
+        }
+        return URLType.getProdCustomURL()
+    }
+
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {
        eventDispatcher.registerListener(listener)

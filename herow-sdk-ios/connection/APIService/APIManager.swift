@@ -74,6 +74,10 @@ public enum URLType {
         return URLType.userDefault?.string(forKey: URLType.preProdCustomURLKey) ?? URLType.defaultPreprodURL
 
     }
+
+   static func useCustomURL() -> Bool {
+        return URLType.userDefault?.string(forKey: URLType.preProdCustomURLKey) != nil ||  URLType.userDefault?.string(forKey: URLType.prodCustomURLKey)  != nil
+    }
 }
 
 public enum EndPoint {

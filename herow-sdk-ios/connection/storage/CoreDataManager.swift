@@ -631,6 +631,29 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }.sorted {$0.time > $1.time} ??  [QuadTreeLocation]()
     }
 
+
+    func removePeriod( period: PeriodProtocol, competion: @escaping ()->()) {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            contextToUse = self.context
+        }
+        contextToUse.perform {
+            if  let periodsCoreData = (self.getPeriods(contextToUse).filter {
+                $0.start == period.start && $0.end == period.end
+            }).first {
+
+                periodsCoreData.locations?.forEach {
+                    $0.containers.forEach {
+                        contextToUse.delete($0)
+                    }
+                    contextToUse.delete($0)
+                }
+                contextToUse.delete(periodsCoreData)
+                self.save(competion)
+            }
+        }
+
+    }
     func getPeriods(completion: @escaping ([PeriodProtocol]) ->() )  {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
@@ -1134,9 +1157,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             let locations = getLocations(context)
             count = locations.count
 
-            let badlocations = locations.filter{
-
-                $0.containers.count > 1}
 
             GlobalLogger.shared.debug("Coredata Analyse : locationCount: \(count)")
 

@@ -35,6 +35,7 @@ protocol DataBase {
     //historicMethod
 
     func getPeriods(completion: @escaping ([PeriodProtocol]) ->() )
+    func removePeriod( period: PeriodProtocol, competion: @escaping ()->())
     
 
 }

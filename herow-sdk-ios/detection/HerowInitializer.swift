@@ -361,6 +361,14 @@ import UIKit
         }
     }
 
+    public func removePeriods( period :PeriodProtocol ,completion: @escaping ([PeriodProtocol]) -> ())  {
+        self.db.removePeriod(period: period) {
+            self.db.getPeriods{ periods in
+                completion(periods)
+            }
+        }
+    }
+
     //MARK: UTILS
     @objc public func dispatchFakeLocation(_ location: CLLocation) {
         detectionEngine.dispatchFakeLocation(location)

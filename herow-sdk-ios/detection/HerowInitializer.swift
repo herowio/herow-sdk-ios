@@ -169,6 +169,9 @@ import UIKit
        resetUrls()
     }
 
+    @objc public func useCustomURL() -> Bool {
+        return URLType.useCustomURL()
+    }
     @objc public func getCurrentURL() -> String {
         if self.connectionInfo.platform == .preprod {
             return URLType.getPreProdCustomURL()

@@ -748,6 +748,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             GlobalLogger.shared.debug("Period - total =   \(total)")
             let  locations = getLocations(contextToUse)
             GlobalLogger.shared.debug("Period - locations for display  count at start : \(locations.count)")
+            GlobalLogger.shared.debug("location without container count : \(unlikededlocation(contextToUse).count)")
         }
 
     }
@@ -1138,6 +1139,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
             let periodlocations: [[LocationCoreData]] = Array(periods.map{Array($0.locations ?? Set<LocationCoreData>())})
             GlobalLogger.shared.debug("Coredata Analyse : locations from period locationCount: \(Array(periodlocations.joined()).count)")
+
         }
         return count
     }

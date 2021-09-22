@@ -541,7 +541,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
         if let container = container {
             container.locations?.insert(location)
-            location.containers.insert(container)
+            var containers = Set<LocationContainer>()
+            containers.insert(container)
+            location.containers = containers
             period.containers?.insert(container)
         }
         save()
@@ -1120,14 +1122,21 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func getLocationsNumber(context: NSManagedObjectContext) -> Int {
         var count = 0
         context.performAndWait {
-            let fetchRequest =
+           /* let fetchRequest =
                 NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
 
             let locations = try? context.fetch(fetchRequest)
 
             if let locations = locations {
                 count = locations.count
-            }
+            }*/
+
+            let locations = getLocations(context)
+            count = locations.count
+
+            let badlocations = locations.filter{
+
+                $0.containers.count > 1}
 
             GlobalLogger.shared.debug("Coredata Analyse : locationCount: \(count)")
 

@@ -112,7 +112,7 @@ public struct Rect: Equatable {
     }
 
    public func contains(_ rect: Rect) -> Bool {
-        return originLat <= rect.originLat && endLat >= rect.endLat && originLng <= rect.originLng && endLng >= rect.originLng && !isEqual(rect)
+        return originLat <= rect.originLat && endLat >= rect.endLat && originLng <= rect.originLng && endLng >= rect.endLng && !isEqual(rect)
     }
 }
 
@@ -393,7 +393,10 @@ class HerowQuadTreeNode: QuadTreeNode {
         var allpois = [Poi]()
         allpois.append(contentsOf:getPois())
         for neighbour in self.neighbourgs() {
-            allpois.append(contentsOf:neighbour.getPois())
+            for n in neighbour.neighbourgs() {
+                allpois.append(contentsOf:n.getPois())
+            }
+           // allpois.append(contentsOf:neighbour.getPois())
         }
         return allpois
     }
@@ -860,7 +863,7 @@ public class HerowPeriod: PeriodProtocol {
 
 
     public func getAllLocations() ->  [QuadTreeLocation] {
-        return Array([ self.homeLocations,  self.workLocations,self.schoolLocations,self.otherLocations].joined()).sorted {$0.time > $1.time }
+        return Array([ self.homeLocations,  self.workLocations,self.schoolLocations,self.otherLocations, self.poiLocations].joined()).sorted {$0.time > $1.time }
     }
 }
 

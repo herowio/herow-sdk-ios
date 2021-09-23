@@ -183,7 +183,6 @@ import UIKit
     @objc public func registerEventListener(listener: EventListener) {
        eventDispatcher.registerListener(listener)
 
-
    }
     public func registerAnalyticsListener(_ listener: AnalyticsManagerListener) {
         self.analyticsManager.registerListener(listener: listener)

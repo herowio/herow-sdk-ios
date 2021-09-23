@@ -37,6 +37,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     internal var dispatchTime = Date(timeIntervalSince1970: 0)
     private var timeProvider: TimeProvider
     private let queue = OperationQueue()
+    private var locationValidator = LocationValidator()
     
 
 
@@ -345,7 +346,9 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             ($0.get() === listener) == false
         }
     }
-    
+
+
+
     @discardableResult
     func dispatchLocation(_ location: CLLocation, from: UpdateType = .undefined) -> Bool{
 
@@ -364,8 +367,14 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
         skip = skip || distpatchTimeKO || locationToOld
 
+       var locationFilter = true
+        if from == .fake {
+            locationFilter = true
+        } else {
+            locationFilter = locationValidator.runValidation(location)
+        }
 
-        if skip == false {
+        if skip == false && locationFilter {
 
             dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
             self.lastLocation = location
@@ -477,16 +486,16 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     public func onAppInForeground() {
-
+        locationValidator.onAppInForeground()
     }
 
     public func onAppInBackground() {
-
+        locationValidator.onAppInBackground()
         GlobalLogger.shared.debug("appStateDetector - inBackground \(self)")
     }
 
     @objc public func dispatchFakeLocation(_ location : CLLocation) {
-        dispatchLocation( location, from: .update)
+        dispatchLocation( location, from: .fake)
     }
 
 }

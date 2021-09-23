@@ -184,6 +184,7 @@ import UIKit
     @objc public func registerEventListener(listener: EventListener) {
        eventDispatcher.registerListener(listener)
    }
+   
     //MARK: CLICKANDCOLLECT MANAGEMENT
     @objc public func isOnClickAndCollect() -> Bool {
         return detectionEngine.getIsOnClickAndCollect()

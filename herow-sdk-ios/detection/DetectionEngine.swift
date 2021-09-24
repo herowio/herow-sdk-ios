@@ -215,6 +215,10 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
     }
 
+    public func activeLocationFilter(_ value: Bool) {
+        value ?  locationValidator.start() : locationValidator.stop()
+    }
+
     public func getIsOnClickAndCollect() -> Bool {
         return dataHolder.getBoolean(key: "isLocationMonitoring")
     }
@@ -369,6 +373,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
        var locationFilter = true
         if from == .fake {
+            // no filter on fake positions
             locationFilter = true
         } else {
             locationFilter = locationValidator.runValidation(location)

@@ -164,6 +164,10 @@ import UIKit
         }
     }
 
+    @objc public func activeLocationFilter(_ value: Bool) {
+        self.detectionEngine.activeLocationFilter(value)
+    }
+
     @objc public func removeCustomURL() {
         URLType.removeCustomURLS()
        resetUrls()
@@ -172,6 +176,7 @@ import UIKit
     @objc public func useCustomURL() -> Bool {
         return URLType.useCustomURL()
     }
+    
     @objc public func getCurrentURL() -> String {
         if self.connectionInfo.platform == .preprod {
             return URLType.getPreProdCustomURL()

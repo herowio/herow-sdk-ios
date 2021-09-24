@@ -32,6 +32,14 @@ public enum  ResultType: String {
     static var delegates: [LocationValidatorDelegate] = [LocationValidatorDelegate]()
     public var invalidationFilterTresholdConfidence: Double = 0.2
 
+    private var running: Bool = true
+    public func start() {
+        running = true
+    }
+
+    public func stop() {
+        running = false
+    }
 
     public func getProximityFilter() -> ProximityFilterProtocol? {
         return proximityFilter
@@ -51,7 +59,7 @@ public enum  ResultType: String {
 
     public func runValidation(_ location: CLLocation) -> Bool {
         let resultType =  runEstimation(location)?.type
-        return resultType == .valid
+        return resultType == .valid 
     }
 
     public func runEstimation(_ location: CLLocation) -> FilterResult? {
@@ -74,7 +82,7 @@ public enum  ResultType: String {
         let previousBad = proximityProccessingResult?.getlastRefuseLocation()
         let fromLastRefuse = proximityProccessingResult?.getFromOldLocation() ?? false
         if let c = confidence, let d = speedradius {
-            if c >= invalidationFilterTresholdConfidence {
+            if c >= invalidationFilterTresholdConfidence || !running {
                 failCount = 0
                 result = FilterResult(position: location, previousPosition: previous, type: .valid, speedRadius: d, confidence: c)
                 result?.fromLastRefuse = fromLastRefuse

@@ -81,8 +81,15 @@ import Foundation
 
 
     public func saveNSCodingObject(key: String, value: Any) {
+
+
+
         if value is NSCoding {
-            let dataToSave: Data = NSKeyedArchiver.archivedData(withRootObject: value)
+            var dataToSave = Data()
+                guard let  data =  try? NSKeyedArchiver.archivedData(withRootObject: value, requiringSecureCoding: false) else {
+                    return
+                }
+                dataToSave = data
             dhUserDefaults.set(dataToSave, forKey: key)
         } else {
             GlobalLogger.shared.warning("The object does not conform to NSCoding. Please implement NSCoding or use saveCodableObject for types conforming to Codable protocol")
@@ -91,7 +98,8 @@ import Foundation
 
     public func loadNSCodingObject(key: String) -> Any? {
         if let retrievedData: Data = dhUserDefaults.object(forKey: key) as? Data {
-            return NSKeyedUnarchiver.unarchiveObject(with: retrievedData)
+            guard let result = try? NSKeyedUnarchiver.unarchivedObject(ofClasses: [AnyObject.self], from: retrievedData) else {return nil}
+            return result
         } else {
             return nil
         }

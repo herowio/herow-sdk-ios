@@ -16,7 +16,6 @@ class TimeSlotFilter: NotificationFilter {
 
     func createNotification(campaign: Campaign, completion:(()->())? = nil) -> Bool {
         let now = timeProvider.getDate().toLocalTime()
-        // print("now is : \(now)")
         if let start = campaign.getStartHour(), let end = campaign.getStopHour() {
             let startComponents = start.components(separatedBy: ":")
             let endComponents = end.components(separatedBy: ":")

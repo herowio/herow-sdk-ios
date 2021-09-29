@@ -114,7 +114,7 @@ class NotificationDelegateHolder {
 @available(iOS 10.0, *)
 public class MockNotificationCenter: NotificationCenterProtocol {
     func getDeliveredNotifications(completionHandler: @escaping ([UNNotification]) -> Void) {
-           print("getDeliveredNotifications.")
+        GlobalLogger.shared.debug("getDeliveredNotifications.")
     }
 
     weak var delegate: UNUserNotificationCenterDelegate?

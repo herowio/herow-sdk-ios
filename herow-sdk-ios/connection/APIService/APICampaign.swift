@@ -24,14 +24,9 @@ struct APICampaign: Campaign, Codable {
         return id
     }
 
-
-
-
-
     func getName() -> String {
         return name
     }
-
 
     func getBegin() -> Double {
         return begin
@@ -63,7 +58,6 @@ struct APICampaign: Campaign, Codable {
 
     enum CodingKeys: String, CodingKey {
         case id
-
         case name
         case begin
         case end
@@ -73,6 +67,7 @@ struct APICampaign: Campaign, Codable {
         case startHour
         case stopHour
     }
+
     init(id: String,
          name: String,
          begin: Double,
@@ -92,7 +87,6 @@ struct APICampaign: Campaign, Codable {
         self.notification = notification as? APINotification
         self.stopHour = stopHour
         self.startHour = startHour
-
     }
 
     public  init(from decoder: Decoder) throws {
@@ -107,5 +101,4 @@ struct APICampaign: Campaign, Codable {
         self.startHour =  try values.decodeIfPresent(String.self, forKey: .startHour)
         self.stopHour =  try values.decodeIfPresent(String.self, forKey: .stopHour)
     }
-
 }

@@ -88,7 +88,7 @@ public class FileUtils {
                 do {
                     try FileManager.default.createDirectory(at: appSupportDirectory, withIntermediateDirectories: true, attributes: nil)
                 } catch {
-                    // print(error.localizedDescription)
+                   
                 }
             }
         }

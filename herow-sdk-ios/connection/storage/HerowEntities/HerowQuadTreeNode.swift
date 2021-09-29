@@ -171,7 +171,7 @@ class HerowQuadTreeNode: QuadTreeNode {
     }
 
     deinit {
-     print( "node denit")
+        GlobalLogger.shared.debug( "node denit")
         rightUpChild?.setParentNode(nil)
         leftUpChild?.setParentNode(nil)
         rightBottomChild?.setParentNode(nil)
@@ -400,6 +400,7 @@ class HerowQuadTreeNode: QuadTreeNode {
         }
         return allpois
     }
+    
 
     func shoppingCount(_ locations: [QuadTreeLocation]) -> Int {
         var filteredLocations = [QuadTreeLocation]()
@@ -544,13 +545,13 @@ class HerowQuadTreeNode: QuadTreeNode {
     @discardableResult
     func addLocation(_ location: QuadTreeLocation) -> QuadTreeNode? {
         let count = self.allLocations().count
+        populateLocation(location)
         if ((count <= getLimit() && !hasChildForLocation(location)) || rect.isMin()) {
             if !locationIsPresent(location) {
                 GlobalLogger.shared.debug("addLocation node: \(treeId!) count: \(count) isMin? : \( rect.isMin()) limit: \(getLimit())")
                 populateLocation(location)
                 locations.append(location)
                 lastLocation = location
-                
                 self.updated = true
                 computeTags()
             }

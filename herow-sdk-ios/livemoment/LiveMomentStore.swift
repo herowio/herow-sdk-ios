@@ -88,6 +88,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         guard forGeoHash != nil   else {
             return
         }
+        self.currentNode = nil
         let start = CFAbsoluteTimeGetCurrent()
         GlobalLogger.shared.debug("LiveMomentStore reloadNewPois ")
         backgroundQueue.async {
@@ -214,7 +215,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                     GlobalLogger.shared.debug("LiveMomentStore - browseTree  result node: \(rootToUse.getTreeId()) in \(elapsedTime) ms  ")
                     let nodeToSave = result?.getParentNode() ?? result
                     self.currentNode = result
-
                     self.save(false, nodeToSave) {
                         result?.setUpdated(false)
                         nodeToSave?.setUpdated(false)

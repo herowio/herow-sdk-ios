@@ -46,7 +46,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func savePoisInBase(items: [Poi], completion: (()->())? = nil) {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
             contextToUse = self.context
         }
         contextToUse.perform {
@@ -75,7 +74,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func saveCampaignsInBase(items: [Campaign],  completion: (()->())? = nil) {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             contextToUse = self.context
         }
         contextToUse.perform {
@@ -123,7 +122,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func saveZonesInBase(items: [Zone], completion: (()->())? = nil) {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             contextToUse = self.context
         }
         contextToUse.perform {
@@ -182,7 +181,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var zones = [Zone]()
         var context = self.bgContext
         if Thread.isMainThread {
-            // print("getZonesInBase MAIN THREAD ! ")
             context = self.context
         }
         context.performAndWait() {
@@ -214,7 +212,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+            GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
         }
         return zones
     }
@@ -223,7 +221,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var campaigns = [Campaign]()
         var context = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             context = self.context
         }
         context.performAndWait {
@@ -253,7 +251,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+            GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
         }
         return campaigns
     }
@@ -262,7 +260,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var capping: Capping?
         var context = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             context = self.context
         }
         context.performAndWait {
@@ -285,7 +283,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
         }
         catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+            GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
         }
         return capping
     }
@@ -293,7 +291,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func saveCapping(_ capping: Capping, completion: (()->())? = nil) {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             contextToUse = self.context
         }
         contextToUse.performAndWait {
@@ -321,7 +319,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func getPoisInBase() -> [Poi] {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             contextToUse = self.context
         }
         var pois = [Poi]()
@@ -341,7 +339,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 pois.append(createPoiObject(poiCoreData))
             }
         } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+            GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
         }
         return pois
     }
@@ -350,7 +348,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var pois = [PoiCoreData]()
         var context = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             context = self.context
         }
         pois = _getPoisCoreData(context: context)
@@ -366,7 +364,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 let  poisCoreData = try managedContext.fetch(fetchRequest)
                 pois =  Array(poisCoreData)
             } catch let error as NSError {
-                print("Could not fetch. \(error), \(error.userInfo)")
+                GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
             }}
         return pois
     }
@@ -382,7 +380,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 poi =  poisCoreData.first
             }
             catch let error as NSError {
-                print("Could not fetch. \(error), \(error.userInfo)")
+                GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
             }
         }
         return poi
@@ -416,7 +414,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func deleteEntitiesByName(_ name: String) {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             contextToUse = self.context
         }
       
@@ -427,7 +425,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             do {
                 try  contextToUse.execute(batchDeleteRequest)
             } catch {
-                 print("error on delete")
+                GlobalLogger.shared.error("error on delete")
             }
         }
     }
@@ -444,22 +442,21 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             self.context.performAndWait {
                 if self.context.hasChanges {
                     do {
-                        // print("saving main context")
+
                         self.removeUnlikeLocations(self.context)
                         try self.context.save()
                     } catch {
-                        print ("Error saving main managed object context! \(error)")
+                        GlobalLogger.shared.error ("Error saving main managed object context! \(error)")
                     }
                 }
             }
             self.bgContext.perform {
                 if self.bgContext.hasChanges {
                     do {
-                        // print("saving bg context")
                        // self.removeUnlikeLocations(self.bgContext)
                         try self.bgContext.save()
                     } catch {
-                        print ("Error saving bg managed object context! \(error)")
+                        GlobalLogger.shared.error ("Error saving bg managed object context! \(error)")
                     }
                 }
             }
@@ -474,7 +471,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
         var result: Period?
         let locationTime = location.time as NSDate
-        print("Period - location: \(location.lat)   \(location.lng) \(locationTime)")
+        GlobalLogger.shared.debug("Period - location: \(location.lat)   \(location.lng) \(locationTime)")
         let fetchRequest = NSFetchRequest<Period>(entityName: StorageConstants.PeriodEntityName)
         fetchRequest.predicate = NSPredicate(format: "start <= %@ && end > %@", locationTime, locationTime)
         do {
@@ -482,7 +479,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             result = array.first
 
         } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+            GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
         }
 
         if result == nil {
@@ -524,7 +521,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             container = array.filter {$0.period == period }.first
 
         } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+            GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
         }
 
         if container == nil {
@@ -560,7 +557,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
             do {
                 let result = try context.execute(request)
-                print("delete duplicate: \(result) ")
+                GlobalLogger.shared.error("delete duplicate: \(result) ")
             } catch {
                 fatalError("Failed to execute request: \(error)")
             }
@@ -575,7 +572,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         do {
             try  context.execute(batchDeleteRequest)
         } catch {
-            // print("error on delete")
+            GlobalLogger.shared.debug("error on delete")
         }
 
          fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: StorageConstants.LocationContainerEntityName)
@@ -584,7 +581,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         do {
             try  context.execute(batchDeleteRequest)
         } catch {
-            // print("error on delete")
+            GlobalLogger.shared.debug("error on delete")
         }
     }
 
@@ -598,7 +595,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         do {
             result = try context.fetch(fetchRequest)
         } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+            GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
         }
 
         return result
@@ -697,7 +694,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         do {
             result = try context.fetch(fetchRequest)
         } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+            GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
         }
 
         return result
@@ -714,7 +711,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         do {
             result = try context.fetch(fetchRequest)
         } catch let error as NSError {
-            print("Could not fetch. \(error), \(error.userInfo)")
+            GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
         }
 
         return result.filter{
@@ -781,7 +778,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())? = nil) {
         var context = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             context = self.context
         }
        context.perform {
@@ -805,31 +802,35 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func reloadNewPois(completion: (()->())? = nil) {
         var context = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             context = self.context
         }
-        context.performAndWait {
+        context.perform {
             if  let root = self.getCoreDataQuadTreeRoot() {
-                reloadPoisForNode(root)
+                self.reloadPoisForNode(root)
+                self.save()
+                completion?()
             }
-            self.save()
-            completion?()
+
         }
     }
 
     func reloadPoisForNode(_ node: NodeCoreData, poisToSort: Set<PoiCoreData>? = nil) {
-        var pois = poisToSort ??  Set(self.getPoisCoreData())
+        var pois =  Set(self.getPoisCoreData())
         if  let parent = node.parent {
-            pois = parent.pois ?? Set<PoiCoreData>()
+            pois = parent.pois ?? pois
         }
+
         let  rect: Rect = Rect(originLat: node.originLat, endLat: node.endLat, originLng: node.originLng, endLng: node.endLng)
         let filteredArray =  pois.filter {
             let loc = L(lat: $0.lat, lng:  $0.lng, time: Date())
             return rect.contains(loc)
         }
         node.pois = Set(filteredArray)
-        node.childs?.forEach { child in
-            reloadPoisForNode(child, poisToSort: node.pois)
+        if filteredArray.count > 0 {
+            node.childs?.forEach { child in
+                reloadPoisForNode(child, poisToSort: node.pois)
+            }
         }
     }
 
@@ -838,7 +839,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         if context == nil {
             context = self.bgContext
             if Thread.isMainThread {
-                // print("MAIN THREAD ! ")
+                
                 context = self.context
             }
         }
@@ -874,7 +875,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         if contextToUse == nil {
             context = self.bgContext
             if Thread.isMainThread {
-                // print("MAIN THREAD ! ")
+                
                 context = self.context
             }
         }
@@ -883,7 +884,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             fetchRequest.predicate = NSPredicate(format: "\(StorageConstants.treeId) == %@", id )
             do {
                 let array = try context?.fetch(fetchRequest) ?? [NodeCoreData]()
-                // print("LiveMomentStore -  getCoreDataQuadTreeRoot count : \(array.count) ")
                 result = array.first
 
             } catch let error as NSError {
@@ -893,6 +893,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         let endRoot = CFAbsoluteTimeGetCurrent()
         let  elapsedTime = (endRoot - start) * 1000
         GlobalLogger.shared.debug("LiveMomentStore -  find root in base took \(elapsedTime) ms ")
+
         return result
     }
 
@@ -911,7 +912,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var quadTree: QuadTreeNode?
         var context = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             context = self.context
         }
         context.performAndWait {
@@ -944,7 +945,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var result : QuadTreeNode?
         var context = self.bgContext
         if Thread.isMainThread {
-            // print("MAIN THREAD ! ")
+            
             context = self.context
         }
 
@@ -1005,7 +1006,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         guard let node = node else {
             return nil
         }
-        // print("NODE TO SAVE: \(node.getTreeId()) has \(node.childs().count) child(s)")
         var  nodeCoreData :NodeCoreData?
         context.performAndWait {
             let fetchRequest =

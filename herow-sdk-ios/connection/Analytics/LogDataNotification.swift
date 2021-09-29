@@ -49,7 +49,7 @@ class LogDataNotificationStruct: LogDataStruct {
         self.campaignId = campaignId
         self.zoneInfo = zoneInfo
 
-        if let zone = zoneInfo?.getZone() { //cacheManager?.getZones(ids: [self.zoneID]).first {
+        if let zone = zoneInfo?.getZone() {
             let lat = zone.getLat()
             let lng = zone.getLng()
             let center = CLLocation(latitude: lat, longitude: lng)
@@ -58,8 +58,6 @@ class LogDataNotificationStruct: LogDataStruct {
             self.place = NearbyPlace(placeId: zone.getHash(), distance: distance, radius: zone.getRadius(), lat: lat, lng: lng, confidence: zoneInfo?.confidence ?? 0)
         }
         super.init(appState: appState, subtype: subtype.rawValue, dataStorage: dataStorage)
-
-
     }
 
     enum CodingKeys: String, CodingKey {

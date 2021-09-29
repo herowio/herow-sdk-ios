@@ -378,8 +378,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         } else {
             locationFilter = locationValidator.runValidation(location)
         }
-
-        if skip == false && locationFilter {
+        if (skip == false && locationFilter) || from == .fake {
 
             dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
             self.lastLocation = location

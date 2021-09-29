@@ -38,7 +38,6 @@ extension String {
             }
         } catch let error {
             GlobalLogger.shared.error("regex :\(regex) invalid regex: \(error.localizedDescription)")
-            // print("invalid regex: \(error.localizedDescription)")
             return []
         }
     }

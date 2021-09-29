@@ -122,12 +122,9 @@ protocol APIManagerProtocol:ConfigDispatcher {
     func pushLog(_ log: Data ,completion: (() -> Void)?)
     func reset()
     func reloadUrls()
-
-
 }
 
 public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, RequestStatusListener, UserInfoListener {
-
 
     let tokenWorker: APIWorker<APIToken>
     let configWorker: APIWorker<APIConfig>
@@ -448,7 +445,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             }
 
         } catch {
-             print("error while encoding userInfo : \(error.localizedDescription)")
+            GlobalLogger.shared.error("error while encoding userInfo : \(error.localizedDescription)")
         }
         return result ?? Data()
 
@@ -468,7 +465,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             }
 
         } catch {
-             print("error while encoding userInfo : \(error.localizedDescription)")
+            GlobalLogger.shared.error("error while encoding userInfo : \(error.localizedDescription)")
         }
         return result
     }

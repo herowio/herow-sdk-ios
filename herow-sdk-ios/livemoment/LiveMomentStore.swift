@@ -13,6 +13,7 @@ public protocol LiveMomentStoreListener {
 
     func liveMomentStoreStartComputing()
     func  didCompute( rects: [NodeDescription]?, home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?, others: [QuadTreeNode]?, neighbours:[QuadTreeNode]?, periods:[PeriodProtocol])
+    func didChangeNode(node: QuadTreeNode )
 }
 
 protocol LiveMomentStoreProtocol: DetectionEngineListener, AppStateDelegate, CacheListener {
@@ -215,6 +216,11 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                     GlobalLogger.shared.debug("LiveMomentStore - browseTree  result node: \(rootToUse.getTreeId()) in \(elapsedTime) ms  ")
                     let nodeToSave = result?.getParentNode() ?? result
                     self.currentNode = result
+                    if let node = self.currentNode {
+                        for listener in self.listeners {
+                            listener.get()?.didChangeNode(node: node)
+                        }
+                    }
                     self.save(false, nodeToSave) {
                         result?.setUpdated(false)
                         nodeToSave?.setUpdated(false)

@@ -154,6 +154,13 @@ public protocol QuadTreeNode: AnyObject {
     func isNearToPoi() -> Bool
     func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode]
     func isEqual(_ node: QuadTreeNode) -> Bool
+    func getLimit() -> Int
+}
+
+extension QuadTreeNode {
+   public func getCount() -> Int {
+        return getLocations().count
+    }
 }
 
 

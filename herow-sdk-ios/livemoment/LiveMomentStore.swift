@@ -49,7 +49,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     private var listeners = [WeakContainer<LiveMomentStoreListener>]()
     private let backgroundQueue =  DispatchQueue(label: "LiveMomentStoreQueue", qos: .background)
     private let queue = OperationQueue()
-
+    private var periods: [PeriodProtocol] = [PeriodProtocol]()
+    private var needGetPeriods = true
     required init(db: DataBase, storage: HerowDataStorageProtocol) {
         self.dataBase = db
         self.dataStorage = storage
@@ -106,6 +107,13 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
+
+        let now = Date()
+        self.needGetPeriods = true
+        if  (self.periods.filter { $0.end > now}.first != nil) {
+            self.needGetPeriods = false
+        }
+
         if self.root == nil || isWorking   {
             GlobalLogger.shared.debug("LiveMomentStore - isWorking")
             return
@@ -267,27 +275,46 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             let start = CFAbsoluteTimeGetCurrent()
             GlobalLogger.shared.debug("LiveMomentStore - compute start")
             self.computeRects()
-            self.work = self.computeWork()
-            self.home = self.computeHome()
-            self.school = self.computeSchool()
-            self.shoppings = self.computeShopping()
+            let candidates = self.getNodeCandidates()
+            self.work = self.computeWork(candidates)
+            self.home = self.computeHome(candidates)
+            self.school = self.computeSchool(candidates)
+            self.shoppings = self.computeShopping(candidates)
             self.others = nil
-            self.dataBase.getPeriods { periods in
-                for listener in self.listeners {
-                    listener.get()?.didCompute(rects: self.rects, home: self.home, work:  self.work, school: self.school, shoppings: self.shoppings, others: self.others, neighbours: self.currentNode?.neighbourgs(), periods: periods)
-                }
+            let neighbours =  self.currentNode?.neighbourgs()
+
+
+            let computeBlock: ([PeriodProtocol])-> () = { periods in
                 let end = CFAbsoluteTimeGetCurrent()
                 let elapsedTime = (end - start) * 1000
-
                 GlobalLogger.shared.debug("LiveMomentStore - compute took in \(elapsedTime) ms ")
+                for listener in self.listeners {
+                    listener.get()?.didCompute(rects: self.rects, home: self.home, work:  self.work, school: self.school, shoppings: self.shoppings, others: self.others, neighbours: neighbours, periods: periods)
+                }
+            }
+            if self.needGetPeriods {
+                GlobalLogger.shared.debug("LiveMomentStore - get periods start")
+                self.dataBase.getPeriods { periods in
+                    let end = CFAbsoluteTimeGetCurrent()
+                    let elapsedTime = (end - start) * 1000
+                    GlobalLogger.shared.debug("LiveMomentStore - get periods took in \(elapsedTime) ms ")
+                    self.periods = periods
+                    computeBlock(periods)
+                }
+            } else {
+                computeBlock(self.periods)
             }
 
         }
     }
 
-    internal func computeHome() -> QuadTreeNode? {
-        let nodes = getRects()?.filter {
-            $0.locations.count > 10 &&
+    internal func getNodeCandidates() -> [NodeDescription]? {
+        return   getRects()?.filter {
+            $0.locations.count > 10 }
+    }
+
+    internal func computeHome( _ candidates: [NodeDescription]?) -> QuadTreeNode? {
+        let nodes = candidates?.filter {
                 ($0.densities?.count ?? 0)  > 0 &&
                 $0.densities?[LivingTag.home.rawValue] ?? 0 > 0
         }.sorted {
@@ -297,9 +324,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         return  home
     }
 
-    internal func computeWork() -> QuadTreeNode? {
-        let nodes = getRects()?.filter {
-            $0.locations.count > 10 &&
+    internal func computeWork(_ candidates: [NodeDescription]?) -> QuadTreeNode? {
+        let nodes = candidates?.filter {
                 ($0.densities?.count ?? 0)  > 0 &&
                 $0.densities?[LivingTag.work.rawValue] ?? 0 > 0
         }.sorted {
@@ -308,9 +334,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         return  nodes?.first?.node
     }
 
-    internal func computeSchool() -> QuadTreeNode? {
-        let nodes = getRects()?.filter {
-            $0.locations.count > 10 &&
+    internal func computeSchool(_ candidates: [NodeDescription]?) -> QuadTreeNode? {
+        let nodes = candidates?.filter {
                 ($0.densities?.count ?? 0)  > 0 &&
                 $0.densities?[LivingTag.school.rawValue] ?? 0 > 0
         }.sorted {
@@ -319,8 +344,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         return  nodes?.first?.node
     }
 
-    internal func computeShopping() -> [QuadTreeNode]? {
-        let nodes = getRects()?.map {$0.node}.filter{$0.isNearToPoi() }
+    internal func computeShopping(_ candidates: [NodeDescription]?) -> [QuadTreeNode]? {
+        let nodes = candidates?.map {$0.node}.filter{$0.isNearToPoi() }
         return nodes
     }
 }

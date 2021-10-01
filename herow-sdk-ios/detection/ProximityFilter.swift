@@ -67,7 +67,7 @@ import CoreLocation
     private var previousLocation: CLLocation?
     private var previousTimeInterval: Double = 0
     private var previousValidDate = Date()
-    static let  validityDistanceFactor: Double = 1.5
+    static let  validityDistanceFactor: Double = 3
     private var previousSpeed: Double = ProximityFilter.defaultSpeed
     private var invalidationFilterTresholdConfidence: Double
     private var lastRefuseDate: Date?
@@ -129,7 +129,7 @@ import CoreLocation
             }
             previousValidDate = now
             previousLocation = currentLocation
-            lastRefuseSpeed =  ProximityFilter.defaultSpeed
+            lastRefuseSpeed =  previousSpeed
             lastRefuseDate = nil
             lastRefuseLocation = nil
             GlobalLogger.shared.debug("ProximityFilter - update location \(currentLocation) IS valid: confidence = \(result) distance: \(distance) m")

@@ -13,6 +13,7 @@ import CoreLocation
 @objc public protocol ProximityFilterProtocol: AnyObject {
     func currentTime() -> Date
     func setCurrentTime(_ date: Date)
+    func getLastLocation() -> CLLocation?
     func processState(currentLocation: CLLocation) -> ProximityResult?
 }
 
@@ -59,6 +60,9 @@ import CoreLocation
     func setCurrentTime(_ date: Date) {
 
     }
+    func  getLastLocation() -> CLLocation? {
+        return previousLocation
+    }
 
     static let defaultSpeed: Double = 2
     static let minimumDistanceAllowed: Double = 30
@@ -67,13 +71,14 @@ import CoreLocation
     private var previousLocation: CLLocation?
     private var previousTimeInterval: Double = 0
     private var previousValidDate = Date()
-    static let  validityDistanceFactor: Double = 3
+    static let  validityDistanceFactor: Double = 1.5
     private var previousSpeed: Double = ProximityFilter.defaultSpeed
     private var invalidationFilterTresholdConfidence: Double
     private var lastRefuseDate: Date?
     private var lastRefuseLocation: CLLocation?
     private var lastRefuseSpeed: Double = ProximityFilter.defaultSpeed
     private var firstTry = true
+    private var count = 0
     private var timeProvider: TimeProvider
     public init(initialLocation: CLLocation, invalidationFilterTresholdConfidence: Double, timeProvider: TimeProvider = TimeProviderAbsolute()) {
 
@@ -94,17 +99,21 @@ import CoreLocation
         if let previous = previousLocation {
             let timeInterval = now.timeIntervalSince(previousValidDate)
             if timeInterval > 0 {
-                GlobalLogger.shared.debug("ProximityFilter - computed speed : \(previousSpeed)")
-                GlobalLogger.shared.debug("ProximityFilter - computed timeInterval : \(timeInterval)")
+
+                GlobalLogger.shared.debug("ProximityFilter - computed validation distance: \(distance)")
+                physicalDistance = currentLocation.distance(from: previous)
+                tmPreviousSpeed = physicalDistance / timeInterval
+                GlobalLogger.shared.debug("ProximityFilter distance - computed speed : \(previousSpeed)")
+                GlobalLogger.shared.debug("ProximityFilter distance - computed timeInterval : \(timeInterval)")
+                let computedDistance = previousSpeed * timeInterval
+                GlobalLogger.shared.debug("ProximityFilter distance - computed computedDistance : \(computedDistance)")
                 distance = max(ProximityFilter.minimumDistanceAllowed, previousSpeed * timeInterval) * ProximityFilter.validityDistanceFactor
             } else {
                 let tempFirstTry = firstTry
                 firstTry = false
                 return  ProximityResult(tempFirstTry ? 1 : 0, ProximityFilter.minimumDistanceAllowed, previous, lastRefuseLocation, false) // or nil ?
             }
-            GlobalLogger.shared.debug("ProximityFilter - computed validation distance: \(distance)")
-            physicalDistance = currentLocation.distance(from: previous)
-            tmPreviousSpeed = physicalDistance / timeInterval
+
             if physicalDistance <= distance || ProximityFilter.minimumAccuracyAllowed >= currentLocation.horizontalAccuracy {
                 confidence = 1
             } else {
@@ -121,11 +130,11 @@ import CoreLocation
 
         let result = max(confidence, confidenceFromRefuse)
         let fromOldRefuse = confidenceFromRefuse > confidence
-        let proximityResult = ProximityResult(result, distance, previousLocation, lastRefuseLocation, fromOldRefuse)
+
         //update values
         if result > invalidationFilterTresholdConfidence {
             if let speed = tmPreviousSpeed {
-                previousSpeed = speed
+                previousSpeed = max(5,speed)
             }
             previousValidDate = now
             previousLocation = currentLocation
@@ -141,6 +150,7 @@ import CoreLocation
             lastRefuseLocation = currentLocation
              GlobalLogger.shared.debug("ProximityFilter - update location \(currentLocation) IS NOT valid: confidence = \(result) distance: \(distance) m")
         }
+        let proximityResult = ProximityResult(result, distance, previousLocation, lastRefuseLocation, fromOldRefuse)
         return proximityResult
     }
 

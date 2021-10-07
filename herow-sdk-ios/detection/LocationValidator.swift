@@ -75,10 +75,11 @@ public enum  ResultType: String {
             proximityFilter  = initProximityFilter(initialLocation: location, invalidationFilterTresholdConfidence: invalidationFilterTresholdConfidence)
         }
         var result: FilterResult?
+        let previous = proximityFilter?.getLastLocation()
         let proximityProccessingResult = proximityFilter?.processState(currentLocation: location)
         let confidence = proximityProccessingResult?.getConfidence()
         let speedradius = proximityProccessingResult?.getDistance()
-        let previous = proximityProccessingResult?.getLocation()
+
         let previousBad = proximityProccessingResult?.getlastRefuseLocation()
         let fromLastRefuse = proximityProccessingResult?.getFromOldLocation() ?? false
         if let c = confidence, let d = speedradius {

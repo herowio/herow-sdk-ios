@@ -372,13 +372,14 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         skip = skip || distpatchTimeKO || locationToOld
 
        var locationFilter = true
-        if from == .fake {
+        if from == .undefined {
             // no filter on fake positions
             locationFilter = true
         } else {
             locationFilter = locationValidator.runValidation(location)
         }
-        if (skip == false && locationFilter) || from == .fake {
+        needMorePrecisionPrecision(!locationFilter)
+        if (skip == false && locationFilter)  {
 
             dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
             self.lastLocation = location
@@ -430,6 +431,12 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
 
+    private func needMorePrecisionPrecision(_ value: Bool ) {
+        if value {
+            self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            self.locationManager.distanceFilter = GeofenceManager.distanceTen
+        }
+    }
 
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 

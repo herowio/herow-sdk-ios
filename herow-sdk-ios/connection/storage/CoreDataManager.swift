@@ -726,8 +726,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             contextToUse = self.context
         }
         contextToUse.perform {
-            self.cleanAllLocations(context: contextToUse)
-            self.removePeriods(contextToUse)
+          //  self.cleanAllLocations(context: contextToUse)
+           // self.removePeriods(contextToUse)
             self.getLocations(contextToUse).forEach{
                 loc in
                 _ = self.periodeForLocation(loc, context: contextToUse)

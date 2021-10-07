@@ -327,7 +327,6 @@ class ZoneProvider: DetectionEngineListener, CacheListener {
         return container
     }
 
-
     func onCacheUpdate(forGeoHash: String?) {
         GlobalLogger.shared.warning("cache updated")
         cacheIsLoaded = true

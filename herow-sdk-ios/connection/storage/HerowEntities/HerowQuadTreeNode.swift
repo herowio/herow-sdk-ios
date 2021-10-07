@@ -392,8 +392,8 @@ class HerowQuadTreeNode: QuadTreeNode {
     func poisInProximity() -> [Poi] {
         var allpois = [Poi]()
         allpois.append(contentsOf:getPois())
-        for neighbour in self.neighbourgs() {
-            for n in neighbour.neighbourgs() {
+        for neighbour in self.neighbours() {
+            for n in neighbour.neighbours() {
                 allpois.append(contentsOf:n.getPois())
             }
            // allpois.append(contentsOf:neighbour.getPois())
@@ -647,7 +647,7 @@ class HerowQuadTreeNode: QuadTreeNode {
 
    
 
-    func neighbourgs() -> [QuadTreeNode] {
+    func neighbours() -> [QuadTreeNode] {
         var candidates = [QuadTreeNode]()
         candidates = walkUp()?.addInList(candidates) ?? candidates
         candidates = walkDown()?.addInList(candidates) ?? candidates

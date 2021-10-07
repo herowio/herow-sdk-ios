@@ -150,7 +150,7 @@ public protocol QuadTreeNode: AnyObject {
     func walkDownLeft() -> QuadTreeNode?
     func walkDownRight() -> QuadTreeNode?
     func type()-> LeafType
-    func neighbourgs() -> [QuadTreeNode]
+    func neighbours() -> [QuadTreeNode]
     func isNearToPoi() -> Bool
     func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode]
     func isEqual(_ node: QuadTreeNode) -> Bool
@@ -190,6 +190,32 @@ public protocol PeriodProtocol {
 
   //  func disPatchLocations(locations: [QuadTreeLocation])
 
+}
+
+public extension PeriodProtocol {
+    func containsLoc(_ location: QuadTreeLocation) -> Bool {
+        return self.start < location.time && self.end > location.time
+    }
+
+    mutating func addLocation(_ location: QuadTreeLocation) {
+        if self.containsLoc(location) {
+            if location.time.isHomeCompliant() {
+                self.homeLocations.append( location)
+            }
+           else if location.time.isWorkCompliant() {
+                self.workLocations.append( location)
+            }
+            else if location.time.isSchoolCompliant() {
+                self.schoolLocations.append( location)
+            }
+            else  {
+                self.otherLocations.append( location)
+            }
+            if location.isNearToPoi() {
+                self.poiLocations.append(location)
+            }
+        }
+    }
 }
 
 

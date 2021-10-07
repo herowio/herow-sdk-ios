@@ -229,9 +229,11 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                             listener.get()?.didChangeNode(node: node)
                         }
                     }
+
                     self.save(false, nodeToSave) {
                         result?.setUpdated(false)
                         nodeToSave?.setUpdated(false)
+                        self.computePeriods(quadLocation)
                         completion(false)
                     }
                     GlobalLogger.shared.debug("LiveMomentStore - tree result node: \(result?.getTreeId() ?? "none") location count: \(result?.getLocations().count ?? 0) ")
@@ -244,6 +246,13 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                 completion(false)
 
             }
+        }
+    }
+
+    internal func computePeriods( _ location: QuadTreeLocation) {
+        for p in periods {
+            var period = p
+            period.addLocation(location)
         }
     }
 
@@ -281,8 +290,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             self.school = self.computeSchool(candidates)
             self.shoppings = self.computeShopping(candidates)
             self.others = nil
-            let neighbours =  self.currentNode?.neighbourgs()
-
+            let neighbours =  self.currentNode?.neighbours()
 
             let computeBlock: ([PeriodProtocol])-> () = { periods in
                 let end = CFAbsoluteTimeGetCurrent()
@@ -292,6 +300,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                     listener.get()?.didCompute(rects: self.rects, home: self.home, work:  self.work, school: self.school, shoppings: self.shoppings, others: self.others, neighbours: neighbours, periods: periods)
                 }
             }
+            
             if self.needGetPeriods {
                 GlobalLogger.shared.debug("LiveMomentStore - get periods start")
                 self.dataBase.getPeriods { periods in
@@ -312,6 +321,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         return   getRects()?.filter {
             $0.locations.count > 10 }
     }
+
 
     internal func computeHome( _ candidates: [NodeDescription]?) -> QuadTreeNode? {
         let nodes = candidates?.filter {

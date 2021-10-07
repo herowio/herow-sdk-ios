@@ -27,7 +27,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     internal var isMonitoringRegion = false
     internal  var isMonitoringVisit = false
     private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
-   
+
     private var dataHolder : DataHolderUserDefaults
     private var locationManager: LocationManager
     private var skipCount = 0
@@ -371,7 +371,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
         skip = skip || distpatchTimeKO || locationToOld
 
-       var locationFilter = true
+        var locationFilter = true
         if from == .undefined {
             // no filter on fake positions
             locationFilter = true
@@ -392,14 +392,14 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
                 var newBgId = bgId
                 if bgId == .invalid {
                     newBgId = UIApplication.shared.beginBackgroundTask(
-                    withName: "herow.io.DetectionEngine.backgroundTaskID",
-                    expirationHandler: {
-                        if self?.backgroundTaskId != .invalid {
-                            UIApplication.shared.endBackgroundTask(newBgId)
-                            GlobalLogger.shared.debug("DetectionEngine ends backgroundTask with identifier : \(newBgId)")
-                            self?.backgroundTaskId = .invalid
-                        }
-                    })
+                        withName: "herow.io.DetectionEngine.backgroundTaskID",
+                        expirationHandler: {
+                            if self?.backgroundTaskId != .invalid {
+                                UIApplication.shared.endBackgroundTask(newBgId)
+                                GlobalLogger.shared.debug("DetectionEngine ends backgroundTask with identifier : \(newBgId)")
+                                self?.backgroundTaskId = .invalid
+                            }
+                        })
                     self?.backgroundTaskId = newBgId
                 }
                 GlobalLogger.shared.debug("DetectionEngine starts backgroundTask with identifier : \( newBgId)")
@@ -409,9 +409,9 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
                 GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
 
                 if let listenners = self?.detectionListners {
-                for listener in listenners {
-                    listener.get()?.onLocationUpdate(location, from: from)
-                }
+                    for listener in listenners {
+                        listener.get()?.onLocationUpdate(location, from: from)
+                    }
                 }
                 if self?.backgroundTaskId != .invalid {
                     UIApplication.shared.endBackgroundTask(newBgId)
@@ -444,7 +444,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
             if location.timestamp.timeIntervalSince(Date()) < 20 {
                 GlobalLogger.shared.debug("didUpdate - last location: \(location.coordinate.latitude),"
-                                            + "\(location.coordinate.longitude) - \(location.timestamp)")
+                                          + "\(location.coordinate.longitude) - \(location.timestamp)")
                 _ = dispatchLocation(location, from: .update)
             }
         }

@@ -323,8 +323,13 @@ import UIKit
         }
     }
 
+    //MARK: LiveMoment
     public func getClusters() -> [NodeDescription]? {
         return  liveMomentStore?.getClusters()?.getReccursiveRects(nil)
+    }
+
+    public func processOnlyOnCurrentGeoHash(_ value: Bool) {
+        liveMomentStore?.processOnlyOnCurrentGeoHash(value)
     }
 
     public func registerLiveMomentStoreListener(listener: LiveMomentStoreListener) {
@@ -335,7 +340,7 @@ import UIKit
         appStateDetector.registerAppStateDelegate(appStateDelegate: listener)
     }
 
-    //MARK Objects accessors
+    //MARK: Objects accessors
     public func getHome() -> QuadTreeNode? {
         return  liveMomentStore?.getHome()
     }

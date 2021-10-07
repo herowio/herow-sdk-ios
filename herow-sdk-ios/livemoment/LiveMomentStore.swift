@@ -27,9 +27,12 @@ protocol LiveMomentStoreProtocol: DetectionEngineListener, AppStateDelegate, Cac
     func getSchool() -> QuadTreeNode?
     func getShopping() -> [QuadTreeNode]?
     func registerLiveMomentStoreListener(_ listener: LiveMomentStoreListener )
+    func processOnlyOnCurrentGeoHash(_ value: Bool)
 }
 
 class LiveMomentStore: LiveMomentStoreProtocol {
+
+
 
     private var isWorking = false
     private var isOnBackground = false
@@ -51,6 +54,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     private let queue = OperationQueue()
     private var periods: [PeriodProtocol] = [PeriodProtocol]()
     private var needGetPeriods = true
+    private var onGeoHashOnly: Bool = false
+
     required init(db: DataBase, storage: HerowDataStorageProtocol) {
         self.dataBase = db
         self.dataStorage = storage
@@ -70,6 +75,14 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             elapsedTime = (end - start) * 1000
         }
     }
+
+    func processOnlyOnCurrentGeoHash(_ value: Bool) {
+        if (onGeoHashOnly != value) {
+            onGeoHashOnly = value
+            compute()
+        }
+    }
+
     func registerLiveMomentStoreListener(_ listener: LiveMomentStoreListener) {
         listeners.append(WeakContainer(value: listener))
     }
@@ -113,7 +126,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         if  (self.periods.filter { $0.end > now}.first != nil) {
             self.needGetPeriods = false
         }
-
         if self.root == nil || isWorking   {
             GlobalLogger.shared.debug("LiveMomentStore - isWorking")
             return
@@ -180,7 +192,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal func save(_ force: Bool = false, _ node: QuadTreeNode? = nil , completion: @escaping ()->()) {
-
         if let root = self.root {
             isSaving = true
             let nodeToSave = node ?? root
@@ -189,7 +200,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                 self.isSaving = false
                 self.count = 0
                 completion()
-
             }
         }
     }
@@ -209,7 +219,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         for listener in self.listeners {
             listener.get()?.liveMomentStoreStartComputing()
         }
-       backgroundQueue.async {
+        backgroundQueue.async {
             var result : QuadTreeNode?
             let quadLocation = HerowQuadTreeLocation(lat: location.coordinate.latitude, lng: location.coordinate.longitude, time: location.timestamp)
             if let nodeToUse =  self.currentNode ?? self.root {
@@ -229,7 +239,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                             listener.get()?.didChangeNode(node: node)
                         }
                     }
-
                     self.save(false, nodeToSave) {
                         result?.setUpdated(false)
                         nodeToSave?.setUpdated(false)
@@ -240,11 +249,9 @@ class LiveMomentStore: LiveMomentStoreProtocol {
 
                 } else {
                     completion(false)
-
                 }
             } else {
                 completion(false)
-
             }
         }
     }
@@ -291,7 +298,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             self.shoppings = self.computeShopping(candidates)
             self.others = nil
             let neighbours =  self.currentNode?.neighbours()
-
             let computeBlock: ([PeriodProtocol])-> () = { periods in
                 let end = CFAbsoluteTimeGetCurrent()
                 let elapsedTime = (end - start) * 1000
@@ -300,7 +306,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                     listener.get()?.didCompute(rects: self.rects, home: self.home, work:  self.work, school: self.school, shoppings: self.shoppings, others: self.others, neighbours: neighbours, periods: periods)
                 }
             }
-            
             if self.needGetPeriods {
                 GlobalLogger.shared.debug("LiveMomentStore - get periods start")
                 self.dataBase.getPeriods { periods in
@@ -313,20 +318,31 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             } else {
                 computeBlock(self.periods)
             }
-
         }
     }
 
     internal func getNodeCandidates() -> [NodeDescription]? {
-        return   getRects()?.filter {
+
+        var nodes = getRects()?.filter {
             $0.locations.count > 10 }
+        if let currentGeoHash = HerowInitializer.instance.getLastGeoHash(),  let geohash = Geohash.decode(hash: currentGeoHash)  {
+            if onGeoHashOnly {
+                nodes = nodes?.filter{
+                    $0.rect.originLat >= geohash.latitude.min &&
+                    $0.rect.endLat <= geohash.latitude.max &&
+                    $0.rect.originLng >= geohash.longitude.min &&
+                    $0.rect.endLng <= geohash.longitude.max
+                }
+            }
+        }
+        return  nodes
     }
 
 
     internal func computeHome( _ candidates: [NodeDescription]?) -> QuadTreeNode? {
         let nodes = candidates?.filter {
-                ($0.densities?.count ?? 0)  > 0 &&
-                $0.densities?[LivingTag.home.rawValue] ?? 0 > 0
+            ($0.densities?.count ?? 0)  > 0 &&
+            $0.densities?[LivingTag.home.rawValue] ?? 0 > 0
         }.sorted {
             return $0.densities?[LivingTag.home.rawValue] ?? 0 < $1.densities?[LivingTag.home.rawValue] ?? 0
         }
@@ -336,8 +352,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
 
     internal func computeWork(_ candidates: [NodeDescription]?) -> QuadTreeNode? {
         let nodes = candidates?.filter {
-                ($0.densities?.count ?? 0)  > 0 &&
-                $0.densities?[LivingTag.work.rawValue] ?? 0 > 0
+            ($0.densities?.count ?? 0)  > 0 &&
+            $0.densities?[LivingTag.work.rawValue] ?? 0 > 0
         }.sorted {
             return  $0.densities?[LivingTag.work.rawValue] ?? 0 < $1.densities?[LivingTag.work.rawValue] ?? 0
         }
@@ -346,8 +362,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
 
     internal func computeSchool(_ candidates: [NodeDescription]?) -> QuadTreeNode? {
         let nodes = candidates?.filter {
-                ($0.densities?.count ?? 0)  > 0 &&
-                $0.densities?[LivingTag.school.rawValue] ?? 0 > 0
+            ($0.densities?.count ?? 0)  > 0 &&
+            $0.densities?[LivingTag.school.rawValue] ?? 0 > 0
         }.sorted {
             return  $0.densities?[LivingTag.school.rawValue] ?? 0 < $1.densities?[LivingTag.school.rawValue] ?? 0
         }

@@ -219,7 +219,7 @@ import UIKit
         detectionEngine.unregisterClickAndCollectListener(listener: listener)
     }
 
-    //MARK:DETECTIONENGINELISTENERS  MANAGEMENT
+    //MARK: DETECTIONENGINELISTENERS  MANAGEMENT
     @objc public func registerDetectionListener(listener: DetectionEngineListener) {
         detectionEngine.registerDetectionListener(listener:listener)
     }
@@ -228,9 +228,14 @@ import UIKit
         detectionEngine.unregisterDetectionListener(listener: listener)
     }
 
+
+    public func getClickAndCollectStart() -> Date? {
+        return dataHolder.getDate(key: "lastClickAndCollectActivationDate")
+    }
+
     public func getClickAndCollectDelay() -> TimeInterval {
 
-        if let activation = dataHolder.getDate(key: "lastClickAndCollectActivationDate") {
+        if let activation = getClickAndCollectStart() {
             let now = Date()
             let limit = Date(timeInterval: StorageConstants.timeIntervalLimit, since: activation)
             let delay =

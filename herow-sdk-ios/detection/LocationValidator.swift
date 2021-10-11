@@ -107,7 +107,7 @@ public enum  ResultType: String {
     // MARK: actions
     public func reset() {
         // reset  -> filter will be reinitilized next time
-        proximityFilter = nil
+        proximityFilter?.reset()
         failCount = 0
     }
 

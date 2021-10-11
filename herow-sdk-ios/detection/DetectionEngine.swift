@@ -209,8 +209,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             }
         } else {
             if getLastClickAndCollectActivationDate() != nil {
-                setLastClickAndCollectActivationDate(nil)
                 didStopClickAndCollect()
+                setLastClickAndCollectActivationDate(nil)
             }
         }
     }
@@ -372,13 +372,15 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         skip = skip || distpatchTimeKO || locationToOld
 
         var locationFilter = true
-        if from == .undefined {
-            // no filter on fake positions
-            locationFilter = true
-        } else {
-            locationFilter = locationValidator.runValidation(location)
+        if (skip == false) {
+            if from == .fake {
+                // no filter on fake positions
+                locationFilter = true
+            } else {
+                locationFilter = locationValidator.runValidation(location)
+            }
+            needMorePrecisionPrecision(!locationFilter)
         }
-        needMorePrecisionPrecision(!locationFilter)
         if (skip == false && locationFilter)  {
 
             dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())

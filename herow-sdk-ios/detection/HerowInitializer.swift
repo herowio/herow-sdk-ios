@@ -211,7 +211,7 @@ import UIKit
         detectionEngine.unregisterClickAndCollectListener(listener: listener)
     }
 
-    //MARK:DETECTIONENGINELISTENERS  MANAGEMENT
+    //MARK: DETECTIONENGINELISTENERS  MANAGEMENT
     @objc public func registerDetectionListener(listener: DetectionEngineListener) {
         detectionEngine.registerDetectionListener(listener:listener)
     }
@@ -220,6 +220,23 @@ import UIKit
         detectionEngine.unregisterDetectionListener(listener: listener)
     }
 
+    public func getClickAndCollectStart() -> Date? {
+        return dataHolder.getDate(key: "lastClickAndCollectActivationDate")
+    }
+
+    public func getClickAndCollectDelay() -> TimeInterval {
+
+        if let activation = getClickAndCollectStart() {
+            let now = Date()
+            let limit = Date(timeInterval: StorageConstants.timeIntervalLimit, since: activation)
+            let delay =
+                (now <  limit ) ? DateInterval(start: now, end: limit).duration : 0
+            return delay
+        }
+        return 0
+
+    }
+    
     //MARK: FUSEMANAGERLISTENERS  MANAGEMENT
     @objc public func  registerFuseManagerListener(listener: FuseManagerListener) {
         fuseManager.registerFuseManagerListener(listener:listener)

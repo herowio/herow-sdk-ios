@@ -15,6 +15,7 @@ import CoreLocation
     func setCurrentTime(_ date: Date)
     func getLastLocation() -> CLLocation?
     func processState(currentLocation: CLLocation) -> ProximityResult?
+    func reset()
 }
 
 @objc public class ProximityResult: NSObject {
@@ -64,7 +65,7 @@ import CoreLocation
         return previousLocation
     }
 
-    static let defaultSpeed: Double = 2
+    static let defaultSpeed: Double = 5
     static let minimumDistanceAllowed: Double = 30
     static let minimumAccuracyAllowed: Double = 50
     static let invalidationFilterThresholdAfterReuseAccuracy: Double = 65
@@ -95,7 +96,7 @@ import CoreLocation
         var distance: Double = 0
         var physicalDistance: Double = 0
         var confidence: Double = 1
-        var tmPreviousSpeed: Double?
+        var tmPreviousSpeed: Double = previousSpeed
         if let previous = previousLocation {
             let timeInterval = now.timeIntervalSince(previousValidDate)
             if timeInterval > 0 {
@@ -104,10 +105,11 @@ import CoreLocation
                 physicalDistance = currentLocation.distance(from: previous)
                 tmPreviousSpeed = physicalDistance / timeInterval
                 GlobalLogger.shared.debug("ProximityFilter distance - computed speed : \(previousSpeed)")
+                GlobalLogger.shared.debug("ProximityFilter distance - computed  new speed : \(tmPreviousSpeed)")
                 GlobalLogger.shared.debug("ProximityFilter distance - computed timeInterval : \(timeInterval)")
                 let computedDistance = previousSpeed * timeInterval
                 GlobalLogger.shared.debug("ProximityFilter distance - computed computedDistance : \(computedDistance)")
-                distance = max(ProximityFilter.minimumDistanceAllowed, previousSpeed * timeInterval) * ProximityFilter.validityDistanceFactor
+                distance = max(ProximityFilter.minimumDistanceAllowed, previousSpeed * timeInterval) //* ProximityFilter.validityDistanceFactor
             } else {
                 let tempFirstTry = firstTry
                 firstTry = false
@@ -133,9 +135,7 @@ import CoreLocation
 
         //update values
         if result > invalidationFilterTresholdConfidence {
-            if let speed = tmPreviousSpeed {
-                previousSpeed = max(5,speed)
-            }
+            previousSpeed = max(5,tmPreviousSpeed)
             previousValidDate = now
             previousLocation = currentLocation
             lastRefuseSpeed =  previousSpeed
@@ -143,9 +143,7 @@ import CoreLocation
             lastRefuseLocation = nil
             GlobalLogger.shared.debug("ProximityFilter - update location \(currentLocation) IS valid: confidence = \(result) distance: \(distance) m")
         } else {
-            if let speed = tmPreviousSpeed {
-                lastRefuseSpeed = speed
-            }
+            lastRefuseSpeed = tmPreviousSpeed
             lastRefuseDate = now
             lastRefuseLocation = currentLocation
              GlobalLogger.shared.debug("ProximityFilter - update location \(currentLocation) IS NOT valid: confidence = \(result) distance: \(distance) m")
@@ -171,6 +169,10 @@ import CoreLocation
             }
         }
         return confidence
+    }
+
+    public func reset() {
+        previousLocation = nil
     }
 
     private  func computeConfidence(currentLocation: CLLocation, previousLocation: CLLocation?, estimateDistance: Double) -> Double {

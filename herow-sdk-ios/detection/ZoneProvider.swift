@@ -192,6 +192,10 @@ extension CLLocationCoordinate2D: Codable {
                 $0.getHash()
             }
 
+            let zonesNotificationsLocationIds = notificationZones.map {
+                $0.getHash()
+            }
+
             let oldZonesIds = getPlaceHistory().map {$0.zoneHash}
             let oldNotificationZonesIds = getPlaceNotificationHistory().map {$0.zoneHash}
 
@@ -232,7 +236,7 @@ extension CLLocationCoordinate2D: Codable {
             }
 
             let notificationsExits: [ZoneInfo] = getPlaceNotificationHistory().filter {
-                !zonesLocationIds.contains($0.zoneHash)
+                !zonesNotificationsLocationIds.contains($0.zoneHash)
             }
 
 

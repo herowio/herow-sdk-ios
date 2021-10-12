@@ -198,7 +198,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         setIsOnClickAndCollect(result)
 
 
-        return value
+        return result
     }
     public func updateClickAndCollectState() {
         if checkClickAndCollectMode() {

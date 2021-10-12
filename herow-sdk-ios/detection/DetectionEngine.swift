@@ -198,7 +198,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         let value = (isMonitoringVisit || isUpdatingPosition || isMonitoringRegion || isUpdatingSignificantChanges) &&   getIsOnClickAndCollect()
         let result = value && checkLastClickAndCollectActivationDate()
         setIsOnClickAndCollect(result)
-        return value
+        return result
     }
 
     public func updateClickAndCollectState() {

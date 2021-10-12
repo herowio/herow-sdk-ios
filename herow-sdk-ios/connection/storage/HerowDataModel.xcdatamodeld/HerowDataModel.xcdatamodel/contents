@@ -34,7 +34,7 @@
         <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="containers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationContainer" inverseName="locations" inverseEntity="LocationContainer"/>
         <relationship name="node" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="locations" inverseEntity="NodeCoreData"/>
-        <relationship name="period" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Period" inverseName="locations" inverseEntity="Period"/>
+        <relationship name="period" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Period" inverseName="locations" inverseEntity="Period"/>
     </entity>
     <entity name="NodeCoreData" representedClassName="NodeCoreData" syncable="YES">
         <attribute name="endLat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -63,14 +63,14 @@
         <attribute name="end" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="start" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="containers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationContainer" inverseName="period" inverseEntity="LocationContainer"/>
-        <relationship name="locations" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="LocationCoreData" inverseName="period" inverseEntity="LocationCoreData"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationCoreData" inverseName="period" inverseEntity="LocationCoreData"/>
     </entity>
     <entity name="PoiCoreData" representedClassName="PoiCoreData" syncable="YES">
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;String&gt;"/>
-        <relationship name="nodes" optional="YES" toMany="YES" deletionRule="No Action" destinationEntity="NodeCoreData" inverseName="pois" inverseEntity="NodeCoreData"/>
+        <relationship name="nodes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="pois" inverseEntity="NodeCoreData"/>
     </entity>
     <entity name="ZoneCoreData" representedClassName=".ZoneCoreData" syncable="YES">
         <attribute name="campaigns" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;String&gt;"/>

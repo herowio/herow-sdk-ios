@@ -435,14 +435,11 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         save(completion)
     }
 
-
-
     private func save( _ completion: (() ->())? = nil) {
         DispatchQueue.global(qos: .background).async {
             self.context.performAndWait {
                 if self.context.hasChanges {
                     do {
-
                         self.removeUnlikeLocations(self.context)
                         try self.context.save()
                     } catch {
@@ -465,7 +462,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     //MARK: QUADTREE
-
 
     func periodeForLocation(_ location: LocationCoreData , context: NSManagedObjectContext) -> Period? {
 

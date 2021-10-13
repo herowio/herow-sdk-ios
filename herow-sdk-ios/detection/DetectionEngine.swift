@@ -27,7 +27,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     internal var isMonitoringRegion = false
     internal  var isMonitoringVisit = false
     private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
-    private let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
     private let dataHolder =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")
     private var locationManager: LocationManager
     private var skipCount = 0
@@ -187,7 +186,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         guard let date = getLastClickAndCollectActivationDate() else {
             return true
         }
-        return Date() < Date(timeInterval: timeIntervalLimit, since: date)
+        return Date() < Date(timeInterval: StorageConstants.timeIntervalLimit, since: date)
     }
 
 

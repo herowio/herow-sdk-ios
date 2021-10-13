@@ -498,6 +498,11 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         self.stopMonitoringSignificantLocationChanges()
     }
 
+    public func onAppTerminated() {
+       setIsOnClickAndCollect(false)
+        updateClickAndCollectState()
+    }
+
     public func onAppInForeground() {
         locationValidator.onAppInForeground()
     }

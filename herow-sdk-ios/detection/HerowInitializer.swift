@@ -57,10 +57,11 @@ import UIKit
         }
 
         zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: eventDispatcher)
+        liveMomentStore?.registerLiveMomentStoreListener(zoneProvider)
         cacheManager.registerCacheListener(listener: zoneProvider)
         detectionEngine.registerDetectionListener(listener: zoneProvider)
         analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
-
+        liveMomentStore?.registerLiveMomentStoreListener(analyticsManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
        

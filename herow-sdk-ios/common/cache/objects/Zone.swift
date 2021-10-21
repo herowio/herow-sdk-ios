@@ -8,17 +8,20 @@
 import Foundation
 import CoreLocation
 import UIKit
-public protocol Zone: Codable {
+public protocol Zone: Zonable,Codable {
 
-    func getHash() -> String
-    func getLat() -> Double
-    func getLng() -> Double
-    func getRadius() -> Double
     func getCampaigns() -> [String]
     func getAccess() -> Access?
 
     init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?)
 
+}
+
+public protocol Zonable {
+    func getHash() -> String
+    func getLat() -> Double
+    func getLng() -> Double
+    func getRadius() -> Double
 }
 
 extension Zone {
@@ -105,7 +108,7 @@ public enum LeafDirection: String {
     case SW = "3"
     case SE = "4"
 }
-public protocol QuadTreeNode: AnyObject {
+public protocol QuadTreeNode: AnyObject, Zonable {
 
     var merged: Bool {get set}
     func findNodeWithId(_ id: String)  -> QuadTreeNode?

@@ -15,6 +15,12 @@ import Foundation
     case GEOFENCE_NOTIFICATION_ZONE_EXIT
     case GEOFENCE_VISIT
 
+    case LIVE_HOME
+    case LIVE_WORK
+    case LIVE_SCHOOL
+    case LIVE_SHOP
+
+
     public func toString() -> String {
         switch self {
         case .GEOFENCE_EXIT:
@@ -27,6 +33,14 @@ import Foundation
             return "GEOFENCE_ENTER"
         case .GEOFENCE_VISIT:
             return "GEOFENCE_VISIT"
+        case .LIVE_HOME:
+            return "LIVE_HOME"
+        case .LIVE_WORK:
+            return "LIVE_WORK"
+        case .LIVE_SCHOOL:
+            return "LIVE_SCHOOL"
+        case .LIVE_SHOP:
+            return "LIVE_SHOP"
         }
     }
 }
@@ -51,6 +65,10 @@ import Foundation
         registerListener(observer, event: .GEOFENCE_VISIT)
         registerListener(observer, event: .GEOFENCE_NOTIFICATION_ZONE_ENTER)
         registerListener(observer, event: .GEOFENCE_NOTIFICATION_ZONE_EXIT)
+        registerListener(observer, event: .LIVE_HOME)
+        registerListener(observer, event: .LIVE_WORK)
+        registerListener(observer, event: .LIVE_SCHOOL)
+        registerListener(observer, event: .LIVE_SHOP)
     }
 
     func post(event: Event, infos: [ZoneInfo]) {

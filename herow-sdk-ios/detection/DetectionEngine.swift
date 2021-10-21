@@ -8,17 +8,18 @@
 import Foundation
 import CoreLocation
 import UIKit
+
 @objc public enum UpdateType: Int {
     case update
     case geofence
     case fake
     case undefined
 }
+
 @objc public protocol DetectionEngineListener: AnyObject {
     func onLocationUpdate(_ location: CLLocation, from: UpdateType)
     
 }
-
 
 public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelegate, ConfigListener, AppStateDelegate {
 
@@ -27,7 +28,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     internal var isMonitoringRegion = false
     internal  var isMonitoringVisit = false
     private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
-
     private var dataHolder : DataHolderUserDefaults
     private var locationManager: LocationManager
     private var skipCount = 0
@@ -39,7 +39,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     private let queue = OperationQueue()
     private var locationValidator = LocationValidator()
     
-
 
     public var showsBackgroundLocationIndicator: Bool {
         get {
@@ -57,7 +56,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             }
         }
     }
-
 
     public var location: CLLocation? {
         get {
@@ -157,7 +155,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     public func setIsOnClickAndCollect(_ value: Bool) {
-
         if self.getIsOnClickAndCollect() != value {
             self.dataHolder.putBoolean(key: "isLocationMonitoring", value: value)
             self.dataHolder.apply()
@@ -170,7 +167,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     private func setLastClickAndCollectActivationDate(_ value: Date?) {
-
         guard let value = value else {
             return dataHolder.remove(key: "lastClickAndCollectActivationDate")
         }
@@ -179,22 +175,17 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     private func getLastClickAndCollectActivationDate() -> Date? {
-
         return dataHolder.getDate(key: "lastClickAndCollectActivationDate")
-
     }
 
     private func checkLastClickAndCollectActivationDate() -> Bool {
-
         guard let date = getLastClickAndCollectActivationDate() else {
             return true
         }
         return Date() < Date(timeInterval: StorageConstants.timeIntervalLimit, since: date)
     }
 
-
     private func checkClickAndCollectMode() -> Bool {
-
         let value = (isMonitoringVisit || isUpdatingPosition || isMonitoringRegion || isUpdatingSignificantChanges) &&   getIsOnClickAndCollect()
         let result = value && checkLastClickAndCollectActivationDate()
         setIsOnClickAndCollect(result)
@@ -230,7 +221,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     public func accuracyAuthorizationStatusString() -> String {
         return self.locationManager.accuracyAuthorizationStatusString()
-
     }
 
     public func locationServicesEnabled() -> Bool {
@@ -250,7 +240,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         updateClickAndCollectState()
         locationManager.stopMonitoring(region: region)
     }
-
 
     public func startMonitoringSignificantLocationChanges() {
         if locationServicesEnabled() {
@@ -351,11 +340,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         }
     }
 
-
-
     @discardableResult
     func dispatchLocation(_ location: CLLocation, from: UpdateType = .undefined) -> Bool{
-
         var skip = false
         var distance = 0.0
         let distpatchTimeKO = abs(dispatchTime.timeIntervalSince1970 - timeProvider.getTime()) < 3
@@ -365,12 +351,10 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         if let lastLocation = self.lastLocation {
             distanceKO =  lastLocation.distance(from: location) < 30
             timeKO =  (location.timestamp.timeIntervalSince1970 - lastLocation.timestamp.timeIntervalSince1970) < 10
-
             distance = lastLocation.distance(from: location)
             skip = distanceKO && timeKO && skipCount < 5
         }
         skip = skip || distpatchTimeKO || locationToOld
-
         var locationFilter = true
         if (skip == false) {
             if from == .fake {
@@ -382,12 +366,10 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             needMorePrecisionPrecision(!locationFilter)
         }
         if (skip == false && locationFilter)  {
-
             dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
             self.lastLocation = location
             skipCount = 0
             let blockOPeration = BlockOperation { [weak self] in
-
                 guard let bgId =  self?.backgroundTaskId else {
                     return
                 }
@@ -409,7 +391,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
                     GlobalLogger.shared.debug("DetectionEngine - first location : \(location), accuracy: \(location.horizontalAccuracy)")
                 }
                 GlobalLogger.shared.debug("DetectionEngine - dispatchLocation : \(location) DISTANCE FROM LAST : \(distance), ")
-
                 if let listenners = self?.detectionListners {
                     for listener in listenners {
                         listener.get()?.onLocationUpdate(location, from: from)
@@ -426,12 +407,10 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             skipCount = skipCount + 1
             GlobalLogger.shared.info("DetectionEngine - skip location : \(location) DISTANCE FROM LAST : \(distance)")
         }
-
         let result = !skip
         GlobalLogger.shared.info("dispatchLocation - skip = \(skip) distpatchTimeKO = \(distpatchTimeKO) distanceKO= \(timeKO) timeKO: \(timeKO) skipCount: \(skipCount)")
         return result
     }
-
 
     private func needMorePrecisionPrecision(_ value: Bool ) {
         if value {
@@ -441,9 +420,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-
         if  let location: CLLocation =  locations.last {
-
             if location.timestamp.timeIntervalSince(Date()) < 20 {
                 GlobalLogger.shared.debug("didUpdate - last location: \(location.coordinate.latitude),"
                                           + "\(location.coordinate.longitude) - \(location.timestamp)")
@@ -478,7 +455,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     func didRecievedConfig(_ config: APIConfig) {
-        
         if config.enabled {
             GlobalLogger.shared.debug("DetectionEngine - start working")
             startWorking()
@@ -515,5 +491,4 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     @objc public func dispatchFakeLocation(_ location : CLLocation) {
         dispatchLocation( location, from: .fake)
     }
-
 }

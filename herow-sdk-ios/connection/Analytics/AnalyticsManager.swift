@@ -10,7 +10,7 @@ import CoreLocation
 import Foundation
 import UserNotifications
 import UIKit
-protocol AnalyticsManagerProtocol:   EventListener, DetectionEngineListener, ClickAndConnectListener, AppStateDelegate,NotificationCreationListener, UNUserNotificationCenterDelegate{
+protocol AnalyticsManagerProtocol:   EventListener, DetectionEngineListener, ClickAndConnectListener, AppStateDelegate,NotificationCreationListener, UNUserNotificationCenterDelegate, LiveMomentStoreListener{
     func createlogContex(_ location: CLLocation)
     func createlogEvent( event: Event,  info: ZoneInfo)
     func registerListener(listener: AnalyticsManagerListener)
@@ -32,6 +32,11 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     private var backgroundTaskEvent = UIBackgroundTaskIdentifier.invalid
     private var appState: String = "bg"
     private var  listeners = [WeakContainer<AnalyticsManagerListener>]()
+    private var home : QuadTreeNode?
+    private var work : QuadTreeNode?
+    private var school : QuadTreeNode?
+    private var shoppings : [QuadTreeNode]?
+
 
     init(apiManager: APIManagerProtocol, cacheManager:  CacheManagerProtocol, dataStorage: HerowDataStorageProtocol?) {
         self.apiManager = apiManager
@@ -50,13 +55,16 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
 
     func didReceivedEvent(_ event: Event, infos: [ZoneInfo]) {
         for info in infos {
-            if event != .GEOFENCE_NOTIFICATION_ZONE_ENTER {
-             createlogEvent(event: event, info: info)
+
+            guard event == .GEOFENCE_ENTER || event == .GEOFENCE_EXIT || event == .GEOFENCE_NOTIFICATION_ZONE_ENTER else {
+                return
             }
+             createlogEvent(event: event, info: info)
         }
     }
 
     func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
+
         createlogContex(location)
 
     }
@@ -91,6 +99,13 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
         }
         GlobalLogger.shared.info("AnalyticsManager starts context backgroundTask with identifier : \(   self.backgroundTaskContext)")
         GlobalLogger.shared.debug("AnalyticsManager - createlogContex: \(location.coordinate.latitude) \(location.coordinate.longitude)")
+
+        let homeConfidence = computeHomeConfidence(location)
+        let workConfidence = computeWorkConfidence(location)
+        let schoolConfidence = computeSchoolConfidence(location)
+        let shopConfidence = computeShoppingConfidence(location)
+
+        GlobalLogger.shared.info("AnalyticsManager compute confidence : Home: \(homeConfidence) Work: \(workConfidence) School: \(schoolConfidence) Shop: \(shopConfidence)")
         let logContext = LogDataContext(appState: appState, location: location, cacheManager: cacheManager, dataStorage:  self.dataStorage, clickAndCollect: onClickAndCollect )
         if let data = logContext.getData() {
             apiManager.pushLog(data) {
@@ -197,6 +212,61 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
             listener.get()?.didOpenNotificationForCampaign(campaign, zoneID: zoneID)
         }
 
+    }
+
+
+    func liveMomentStoreStartComputing() {
+        //di nothing
+    }
+
+    func didCompute(rects: [NodeDescription]?, home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?, others: [QuadTreeNode]?, neighbours: [QuadTreeNode]?, periods: [PeriodProtocol]) {
+        self.home = home
+        self.work = work
+        self.school = school
+        self.shoppings = shoppings
+    }
+
+    func didChangeNode(node: QuadTreeNode) {
+        // do nothing
+    }
+
+
+    private func confidenceForNode(_ node: QuadTreeNode, location: CLLocation) -> Double {
+        let center = node.getRect().circle().center
+        let centerLoc = CLLocation(latitude: center.latitude, longitude: center.longitude)
+        let radius = node.getRect().circle().radius
+        return LocationUtils.computeConfidence(centerLocation: centerLoc, location: location, radius: radius)
+    }
+    private func computeHomeConfidence(_ location : CLLocation) -> Double {
+        guard let node = self.home else {
+            return 0
+        }
+        return confidenceForNode(node, location: location)
+    }
+
+    private func computeWorkConfidence(_ location : CLLocation) -> Double {
+        guard let node = self.work else {
+            return 0
+        }
+        return confidenceForNode(node, location: location)
+    }
+
+    private func computeSchoolConfidence(_ location : CLLocation) -> Double {
+        guard let node = self.school else {
+            return 0
+        }
+        return confidenceForNode(node, location: location)
+    }
+
+    private func computeShoppingConfidence(_ location : CLLocation) -> Double {
+        guard let shoppings = self.shoppings else {
+            return 0
+        }
+        var result = 0.0
+        for shop in shoppings {
+            result = max(result,confidenceForNode(shop, location: location))
+        }
+        return result
     }
 
 }

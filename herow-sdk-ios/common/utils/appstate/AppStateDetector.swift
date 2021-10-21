@@ -90,11 +90,6 @@ extension AppStateDetector {
                                                selector: #selector(onAppInBackground),
                                                name: UIApplication.willResignActiveNotification,
                                                object: nil)
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(onAppInBackground),
-                                               name: UIApplication.willResignActiveNotification,
-                                               object: nil)
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(onAppTerminated),
                                                name: UIApplication.willTerminateNotification,
@@ -103,14 +98,10 @@ extension AppStateDetector {
                                                selector: #selector(onAppInForeground),
                                                name: UIApplication.didBecomeActiveNotification,
                                                object: nil)
-
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(onAppInBackground),
                                                name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
-
-
-
     }
 
     internal func unlistenForAppStateChanges() {

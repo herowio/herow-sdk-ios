@@ -76,4 +76,48 @@ public class LocationUtils {
         return CLLocation(latitude: LocationUtils.radiansToDegrees(lat2),
                           longitude: LocationUtils.radiansToDegrees(lon2))
     }
+
+    public static func computeConfidence( centerLocation: CLLocation, location: CLLocation, radius: Double) -> Double {
+        var result: Double = 0
+        let center = CLLocation(latitude: centerLocation.coordinate.latitude, longitude: centerLocation.coordinate.longitude)
+        let d = center.distance(from: location) as Double
+        let zoneRadius = radius
+        let accuracyRadius = location.horizontalAccuracy
+        var intersectArea: Double  = 0
+        let r1 = max(zoneRadius, accuracyRadius)
+        let r2 = min(zoneRadius, accuracyRadius)
+        let r1r1 = r1 * r1
+        let r2r2 = r2 * r2
+        let dd = d * d
+        if r1 + r2  <= d {
+            intersectArea = 0
+        } else {
+            if r1 - r2 >= d {
+                GlobalLogger.shared.debug("full inclusion: distance = \(d)")
+                intersectArea = Double.pi * r2r2
+            } else {
+                let d1 = ((r1r1 - r2r2) + dd) / (2 * d)
+                let d2 = ((r2r2 - r1r1) + dd) / (2 * d)
+                let cos1 = max(min(d1 / r1, 1), -1)
+                let cos2 = max(min(d2 / r2, 1), -1)
+                let a1 = r1r1 * acos(cos1) - d1 * sqrt(abs(r1r1 - d1 * d1))
+                let a2 = r2r2 * acos(cos2) - d2 * sqrt(abs(r2r2 - d2 * d2))
+                intersectArea = abs(a1 + a2)
+            }
+        }
+        result = min(1, intersectArea / (Double.pi * accuracyRadius * accuracyRadius)).round(to: 2)
+       
+        return result
+    }
+
+
+
+
+
+
+
+
+
+
+
 }

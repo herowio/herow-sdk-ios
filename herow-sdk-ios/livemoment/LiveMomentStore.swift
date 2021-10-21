@@ -31,9 +31,6 @@ protocol LiveMomentStoreProtocol: DetectionEngineListener, AppStateDelegate, Cac
 }
 
 class LiveMomentStore: LiveMomentStoreProtocol {
-
-
-
     private var isWorking = false
     private var isOnBackground = false
     private var isSaving = false
@@ -73,6 +70,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             self.root = self.getClustersInBase()
             let end = CFAbsoluteTimeGetCurrent()
             elapsedTime = (end - start) * 1000
+            self.compute()
         }
     }
 
@@ -147,11 +145,14 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             }
             GlobalLogger.shared.info("LiveMomentStore starts backgroundTask with identifier : \( self.backgroundTaskId)")
             self.getNodeForLocation(location, completion: { working in
+                var end = CFAbsoluteTimeGetCurrent()
+                var elapsedTime = (end - start) * 1000
+                GlobalLogger.shared.debug("LiveMomentStore - onLocationUpdate done in \(elapsedTime) ms  ")
                 self.compute()
                 isWorking = working
-                let end = CFAbsoluteTimeGetCurrent()
-                let elapsedTime = (end - start) * 1000
-                GlobalLogger.shared.debug("LiveMomentStore - onLocationUpdate done in \(elapsedTime) ms  ")
+                 end = CFAbsoluteTimeGetCurrent()
+                 elapsedTime = (end - start) * 1000
+                GlobalLogger.shared.debug("LiveMomentStore - compute done in \(elapsedTime) ms  ")
                 if self.backgroundTaskId != .invalid {
                     UIApplication.shared.endBackgroundTask(self.backgroundTaskId)
                     self.backgroundTaskId = .invalid
@@ -223,15 +224,24 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             var result : QuadTreeNode?
             let quadLocation = HerowQuadTreeLocation(lat: location.coordinate.latitude, lng: location.coordinate.longitude, time: location.timestamp)
             if let nodeToUse =  self.currentNode ?? self.root {
+                var start = CFAbsoluteTimeGetCurrent()
                 let rootToUse:QuadTreeNode? = self.reverseExploration(node: nodeToUse, location: quadLocation)
+                var end = CFAbsoluteTimeGetCurrent()
+                var elapsedTime = (end - start) * 1000
+                GlobalLogger.shared.debug("LiveMomentStore -  reverseExploration took \(elapsedTime) ms  ")
                 if let rootToUse = rootToUse {
-                    let start = CFAbsoluteTimeGetCurrent()
+                     start = CFAbsoluteTimeGetCurrent()
                     GlobalLogger.shared.debug("LiveMomentStore - browseTree start")
                     let node = rootToUse.browseTree(quadLocation)
+                     end = CFAbsoluteTimeGetCurrent()
+                    elapsedTime = (end - start) * 1000
+                    GlobalLogger.shared.debug("LiveMomentStore - browseTree result node: \(rootToUse.getTreeId()) in \(elapsedTime) ms  ")
+                    start = CFAbsoluteTimeGetCurrent()
                     result = node?.addLocation(quadLocation)
-                    let end = CFAbsoluteTimeGetCurrent()
-                    let elapsedTime = (end - start) * 1000
-                    GlobalLogger.shared.debug("LiveMomentStore - browseTree  result node: \(rootToUse.getTreeId()) in \(elapsedTime) ms  ")
+                    end = CFAbsoluteTimeGetCurrent()
+                     elapsedTime = (end - start) * 1000
+                    GlobalLogger.shared.debug("LiveMomentStore - add location  result node: \(rootToUse.getTreeId()) in \(elapsedTime) ms  ")
+
                     let nodeToSave = result?.getParentNode() ?? result
                     self.currentNode = result
                     if let node = self.currentNode {
@@ -239,10 +249,14 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                             listener.get()?.didChangeNode(node: node)
                         }
                     }
+                     start = CFAbsoluteTimeGetCurrent()
                     self.save(false, nodeToSave) {
                         result?.setUpdated(false)
                         nodeToSave?.setUpdated(false)
                         self.computePeriods(quadLocation)
+                        end = CFAbsoluteTimeGetCurrent()
+                        elapsedTime = (end - start) * 1000
+                        GlobalLogger.shared.debug("LiveMomentStore - browseTree save took \(elapsedTime) ms  ")
                         completion(false)
                     }
                     GlobalLogger.shared.debug("LiveMomentStore - tree result node: \(result?.getTreeId() ?? "none") location count: \(result?.getLocations().count ?? 0) ")
@@ -257,10 +271,14 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal func computePeriods( _ location: QuadTreeLocation) {
+        let start = CFAbsoluteTimeGetCurrent()
         for p in periods {
             var period = p
             period.addLocation(location)
         }
+        let end = CFAbsoluteTimeGetCurrent()
+        let elapsedTime = (end - start) * 1000
+        GlobalLogger.shared.debug("LiveMomentStore - computePeriods took in \(elapsedTime) ms ")
     }
 
     internal func getClustersInBase() ->  QuadTreeNode? {
@@ -300,11 +318,12 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             let neighbours =  self.currentNode?.neighbours()
             let computeBlock: ([PeriodProtocol])-> () = { periods in
                 let end = CFAbsoluteTimeGetCurrent()
-                let elapsedTime = (end - start) * 1000
-                GlobalLogger.shared.debug("LiveMomentStore - compute took in \(elapsedTime) ms ")
+
                 for listener in self.listeners {
                     listener.get()?.didCompute(rects: self.rects, home: self.home, work:  self.work, school: self.school, shoppings: self.shoppings, others: self.others, neighbours: neighbours, periods: periods)
                 }
+                let elapsedTime = (end - start) * 1000
+                GlobalLogger.shared.debug("LiveMomentStore - compute took in \(elapsedTime) ms ")
             }
             if self.needGetPeriods {
                 GlobalLogger.shared.debug("LiveMomentStore - get periods start")
@@ -337,7 +356,6 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         }
         return  nodes
     }
-
 
     internal func computeHome( _ candidates: [NodeDescription]?) -> QuadTreeNode? {
         let nodes = candidates?.filter {

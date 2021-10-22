@@ -120,11 +120,11 @@ import UIKit
         self.cacheManager.reset(completion: completion)
     }
 
-    @objc public func reset(platform: HerowPlatform, sdkUser: String, sdkKey: String,customID: String, completion: @escaping ((String)->())) {
+    @objc public func reset(platform: HerowPlatform, sdkKey: String, sdkSecret: String ,customID: String, completion: @escaping ((String)->())) {
         let optinState = self.userInfoManager.getOptin()
         self.reset {
             self.userInfoManager.resetOptinsAndCustomId(optin: optinState, customId: customID)
-            self.configPlatform(platform) .configApp(sdkKey: sdkUser, sdkSecure: sdkKey).synchronize()
+            self.configPlatform(platform) .configApp(sdkKey: sdkKey, sdkSecret: sdkSecret).synchronize()
             completion(customID)
         }
     }

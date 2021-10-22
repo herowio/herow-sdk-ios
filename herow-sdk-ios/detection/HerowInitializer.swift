@@ -88,14 +88,14 @@ import UIKit
         self.apiManager.configure(connectInfo: connectionInfo)
         return self
     }
-    @available(*, deprecated, message: "Don't use this anymore, use configApp(sdkKey: String, sdkSecure: String) instead \n indentifier becomes sdkKey and sdkKey becomes sdkSecure")
+    @available(*, deprecated, message: "Don't use this anymore, use configApp(sdkKey: String, sdkSecure: String) instead \n indentifier becomes sdkKey and sdkKey becomes sdkSecret")
     @objc public func configApp(identifier: String, sdkKey: String) -> HerowInitializer {
         self.apiManager.user = User(login: identifier, password: sdkKey)
         return self
     }
 
-    @objc public func configApp(sdkKey: String, sdkSecure: String) -> HerowInitializer {
-        self.apiManager.user = User(login: sdkKey, password: sdkSecure)
+    @objc public func configApp(sdkKey: String, sdkSecret: String) -> HerowInitializer {
+        self.apiManager.user = User(login: sdkKey, password: sdkSecret)
         return self
     }
 

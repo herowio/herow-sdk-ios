@@ -124,7 +124,7 @@ import UIKit
         let optinState = self.userInfoManager.getOptin()
         self.reset {
             self.userInfoManager.resetOptinsAndCustomId(optin: optinState, customId: customID)
-            self.configPlatform(platform) .configApp(identifier: sdkUser, sdkKey: sdkKey).synchronize()
+            self.configPlatform(platform) .configApp(sdkKey: sdkUser, sdkSecure: sdkKey).synchronize()
             completion(customID)
         }
     }
@@ -234,13 +234,11 @@ import UIKit
         detectionEngine.unregisterDetectionListener(listener: listener)
     }
 
-
     public func getClickAndCollectStart() -> Date? {
         return dataHolder.getDate(key: "lastClickAndCollectActivationDate")
     }
 
     public func getClickAndCollectDelay() -> TimeInterval {
-
         if let activation = getClickAndCollectStart() {
             let now = Date()
             let limit = Date(timeInterval: StorageConstants.timeIntervalLimit, since: activation)
@@ -249,7 +247,6 @@ import UIKit
             return delay
         }
         return 0
-
     }
 
     //MARK: FUSEMANAGERLISTENERS  MANAGEMENT
@@ -404,14 +401,11 @@ import UIKit
 
      @objc public func isNotificationsOnExactZoneEntry() -> Bool {
       return  herowDataHolder.useExactEntry()
-
-
     }
 
     @objc public func getVersion() -> String {
         return AnalyticsInfo().libInfo.version
     }
-
 
     public  func computeDynamicContent(_ text:  String, zone: Zone, campaign: Campaign) -> String {
         let dynamicValues =  text.dynamicValues(for: "\\{\\{(.*?)\\}\\}")
@@ -442,10 +436,7 @@ import UIKit
         GlobalLogger.shared.debug("create dynamic content notification result: \(result)")
         return result
     }
-
 }
-
-
 
 extension UNUserNotificationCenter : NotificationCenterProtocol {
 

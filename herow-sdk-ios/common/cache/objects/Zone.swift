@@ -8,13 +8,10 @@
 import Foundation
 import CoreLocation
 import UIKit
-public protocol Zone: Zonable,Codable {
-
+public protocol Zone: Zonable, Codable {
     func getCampaigns() -> [String]
     func getAccess() -> Access?
-
     init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?)
-
 }
 
 public protocol Zonable {
@@ -39,7 +36,7 @@ public protocol Access: Codable {
     init(id: String, name: String, address: String)
 }
 
- public protocol Campaign {
+public protocol Campaign {
 
     func getId() -> String
     func getName() -> String
@@ -51,7 +48,6 @@ public protocol Access: Codable {
     func getStartHour() -> String?
     func getStopHour() -> String?
 
-
     init(id: String,
          name: String,
          begin: Double,
@@ -61,10 +57,7 @@ public protocol Access: Codable {
          notification: Notification?, startHour: String?, stopHour: String?)
 }
 
-
-
- public protocol Notification {
-
+public protocol Notification {
     func getTitle() -> String
     func getDescription() -> String
     init(title: String, description: String)
@@ -76,7 +69,6 @@ public protocol Access: Codable {
 }
 
 public protocol Poi {
-
     func getId() -> String
     func getTags() -> [String]
     func getLat() -> Double
@@ -161,13 +153,10 @@ public protocol QuadTreeNode: AnyObject, Zonable {
 }
 
 extension QuadTreeNode {
-   public func getCount() -> Int {
+    public func getCount() -> Int {
         return getLocations().count
     }
 }
-
-
-
 
 public protocol QuadTreeLocation {
     var lat: Double {get set}
@@ -182,7 +171,6 @@ public protocol QuadTreeLocation {
 public protocol PeriodProtocol {
     var start: Date {get set}
     var end: Date {get set}
-  //  var locations: [QuadTreeLocation] {get set}
     var workLocations: [QuadTreeLocation] {get set}
     var homeLocations: [QuadTreeLocation] {get set}
     var schoolLocations: [QuadTreeLocation] {get set}
@@ -190,9 +178,6 @@ public protocol PeriodProtocol {
     var poiLocations: [QuadTreeLocation] {get set}
     func getAllLocations() ->  [QuadTreeLocation]
     init(workLocations: [QuadTreeLocation],homeLocations: [QuadTreeLocation],schoolLocations: [QuadTreeLocation],otherLocations: [QuadTreeLocation],poiLocations: [QuadTreeLocation], start: Date, end: Date)
-
-  //  func disPatchLocations(locations: [QuadTreeLocation])
-
 }
 
 public extension PeriodProtocol {
@@ -205,7 +190,7 @@ public extension PeriodProtocol {
             if location.time.isHomeCompliant() {
                 self.homeLocations.append( location)
             }
-           else if location.time.isWorkCompliant() {
+            else if location.time.isWorkCompliant() {
                 self.workLocations.append( location)
             }
             else if location.time.isSchoolCompliant() {

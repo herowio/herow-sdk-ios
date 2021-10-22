@@ -30,7 +30,9 @@ class SelectionContainer {
     public var centerLocation: CLLocationCoordinate2D
     public var confidence: Double?
     public var radius: Double?
+    public var poisNames: [String]?
     var zone: HerowZone?
+    
     init(zone: Zonable) {
         self.zoneHash = zone.getHash()
         self.radius = zone.getRadius()
@@ -38,9 +40,14 @@ class SelectionContainer {
         if let myZone = zone as? HerowZone {
             self.zone = myZone
         }
+        if let node = zone as? QuadTreeNode {
+            poisNames =  Array(node.getPois().map {
+                $0.getTags()
+            }.joined())
+        }
     }
 
-   public func getZone() -> HerowZone? {
+    public func getZone() -> HerowZone? {
         return zone
     }
 
@@ -62,8 +69,6 @@ class SelectionContainer {
         confidence =  1 - LocationUtils.computeConfidence(centerLocation: center, location: location, radius: radius ?? 0)
         GlobalLogger.shared.debug("ZoneInfo exit zone confidence : \(confidence ?? 0)")
     }
-
-   
 }
 
 
@@ -73,6 +78,7 @@ extension Double {
         return (self * divisor).rounded() / divisor
     }
 }
+
 extension CLLocationCoordinate2D: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.unkeyedContainer()
@@ -92,13 +98,13 @@ extension CLLocationCoordinate2D: Codable {
         return CLLocation(latitude: latitude, longitude: longitude).distance(from: destination)
     }
 }
- class ZoneEventGenerator {
+class ZoneEventGenerator {
     static let keyZoneEventHistory = "com.herow.keyZoneEventHistory"
     static let keyNotificationZoneEventHistory = "com.herow.keyNotificationZoneEventHistory"
-     static let keyHomeZoneEventHistory = "com.herow.keyHomeZoneEventHistory"
-     static let keyWorkZoneEventHistory = "com.herow.keyWorkZoneEventHistory"
-     static let keySchoolZoneEventHistory = "com.herow.keySchoolZoneEventHistory"
-     static let keyShopZoneEventHistory = "com.herow.keyShopZoneEventHistory"
+    static let keyHomeZoneEventHistory = "com.herow.keyHomeZoneEventHistory"
+    static let keyWorkZoneEventHistory = "com.herow.keyWorkZoneEventHistory"
+    static let keySchoolZoneEventHistory = "com.herow.keySchoolZoneEventHistory"
+    static let keyShopZoneEventHistory = "com.herow.keyShopZoneEventHistory"
 
     var dataHolder = DataHolderUserDefaults(suiteName: "ZoneEventGenerator")
     var eventDisPatcher: EventDispatcher
@@ -155,49 +161,47 @@ extension CLLocationCoordinate2D: Codable {
         }
     }
 
-     func computeEventForHome(_ node : QuadTreeNode, enter: Bool) {
-         let last = dataHolder.getBoolean(key: ZoneEventGenerator.keyHomeZoneEventHistory)
-         if !last && enter {
-             let zoneInfos = ZoneInfo(zone: node)
-             zoneInfos.enterTime = Date().timeIntervalSince1970
-             eventDisPatcher.post(event: .LIVE_HOME, infos: [zoneInfos])
-         }
-         dataHolder.putBoolean(key:  ZoneEventGenerator.keyHomeZoneEventHistory, value: enter)
-     }
+    func computeEventForHome(_ node : QuadTreeNode, enter: Bool) {
+        let last = dataHolder.getBoolean(key: ZoneEventGenerator.keyHomeZoneEventHistory)
+        if !last && enter {
+            let zoneInfos = ZoneInfo(zone: node)
+            zoneInfos.enterTime = Date().timeIntervalSince1970
+            eventDisPatcher.post(event: .LIVE_HOME, infos: [zoneInfos])
+        }
+        dataHolder.putBoolean(key:  ZoneEventGenerator.keyHomeZoneEventHistory, value: enter)
+    }
 
-     func computeEventForWork(_ node : QuadTreeNode, enter: Bool) {
-         let last = dataHolder.getBoolean(key: ZoneEventGenerator.keyWorkZoneEventHistory)
-         if !last && enter {
-             let zoneInfos = ZoneInfo(zone: node)
-             zoneInfos.enterTime = Date().timeIntervalSince1970
-             eventDisPatcher.post(event: .LIVE_WORK, infos: [zoneInfos])
-         }
-         dataHolder.putBoolean(key:  ZoneEventGenerator.keyWorkZoneEventHistory, value: enter)
-     }
+    func computeEventForWork(_ node : QuadTreeNode, enter: Bool) {
+        let last = dataHolder.getBoolean(key: ZoneEventGenerator.keyWorkZoneEventHistory)
+        if !last && enter {
+            let zoneInfos = ZoneInfo(zone: node)
+            zoneInfos.enterTime = Date().timeIntervalSince1970
+            eventDisPatcher.post(event: .LIVE_WORK, infos: [zoneInfos])
+        }
+        dataHolder.putBoolean(key:  ZoneEventGenerator.keyWorkZoneEventHistory, value: enter)
+    }
 
-     func computeEventForSchool(_ node : QuadTreeNode, enter: Bool) {
-             let last = dataHolder.getBoolean(key: ZoneEventGenerator.keySchoolZoneEventHistory)
-             if !last && enter {
-                 let zoneInfos = ZoneInfo(zone: node)
-                 zoneInfos.enterTime = Date().timeIntervalSince1970
-                 eventDisPatcher.post(event: .LIVE_SCHOOL, infos: [zoneInfos])
-             }
-         dataHolder.putBoolean(key:  ZoneEventGenerator.keySchoolZoneEventHistory, value: enter)
-     }
+    func computeEventForSchool(_ node : QuadTreeNode, enter: Bool) {
+        let last = dataHolder.getBoolean(key: ZoneEventGenerator.keySchoolZoneEventHistory)
+        if !last && enter {
+            let zoneInfos = ZoneInfo(zone: node)
+            zoneInfos.enterTime = Date().timeIntervalSince1970
+            eventDisPatcher.post(event: .LIVE_SCHOOL, infos: [zoneInfos])
+        }
+        dataHolder.putBoolean(key:  ZoneEventGenerator.keySchoolZoneEventHistory, value: enter)
+    }
 
-     func computeEventForShopping(_ node : QuadTreeNode, enter: Bool) {
-         let last = dataHolder.getBoolean(key: ZoneEventGenerator.keyShopZoneEventHistory)
-         if !last && enter {
-             let zoneInfos = ZoneInfo(zone: node)
-             zoneInfos.enterTime = Date().timeIntervalSince1970
-             eventDisPatcher.post(event: .LIVE_SHOP, infos: [zoneInfos])
-         }
-         dataHolder.putBoolean(key:  ZoneEventGenerator.keyShopZoneEventHistory, value: enter)
-     }
+    func computeEventForShopping(_ node : QuadTreeNode, enter: Bool) {
+        let last = dataHolder.getBoolean(key: ZoneEventGenerator.keyShopZoneEventHistory)
+        if !last && enter {
+            let zoneInfos = ZoneInfo(zone: node)
+            zoneInfos.enterTime = Date().timeIntervalSince1970
+            eventDisPatcher.post(event: .LIVE_SHOP, infos: [zoneInfos])
+        }
+        dataHolder.putBoolean(key:  ZoneEventGenerator.keyShopZoneEventHistory, value: enter)
+    }
 
-
-     func computeEvents(forZones: SelectionContainer) {
-
+    func computeEvents(forZones: SelectionContainer) {
         let blockOPeration = BlockOperation { [self] in
             let uuid = UUID().uuidString
             GlobalLogger.shared.debug("ZoneEventGenerator - starts operation: \(uuid)")
@@ -208,14 +212,12 @@ extension CLLocationCoordinate2D: Codable {
             let zonesLocationIds = zones.map {
                 $0.getHash()
             }
-
             let zonesNotificationsLocationIds = notificationZones.map {
                 $0.getHash()
             }
 
             let oldZonesIds = getPlaceHistory().map {$0.zoneHash}
             let oldNotificationZonesIds = getPlaceNotificationHistory().map {$0.zoneHash}
-
             let input: [ZoneInfo] = zones.map {
                 let zoneInfo = getOldZoneInfoFor(hash: $0.getHash())
                 let new = ZoneInfo(zone: $0 )
@@ -256,7 +258,6 @@ extension CLLocationCoordinate2D: Codable {
                 !zonesNotificationsLocationIds.contains($0.zoneHash)
             }
 
-
             for info in exits {
                 info.exitLocation = currentLocation?.coordinate
                 info.exitTime = now
@@ -296,7 +297,6 @@ extension CLLocationCoordinate2D: Codable {
         }
         queue.maxConcurrentOperationCount = 1
         queue.addOperation(blockOPeration)
-
     }
 
     func getOldZoneInfoFor(hash: String) -> ZoneInfo? {
@@ -310,7 +310,6 @@ extension CLLocationCoordinate2D: Codable {
             $0.zoneHash == hash
         }.first
     }
-
 
     public func clear() {
         dataHolder.clear()
@@ -334,11 +333,9 @@ class ZoneProvider: DetectionEngineListener, CacheListener, LiveMomentStoreListe
         self.shoppings = shoppings
     }
 
-
     func didChangeNode(node: QuadTreeNode) {
         // do nothing
     }
-
 
     var lastLocation: CLLocation?
     let cacheManager: CacheManagerProtocol
@@ -365,18 +362,18 @@ class ZoneProvider: DetectionEngineListener, CacheListener, LiveMomentStoreListe
         return zone.getRadius() * 3
     }
 
-
     func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         self.lastLocation = location
         if cacheIsLoaded {
-            _ =  zoneDetectionProcess(location)
+            zoneDetectionProcess(location)
             liveMomentProcess(location)
         } else {
             GlobalLogger.shared.warning("don't process because cache not updated")
         }
     }
 
-    func zoneDetectionProcess(_ location: CLLocation) -> SelectionContainer{
+    @discardableResult
+    func zoneDetectionProcess(_ location: CLLocation) -> SelectionContainer {
         let entrances = zonesForLocation(location)
         let notificationZonesEntrances = notificationZonesForLocation(location)
         let container =  SelectionContainer(location: location, zones: entrances, notificationZones: notificationZonesEntrances)
@@ -395,20 +392,20 @@ class ZoneProvider: DetectionEngineListener, CacheListener, LiveMomentStoreListe
             let circle = work.getRect().circle()
             let center = CLLocation(latitude:circle.center.latitude, longitude: circle.center.longitude)
             let distance  = center.distance(from: location)
-                zoneEventGenerator.computeEventForWork(work, enter:  circle.radius >= distance)
+            zoneEventGenerator.computeEventForWork(work, enter:  circle.radius >= distance)
         }
         if let school = self.school {
             let circle = school.getRect().circle()
             let center = CLLocation(latitude:circle.center.latitude, longitude: circle.center.longitude)
             let distance  = center.distance(from: location)
-                zoneEventGenerator.computeEventForSchool(school, enter:  circle.radius >= distance)
+            zoneEventGenerator.computeEventForSchool(school, enter:  circle.radius >= distance)
         }
         if let shoppings = self.shoppings {
             for shop in shoppings{
                 let circle = shop.getRect().circle()
                 let center = CLLocation(latitude:circle.center.latitude, longitude: circle.center.longitude)
                 let distance  = center.distance(from: location)
-                    zoneEventGenerator.computeEventForShopping(shop, enter:  circle.radius >= distance)
+                zoneEventGenerator.computeEventForShopping(shop, enter:  circle.radius >= distance)
             }
         }
     }
@@ -417,7 +414,7 @@ class ZoneProvider: DetectionEngineListener, CacheListener, LiveMomentStoreListe
         GlobalLogger.shared.warning("cache updated")
         cacheIsLoaded = true
         if let location = lastLocation {
-           _ =  zoneDetectionProcess(location)
+            _ =  zoneDetectionProcess(location)
         }
     }
 
@@ -425,5 +422,4 @@ class ZoneProvider: DetectionEngineListener, CacheListener, LiveMomentStoreListe
         cacheIsLoaded = false
         GlobalLogger.shared.warning("cache will update")
     }
-
 }

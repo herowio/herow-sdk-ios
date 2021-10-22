@@ -58,10 +58,10 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         self.dataStorage = storage
         queue.qualityOfService = .background
         queue.maxConcurrentOperationCount = 1
-        self.setup()
+        self.loadTree()
     }
 
-    func setup() {
+    func loadTree() {
         let start = CFAbsoluteTimeGetCurrent()
         self.dataBase.createQuadTreeRoot {
             let endRoot = CFAbsoluteTimeGetCurrent()
@@ -101,16 +101,11 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         guard forGeoHash != nil   else {
             return
         }
+
         self.currentNode = nil
-        let start = CFAbsoluteTimeGetCurrent()
-        GlobalLogger.shared.debug("LiveMomentStore reloadNewPois ")
         backgroundQueue.async {
-            self.dataBase.reloadNewPois {
-                self.root = self.getClustersInBase()
-                let end = CFAbsoluteTimeGetCurrent()
-                let elapsedTime = (end - start) * 1000
-                GlobalLogger.shared.debug("LiveMomentStore reloadNewPois took \(elapsedTime) ms ")
-            }
+            //new pois you need to reload tree with this pois
+           self.loadTree()
         }
     }
 

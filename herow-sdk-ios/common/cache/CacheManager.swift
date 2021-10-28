@@ -166,7 +166,7 @@ class CacheManager: CacheManagerProtocol {
     }
 
     func getNearbyPois(_ location: CLLocation) -> [Poi] {
-        getNearbyPois(location, distance: CacheManager.distanceThreshold, count: CacheManager.maxNearByPoiCount)
+        getNearbyPois(location, distance: CacheManager.distanceThreshold, count: CacheManager.maxNearByPoiCount).filter{$0.isValid()}
     }
 
 

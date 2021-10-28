@@ -8,6 +8,8 @@
 import Foundation
 
 public struct HerowPoi: Poi{
+
+
     var id: String
     var tags: [String]
     var lat: Double
@@ -35,5 +37,9 @@ public struct HerowPoi: Poi{
 
     public func getLng() -> Double {
         return lng
+    }
+
+    public func isValid() -> Bool {
+        return true // to do return validity according opening hours
     }
 }

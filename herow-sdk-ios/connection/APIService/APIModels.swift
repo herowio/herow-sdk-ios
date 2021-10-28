@@ -39,7 +39,6 @@ public enum Platform {
             self = .preprod
         case HerowPlatform.test.rawValue:
             self = .test
-
         default:
             throw CodingError.unknownValue
         }
@@ -54,7 +53,6 @@ public enum Platform {
             try container.encode(HerowPlatform.preprod.rawValue, forKey: .rawValue)
         case .test:
             try container.encode(HerowPlatform.test.rawValue, forKey: .rawValue)
-
         }
     }
 }
@@ -221,7 +219,6 @@ public struct APICache: Codable {
     var zones: [APIZone]
     var campaigns: [APICampaign]?
     var pois: [APIPoi]?
-
 }
 
 struct NoReply: Codable {

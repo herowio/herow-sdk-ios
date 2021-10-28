@@ -410,10 +410,10 @@ class HerowQuadTreeNode: QuadTreeNode {
         var allpois = [Poi]()
         allpois.append(contentsOf:getPois())
         for neighbour in self.neighbours() {
-            for n in neighbour.neighbours() {
-                allpois.append(contentsOf:n.getPois())
-            }
-           // allpois.append(contentsOf:neighbour.getPois())
+            /*for n in neighbour.neighbours() {
+               allpois.append(contentsOf:n.getPois())
+            }*/
+            allpois.append(contentsOf:neighbour.getPois())
         }
         return allpois
     }
@@ -501,7 +501,7 @@ class HerowQuadTreeNode: QuadTreeNode {
     }
 
     func getPois() -> [Poi] {
-        return self.pois ?? [Poi]()
+        return self.pois?.filter{$0.isValid()} ?? [Poi]()
     }
 
     func setPois(_ pois: [Poi]?) {

@@ -7,8 +7,6 @@
 
 import Foundation
 struct APIPoi: Poi, Codable {
-
-
     var id: String
     var tags: [String]
     var lat: Double
@@ -51,5 +49,9 @@ struct APIPoi: Poi, Codable {
 
     func getLng() -> Double {
         return lng
+    }
+
+    func isValid() -> Bool {
+        return true
     }
 }

@@ -339,8 +339,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
 
         var nodes = getRects()?.filter {
             $0.locations.count > 10 }
-        if let currentGeoHash = HerowInitializer.instance.getLastGeoHash(),  let geohash = Geohash.decode(hash: currentGeoHash)  {
-            if onGeoHashOnly {
+        if onGeoHashOnly {
+            if let currentGeoHash = HerowInitializer.instance.getLastGeoHash(),  let geohash = Geohash.decode(hash: currentGeoHash)  {
                 nodes = nodes?.filter{
                     $0.rect.originLat >= geohash.latitude.min &&
                     $0.rect.endLat <= geohash.latitude.max &&

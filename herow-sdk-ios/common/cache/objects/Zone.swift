@@ -73,6 +73,7 @@ public protocol Poi {
     func getTags() -> [String]
     func getLat() -> Double
     func getLng() -> Double
+    func isValid() -> Bool
     init(id: String, tags: [String],lat: Double, lng: Double)
 }
 

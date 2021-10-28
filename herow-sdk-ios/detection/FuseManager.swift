@@ -56,13 +56,11 @@ class FuseManager: DetectionEngineListener, ResetDelegate {
         }
         let newValue = (locationCount > FuseManager.countLimit)
         if self.activated != newValue {
-
             for listner in listeners {
                 listner.get()?.onFuseUpdate(newValue, location: location)
             }
         }
         activated = newValue
-
         save()
     }
 
@@ -85,5 +83,4 @@ class FuseManager: DetectionEngineListener, ResetDelegate {
         GlobalLogger.shared.debug("FuseManager - activated = \(activated)")
         return activated
     }
-
 }

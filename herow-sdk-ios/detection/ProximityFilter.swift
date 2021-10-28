@@ -15,6 +15,7 @@ import CoreLocation
     func setCurrentTime(_ date: Date)
     func getLastLocation() -> CLLocation?
     func processState(currentLocation: CLLocation) -> ProximityResult?
+    func getLastSpeed() -> Double
     func reset()
 }
 
@@ -65,9 +66,14 @@ import CoreLocation
         return previousLocation
     }
 
+    func getLastSpeed() -> Double {
+        return previousSpeed
+    }
+
     static let defaultSpeed: Double = 5
     static let minimumDistanceAllowed: Double = 30
     static let minimumAccuracyAllowed: Double = 50
+    static let speedThreshold: Double = 14 //( 50,4) km/h
     static let invalidationFilterThresholdAfterReuseAccuracy: Double = 65
     private var previousLocation: CLLocation?
     private var previousTimeInterval: Double = 0
@@ -128,6 +134,11 @@ import CoreLocation
         var confidenceFromRefuse = 0.0
         if (currentLocation.horizontalAccuracy <= (lastRefuseLocation?.horizontalAccuracy ?? ProximityFilter.invalidationFilterThresholdAfterReuseAccuracy)) {
            confidenceFromRefuse = computeWithLastRefuse(currentLocation)
+        }
+
+        if tmPreviousSpeed >= ProximityFilter.speedThreshold {
+            // we disable filter if speed is to hight
+            confidence = 1
         }
 
         let result = max(confidence, confidenceFromRefuse)

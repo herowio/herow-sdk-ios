@@ -20,6 +20,11 @@ public enum  ResultType: String {
     func didRunEstimation(_ result: FilterResult?)
 }
 
+ public struct LocationValidationResult {
+        var shouldBeMoreAccurate = false
+        var locationIsValid = false
+    }
+
 @objc public class LocationValidator: NSObject, AppStateDelegate {
 
     private var lastLocation: CLLocation?
@@ -62,6 +67,20 @@ public enum  ResultType: String {
         return resultType == .valid 
     }
 
+    public func getValidationValues(_ location: CLLocation) -> LocationValidationResult {
+        let result = runEstimation(location)
+        let resultType =  result?.type ?? .valid
+        var speedToHight = false
+        if let speed = result?.lastSpeed {
+            speedToHight = speed > ProximityFilter.speedThreshold
+        }
+
+        let locationIsValid =  resultType == .valid
+        let shouldBeMoreaccurate =  !locationIsValid || speedToHight
+        return LocationValidationResult(shouldBeMoreAccurate: shouldBeMoreaccurate, locationIsValid: locationIsValid)
+    }
+    
+
     public func runEstimation(_ location: CLLocation) -> FilterResult? {
             return runConfidenceEstimation(location)
     }
@@ -99,6 +118,7 @@ public enum  ResultType: String {
             }
         }
         for d in LocationValidator.delegates {
+            result?.lastSpeed =  proximityFilter?.getLastSpeed()
             d.didRunEstimation(result)
         }
         return result
@@ -133,7 +153,7 @@ public enum  ResultType: String {
     public var validRadius: Double = 0
     public var confidence: Double = 0
     public var fromLastRefuse = false
-
+    public var lastSpeed: Double?
     fileprivate   init( position: CLLocation, previousPosition: CLLocation?, type: ResultType, speedRadius: Double, confidence: Double ) {
         self.position = position
         self.type = type

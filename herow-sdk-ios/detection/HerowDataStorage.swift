@@ -11,8 +11,6 @@ import Foundation
 
 public class HerowDataStorage: HerowDataStorageProtocol {
 
-
-
     private var userInfo: APIUserInfo?
     private var token: APIToken?
     private var config: APIConfig?

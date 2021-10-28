@@ -355,17 +355,21 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             skip = distanceKO && timeKO && skipCount < 5
         }
         skip = skip || distpatchTimeKO || locationToOld
-        var locationFilter = true
+        var passLocationFilter = true
+        var needMorePrecision = false
         if (skip == false) {
             if from == .fake {
                 // no filter on fake positions
-                locationFilter = true
+                passLocationFilter = true
+                needMorePrecision = false
             } else {
-                locationFilter = locationValidator.runValidation(location)
+                let validationResult  = locationValidator.getValidationValues(location)
+                passLocationFilter = validationResult.locationIsValid
+                needMorePrecision = validationResult.shouldBeMoreAccurate
             }
-            needMorePrecisionPrecision(!locationFilter)
+            needMorePrecisionPrecision(needMorePrecision)
         }
-        if (skip == false && locationFilter)  {
+        if (skip == false && passLocationFilter)  {
             dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
             self.lastLocation = location
             skipCount = 0

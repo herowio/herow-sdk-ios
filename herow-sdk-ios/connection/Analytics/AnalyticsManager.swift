@@ -24,6 +24,8 @@ public protocol AnalyticsManagerListener: AnyObject {
 
 class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
 
+
+
     private var dataStorage: HerowDataStorageProtocol?
     private var  apiManager: APIManagerProtocol
     private var cacheManager: CacheManagerProtocol
@@ -220,6 +222,13 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     }
 
     func didCompute(rects: [NodeDescription]?, home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?, others: [QuadTreeNode]?, neighbours: [QuadTreeNode]?, periods: [PeriodProtocol]) {
+        self.home = home
+        self.work = work
+        self.school = school
+        self.shoppings = shoppings
+    }
+
+    func getFirstLiveMoments(home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?) {
         self.home = home
         self.work = work
         self.school = school

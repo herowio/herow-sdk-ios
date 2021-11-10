@@ -597,6 +597,30 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return result
     }
 
+
+    func resetDynamicValuesForNodes(completion: @escaping () ->()) {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            contextToUse = self.context
+        }
+        contextToUse.perform {
+            var result = [NodeCoreData]()
+            let fetchRequest = NSFetchRequest<NodeCoreData>(entityName: StorageConstants.NodeCoreDataEntityName)
+            do {
+                result = try contextToUse.fetch(fetchRequest)
+            } catch let error as NSError {
+                GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
+            }
+            for node in result {
+                node.liveMomentTypes.removeAll()
+            }
+            self.save {
+                completion()
+            }
+        }
+    }
+
+
     func getLocations(completion: @escaping ([QuadTreeLocation]) ->() )  {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
@@ -768,16 +792,27 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             GlobalLogger.shared.debug("Period - locations for display  count at start : \(locations.count)")
             GlobalLogger.shared.debug("location without container count : \(unlikededlocation(contextToUse).count)")
         }
+    }
 
+    func saveQuadTrees(_ nodes : [QuadTreeNode],  completion: (()->())? = nil)  {
+        var context = self.bgContext
+        if Thread.isMainThread {
+            context = self.context
+        }
+        context.perform {
+            for node in nodes {
+                self.recursiveSave(node,context:  context)
+            }
+        }
+        self.save(completion)
     }
 
     func saveQuadTree(_ node : QuadTreeNode,  completion: (()->())? = nil) {
         var context = self.bgContext
         if Thread.isMainThread {
-            
             context = self.context
         }
-       context.perform {
+        context.perform {
             self.recursiveSave(node,context:  context)
             self.save(completion)
         }
@@ -798,7 +833,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func reloadNewPois(completion: (()->())? = nil) {
         var context = self.bgContext
         if Thread.isMainThread {
-            
             context = self.context
         }
         context.perform {
@@ -807,7 +841,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 self.save()
                 completion?()
             }
-
         }
     }
 
@@ -932,6 +965,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return node
     }
 
+    
+
 
     private func recursiveInit(_ node : NodeCoreData?)  -> QuadTreeNode?{
         guard let node = node else {
@@ -989,6 +1024,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             let densities = node.nodeDensities
 
             result =  T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags,densities: densities, rect: rect, pois: pois)
+
+            result?.liveMomentTypes = node.liveMomentTypes.compactMap {
+                NodeType(rawValue: $0)
+            }
             result?.getLeftUpChild()?.setParentNode(result)
             result?.getLeftBottomChild()?.setParentNode(result)
             result?.getRightUpChild()?.setParentNode(result)
@@ -1024,12 +1063,20 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
 
             nodeCoreData.treeId = node.getTreeId()
+            if node.getTreeId() == "02133312344113212132" {
+                print ("stop")
+            }
             nodeCoreData.nodeTags = node.getTags() ?? [String: Double]()
             nodeCoreData.nodeDensities = node.getDensities() ?? [String: Double]()
             nodeCoreData.originLat = node.getRect().originLat
             nodeCoreData.originLng = node.getRect().originLng
             nodeCoreData.endLat = node.getRect().endLat
             nodeCoreData.endLng = node.getRect().endLng
+            if node.liveMomentTypes.count > 0 {
+            nodeCoreData.liveMomentTypes = node.liveMomentTypes.map {
+                $0.rawValue
+            }
+            }
             if  nodeCoreData.locations == nil {
                 nodeCoreData.locations = Set([LocationCoreData]())
             }

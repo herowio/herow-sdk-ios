@@ -333,6 +333,13 @@ class ZoneProvider: DetectionEngineListener, CacheListener, LiveMomentStoreListe
         self.shoppings = shoppings
     }
 
+    func getFirstLiveMoments(home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?) {
+        self.home = home
+        self.work = work
+        self.school = school
+        self.shoppings = shoppings
+    }
+
     func didChangeNode(node: QuadTreeNode) {
         // do nothing
     }

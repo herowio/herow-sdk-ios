@@ -21,6 +21,21 @@ class NodeCoreData: NSManagedObject {
     @NSManaged var endLng: Double
     @NSManaged var nodeTags:  [String: Double]
     @NSManaged var nodeDensities: [String: Double]
+    @NSManaged var liveMomentTypes: [Int]
+
+
+    func addLiveMomentType(_ type: NodeType) {
+        if !liveMomentTypes.contains(type.rawValue) {
+            liveMomentTypes.append(type.rawValue)
+        }
+    }
+
+    func removeLiveMomentType(_ type: NodeType) {
+        if liveMomentTypes.contains(type.rawValue) {
+            liveMomentTypes.removeAll { $0 == type.rawValue
+            }
+        }
+    }
 
     func getChildForType(_ type: LeafType) ->  NodeCoreData?{
         return childs?.filter {

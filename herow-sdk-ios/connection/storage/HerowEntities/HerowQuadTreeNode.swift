@@ -126,6 +126,7 @@ public struct NodeDescription {
 
 
 class HerowQuadTreeNode: QuadTreeNode {
+    var liveMomentTypes: [NodeType] =  [NodeType]()
     func getHash() -> String {
         return self.treeId ?? "0"
     }
@@ -170,6 +171,7 @@ class HerowQuadTreeNode: QuadTreeNode {
     private var lastSchoolCount: Int = -1
     private var lastSchoppingCount: Int = -1
     private var newBorn = false
+
 
     required init(id: String, locations: [QuadTreeLocation]?, leftUp: QuadTreeNode?, rightUp: QuadTreeNode?, leftBottom : QuadTreeNode?, rightBottom : QuadTreeNode?, tags: [String: Double]?, densities:  [String: Double]?, rect: Rect, pois: [Poi]?) {
         treeId = id
@@ -369,41 +371,44 @@ class HerowQuadTreeNode: QuadTreeNode {
 
     func schoolCount(_ locations: [QuadTreeLocation]) -> Int {
         if lastSchoolCount == -1 {
-        return locations.filter {
-            return $0.time.isSchoolCompliant()
+            lastSchoolCount = locations.filter {
+             return $0.time.isSchoolCompliant()
         }.count
         } else {
             if lastLocation?.time.isSchoolCompliant() ?? false {
                 lastSchoolCount = lastSchoolCount + 1
             }
-            return lastSchoolCount
+
         }
+        return lastSchoolCount
     }
 
     func homeCount(_ locations: [QuadTreeLocation]) -> Int {
         if lastHomeCount == -1 {
-        return allLocations().filter {
+            lastHomeCount = allLocations().filter {
             return $0.time.isHomeCompliant()
         }.count
         } else {
             if lastLocation?.time.isHomeCompliant() ?? false {
                 lastHomeCount = lastHomeCount + 1
             }
-            return lastHomeCount
+
         }
+        return lastHomeCount
     }
 
     func workCount(_ locations: [QuadTreeLocation]) -> Int {
         if lastWorkCount == -1 {
-        return allLocations().filter {
+            lastWorkCount = allLocations().filter {
             return $0.time.isWorkCompliant()
         }.count
         } else {
             if lastLocation?.time.isWorkCompliant() ?? false {
                 lastWorkCount = lastWorkCount + 1
             }
-            return lastWorkCount
+
         }
+        return lastWorkCount
     }
 
     func poisInProximity() -> [Poi] {
@@ -430,8 +435,9 @@ class HerowQuadTreeNode: QuadTreeNode {
     }
 
     func shoppingCount(_ locations: [QuadTreeLocation]) -> Int {
-        var result = 0
+
         if lastSchoppingCount == -1 {
+            var result = 0
             var filteredLocations = [QuadTreeLocation]()
             for loc in allLocations() {
                 let poisForlocation = poisForLocation(loc)
@@ -451,10 +457,9 @@ class HerowQuadTreeNode: QuadTreeNode {
                 if isNearPOI {
                     lastSchoppingCount = lastSchoppingCount + 1
                 }
-                result = lastSchoolCount
             }
         }
-        return result
+        return lastSchoppingCount
     }
 
     func childs() -> [QuadTreeNode] {
@@ -832,7 +837,7 @@ class HerowQuadTreeNode: QuadTreeNode {
             return rightParent?.getLeftBottomChild() ?? rightParent
         case .leftBottom:
             let bottomParent = getParentNode()?.walkDown()
-            return bottomParent?.getRightBottomChild() ?? bottomParent
+            return bottomParent?.getRightUpChild() ?? bottomParent
         default:
             return nil
         }

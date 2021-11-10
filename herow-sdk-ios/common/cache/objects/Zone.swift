@@ -101,8 +101,17 @@ public enum LeafDirection: String {
     case SW = "3"
     case SE = "4"
 }
-public protocol QuadTreeNode: AnyObject, Zonable {
 
+public  enum NodeType: Int {
+    case home = 0
+    case work = 1
+    case school = 2
+    case shop = 3
+    case none = 4
+}
+
+public protocol QuadTreeNode: AnyObject, Zonable {
+    var liveMomentTypes: [NodeType] {get set}
     var merged: Bool {get set}
     func findNodeWithId(_ id: String)  -> QuadTreeNode?
     func getTreeId() -> String
@@ -151,11 +160,71 @@ public protocol QuadTreeNode: AnyObject, Zonable {
     func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode]
     func isEqual(_ node: QuadTreeNode) -> Bool
     func getLimit() -> Int
+
+
+}
+
+struct LiveMomentResult {
+    var homes: [QuadTreeNode]
+    var works: [QuadTreeNode]
+    var schools: [QuadTreeNode]
+    var shoppings:  [QuadTreeNode]
 }
 
 extension QuadTreeNode {
     public func getCount() -> Int {
         return getLocations().count
+    }
+    
+    func addNodeType(_ type: NodeType) {
+        if !self.liveMomentTypes.contains(type) {
+        self.liveMomentTypes.append(type)
+        }
+    }
+
+    func removeNodeType(_ type: NodeType) {
+        if self.liveMomentTypes.contains(type) {
+            self.liveMomentTypes.removeAll {$0 == type}
+        }
+    }
+
+    func resetNodeTypes() {
+        self.liveMomentTypes.removeAll()
+    }
+
+    internal func getLiveMoments() -> LiveMomentResult {
+        var homes = [QuadTreeNode]()
+        var works = [QuadTreeNode]()
+        var schools = [QuadTreeNode]()
+        var shoppings = [QuadTreeNode]()
+        return self.getLiveMoments(homes: &homes, works: &works, schools: &schools, shoppings: &shoppings)
+    }
+
+    @discardableResult
+    internal func getLiveMoments(homes: inout [QuadTreeNode] ,
+                                 works: inout [QuadTreeNode],
+                                 schools: inout [QuadTreeNode],
+                                 shoppings: inout [QuadTreeNode]) -> LiveMomentResult {
+
+        if childs().count == 0 {
+            if self.liveMomentTypes.contains(.home) {
+                homes.append(self)
+            }
+            if self.liveMomentTypes.contains(.work) {
+                works.append(self)
+            }
+            if self.liveMomentTypes.contains(.school) {
+                schools.append(self)
+            }
+            if self.liveMomentTypes.contains(.shop) {
+                shoppings.append(self)
+            }
+        } else {
+            self.childs().forEach {
+                $0.getLiveMoments(homes: &homes, works: &works, schools: &schools, shoppings: &shoppings)
+            }
+        }
+        return LiveMomentResult(homes: homes, works: works, schools: schools, shoppings: shoppings)
     }
 }
 
@@ -166,7 +235,6 @@ public protocol QuadTreeLocation {
     func isNearToPoi() -> Bool
     func setIsNearToPoi(_ near: Bool)
     init(lat: Double, lng: Double, time: Date)
-
 }
 
 public protocol PeriodProtocol {

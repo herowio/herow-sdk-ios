@@ -58,7 +58,7 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     func didReceivedEvent(_ event: Event, infos: [ZoneInfo]) {
         for info in infos {
 
-            guard event == .GEOFENCE_ENTER || event == .GEOFENCE_EXIT || event == .GEOFENCE_NOTIFICATION_ZONE_ENTER else {
+            guard event == .GEOFENCE_ENTER || event == .GEOFENCE_EXIT  else {
                 return
             }
              createlogEvent(event: event, info: info)

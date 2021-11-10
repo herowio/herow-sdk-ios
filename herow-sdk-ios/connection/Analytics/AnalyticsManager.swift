@@ -38,7 +38,7 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     private var work : QuadTreeNode?
     private var school : QuadTreeNode?
     private var shoppings : [QuadTreeNode]?
-
+    private let allowedEvents = [Event.GEOFENCE_ENTER, Event.GEOFENCE_EXIT]
 
     init(apiManager: APIManagerProtocol, cacheManager:  CacheManagerProtocol, dataStorage: HerowDataStorageProtocol?) {
         self.apiManager = apiManager
@@ -57,11 +57,9 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
 
     func didReceivedEvent(_ event: Event, infos: [ZoneInfo]) {
         for info in infos {
-
-            guard event == .GEOFENCE_ENTER || event == .GEOFENCE_EXIT  else {
-                return
-            }
+            if  allowedEvents.contains(event) {
              createlogEvent(event: event, info: info)
+            }
         }
     }
 
@@ -108,6 +106,7 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
         let shopConfidence = computeShoppingConfidence(location)
 
         GlobalLogger.shared.info("AnalyticsManager compute confidence : Home: \(homeConfidence) Work: \(workConfidence) School: \(schoolConfidence) Shop: \(shopConfidence)")
+        //TODO:  insert confidence into log
         let logContext = LogDataContext(appState: appState, location: location, cacheManager: cacheManager, dataStorage:  self.dataStorage, clickAndCollect: onClickAndCollect )
         if let data = logContext.getData() {
             apiManager.pushLog(data) {

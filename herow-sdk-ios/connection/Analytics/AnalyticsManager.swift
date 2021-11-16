@@ -10,10 +10,13 @@ import CoreLocation
 import Foundation
 import UserNotifications
 import UIKit
+
 protocol AnalyticsManagerProtocol:   EventListener, DetectionEngineListener, ClickAndConnectListener, AppStateDelegate,NotificationCreationListener, UNUserNotificationCenterDelegate{
+
     func createlogContex(_ location: CLLocation)
     func createlogEvent( event: Event,  info: ZoneInfo)
 }
+
 class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
 
     private var dataStorage: HerowDataStorageProtocol?
@@ -63,7 +66,7 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
         GlobalLogger.shared.debug("AnalyticsManager - createlogContex: \(location.coordinate.latitude) \(location.coordinate.longitude)")
         let logContext = LogDataContext(appState: appState, location: location, cacheManager: cacheManager, dataStorage:  self.dataStorage, clickAndCollect: onClickAndCollect )
         if let data = logContext.getData() {
-            apiManager.pushLog(data) {
+            apiManager.pushLog(data, SubType.CONTEXT.rawValue) {
                 if self.backgroundTaskContext != .invalid {
                     UIApplication.shared.endBackgroundTask(  self.backgroundTaskContext)
                     GlobalLogger.shared.info("AnalyticsManager ends context backgroundTask with identifier : \(   self.backgroundTaskContext)")
@@ -97,7 +100,7 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
         GlobalLogger.shared.debug("AnalyticsManager - createlogEvent event: \(event) zoneInfo: \(info.hash)")
         let logEvent = LogDataEvent(appState: appState, event: event, infos: info, cacheManager: cacheManager, dataStorage:  self.dataStorage)
         if let data = logEvent.getData() {
-            apiManager.pushLog(data) {
+            apiManager.pushLog(data, event.toString()) {
 
                 if self.backgroundTaskEvent != .invalid {
                     UIApplication.shared.endBackgroundTask(  self.backgroundTaskEvent)
@@ -134,10 +137,11 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     }
 
     func didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String, zoneInfo: ZoneInfo) {
+        
         GlobalLogger.shared.debug("AnalyticsManager - create Notification Log : \(campaign.getName())")
         let log = LogDataNotification(appState: appState, campaignId: campaign.getId(), cacheManager: cacheManager, dataStorage: dataStorage, subType: .GEOFENCE_ZONE_NOTIFICATION, zoneID: zoneID, zoneInfo: zoneInfo)
         if let data = log.getData() {
-           apiManager.pushLog(data) {}
+            apiManager.pushLog(data, SubType.GEOFENCE_ZONE_NOTIFICATION.rawValue) {}
         }
     }
 
@@ -156,7 +160,7 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
 
         let log = LogDataNotification(appState: appState, campaignId: campaign.getId(), cacheManager: cacheManager, dataStorage: dataStorage, subType: .REDIRECT, zoneID: zoneID, zoneInfo: nil)
         if let data = log.getData() {
-           apiManager.pushLog(data) {}
+            apiManager.pushLog(data, SubType.REDIRECT.rawValue) {}
         }
 
     }

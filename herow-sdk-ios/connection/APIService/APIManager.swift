@@ -123,7 +123,7 @@ protocol APIManagerProtocol:ConfigDispatcher {
     func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)?)
     func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)?)
     func getUserInfoIfNeeded(completion: (() -> Void)?)
-    func pushLog(_ log: Data ,completion: (() -> Void)?)
+    func pushLog(_ log: Data, _ logtype: String ,completion: (() -> Void)?)
     func reset()
     func reloadUrls()
 }
@@ -404,7 +404,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
     }
     // MARK: Logs
-    internal func pushLog(_ log: Data,completion: (() -> Void)?) {
+    internal func pushLog(_ log: Data, _ logtype: String = "",completion: (() -> Void)?) {
         if  !herowDataStorage.getOptin().value {
             GlobalLogger.shared.info("APIManager- OPTINS ARE FALSE")
             return
@@ -415,13 +415,14 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
         authenticationFlow  {
             self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: herowid)
+
             self.logWorker.postData(param: log) {
                 response, error in
 
                 if error == nil {
                     if let json = try? JSONSerialization.jsonObject(with: log, options: .mutableContainers),
                        let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                        GlobalLogger.shared.verbose("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self)) response:\(String(describing: response))")
+                        GlobalLogger.shared.verbose("APIManager - send log - nature:  \(logtype) \n \(String(decoding: jsonData, as: UTF8.self)) response:\(String(describing: response))")
                     } 
                 }
                 completion?()

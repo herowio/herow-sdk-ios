@@ -87,6 +87,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
     internal  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?)  {
 
+        var task: URLSessionDataTask?
         let completion: (Result<ResponseType, Error>) -> Void = {result in
             callback?(result)
             self.queue.cancelAllOperations()
@@ -135,7 +136,7 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                     request.httpBody = param
                 }
 
-                self?.currentTask = self?.session.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
+                task = self?.session.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
                     if let _ = error {
                         completion(Result.failure(NetworkError.badUrl))
                         return
@@ -181,7 +182,9 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
                     }
                 })
-                self?.currentTask?.resume()
+                task?.resume()
+                self?.currentTask = task
+               // self?.currentTask?.resume()
             }
             queue.addOperation(blockOPeration)
         } else {

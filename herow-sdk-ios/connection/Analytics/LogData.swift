@@ -11,6 +11,8 @@ import CoreLocation
 enum  SubType: String {
     case  GEOFENCE_ZONE_NOTIFICATION = "GEOFENCE_ZONE_NOTIFICATION"
     case  REDIRECT = "REDIRECT"
+    case CONTEXT = "CONTEXT"
+    case CONTEXT_REALTIME = "CONTEXT_REALTIME"
 }
 
 class LogData {

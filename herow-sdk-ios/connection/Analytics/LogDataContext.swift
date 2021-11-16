@@ -30,7 +30,7 @@ class LogDataContext: LogData {
             return NearbyPlace(placeId: $0.getHash(), distance: distance, radius: $0.getRadius(), lat: $0.getLat(), lng: $0.getLng(),confidence: nil )
         } ?? [NearbyPlace]()
 
-        let logData = LogDataContextStruct(location: location, pois: pois, places: places, appState: self.appState, subtype: self.clickAndCollect ? "CONTEXT_REALTIME" : "CONTEXT", dataStorage: self.dataStorage)
+        let logData = LogDataContextStruct(location: location, pois: pois, places: places, appState: self.appState, subtype: self.clickAndCollect ?  SubType.CONTEXT_REALTIME.rawValue : SubType.CONTEXT.rawValue, dataStorage: self.dataStorage)
 
         let log = Log(data: logData)
         return  log.encode()

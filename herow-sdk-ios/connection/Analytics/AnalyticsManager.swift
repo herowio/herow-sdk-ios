@@ -39,7 +39,7 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     private var work : QuadTreeNode?
     private var school : QuadTreeNode?
     private var shoppings : [QuadTreeNode]?
-    private let allowedEvents = [Event.GEOFENCE_ENTER, Event.GEOFENCE_EXIT]
+    private let allowedEvents = [Event.GEOFENCE_ENTER, Event.GEOFENCE_EXIT, Event.GEOFENCE_VISIT]
 
     init(apiManager: APIManagerProtocol, cacheManager:  CacheManagerProtocol, dataStorage: HerowDataStorageProtocol?) {
         self.apiManager = apiManager

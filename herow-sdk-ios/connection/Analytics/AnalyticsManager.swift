@@ -26,6 +26,8 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     private var backgroundTaskContext = UIBackgroundTaskIdentifier.invalid
     private var backgroundTaskEvent = UIBackgroundTaskIdentifier.invalid
     private var appState: String = "bg"
+    private let allowedEvents = [Event.GEOFENCE_ENTER, Event.GEOFENCE_EXIT, Event.GEOFENCE_VISIT]
+
     init(apiManager: APIManagerProtocol, cacheManager:  CacheManagerProtocol, dataStorage: HerowDataStorageProtocol?) {
         self.apiManager = apiManager
         self.cacheManager =  cacheManager
@@ -37,7 +39,7 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
 
     func didReceivedEvent(_ event: Event, infos: [ZoneInfo]) {
         for info in infos {
-            if event != .GEOFENCE_NOTIFICATION_ZONE_ENTER {
+            if  allowedEvents.contains(event) {
              createlogEvent(event: event, info: info)
             }
         }

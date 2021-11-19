@@ -161,6 +161,9 @@ extension CLLocationManager: LocationManager {
     }
 
     public func authorizationStatus() -> CLAuthorizationStatus {
+        if #available(iOS 14.0, *) {
+            return self.authorizationStatus
+        }
         return CLLocationManager.authorizationStatus()
     }
 

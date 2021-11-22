@@ -32,12 +32,14 @@ extension PermissionsManagerProtocol {
         }
     }
 }
-@objc public class PermissionsManager: NSObject, PermissionsManagerProtocol  {
+@objc public class PermissionsManager: NSObject, PermissionsManagerProtocol , CLLocationManagerDelegate {
     let userInfoManager: UserInfoManagerProtocol
     let locationManager = CLLocationManager()
     let motionManager = MotionActivityManager()
     init(userInfoManager: UserInfoManagerProtocol ) {
         self.userInfoManager = userInfoManager
+        super.init()
+        self.locationManager.delegate = self
     }
 
    @objc public func requestIDFA(completion: (()->())? = nil) {
@@ -85,4 +87,56 @@ extension PermissionsManagerProtocol {
             completion?(granted, error)
         }
     }
+
+    //MARK location delegate
+
+    public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        GlobalLogger.shared.debug("locationManager didChangeAuthorization \( String(describing: status.rawValue))")
+    }
+
+    @available(iOS 14.0, *)
+    public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        GlobalLogger.shared.debug("locationManager didChangeAuthorization \( String(describing: CLLocationManager.authorizationStatus().rawValue)) precision \(manager.accuracyAuthorization.rawValue)")
+    }
+
+
+    func didChangeAuthorization() {
+        var state : LocationOptinStatusEnum = .NOT_DETERMINED
+        var precision : LocationOptinPrecisionEnum = .FINE
+
+        let iosState = locationManager.authorizationStatus()
+        switch iosState {
+        case .notDetermined:
+            state = .NOT_DETERMINED
+        case .restricted:
+            state = .NOT_DETERMINED
+        case .denied:
+            state = .DENIED
+        case .authorizedAlways:
+            state = .ALWAYS
+        case .authorizedWhenInUse:
+            state = .WHILE_IN_USE
+        case .authorized:
+            state = .WHILE_IN_USE
+        @unknown default:
+            fatalError()
+        }
+
+        if #available(iOS 14.0, *) {
+            let precisionIOSState = locationManager.accuracyAuthorizationStatus()
+            switch precisionIOSState {
+            case .fullAccuracy:
+                precision = .FINE
+            case .reducedAccuracy:
+                precision = .COARSE
+            @unknown default:
+                fatalError()
+            }
+        }
+
+        let optin = LocationOptin(status: state.rawValue, precision: precision.rawValue)
+
+
+    }
+
 }

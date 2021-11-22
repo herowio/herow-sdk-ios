@@ -35,7 +35,8 @@ class APIManagerTests: XCTestCase, ConfigListener  {
                                                herowId: "herowId",
                                                customId: "customId", lang: "lang",
                                                offset: 3600,
-                                               optins:[Optin.optinDataOk])
+                                               optins:[Optin.optinDataOk],
+                                               location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue))
 
 
 
@@ -65,7 +66,8 @@ class APIManagerTests: XCTestCase, ConfigListener  {
                                                herowId: "herowId",
                                                customId: "customId", lang: "lang",
                                                offset: 3600,
-                                               optins:[Optin.optinDataOk])
+                                               optins:[Optin.optinDataOk],
+                                               location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue))
 
 
 
@@ -92,7 +94,8 @@ class APIManagerTests: XCTestCase, ConfigListener  {
                                                    herowId: "herowId",
                                                    customId: "customId", lang: "lang",
                                                    offset: 3600,
-                                                   optins:[Optin.optinDataOk])
+                                                   optins:[Optin.optinDataOk],
+                                                   location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue))
 
 
 

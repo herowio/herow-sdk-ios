@@ -318,6 +318,24 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         dataHolder.apply()
     }
 
+    public func setLocOptin(optin: LocationOptin) {
+        guard let data = optin.encode() else {
+            return
+        }
+        dataHolder.putData(key: HerowConstants.userLocOptin, value: data)
+        dataHolder.apply()
+    }
+
+    public func getLocOptin() -> LocationOptin {
+        guard let data = dataHolder.getData(key: HerowConstants.userLocOptin) else {
+            return LocationOptin.noOptin
+        }
+        guard let optin = LocationOptin.decode(data: data)  else {
+            return LocationOptin.noOptin
+        }
+        return optin
+    }
+
     public func reset(completion : ()->()) {
         self.token = nil
         self.config = nil

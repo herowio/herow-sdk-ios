@@ -10,7 +10,7 @@ import CoreLocation
 @testable import herow_sdk_ios
 class CacheManagerTests: XCTestCase, CacheListener {
 
-    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>())
+    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping >())
     override func setUpWithError() throws {
 
         cacheManager.registerCacheListener(listener: self)

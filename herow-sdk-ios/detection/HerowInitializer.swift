@@ -19,7 +19,6 @@ import UIKit
     private var userInfoManager: UserInfoManagerProtocol
     private var permissionsManager: PermissionsManagerProtocol
     private let cacheManager: CacheManagerProtocol
-    private var liveMomentStore: LiveMomentStoreProtocol?
     internal let geofenceManager: GeofenceManager
     private var detectionEngine: DetectionEngine
     private let zoneProvider: ZoneProvider
@@ -28,7 +27,7 @@ import UIKit
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
 
-    private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
+    private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>()
 
     internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol? = NotificationDelegateHolder.shared.useNotificationCenter ? UNUserNotificationCenter.current() : nil) {
 
@@ -36,10 +35,8 @@ import UIKit
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
-        let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
+        let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>()
         cacheManager = CacheManager(db: db)
-        //uncomment for V8.0.0
-        //liveMomentStore = LiveMomentStore(db: db, storage: herowDataHolder)
         userInfoManager = UserInfoManager(herowDataStorage: herowDataHolder)
         apiManager = APIManager(connectInfo: connectionInfo, herowDataStorage: herowDataHolder, cacheManager: cacheManager, userInfoManager: userInfoManager)
         userInfoManager.registerListener(listener: apiManager)
@@ -53,11 +50,7 @@ import UIKit
         cacheManager.registerCacheListener(listener: geofenceManager)
         detectionEngine.registerDetectionListener(listener: fuseManager)
         detectionEngine.registerDetectionListener(listener: geofenceManager)
-        if let liveMomentStore = liveMomentStore {
-            detectionEngine.registerDetectionListener(listener: liveMomentStore)
-            appStateDetector.registerAppStateDelegate(appStateDelegate: liveMomentStore)
-            cacheManager.registerCacheListener(listener: liveMomentStore)
-        }
+
 
         zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: eventDispatcher)
         cacheManager.registerCacheListener(listener: zoneProvider)
@@ -314,32 +307,10 @@ import UIKit
         }
     }
 
-    public func getClusters() -> [NodeDescription]? {
-        return  liveMomentStore?.getClusters()?.getReccursiveRects(nil)
-    }
-
-    public func registerLiveMomentStoreListener(listener: LiveMomentStoreListener) {
-        liveMomentStore?.registerLiveMomentStoreListener(listener)
-    }
-
     public func registerAppStateListener(listener: AppStateDelegate) {
         appStateDetector.registerAppStateDelegate(appStateDelegate: listener)
     }
-    public func getHome() -> QuadTreeNode? {
-        return  liveMomentStore?.getHome()
-    }
 
-    public func getWork() -> QuadTreeNode? {
-        return  liveMomentStore?.getWork()
-    }
-
-    public func getSchool() -> QuadTreeNode? {
-        return  liveMomentStore?.getSchool()
-    }
-
-    public func getShoppings() -> [QuadTreeNode]? {
-        return  liveMomentStore?.getShopping()
-    }
 
     public func getPOIs() -> [Poi] {
         return cacheManager.getPois()

@@ -11,6 +11,7 @@ class HerowConstants {
     static let tokenKey: String = "com.herow.sdk.connection.token"
     static let userInfoKey: String = "com.herow.sdk.connection.userInfo"
     static let userDataOptin: String = "com.herow.sdk.connection.optin"
+    static let userLocOptin: String = "com.herow.sdk.connection.locOptin"
     static let userInfoStatusKey: String = "com.herow.sdk.connection.userInfo.status"
     static let cacheDateKey: String = "com.herow.sdk.connection.cache.date"
     static let configKey: String = "com.herow.sdk.connection.config"

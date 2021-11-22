@@ -12,7 +12,6 @@ import Foundation
 public class HerowDataStorage: HerowDataStorageProtocol {
 
 
-
     private var userInfo: APIUserInfo?
     private var token: APIToken?
     private var config: APIConfig?
@@ -318,6 +317,24 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         }
         dataHolder.putData(key: HerowConstants.userDataOptin, value: data)
         dataHolder.apply()
+    }
+
+    public func setLocOptin(optin: LocationOptin) {
+        guard let data = optin.encode() else {
+            return
+        }
+        dataHolder.putData(key: HerowConstants.userLocOptin, value: data)
+        dataHolder.apply()
+    }
+
+    public func getLocOptin() -> LocationOptin {
+        guard let data = dataHolder.getData(key: HerowConstants.userLocOptin) else {
+            return LocationOptin.noOptin
+        }
+        guard let optin = LocationOptin.decode(data: data)  else {
+            return LocationOptin.noOptin
+        }
+        return optin
     }
 
     public func reset(completion : ()->()) {

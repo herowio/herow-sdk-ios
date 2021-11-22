@@ -92,11 +92,13 @@ extension PermissionsManagerProtocol {
 
     public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         GlobalLogger.shared.debug("locationManager didChangeAuthorization \( String(describing: status.rawValue))")
+        didChangeAuthorization()
     }
 
     @available(iOS 14.0, *)
     public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         GlobalLogger.shared.debug("locationManager didChangeAuthorization \( String(describing: CLLocationManager.authorizationStatus().rawValue)) precision \(manager.accuracyAuthorization.rawValue)")
+        didChangeAuthorization()
     }
 
 
@@ -135,6 +137,8 @@ extension PermissionsManagerProtocol {
         }
 
         let optin = LocationOptin(status: state.rawValue, precision: precision.rawValue)
+
+        self.userInfoManager.setLocOptin(optin: optin)
 
 
     }

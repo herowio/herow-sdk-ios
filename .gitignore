@@ -161,4 +161,5 @@ output/herow_sdk_ios.framework/Frameworks/Pods_herow_sdk_ios.framework/Info.plis
 output/herow_sdk_ios.framework/Frameworks/Pods_herow_sdk_ios.framework/Pods_herow_sdk_ios
 herow_sdk_ios.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 output/zirTtekj
+herow-sdk-ios/connection/platform-secrets.plist.DS_Store
 herow-sdk-ios/connection/platform-secrets.plist

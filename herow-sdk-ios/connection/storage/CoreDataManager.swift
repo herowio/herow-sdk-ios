@@ -391,7 +391,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func deleteEntitiesByName(_ name: String) {
-        var context = self.bgContext
+        let context = self.bgContext
       
         context.performAndWait {
             let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: name)

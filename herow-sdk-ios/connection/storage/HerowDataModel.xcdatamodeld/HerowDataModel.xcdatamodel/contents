@@ -36,7 +36,6 @@
         <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;String&gt;"/>
-        <relationship name="nodes" optional="YES" toMany="YES" deletionRule="Nullify"/>
     </entity>
     <entity name="ZoneCoreData" representedClassName=".ZoneCoreData" syncable="YES">
         <attribute name="campaigns" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;String&gt;"/>
@@ -51,7 +50,7 @@
         <element name="CampaignCoreData" positionX="-36" positionY="63" width="128" height="164"/>
         <element name="CappingCoreData" positionX="-45" positionY="144" width="128" height="74"/>
         <element name="NotificationCoreData" positionX="-27" positionY="54" width="128" height="134"/>
-        <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="104"/>
+        <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="89"/>
         <element name="ZoneCoreData" positionX="-63" positionY="-18" width="128" height="119"/>
     </elements>
 </model>

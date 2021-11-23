@@ -59,6 +59,7 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     func didReceivedEvent(_ event: Event, infos: [ZoneInfo]) {
         for info in infos {
             if  allowedEvents.contains(event) {
+                GlobalLogger.shared.info("AnalyticsManager - send event: \(event.toString())")
              createlogEvent(event: event, info: info)
             }
         }

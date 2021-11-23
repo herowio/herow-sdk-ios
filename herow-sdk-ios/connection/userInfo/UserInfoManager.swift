@@ -108,7 +108,7 @@ class UserInfoManager: UserInfoManagerProtocol {
             setIDFA(idfa)
         }
 
-        return nil
+        return herowDataHolder.getIDFA()
     }
 
     func setIDFA(_ id: String) {

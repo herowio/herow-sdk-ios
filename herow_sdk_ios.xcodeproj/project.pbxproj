@@ -117,7 +117,6 @@
 		6DE3D3872632BD6A00EC3C42 /* String+regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE3D3862632BD6A00EC3C42 /* String+regex.swift */; };
 		6DE7559225F0E57D003C0252 /* GeoHashHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE7559125F0E57D003C0252 /* GeoHashHelperTests.swift */; };
 		6DE7559725F0E6E8003C0252 /* FileUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE7559625F0E6E8003C0252 /* FileUtilsTests.swift */; };
-		6DE7560225F260BC003C0252 /* Pods_herow_sdk_ios.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 26EC2234922A0FCE1FF84576 /* Pods_herow_sdk_ios.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6DEA69F925DBC3D700DA6AE7 /* HerowInitializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DEA69F825DBC3D700DA6AE7 /* HerowInitializerTests.swift */; };
 		6DF3C34225FF58960073283B /* FuseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF3C34125FF58960073283B /* FuseManager.swift */; };
 		6DF3C34925FF60360073283B /* FuseManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF3C34825FF60360073283B /* FuseManagerTests.swift */; };
@@ -140,20 +139,6 @@
 			remoteInfo = "herow-sdk-ios";
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		6DE7560325F260BC003C0252 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				6DE7560225F260BC003C0252 /* Pods_herow_sdk_ios.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0730100D3BE129FE6E23B242 /* Pods-herow-sdk-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-herow-sdk-ios.debug.xcconfig"; path = "Target Support Files/Pods-herow-sdk-ios/Pods-herow-sdk-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -754,7 +739,6 @@
 				6D0741F725B079EC005E08F8 /* Sources */,
 				6D0741F825B079EC005E08F8 /* Frameworks */,
 				6D0741F925B079EC005E08F8 /* Resources */,
-				6DE7560325F260BC003C0252 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

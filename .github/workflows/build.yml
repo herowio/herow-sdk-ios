@@ -26,7 +26,7 @@ jobs:
     - name: Start build
       run: | 
           rm -rf output
-          xcodebuild -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO  
+          xcodebuild -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO ENABLE_BITCODE=YES OTHER_CFLAGS="-fembed-bitcode" BITCODE_GENERATION_MODE=bitcode 
     
     - name: Create Release
       id: create_release

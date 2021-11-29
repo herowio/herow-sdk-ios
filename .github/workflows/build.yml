@@ -26,7 +26,7 @@ jobs:
     - name: Start build
       run: | 
           rm -rf output
-          xcodebuild -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO  
+          xcodebuild -workspace herow_sdk_ios.xcworkspace -scheme build -destination "platform=iOS Simulator,name=iPhone 11 Pro" CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=NO ENABLE_BITCODE=YES OTHER_CFLAGS="-fembed-bitcode" BITCODE_GENERATION_MODE=bitcode 
     
     - name: Create Release
       id: create_release
@@ -38,6 +38,26 @@ jobs:
           release_name: Release ${{ env.RELEASE_VERSION }}
           draft: false
           prerelease: false
+    - name: Upload Release herow_sdk_ios.framework
+      id: upload-framework
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: output/herow_sdk_ios.framework.zip
+          asset_name: herow_sdk_ios.framework.zip
+          asset_content_type: application/zip
+    - name: Upload Release herow_sdk_ios.framework dsym
+      id: upload-framework-dsym
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: output/herow_sdk_ios.framework.dSYM.zip
+          asset_name: herow_sdk_ios.framework.dSYM.zip
+          asset_content_type: application/zip
     - name: Upload Release herow_sdk_ios.xcframework dsym
       id: upload-xcframework-dsym
       uses: actions/upload-release-asset@v1

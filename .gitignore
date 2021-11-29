@@ -187,3 +187,4 @@ index 1ce9c99..d37846a 100644
  	<key>CFBundleVersion</key>
  	<string>$(CURRENT_PROJECT_VERSION)</string>
  </dict>
+Package.swift

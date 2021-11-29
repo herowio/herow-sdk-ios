@@ -162,3 +162,28 @@ output/herow_sdk_ios.framework/Frameworks/Pods_herow_sdk_ios.framework/Pods_hero
 herow_sdk_ios.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 output/zirTtekj
 herow-sdk-ios/connection/platform-secrets.plist
+commit ed69848070ec8de2dc78a2701be4c51610735946
+tree 7982de18fcf280862a94870daabdaa5d6d61f263
+parent 548c76c8c6adbf4f64988b1458e880c4465a4c24
+author damien <dfe@connecthings.com> 1638203866 +0100
+committer damien <dfe@connecthings.com> 1638203866 +0100
+
+    Update version
+
+diff --git a/.DS_Store b/.DS_Store
+deleted file mode 100644
+index fffc0e1..0000000
+Binary files a/.DS_Store and /dev/null differ
+diff --git a/herow-sdk-ios/Info.plist b/herow-sdk-ios/Info.plist
+index 1ce9c99..d37846a 100644
+--- a/herow-sdk-ios/Info.plist
++++ b/herow-sdk-ios/Info.plist
+@@ -15,7 +15,7 @@
+ 	<key>CFBundlePackageType</key>
+ 	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+ 	<key>CFBundleShortVersionString</key>
+-	<string>7.1.0</string>
++	<string>7.1.1</string>
+ 	<key>CFBundleVersion</key>
+ 	<string>$(CURRENT_PROJECT_VERSION)</string>
+ </dict>

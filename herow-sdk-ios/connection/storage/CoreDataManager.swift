@@ -621,6 +621,32 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
 
+    func feedAllRecurencies(completion: @escaping () ->()) {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            contextToUse = self.context
+        }
+
+        contextToUse.perform {
+            var result = [NodeCoreData]()
+            let fetchRequest = NSFetchRequest<NodeCoreData>(entityName: StorageConstants.NodeCoreDataEntityName)
+            do {
+                result = try contextToUse.fetch(fetchRequest)
+            } catch let error as NSError {
+                GlobalLogger.shared.error("Could not fetch. \(error), \(error.userInfo)")
+            }
+            for node in result {
+                node.computeRecurency()
+            }
+            self.save {
+                completion()
+            }
+        }
+
+
+    }
+
+
     func getLocations(completion: @escaping ([QuadTreeLocation]) ->() )  {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
@@ -1022,8 +1048,12 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             let rightBottom  =  recursiveInit(node.rightBottom())
             let tags = node.nodeTags
             let densities = node.nodeDensities
+            let recurencies = node.getRecurencies()
+
+
 
             result =  T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags,densities: densities, rect: rect, pois: pois)
+            result?.recurencies = recurencies
 
             result?.liveMomentTypes = node.liveMomentTypes.compactMap {
                 NodeType(rawValue: $0)

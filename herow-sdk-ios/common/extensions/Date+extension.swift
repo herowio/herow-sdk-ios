@@ -7,10 +7,27 @@
 
 import Foundation
 
+public  enum RecurencyDay: String {
+    case monday
+    case tuesday
+    case wednesday
+    case thirsday
+    case friday
+    case satursday
+    case subday
+}
+
 extension Date {
 
  public static var  dateFormatter = DateFormatter()
  public static var  monthdateFormatter = DateFormatter()
+ public static var  daydateFormatter: DateFormatter  = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.calendar = .current
+        dateFormatter.dateFormat = "EEEE"
+        return dateFormatter
+    }()
     var startOfDay: Date
         {
             return Calendar.current.startOfDay(for: self)
@@ -125,8 +142,12 @@ extension Date {
 
 extension Date {
     var month: String {
-
         Date.monthdateFormatter.dateFormat = "MMMM"
         return Date.monthdateFormatter.string(from: self)
     }
+
+    var recurencyDay: RecurencyDay {
+        return  RecurencyDay(rawValue: Date.daydateFormatter.string(from: self).lowercased()) ?? .monday
+    }
+
 }

@@ -113,6 +113,7 @@ public  enum NodeType: Int {
 public protocol QuadTreeNode: AnyObject, Zonable {
     var liveMomentTypes: [NodeType] {get set}
     var merged: Bool {get set}
+    var recurencies: [RecurencyDay: Int] { get set}
     func findNodeWithId(_ id: String)  -> QuadTreeNode?
     func getTreeId() -> String
     func setParentNode(_ parent: QuadTreeNode?)
@@ -160,6 +161,7 @@ public protocol QuadTreeNode: AnyObject, Zonable {
     func addInList(_ list: [QuadTreeNode]?) ->  [QuadTreeNode]
     func isEqual(_ node: QuadTreeNode) -> Bool
     func getLimit() -> Int
+    func computeRecurency(_ loc: QuadTreeLocation)
 
 
 }

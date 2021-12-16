@@ -22,7 +22,7 @@ class NodeCoreData: NSManagedObject {
     @NSManaged var nodeTags:  [String: Double]
     @NSManaged var nodeDensities: [String: Double]
     @NSManaged var liveMomentTypes: [Int]
-
+    @NSManaged var recurencies: [String: Int64]
 
     func addLiveMomentType(_ type: NodeType) {
         if !liveMomentTypes.contains(type.rawValue) {
@@ -96,6 +96,26 @@ class NodeCoreData: NSManagedObject {
                 }
             }
         }
+    }
+
+    func computeRecurency() {
+
+        locations?.forEach({ loc in
+          let day =   loc.time.recurencyDay
+            var value = self.recurencies[day.rawValue] ?? 0
+            value = value + 1
+            self.recurencies[day.rawValue] = value
+        })
+    }
+
+    func getRecurencies() -> [RecurencyDay: Int] {
+        var recurencies = [RecurencyDay: Int]()
+        for key in self.recurencies.keys {
+            let day = RecurencyDay(rawValue: key) ?? .monday
+            let value = self.recurencies[key] ?? 0
+            recurencies[day] = Int(value)
+        }
+        return recurencies
     }
 }
 @objc(LocationCoreData)

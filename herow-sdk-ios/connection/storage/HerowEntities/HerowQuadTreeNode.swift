@@ -126,6 +126,8 @@ public struct NodeDescription {
 
 
 class HerowQuadTreeNode: QuadTreeNode {
+    var recurencies: [RecurencyDay : Int] = [RecurencyDay : Int]()
+
     var liveMomentTypes: [NodeType] =  [NodeType]()
     func getHash() -> String {
         return self.treeId ?? "0"
@@ -594,6 +596,7 @@ class HerowQuadTreeNode: QuadTreeNode {
                 populateLocation(location)
                 locations.append(location)
                 lastLocation = location
+                self.computeRecurency(location)
                 self.updated = true
                 computeTags()
             }
@@ -858,6 +861,16 @@ class HerowQuadTreeNode: QuadTreeNode {
             return .root
         }
     }
+
+    public func computeRecurency(_ loc: QuadTreeLocation) {
+        guard !hasChildForLocation(loc) else {
+            return
+        }
+
+        let day = loc.time.recurencyDay
+        var value: Int = self.recurencies[day] ?? 0
+        value = value + 1
+    }
 }
 
 
@@ -904,4 +917,6 @@ public class HerowPeriod: PeriodProtocol {
     public func getAllLocations() ->  [QuadTreeLocation] {
         return Array([ self.homeLocations,  self.workLocations,self.schoolLocations,self.otherLocations, self.poiLocations].joined()).sorted {$0.time > $1.time }
     }
+
+
 }

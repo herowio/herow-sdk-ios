@@ -197,14 +197,14 @@ HerowInitializer.instance.setProdCustomURL("customProdUrl")
 HerowInitializer.instance.setPreProdCustomURL("customProdUrl")
 ```
 
-To remove  customUrls, make the following call
+To remove customUrls, make the following call
 ```
 HerowInitializer.instance.removeCustomURL()
 ```
 
-To check  currentUrl, make the following call
+To check currentUrl, make the following call
 ```
-let currentURL = HerowInitializer.instance. getCurrentURL()
+let currentURL = HerowInitializer.instance.getCurrentURL()
 ```
 
 # ClickAndCollect

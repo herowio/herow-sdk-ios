@@ -27,7 +27,7 @@ platform :ios, '11.0'
 
 target 'YourtTarget' do
   use_frameworks!
-  pod 'Herow', '~> 7.1.0'
+  pod 'Herow', '~> 7.2.0'
   # Pods for QuickComplete
 
   # Pods for testing
@@ -186,6 +186,25 @@ If the user logout, you can use the removeCustomId method.
 HerowInitializer.instance.setCustomId("customId")
 
 HerowInitializer.instance.removeCustomId()
+```
+
+# Setting a customUrl
+
+To set a customUrl to reach custom backEnd, make the following call
+
+```
+HerowInitializer.instance.setProdCustomURL("customProdUrl")
+HerowInitializer.instance.setPreProdCustomURL("customProdUrl")
+```
+
+To remove  customUrls, make the following call
+```
+HerowInitializer.instance.removeCustomURL()
+```
+
+To check  currentUrl, make the following call
+```
+let currentURL = HerowInitializer.instance. getCurrentURL()
 ```
 
 # ClickAndCollect

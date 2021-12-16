@@ -13,17 +13,10 @@ class ZoneProviderTests: XCTestCase {
     var zoneProvider: ZoneProvider?
     var coordinatesEntry = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
     var coordinatesExit = CLLocationCoordinate2D(latitude: 0, longitude: 0)
+    let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>())
 
     override func setUpWithError() throws {
 
-       let cacheManager = CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>())
-        cacheManager.cleanCache()
-        coordinatesEntry = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
-        let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinatesEntry, distance: 75)
-        let zones = tupple.0
-        let campaigns = tupple.1
-        cacheManager.save(zones: zones, campaigns: campaigns, pois: [], completion: nil)
-        zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: EventDispatcher())
     }
 
     override func tearDownWithError() throws {
@@ -31,13 +24,44 @@ class ZoneProviderTests: XCTestCase {
     }
 
     func testEntry() throws {
-        let selection =  zoneProvider?.zoneDetectionProcess(CLLocation(latitude: coordinatesEntry.latitude, longitude: coordinatesEntry.longitude))
-        XCTAssertTrue(selection?.zones.count == 1)
+        let testExpectation = expectation(description: "testEntryExpectation")
+        cacheManager.cleanCache()
+        coordinatesEntry = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
+        let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinatesEntry, distance: 75)
+        let zones = tupple.0
+        let campaigns = tupple.1
+        cacheManager.save(zones: zones, campaigns: campaigns, pois: [], completion: {
+            self.zoneProvider = ZoneProvider(cacheManager: self.cacheManager, eventDisPatcher: EventDispatcher())
+            let selection =  self.zoneProvider?.zoneDetectionProcess(CLLocation(latitude: self.coordinatesEntry.latitude, longitude: self.coordinatesEntry.longitude))
+            XCTAssertTrue(selection?.zones.count == 1)
+            testExpectation.fulfill()
+        })
+        waitForExpectations(timeout: 30) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
     }
 
     func testExit() throws {
-        let selection =  zoneProvider?.zoneDetectionProcess(CLLocation(latitude: coordinatesExit.latitude, longitude: coordinatesExit.longitude))
-        XCTAssertTrue(selection?.zones.count == 0)
+        let testExpectation = expectation(description: "testExitExpectation")
+        cacheManager.cleanCache()
+        coordinatesEntry = CLLocationCoordinate2D(latitude: 49.371864318847656, longitude: 3.8972530364990234)
+        let tupple =  Builder.create(zoneNumber: 10, campaignNumberPerZone: 5, from: coordinatesEntry, distance: 75)
+        let zones = tupple.0
+        let campaigns = tupple.1
+        cacheManager.save(zones: zones, campaigns: campaigns, pois: [], completion: {
+            self.zoneProvider = ZoneProvider(cacheManager: self.cacheManager, eventDisPatcher: EventDispatcher())
+            let selection =  self.zoneProvider?.zoneDetectionProcess(CLLocation(latitude: self.coordinatesExit.latitude, longitude: self.coordinatesExit.longitude))
+            XCTAssertTrue(selection?.zones.count == 0)
+            testExpectation.fulfill()
+        })
+
+        waitForExpectations(timeout: 30) { error in
+            if let error = error {
+                print("Error: \(error.localizedDescription)")
+            }
+        }
     }
 
     func testPerformanceExample() throws {

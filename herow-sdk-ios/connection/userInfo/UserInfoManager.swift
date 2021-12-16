@@ -35,12 +35,17 @@ protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate {
     func setNotificationStatus( _ status: String)
     func getOptin() -> Optin
     func setOptin( optin: Optin)
+
+    func setLocOptin( optin: LocationOptin)
+    func getLocOptin() -> LocationOptin
     func registerListener(listener: UserInfoListener)
     func getUserInfo() -> UserInfo
     func resetOptinsAndCustomId(optin:Optin, customId:String)
 
 }
 class UserInfoManager: UserInfoManagerProtocol {
+
+
 
     private var customId : String?
     private var idfv: String?
@@ -103,7 +108,7 @@ class UserInfoManager: UserInfoManagerProtocol {
             setIDFA(idfa)
         }
 
-        return nil
+        return herowDataHolder.getIDFA()
     }
 
     func setIDFA(_ id: String) {
@@ -191,6 +196,19 @@ class UserInfoManager: UserInfoManagerProtocol {
         }
     }
 
+
+    func setLocOptin(optin: LocationOptin) {
+        if getLocOptin().status != optin.status || getLocOptin().precision != optin.precision {
+            self.herowDataHolder.setLocOptin(optin: optin)
+            herowDataHolder.saveUserInfoWaitingForUpdate(true)
+            synchronize()
+        }
+    }
+
+    func getLocOptin() -> LocationOptin {
+        return self.herowDataHolder.getLocOptin()
+    }
+
     func resetOptinsAndCustomId(optin:Optin, customId:String) {
         self.herowDataHolder.setOptin(optin:optin)
         self.customId = customId
@@ -229,6 +247,7 @@ class UserInfoManager: UserInfoManagerProtocol {
     func getUserInfo() -> UserInfo {
         setLang( Locale.current.languageCode ?? "en")
         let optin = getOptin()
+        let localisation = getLocOptin()
         let idfa: String?  = getIDFA()
         let idfaStatus = idfa != nil
         if  let herowId = getHerowId() {
@@ -243,7 +262,9 @@ class UserInfoManager: UserInfoManagerProtocol {
                                 herowId: herowId,
                                 customId: customId, lang: lang,
                                 offset: offset,
-                                optins:[optin])
+                                optins:[optin],
+                                location: localisation
+        )
 
         return userInfo
     }

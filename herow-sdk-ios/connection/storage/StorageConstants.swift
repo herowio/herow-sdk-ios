@@ -25,7 +25,7 @@ class StorageConstants {
     static let id = "id"
 
 
-
+    static let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
 
     //quadtree
     static let treeId = "treeId"

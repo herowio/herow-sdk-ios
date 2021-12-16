@@ -47,10 +47,24 @@ public protocol HerowDataStorageProtocol: ResetDelegate {
     func setNotificationStatus( _ status: String)
     func getOptin() -> Optin
     func setOptin(optin: Optin)
-
+    func setLocOptin( optin: LocationOptin)
+    func getLocOptin() -> LocationOptin
 
     //LiveMoment
     func saveLiveMomentLastSaveDate(_ date: Date)
     func getLiveMomentLastSaveDate() -> Date?
 
 }
+
+extension HerowDataStorageProtocol {
+
+    func useExactEntry() -> Bool {
+        return UserDefaults.standard.bool(forKey: "exactEntry")
+    }
+
+    func setUseExactEntry(_ value: Bool)  {
+        UserDefaults.standard.set(value, forKey: "exactEntry")
+        UserDefaults.standard.synchronize()
+    }
+}
+

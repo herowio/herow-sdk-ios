@@ -17,7 +17,7 @@ class APIManagerTests: XCTestCase, ConfigListener  {
     var apiManager: APIManager?
 
     override func setUpWithError() throws {
-        apiManager = APIManager(connectInfo: connectionInfos, herowDataStorage: HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "Test")), cacheManager: CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping,HerowQuadTreeNode, HerowQuadTreeLocation>()))
+        apiManager = APIManager(connectInfo: connectionInfos, herowDataStorage: HerowDataStorage(dataHolder:DataHolderUserDefaults(suiteName: "Test")), cacheManager: CacheManager(db: CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>()))
         apiManager?.configure(connectInfo: connectionInfos)
         apiManager?.registerConfigListener(listener: self)
         self.apiManager?.user = User(login: "toto", password: "toto")
@@ -35,7 +35,8 @@ class APIManagerTests: XCTestCase, ConfigListener  {
                                                herowId: "herowId",
                                                customId: "customId", lang: "lang",
                                                offset: 3600,
-                                               optins:[Optin.optinDataOk])
+                                               optins:[Optin.optinDataOk],
+                                               location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue))
 
 
 
@@ -65,7 +66,8 @@ class APIManagerTests: XCTestCase, ConfigListener  {
                                                herowId: "herowId",
                                                customId: "customId", lang: "lang",
                                                offset: 3600,
-                                               optins:[Optin.optinDataOk])
+                                               optins:[Optin.optinDataOk],
+                                               location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue))
 
 
 
@@ -92,7 +94,8 @@ class APIManagerTests: XCTestCase, ConfigListener  {
                                                    herowId: "herowId",
                                                    customId: "customId", lang: "lang",
                                                    offset: 3600,
-                                                   optins:[Optin.optinDataOk])
+                                                   optins:[Optin.optinDataOk],
+                                                   location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue))
 
 
 

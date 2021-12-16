@@ -22,15 +22,66 @@ public enum NetworkError: Error {
     case backgroundTaskExpiration
 }
 
-public enum URLType: String {
-    case  badURL = ""
-    case  test = "https://herow-sdk-backend-poc.ew.r.appspot.com"
-    case  preprod = "https://sdk7-preprod.herow.io"
-   // case  preprod =  "https://m-preprod.herow.io"
-    case  prod = "https://sdk7.herow.io"
+public enum URLType {
+    static let prodCustomURLKey = "prodCustomURLKey"
+    static let preProdCustomURLKey = "preProdCustomURLKey"
+    static let defaultPreprodURL = "https://sdk7-preprod.herow.io"
+    static let defaultProdURL = "https://sdk7.herow.io"
+    static let defaultTestURL = "https://herow-sdk-backend-poc.ew.r.appspot.com"
+
+    static let userDefault =  UserDefaults.init(suiteName: "URLType")
+    case  badURL
+    case  test
+    case  preprod
+    case  prod
+
+    var value: String {
+        switch self {
+        case .badURL:
+            return ""
+        case .test:
+            return URLType.defaultTestURL
+        case .preprod:
+            return URLType.getPreProdCustomURL()
+        case .prod:
+            return  URLType.getProdCustomURL() 
+        }
+    }
+
+    public static func setProdCustomURL(_ url: String) {
+
+        URLType.userDefault?.setValue(url, forKey: URLType.prodCustomURLKey)
+        URLType.userDefault?.synchronize()
+    }
+    public static func setPreProdCustomURL(_ url: String) {
+
+        URLType.userDefault?.setValue(url, forKey: URLType.preProdCustomURLKey)
+        URLType.userDefault?.synchronize()
+    }
+
+    public static func  removeCustomURLS() {
+
+        URLType.userDefault?.removeObject(forKey: URLType.prodCustomURLKey)
+        URLType.userDefault?.removeObject(forKey: URLType.preProdCustomURLKey)
+        URLType.userDefault?.synchronize()
+    }
+
+    public static func getProdCustomURL() -> String {
+        return  URLType.userDefault?.string(forKey: URLType.prodCustomURLKey) ??  URLType.defaultProdURL
+    }
+    
+    public static func getPreProdCustomURL() -> String {
+        return URLType.userDefault?.string(forKey: URLType.preProdCustomURLKey) ?? URLType.defaultPreprodURL
+
+    }
+
+   static func useCustomURL() -> Bool {
+        return URLType.userDefault?.string(forKey: URLType.preProdCustomURLKey) != nil ||  URLType.userDefault?.string(forKey: URLType.prodCustomURLKey)  != nil
+    }
 }
 
 public enum EndPoint {
+    
     case undefined
     case test
     case token
@@ -72,8 +123,9 @@ protocol APIManagerProtocol:ConfigDispatcher {
     func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)?)
     func getCache(geoHash: String, completion: ( (APICache?, NetworkError?) -> Void)?)
     func getUserInfoIfNeeded(completion: (() -> Void)?)
-    func pushLog(_ log: Data ,completion: (() -> Void)?)
+    func pushLog(_ log: Data, _ logtype: String ,completion: (() -> Void)?)
     func reset()
+    func reloadUrls()
 }
 
 public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, RequestStatusListener, UserInfoListener {
@@ -224,14 +276,20 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
 
 
     public func configure(connectInfo: ConnectionInfoProtocol) {
-        let urlType = connectInfo.getUrlType()
         self.connectInfo = connectInfo
-        self.tokenWorker.setUrlType(urlType)
-        self.configWorker.setUrlType(urlType)
-        self.userInfogWorker .setUrlType(urlType)
-        self.logWorker.setUrlType(urlType)
-        self.cacheWorker .setUrlType(urlType)
+              reloadUrls()
     }
+
+    func reloadUrls() {
+            guard let urlType = self.connectInfo?.getUrlType() else {
+                return
+            }
+            self.tokenWorker.setUrlType(urlType)
+            self.configWorker.setUrlType(urlType)
+            self.userInfogWorker .setUrlType(urlType)
+            self.logWorker.setUrlType(urlType)
+            self.cacheWorker .setUrlType(urlType)
+        }
     // MARK: Token
     private func getToken(completion: @escaping (APIToken?, NetworkError?) -> Void) {
         guard let user = user  else {
@@ -276,7 +334,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     
     // MARK: UserInfo
     internal func getUserInfo(completion: ( (APIUserInfo?, NetworkError?) -> Void)? = nil) {
-        guard let user = self.user, let token =  self.herowDataStorage.getToken()?.accessToken else {
+        guard let user = self.user, let _ =  self.herowDataStorage.getToken()?.accessToken else {
             completion?(nil, .invalidInPut)
             return
         }
@@ -346,7 +404,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
     }
     // MARK: Logs
-    internal func pushLog(_ log: Data,completion: (() -> Void)?) {
+    internal func pushLog(_ log: Data, _ logtype: String = "",completion: (() -> Void)?) {
         if  !herowDataStorage.getOptin().value {
             GlobalLogger.shared.info("APIManager- OPTINS ARE FALSE")
             return
@@ -357,13 +415,14 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
         authenticationFlow  {
             self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: herowid)
+
             self.logWorker.postData(param: log) {
                 response, error in
 
                 if error == nil {
                     if let json = try? JSONSerialization.jsonObject(with: log, options: .mutableContainers),
                        let jsonData = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                        GlobalLogger.shared.verbose("APIManager - sendlog: \n \(String(decoding: jsonData, as: UTF8.self)) response:\(String(describing: response))")
+                        GlobalLogger.shared.verbose("APIManager - send log - nature:  \(logtype) \n \(String(decoding: jsonData, as: UTF8.self)) response:\(String(describing: response))")
                     } 
                 }
                 completion?()

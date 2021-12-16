@@ -27,7 +27,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     internal var isMonitoringRegion = false
     internal  var isMonitoringVisit = false
     private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
-    private let timeIntervalLimit: TimeInterval = 2 * 60 * 60 // 2 hours
     private let dataHolder =  DataHolderUserDefaults(suiteName: "LocationManagerCoreLocation")
     private var locationManager: LocationManager
     private var skipCount = 0
@@ -38,7 +37,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     private var timeProvider: TimeProvider
     private let queue = OperationQueue()
 
-
+    private var locationValidator = LocationValidator()
+    
     public var showsBackgroundLocationIndicator: Bool {
         get {
             if #available(iOS 11.0, *) {
@@ -186,7 +186,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         guard let date = getLastClickAndCollectActivationDate() else {
             return true
         }
-        return Date() < Date(timeInterval: timeIntervalLimit, since: date)
+        return Date() < Date(timeInterval: StorageConstants.timeIntervalLimit, since: date)
     }
 
 
@@ -197,7 +197,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         setIsOnClickAndCollect(result)
 
 
-        return value
+        return result
     }
     public func updateClickAndCollectState() {
         if checkClickAndCollectMode() {
@@ -207,8 +207,8 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             }
         } else {
             if getLastClickAndCollectActivationDate() != nil {
-                setLastClickAndCollectActivationDate(nil)
                 didStopClickAndCollect()
+                setLastClickAndCollectActivationDate(nil)
             }
         }
     }
@@ -344,7 +344,9 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             ($0.get() === listener) == false
         }
     }
-    
+
+
+
     @discardableResult
     func dispatchLocation(_ location: CLLocation, from: UpdateType = .undefined) -> Bool{
 
@@ -362,10 +364,17 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             skip = distanceKO && timeKO && skipCount < 5
         }
         skip = skip || distpatchTimeKO || locationToOld
-
-
-        if skip == false {
-
+        var locationFilter = true
+        if (skip == false) {
+            if from == .fake {
+                // no filter on fake positions
+                locationFilter = true
+            } else {
+                locationFilter = locationValidator.runValidation(location)
+            }
+            needMorePrecisionPrecision(!locationFilter)
+        }
+        if (skip == false && locationFilter)  {
             dispatchTime = Date(timeIntervalSince1970: timeProvider.getTime())
             self.lastLocation = location
             skipCount = 0
@@ -415,7 +424,12 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         return result
     }
 
-
+    private func needMorePrecisionPrecision(_ value: Bool ) {
+        if value {
+            self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            self.locationManager.distanceFilter = GeofenceManager.distanceTen
+        }
+    }
 
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 
@@ -475,17 +489,22 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         self.stopMonitoringSignificantLocationChanges()
     }
 
-    public func onAppInForeground() {
+    public func onAppTerminated() {
+       setIsOnClickAndCollect(false)
+        updateClickAndCollectState()
+    }
 
+    public func onAppInForeground() {
+        locationValidator.onAppInForeground()
     }
 
     public func onAppInBackground() {
-
+        locationValidator.onAppInBackground()
         GlobalLogger.shared.debug("appStateDetector - inBackground \(self)")
     }
 
     @objc public func dispatchFakeLocation(_ location : CLLocation) {
-        dispatchLocation( location, from: .update)
+        dispatchLocation( location, from: .fake)
     }
 
 }

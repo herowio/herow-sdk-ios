@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
     # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
     s.name         = "Herow"
-    s.version      = "7.1.0"
+    s.version      = "7.2.0-beta"
     s.summary      = "herow-sdk-ios: an assets of classes and interfaces "
     s.homepage     = "http://www.herow.io/"
     s.module_name  = 'Herow'

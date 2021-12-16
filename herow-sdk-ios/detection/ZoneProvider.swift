@@ -192,6 +192,10 @@ extension CLLocationCoordinate2D: Codable {
                 $0.getHash()
             }
 
+            let zonesNotificationsLocationIds = notificationZones.map {
+                $0.getHash()
+            }
+
             let oldZonesIds = getPlaceHistory().map {$0.zoneHash}
             let oldNotificationZonesIds = getPlaceNotificationHistory().map {$0.zoneHash}
 
@@ -231,7 +235,20 @@ extension CLLocationCoordinate2D: Codable {
                 !zonesLocationIds.contains($0.zoneHash)
             }
 
+            let notificationsExits: [ZoneInfo] = getPlaceNotificationHistory().filter {
+                !zonesNotificationsLocationIds.contains($0.zoneHash)
+            }
+
+
             for info in exits {
+                info.exitLocation = currentLocation?.coordinate
+                info.exitTime = now
+                if let currentLocation = currentLocation {
+                    info.computeExitConfidence(location: currentLocation)
+                }
+            }
+
+            for info in notificationsExits {
                 info.exitLocation = currentLocation?.coordinate
                 info.exitTime = now
                 if let currentLocation = currentLocation {
@@ -254,6 +271,7 @@ extension CLLocationCoordinate2D: Codable {
                 eventDisPatcher.post(event: .GEOFENCE_EXIT, infos: exits)
                 eventDisPatcher.post(event: .GEOFENCE_VISIT, infos: exits)
                 eventDisPatcher.post(event: .GEOFENCE_NOTIFICATION_ZONE_ENTER, infos: notificationEntries)
+                eventDisPatcher.post(event: .GEOFENCE_NOTIFICATION_ZONE_EXIT, infos: notificationsExits)
             }
 
             GlobalLogger.shared.debug("ZoneEventGenerator - ends operation: \(uuid)")

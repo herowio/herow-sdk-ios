@@ -10,7 +10,6 @@ import CoreLocation
 import UIKit
 
 @objc public class HerowInitializer: NSObject, ResetDelegate {
-
     @objc public static let instance = HerowInitializer()
     private var appStateDetector = AppStateDetector()
     private var apiManager: APIManager
@@ -20,7 +19,6 @@ import UIKit
     private var userInfoManager: UserInfoManagerProtocol
     private var permissionsManager: PermissionsManagerProtocol
     private let cacheManager: CacheManagerProtocol
-    private var liveMomentStore: LiveMomentStoreProtocol?
     internal let geofenceManager: GeofenceManager
     private var detectionEngine: DetectionEngine
     private let zoneProvider: ZoneProvider
@@ -28,15 +26,17 @@ import UIKit
     private let analyticsManager: AnalyticsManagerProtocol
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
-    internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol =  UNUserNotificationCenter.current()) {
+
+    private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>()
+
+    internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol? = NotificationDelegateHolder.shared.useNotificationCenter ? UNUserNotificationCenter.current() : nil) {
+
         eventDispatcher = EventDispatcher()
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
-        let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation>()
+        let db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>()
         cacheManager = CacheManager(db: db)
-        //uncomment for V8.0.0
-        //liveMomentStore = LiveMomentStore(db: db, storage: herowDataHolder)
         userInfoManager = UserInfoManager(herowDataStorage: herowDataHolder)
         apiManager = APIManager(connectInfo: connectionInfo, herowDataStorage: herowDataHolder, cacheManager: cacheManager, userInfoManager: userInfoManager)
         userInfoManager.registerListener(listener: apiManager)
@@ -50,11 +50,7 @@ import UIKit
         cacheManager.registerCacheListener(listener: geofenceManager)
         detectionEngine.registerDetectionListener(listener: fuseManager)
         detectionEngine.registerDetectionListener(listener: geofenceManager)
-        if let liveMomentStore = liveMomentStore {
-            detectionEngine.registerDetectionListener(listener: liveMomentStore)
-            appStateDetector.registerAppStateDelegate(appStateDelegate: liveMomentStore)
-            cacheManager.registerCacheListener(listener: liveMomentStore)
-        }
+
 
         zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: eventDispatcher)
         cacheManager.registerCacheListener(listener: zoneProvider)
@@ -79,14 +75,20 @@ import UIKit
 
 
 
+
     @objc public func configPlatform(_ platform: HerowPlatform) -> HerowInitializer {
         connectionInfo.updatePlateform(platform)
         self.apiManager.configure(connectInfo: connectionInfo)
         return self
     }
-
+    @available(*, deprecated, message: "Don't use this anymore, use configApp(sdkKey: String, sdkSecure: String) instead \n indentifier becomes sdkKey and sdkKey becomes sdkSecret")
     @objc public func configApp(identifier: String, sdkKey: String) -> HerowInitializer {
         self.apiManager.user = User(login: identifier, password: sdkKey)
+        return self
+    }
+
+    @objc public func configApp(sdkKey: String, sdkSecret: String) -> HerowInitializer {
+        self.apiManager.user = User(login: sdkKey, password: sdkSecret)
         return self
     }
 
@@ -109,18 +111,78 @@ import UIKit
         self.cacheManager.reset(completion: completion)
     }
 
-    @objc public func reset(platform: HerowPlatform, sdkUser: String, sdkKey: String,customID: String, completion: @escaping ((String)->())) {
+    @objc public func reset(platform: HerowPlatform, sdkKey: String, sdkSecret: String ,customID: String, completion: @escaping ((String)->())) {
         let optinState = self.userInfoManager.getOptin()
         self.reset {
             self.userInfoManager.resetOptinsAndCustomId(optin: optinState, customId: customID)
-            self.configPlatform(platform) .configApp(identifier: sdkUser, sdkKey: sdkKey).synchronize()
+            self.configPlatform(platform) .configApp(sdkKey: sdkKey, sdkSecret: sdkSecret).synchronize()
             completion(customID)
         }
     }
+    //MARK: CUSTOM URLS MANAGEMENT
+
+    func resetUrls() {
+        let optins = getOptinValue()
+        let config = connectionInfo
+        let user = self.apiManager.user
+        let exactEntry = self.isNotificationsOnExactZoneEntry()
+        let customId = herowDataHolder.getCustomId()
+        reset()
+        self.notificationsOnExactZoneEntry(exactEntry)
+        apiManager.configure(connectInfo: config)
+        apiManager.user = user
+        apiManager.reloadUrls()
+        if let customId = customId {
+            setCustomId(customId: customId)
+        }
+        synchronize()
+        if optins {
+            acceptOptin()
+        } else {
+            refuseOptin()
+        }
+    }
+
+
+    @objc public func isNotificationsOnExactZoneEntry() -> Bool {
+          return  herowDataHolder.useExactEntry()
+        }
+
+    @objc public func setProdCustomURL(_ url: String) {
+        URLType.setProdCustomURL(url)
+        if self.connectionInfo.platform == .prod {
+        resetUrls()
+        }
+    }
+
+    @objc public func setPreProdCustomURL(_ url: String) {
+        URLType.setPreProdCustomURL(url)
+        if self.connectionInfo.platform == .preprod {
+        resetUrls()
+        }
+    }
+
+    @objc public func removeCustomURL() {
+        URLType.removeCustomURLS()
+       resetUrls()
+    }
+
+    @objc public func useCustomURL() -> Bool {
+        return URLType.useCustomURL()
+    }
+    
+    @objc public func getCurrentURL() -> String {
+        if self.connectionInfo.platform == .preprod {
+            return URLType.getPreProdCustomURL()
+        }
+        return URLType.getProdCustomURL()
+    }
+
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {
        eventDispatcher.registerListener(listener)
    }
+   
     //MARK: CLICKANDCOLLECT MANAGEMENT
     @objc public func isOnClickAndCollect() -> Bool {
         return detectionEngine.getIsOnClickAndCollect()
@@ -147,7 +209,7 @@ import UIKit
         detectionEngine.unregisterClickAndCollectListener(listener: listener)
     }
 
-    //MARK:DETECTIONENGINELISTENERS  MANAGEMENT
+    //MARK: DETECTIONENGINELISTENERS  MANAGEMENT
     @objc public func registerDetectionListener(listener: DetectionEngineListener) {
         detectionEngine.registerDetectionListener(listener:listener)
     }
@@ -156,6 +218,23 @@ import UIKit
         detectionEngine.unregisterDetectionListener(listener: listener)
     }
 
+    public func getClickAndCollectStart() -> Date? {
+        return dataHolder.getDate(key: "lastClickAndCollectActivationDate")
+    }
+
+    public func getClickAndCollectDelay() -> TimeInterval {
+
+        if let activation = getClickAndCollectStart() {
+            let now = Date()
+            let limit = Date(timeInterval: StorageConstants.timeIntervalLimit, since: activation)
+            let delay =
+                (now <  limit ) ? DateInterval(start: now, end: limit).duration : 0
+            return delay
+        }
+        return 0
+
+    }
+    
     //MARK: FUSEMANAGERLISTENERS  MANAGEMENT
     @objc public func  registerFuseManagerListener(listener: FuseManagerListener) {
         fuseManager.registerFuseManagerListener(listener:listener)
@@ -228,32 +307,10 @@ import UIKit
         }
     }
 
-    public func getClusters() -> [NodeDescription]? {
-        return  liveMomentStore?.getClusters()?.getReccursiveRects(nil)
-    }
-
-    public func registerLiveMomentStoreListener(listener: LiveMomentStoreListener) {
-        liveMomentStore?.registerLiveMomentStoreListener(listener)
-    }
-
     public func registerAppStateListener(listener: AppStateDelegate) {
         appStateDetector.registerAppStateDelegate(appStateDelegate: listener)
     }
-    public func getHome() -> QuadTreeNode? {
-        return  liveMomentStore?.getHome()
-    }
 
-    public func getWork() -> QuadTreeNode? {
-        return  liveMomentStore?.getWork()
-    }
-
-    public func getSchool() -> QuadTreeNode? {
-        return  liveMomentStore?.getSchool()
-    }
-
-    public func getShoppings() -> [QuadTreeNode]? {
-        return  liveMomentStore?.getShopping()
-    }
 
     public func getPOIs() -> [Poi] {
         return cacheManager.getPois()

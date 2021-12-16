@@ -162,3 +162,60 @@ output/herow_sdk_ios.framework/Frameworks/Pods_herow_sdk_ios.framework/Pods_hero
 herow_sdk_ios.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 output/zirTtekj
 herow-sdk-ios/connection/platform-secrets.plist
+HerowSDKTEST/HerowSDKTEST.xcodeproj/project.pbxproj
+HerowSDKTEST/HerowSDKTEST.xcodeproj/xcshareddata/xcschemes/HerowSDKTEST.xcscheme
+HerowSDKTEST/HerowSDKTEST.xcworkspace/xcuserdata/damien.xcuserdatad/UserInterfaceState.xcuserstate
+HerowSDKTEST/HerowSDKTEST.xcworkspace/xcuserdata/damien.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
+HerowSDKTEST/HerowSDKTEST/AppDelegate.swift
+HerowSDKTEST/HerowSDKTEST/screens/Settings/SettingsViewController.swift
+HerowSDKTEST/HerowSDKTEST/screens/Settings/accounts.plist
+HerowSDKTEST/HerowSDKTEST/utils/Utils.swift
+HerowSDKTEST/Podfile
+HerowSDKTEST/Podfile.lock
+HerowSDKTEST/Pods/Manifest.lock
+HerowSDKTEST/Pods/Pods.xcodeproj/project.pbxproj
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/Firebase.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/FirebaseAnalytics.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/FirebaseCore.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/FirebaseCoreDiagnostics.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/FirebaseCrashlytics.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/FirebaseInstallations.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/GoogleAppMeasurement.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/GoogleDataTransport.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/GoogleUtilities.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/Herow.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/Pods-HerowSDKTEST.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/PromisesObjC.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/SwiftLint.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/Toast-Swift.xcscheme
+HerowSDKTEST/Pods/Pods.xcodeproj/xcuserdata/damien.xcuserdatad/xcschemes/nanopb.xcscheme
+HerowSDKTEST/Pods/Target Support Files/Firebase/Firebase.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/Firebase/Firebase.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/FirebaseAnalytics/FirebaseAnalytics-xcframeworks-output-files.xcfilelist
+HerowSDKTEST/Pods/Target Support Files/FirebaseAnalytics/FirebaseAnalytics-xcframeworks.sh
+HerowSDKTEST/Pods/Target Support Files/FirebaseAnalytics/FirebaseAnalytics.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/FirebaseAnalytics/FirebaseAnalytics.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/FirebaseCore/FirebaseCore.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/FirebaseCore/FirebaseCore.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/FirebaseCoreDiagnostics/FirebaseCoreDiagnostics.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/FirebaseCrashlytics/FirebaseCrashlytics.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/FirebaseCrashlytics/FirebaseCrashlytics.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/FirebaseInstallations/FirebaseInstallations.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/FirebaseInstallations/FirebaseInstallations.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/GoogleAppMeasurement/GoogleAppMeasurement-xcframeworks-output-files.xcfilelist
+HerowSDKTEST/Pods/Target Support Files/GoogleAppMeasurement/GoogleAppMeasurement-xcframeworks.sh
+HerowSDKTEST/Pods/Target Support Files/GoogleAppMeasurement/GoogleAppMeasurement.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/GoogleAppMeasurement/GoogleAppMeasurement.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/GoogleDataTransport/GoogleDataTransport.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/GoogleDataTransport/GoogleDataTransport.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/GoogleUtilities/GoogleUtilities.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/GoogleUtilities/GoogleUtilities.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/Herow/Herow.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/Herow/Herow.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/Pods-HerowSDKTEST/Pods-HerowSDKTEST-frameworks.sh
+HerowSDKTEST/Pods/Target Support Files/Pods-HerowSDKTEST/Pods-HerowSDKTEST.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/Pods-HerowSDKTEST/Pods-HerowSDKTEST.release.xcconfig
+HerowSDKTEST/Pods/Target Support Files/Toast-Swift/Toast-Swift.debug.xcconfig
+HerowSDKTEST/Pods/Target Support Files/Toast-Swift/Toast-Swift.release.xcconfig.DS_Store
+.DS_Store

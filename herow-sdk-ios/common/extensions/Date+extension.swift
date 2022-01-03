@@ -7,20 +7,87 @@
 
 import Foundation
 
-public  enum RecurencyDay: String {
-    case monday
-    case tuesday
-    case wednesday
-    case thirsday
-    case friday
-    case satursday
-    case subday
+extension String {
+    func toRecurencyDay(slot:RecurencySlot? = nil) -> RecurencyDay {
+        var slotValue = slot
+        var slotString = slot?.rawValue ?? ""
+        var day: String? = nil
+    let components = self.components(separatedBy: " ")
+        if components.count == 2 {
+            day =  components[0]
+            slotString = components[1]
+            slotValue = RecurencySlot(rawValue: slotString)
+        }
+
+        guard let slotValue = slotValue else {
+            return .unknown
+        }
+
+        switch day {
+        case "monday": return .monday(slot:slotValue)
+        case "tuesday": return .tuesday(slot:slotValue)
+        case "wednesday": return .wednesday(slot:slotValue)
+        case "thursday": return .thursday(slot:slotValue)
+        case "friday": return .friday(slot:slotValue)
+        case "saturday": return .saturday(slot:slotValue)
+        case "sunday": return .sunday(slot:slotValue)
+        default:
+            return .unknown
+        }
+    }
 }
+
+public  enum RecurencyDay: Codable, Hashable {
+    case monday(slot: RecurencySlot)
+    case tuesday(slot: RecurencySlot)
+    case wednesday(slot: RecurencySlot)
+    case thursday(slot: RecurencySlot)
+    case friday(slot: RecurencySlot)
+    case saturday(slot: RecurencySlot)
+    case sunday(slot: RecurencySlot)
+    case unknown
+
+    func rawValue() -> String {
+        switch self {
+        case .monday(let slot):
+            return "monday \(slot.rawValue)"
+        case .tuesday(let slot):
+            return "tuesday \(slot.rawValue)"
+        case .wednesday(let slot):
+            return "wednesday \(slot.rawValue)"
+        case .thursday(let slot):
+            return "thursday \(slot.rawValue)"
+        case .friday(let slot):
+            return "friday \(slot.rawValue)"
+        case .saturday(let slot):
+            return "saturday \(slot.rawValue)"
+        case .sunday(let slot):
+            return "sunday \(slot.rawValue)"
+        default: return "RecurencyDay error"
+        }
+    }
+
+
+}
+
+
+public  enum RecurencySlot: String, Codable {
+    case earlyMorning
+    case lateMorning
+    case lunchTime
+    case earlyAfterNoon
+    case lateAfterNoon
+    case evening
+    case night
+    case unknown
+}
+
 
 extension Date {
 
  public static var  dateFormatter = DateFormatter()
  public static var  monthdateFormatter = DateFormatter()
+ public static var  daySlotdateFormatter = DateFormatter()
  public static var  daydateFormatter: DateFormatter  = {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -147,7 +214,55 @@ extension Date {
     }
 
     var recurencyDay: RecurencyDay {
-        return  RecurencyDay(rawValue: Date.daydateFormatter.string(from: self).lowercased()) ?? .monday
+
+        switch  Date.daydateFormatter.string(from: self).lowercased() {
+        case "monday": return .monday(slot: self.slot)
+        case "tuesday": return .tuesday(slot: self.slot)
+        case "wednesday": return .wednesday(slot: self.slot)
+        case "thursday": return .thursday(slot: self.slot)
+        case "friday": return .friday(slot: self.slot)
+        case "saturday": return .saturday(slot: self.slot)
+        case "sunday": return .sunday(slot: self.slot)
+        default:
+            return .monday(slot: .unknown)
+        }
+
     }
 
+    var slot: RecurencySlot {
+        Date.daySlotdateFormatter.dateFormat = "HH"
+
+        var defIdentifer =   Date.daySlotdateFormatter.locale.identifier
+        if !defIdentifer.hasSuffix("_POSIX") {
+            defIdentifer = defIdentifer+"_POSIX"
+            let locale = Locale(identifier: defIdentifer)
+            Date.daySlotdateFormatter.locale = locale
+        }
+        if let currentHour = Int( Date.daySlotdateFormatter.string(from: self)) {
+            if(currentHour < 06){
+                return .night
+            }
+            else if(currentHour < 10){
+                return .earlyMorning
+            }
+            else if( currentHour < 12){
+                return .lateMorning
+            }
+            else if( currentHour < 14){
+                return .lunchTime
+            }
+            else if(currentHour < 16){
+                return .earlyAfterNoon
+            }
+            else if(currentHour < 18){
+                return .lateAfterNoon
+            }
+            else if(currentHour < 22){
+                return .evening
+            } else {
+                return .night
+            }
+        }
+        return .unknown
+    }
 }

@@ -766,6 +766,23 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
     }
 
+    func reassignReccurenciesLocations(_ completion: @escaping ()->()) {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            contextToUse = self.context
+        }
+        contextToUse.perform {
+
+            self.feedAllRecurencies {
+                DispatchQueue.main.async {
+                    completion()
+                }
+            }
+            self.save()
+
+        }
+    }
+
     func reassignPeriodLocations(_ completion: @escaping ()->()) {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
@@ -774,14 +791,18 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         contextToUse.perform {
           //  self.cleanAllLocations(context: contextToUse)
            // self.removePeriods(contextToUse)
-            self.getLocations(contextToUse).forEach{
+          /*  self.getLocations(contextToUse).forEach{
                 loc in
                 _ = self.periodeForLocation(loc, context: contextToUse)
+            }*/
+
+            self.feedAllRecurencies {
+                DispatchQueue.main.async {
+                    completion()
+                }
             }
             self.save()
-            DispatchQueue.main.async {
-                completion()
-            }
+
         }
     }
 
@@ -845,15 +866,18 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func createQuadTreeRoot( completion: (()->())? = nil) {
-        if getCoreDataQuadTreeRoot() != nil  {
-            completion?()
-            return
-        }
-        let pois = getPoisInBase()
-        let root = T(id: "\(LeafType.root.rawValue)", locations: nil, leftUp: nil, rightUp: nil, leftBottom: nil, rightBottom: nil, tags: nil, densities: nil, rect: Rect.world, pois: pois)
-        saveQuadTree(root) {
-            completion?()
-        }
+       // self.reassignReccurenciesLocations { [unowned self] in
+            if self.getCoreDataQuadTreeRoot() != nil  {
+                completion?()
+                return
+            }
+            let pois = self.getPoisInBase()
+            let root = T(id: "\(LeafType.root.rawValue)", locations: nil, leftUp: nil, rightUp: nil, leftBottom: nil, rightBottom: nil, tags: nil, densities: nil, rect: Rect.world, pois: pois)
+            self.saveQuadTree(root) {
+                completion?()
+            }
+      //  }
+
     }
 
     func reloadNewPois(completion: (()->())? = nil) {
@@ -1011,9 +1035,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             var mylocations = [L]()
             
             let  rect: Rect = Rect(originLat: node.originLat, endLat: node.endLat, originLng: node.originLng, endLng: node.endLng)
-            var array : [PoiCoreData] =  [PoiCoreData]()
+            var array : [PoiCoreData] =   getPoisCoreData()
 
-            if let fromParent = node.parent?.pois {
+           if let fromParent = node.parent?.pois {
                 array = Array(fromParent)
             } else   if node.isRoot() {
                 if let rootSet = node.pois  {
@@ -1026,10 +1050,12 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                     array = getPoisCoreData()
                 }
             }
+
             let filteredArray =  array.filter {
                 let loc = L(lat: $0.lat, lng:  $0.lng, time: Date())
                 return rect.contains(loc)
             }
+
             node.pois = Set(filteredArray)
             let pois = filteredArray.map {
                 P(id: $0.id, tags: $0.tags, lat: $0.lat, lng: $0.lng)
@@ -1054,7 +1080,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
             result =  T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags,densities: densities, rect: rect, pois: pois)
             result?.recurencies = recurencies
-
             result?.liveMomentTypes = node.liveMomentTypes.compactMap {
                 NodeType(rawValue: $0)
             }
@@ -1087,11 +1112,12 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                     return getPoiCoreData(id: $0.getId(), context: context)
                 }
                 nodeCoreData?.pois = Set(pois)
+
             }
             guard let nodeCoreData = nodeCoreData else {
                 return
             }
-
+            self.reloadPoisForNode(nodeCoreData)
             nodeCoreData.treeId = node.getTreeId()
             if node.getTreeId() == "02133312344113212132" {
                 print ("stop")
@@ -1102,6 +1128,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             nodeCoreData.originLng = node.getRect().originLng
             nodeCoreData.endLat = node.getRect().endLat
             nodeCoreData.endLng = node.getRect().endLng
+            nodeCoreData.recurencies = node.createRecurencies()
             if node.liveMomentTypes.count > 0 {
             nodeCoreData.liveMomentTypes = node.liveMomentTypes.map {
                 $0.rawValue

@@ -13,7 +13,7 @@ import AdSupport
 protocol UserInfoListener: AnyObject {
     func  onUserInfoUpdate(userInfo: UserInfo)
 }
-protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate {
+protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate, PredictionStoreListener {
     func getCustomId() -> String?
     func removeCustomId()
     func setCustomId( _ customId: String)
@@ -45,7 +45,11 @@ protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate {
 }
 class UserInfoManager: UserInfoManagerProtocol {
 
-
+    func didPredict(predictions: [Prediction]) {
+        for prediction in predictions {
+            prediction.printValue()
+        }
+    }
 
     private var customId : String?
     private var idfv: String?

@@ -27,6 +27,7 @@ import UIKit
     private let analyticsManager: AnalyticsManagerProtocol
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
+    private var predictionStore: PredictionStoreProtocol
     private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>()
 
     internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol? = NotificationDelegateHolder.shared.useNotificationCenter ? UNUserNotificationCenter.current() : nil) {
@@ -35,7 +36,6 @@ import UIKit
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
         cacheManager = CacheManager(db: db)
-        //uncomment for V8.0.0
         liveMomentStore = LiveMomentStore(db: db, storage: herowDataHolder)
         userInfoManager = UserInfoManager(herowDataStorage: herowDataHolder)
         apiManager = APIManager(connectInfo: connectionInfo, herowDataStorage: herowDataHolder, cacheManager: cacheManager, userInfoManager: userInfoManager)
@@ -69,7 +69,10 @@ import UIKit
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
      
         notificationManager = NotificationManager(cacheManager: cacheManager, notificationCenter:  notificationCenter, herowDataStorage: herowDataHolder)
-     
+
+        self.predictionStore = PredictionStore()
+        self.liveMomentStore?.registerLiveMomentStoreListener(predictionStore)
+        self.predictionStore.registerListener(listener: userInfoManager)
        
         super.init()
 

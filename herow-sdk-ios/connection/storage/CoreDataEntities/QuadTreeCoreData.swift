@@ -99,24 +99,28 @@ class NodeCoreData: NSManagedObject {
     }
 
     func computeRecurency() {
-
+        self.recurencies =  [String: Int64]()
         locations?.forEach({ loc in
           let day =   loc.time.recurencyDay
-            var value = self.recurencies[day.rawValue] ?? 0
+          //  let slot = loc.time.slot
+            var value = self.recurencies[day.rawValue()] ?? 0
+            print("conmputed recurencie \(day)")
             value = value + 1
-            self.recurencies[day.rawValue] = value
+            self.recurencies[day.rawValue()] = value
         })
     }
 
     func getRecurencies() -> [RecurencyDay: Int] {
         var recurencies = [RecurencyDay: Int]()
         for key in self.recurencies.keys {
-            let day = RecurencyDay(rawValue: key) ?? .monday
+            
+            let day = key.toRecurencyDay()
             let value = self.recurencies[key] ?? 0
             recurencies[day] = Int(value)
         }
         return recurencies
     }
+
 }
 @objc(LocationCoreData)
 class LocationCoreData: NSManagedObject {

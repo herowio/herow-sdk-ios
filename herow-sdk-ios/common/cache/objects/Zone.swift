@@ -68,7 +68,7 @@ public protocol Notification {
     func getUri() -> String?
 }
 
-public protocol Poi {
+public protocol Poi: Codable {
     func getId() -> String
     func getTags() -> [String]
     func getLat() -> Double
@@ -164,6 +164,7 @@ public protocol QuadTreeNode: AnyObject, Zonable {
     func computeRecurency(_ loc: QuadTreeLocation)
 
 
+
 }
 
 struct LiveMomentResult {
@@ -228,6 +229,35 @@ extension QuadTreeNode {
         }
         return LiveMomentResult(homes: homes, works: works, schools: schools, shoppings: shoppings)
     }
+
+    func createRecurencies() -> [String: Int64] {
+        var recurencies = [String: Int64]()
+        for key in self.recurencies.keys {
+            let day = key.rawValue()
+            let value = self.recurencies[key] ?? 0
+            recurencies[day] = Int64(value)
+        }
+        return recurencies
+    }
+
+  public  func getLocationPattern() -> LocationPattern {
+        let count: Double  = Double(self.getCount())
+        var pattern = LocationPattern()
+        for (key, value) in self.recurencies {
+            pattern[key.rawValue()] = Double(value) / count
+        }
+        return pattern
+    }
+
+    public func resetRecurrencies() {
+        for l in getLocations() {
+            let day = l.time.recurencyDay
+            var value: Int = self.recurencies[day] ?? 0
+            value = value + 1
+            self.recurencies[day] = value
+        }
+    }
+
 }
 
 public protocol QuadTreeLocation {

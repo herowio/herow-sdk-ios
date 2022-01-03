@@ -65,10 +65,12 @@ class LiveMomentStore: LiveMomentStoreProtocol {
         self.dataStorage = storage
         queue.qualityOfService = .background
         queue.maxConcurrentOperationCount = 1
+        
         self.loadTree()
     }
 
     func loadTree() {
+      
         let start = CFAbsoluteTimeGetCurrent()
         self.dataBase.createQuadTreeRoot {
             let endRoot = CFAbsoluteTimeGetCurrent()
@@ -307,8 +309,12 @@ class LiveMomentStore: LiveMomentStoreProtocol {
     }
 
     internal func computeRects()  {
-        self.root = self.getClustersInBase()
+        let start = CFAbsoluteTimeGetCurrent()
+        self.root = self.root ?? self.getClustersInBase()
         self.rects =  self.root?.getReccursiveRects(nil)
+        let end = CFAbsoluteTimeGetCurrent()
+        let elapsedTime = (end - start) * 1000
+        GlobalLogger.shared.debug("LiveMomentStore - computeRects took  \(elapsedTime) ms ")
     }
 
     internal func compute() {
@@ -325,6 +331,8 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             oldLives.forEach {
                 $0.resetNodeTypes()
             }
+            let startMoment = CFAbsoluteTimeGetCurrent()
+            GlobalLogger.shared.debug("LiveMomentStore - compute  momentsstart")
             self.work = self.computeWork(candidates)
             self.work?.addNodeType(.work)
             self.home = self.computeHome(candidates)
@@ -335,6 +343,9 @@ class LiveMomentStore: LiveMomentStoreProtocol {
             self.shoppings?.forEach { node in
                 node.addNodeType(.shop)
             }
+            let endMoments = CFAbsoluteTimeGetCurrent()
+            let elapsedTimeMoments = (endMoments - startMoment) * 1000
+            GlobalLogger.shared.debug("LiveMomentStore - compute moments took in \(elapsedTimeMoments) ms ")
             var nodesTosave = [self.work, self.home, self.school]
             nodesTosave.append(contentsOf:  self.shoppings ?? [QuadTreeNode]())
             nodesTosave.append(contentsOf: oldLives)

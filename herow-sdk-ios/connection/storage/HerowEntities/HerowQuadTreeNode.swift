@@ -38,7 +38,7 @@ public struct Rect: Equatable {
         self.originLng = originLng
         self.endLng = endLng
     }
-    func contains(_ location: QuadTreeLocation) -> Bool {
+ public func contains(_ location: QuadTreeLocation) -> Bool {
         let lat = location.lat
         let lng = location.lng
         return originLat <= lat && endLat >= lat && originLng <= lng && endLng >= lng
@@ -870,8 +870,14 @@ class HerowQuadTreeNode: QuadTreeNode {
         let day = loc.time.recurencyDay
         var value: Int = self.recurencies[day] ?? 0
         value = value + 1
+        self.recurencies[day] = value
+
+        //reset
+      //  self.resetRecurrencies()
     }
 }
+
+
 
 
 public class HerowQuadTreeLocation: QuadTreeLocation {

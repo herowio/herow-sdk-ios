@@ -39,12 +39,12 @@
     <entity name="NodeCoreData" representedClassName="NodeCoreData" syncable="YES">
         <attribute name="endLat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="endLng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="liveMomentTypes" optional="YES" attributeType="Transformable" valueTransformerName="SSecureUnarchiveFromData" customClassName="Array&lt;Int&gt;"/>
-        <attribute name="nodeDensities" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String:Double]"/>
-        <attribute name="nodeTags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String:Double]"/>
+        <attribute name="liveMomentTypes" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;Int&gt;"/>
+        <attribute name="nodeDensities" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String:Double]"/>
+        <attribute name="nodeTags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String:Double]"/>
         <attribute name="originLat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="originLng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="recurencies" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformer" customClassName="[String:Int64]"/>
+        <attribute name="recurencies" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String:Int64]"/>
         <attribute name="treeId" optional="YES" attributeType="String"/>
         <attribute name="type" optional="YES" attributeType="String"/>
         <relationship name="childs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="parent" inverseEntity="NodeCoreData"/>

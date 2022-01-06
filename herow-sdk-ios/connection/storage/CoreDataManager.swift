@@ -791,20 +791,26 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             contextToUse = self.context
         }
         contextToUse.perform {
-          //  self.cleanAllLocations(context: contextToUse)
-           // self.removePeriods(contextToUse)
-          /*  self.getLocations(contextToUse).forEach{
+          self.getLocations(contextToUse).forEach{
                 loc in
                 _ = self.periodeForLocation(loc, context: contextToUse)
-            }*/
+            }
+            self.save()
+        }
+    }
 
+    func reComputeRecurencies(_ completion:  @escaping ()->()) {
+        var contextToUse = self.bgContext
+        if Thread.isMainThread {
+            contextToUse = self.context
+        }
+        contextToUse.perform {
             self.feedAllRecurencies {
                 DispatchQueue.main.async {
                     completion()
                 }
             }
             self.save()
-
         }
     }
 

@@ -318,6 +318,13 @@ import UIKit
             completion()
         }
     }
+
+    public   func recomputeRecurencies(_ completion: @escaping()->()) {
+        self.db.reComputeRecurencies {
+            completion()
+        }
+    }
+
     @objc public func getHerowZoneForId(id: String) -> HerowZone? {
         guard let zone =  cacheManager.getZones(ids: [id]).first else { return nil }
         return HerowZone(zone: zone)

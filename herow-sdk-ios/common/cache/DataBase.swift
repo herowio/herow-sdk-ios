@@ -33,6 +33,7 @@ protocol DataBase {
     func getLocations(completion: @escaping ([QuadTreeLocation]) ->() )
     func getLocationsNumber() -> Int
     func reassignPeriodLocations(_ completion:  @escaping ()->())
+    func zonesStats(completion: @escaping ([ZonePrediction]) -> ())
 
     //historicMethod
 

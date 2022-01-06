@@ -12,6 +12,15 @@ public protocol Zone: Zonable, Codable {
     func getCampaigns() -> [String]
     func getAccess() -> Access?
     init( hash: String, lat: Double, lng: Double, radius: Double, campaigns: [String], access: Access?)
+
+}
+
+extension Zone {
+    func contains(_ loc: QuadTreeLocation) -> Bool {
+        let center = CLLocation(latitude: self.getLat(), longitude: self.getLng())
+        let toTest = CLLocation(latitude: loc.lat, longitude: loc.lng)
+        return  center.distance(from: toTest) <= self.getRadius()
+    }
 }
 
 public protocol Zonable {

@@ -10,6 +10,8 @@ import CoreData
 import CoreLocation
 
 class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping,T: QuadTreeNode, L: QuadTreeLocation, K: PeriodProtocol>: DataBase {
+
+
     func getLocationsNumber() -> Int {
         return getLocationsNumber(context: self.bgContext)
     }
@@ -1294,6 +1296,72 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
             save()
         }
+    }
+
+
+    func zonesStats(completion: @escaping ([ZonePrediction]) -> ())  {
+        var zonesWithLoc = [ZoneWithLoc]()
+        let zones = getZonesInBase()
+        getLocations { locs in
+            var i = 1
+            for loc in locs {
+                print( "\(i) zonesStats treatment")
+                i = i + 1
+                let zonesToMatch = zones.filter {
+                    $0.contains(loc)
+                }
+                for zone in zonesToMatch {
+                    let zonesToFeed = zonesWithLoc.filter {
+                        $0.zone.getHash() == zone.getHash()
+                    }
+
+                    if zonesToFeed.isEmpty {
+                        let new = ZoneWithLoc(zone: zone, locations: [loc])
+                        new.computeRecurency(loc)
+                        zonesWithLoc.append(new)
+                    } else {
+                        for  zoneLoc in zonesToFeed {
+                            zoneLoc.locations.append(loc)
+                            zoneLoc.computeRecurency(loc)
+                        }
+                    }
+                }
+            }
+            completion(zonesWithLoc.map {$0.getPrediction()})
+        }
+    }
+}
+
+
+class ZoneWithLoc {
+    var zone: Zone
+    var locations: [QuadTreeLocation]
+
+    var recurencies: [RecurencyDay: Int]
+    init(zone: Zone, locations: [QuadTreeLocation]) {
+        self.zone = zone
+        self.locations = locations
+        self.recurencies = [RecurencyDay: Int]()
+    }
+
+    public func computeRecurency(_ loc: QuadTreeLocation) {
+        let day = loc.time.recurencyDay
+        var value: Int = self.recurencies[day] ?? 0
+        value = value + 1
+        self.recurencies[day] = value
+    }
+
+    func getPrediction() -> ZonePrediction {
+        return ZonePrediction(zoneHash: self.zone.getHash(), pattern: self.getLocationPattern())
+    }
+
+    public  func getLocationPattern() -> LocationPattern {
+        let count: Double  = Double( self.locations.count)
+        var pattern = LocationPattern()
+        for (key, value) in self.recurencies {
+            pattern[key.rawValue()] = Double(value) / count
+        }
+        return pattern
     }
 }
 

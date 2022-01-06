@@ -336,6 +336,35 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         return optin
     }
 
+
+    public func savePredictions(_ predictions: [Prediction]) {
+        if let data = predictions.encode() {
+            dataHolder.putData(key: HerowConstants.predictionsKey, value: data)
+            dataHolder.apply()
+        }
+    }
+
+    public func getLastPredictions() -> [Prediction]? {
+        guard let data = dataHolder.getData(key: HerowConstants.predictionsKey) else {
+            return nil
+        }
+        return [Prediction].decode(data)
+    }
+
+    public func saveZonesPredictions(_ predictions: [ZonePrediction]) {
+        if let data = predictions.encode() {
+            dataHolder.putData(key: HerowConstants.zonePredictionsKey, value: data)
+            dataHolder.apply()
+        }
+    }
+
+    public func getLastZonesPredictions() -> [ZonePrediction]? {
+        guard let data = dataHolder.getData(key: HerowConstants.zonePredictionsKey) else {
+            return nil
+        }
+        return [ZonePrediction].decode(data)
+    }
+
     public func reset(completion : ()->()) {
         self.token = nil
         self.config = nil

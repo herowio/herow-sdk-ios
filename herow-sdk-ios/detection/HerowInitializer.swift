@@ -70,7 +70,7 @@ import UIKit
      
         notificationManager = NotificationManager(cacheManager: cacheManager, notificationCenter:  notificationCenter, herowDataStorage: herowDataHolder)
 
-        self.predictionStore = PredictionStore()
+        self.predictionStore = PredictionStore(dataBase: db)
         self.liveMomentStore?.registerLiveMomentStoreListener(predictionStore)
         self.predictionStore.registerListener(listener: userInfoManager)
        

@@ -361,6 +361,7 @@ class LiveMomentStore: LiveMomentStoreProtocol {
                     let elapsedTime = (end - start) * 1000
                     GlobalLogger.shared.debug("LiveMomentStore - compute took in \(elapsedTime) ms ")
                 }
+               
             }
             if self.needGetPeriods {
                 GlobalLogger.shared.debug("LiveMomentStore - get periods start")

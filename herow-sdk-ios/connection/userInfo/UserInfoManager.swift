@@ -45,11 +45,7 @@ protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate, PredictionSto
 }
 class UserInfoManager: UserInfoManagerProtocol {
 
-    func didPredict(predictions: [Prediction]) {
-        for prediction in predictions {
-            prediction.printValue()
-        }
-    }
+
 
     private var customId : String?
     private var idfv: String?
@@ -60,10 +56,10 @@ class UserInfoManager: UserInfoManagerProtocol {
     private var locationStatus: String?
     private var accuracyStatus: String?
     private var notificationStatus: String?
-
+    private var predictions: [Prediction]?
+    private var zonesPredictions: [ZonePrediction]?
     weak  var  userInfoListener: UserInfoListener?
     let herowDataHolder: HerowDataStorageProtocol
-
 
     func removeCustomId() {
         if getCustomId() != nil {
@@ -226,6 +222,8 @@ class UserInfoManager: UserInfoManagerProtocol {
         if  let herowId = getHerowId() {
             GlobalLogger.shared.registerHerowId(herowId: herowId)
         }
+        self.predictions = self.herowDataHolder.getLastPredictions()
+        self.zonesPredictions = self.herowDataHolder.getLastZonesPredictions()
     }
 
     func registerListener(listener: UserInfoListener) {
@@ -267,10 +265,23 @@ class UserInfoManager: UserInfoManagerProtocol {
                                 customId: customId, lang: lang,
                                 offset: offset,
                                 optins:[optin],
-                                location: localisation
+                                location: localisation,
+                                predictions: self.predictions,
+                                zonesPredictions: self.zonesPredictions
+                                
         )
 
         return userInfo
+    }
+
+    func didPredict(predictions: [Prediction]) {
+        self.herowDataHolder.savePredictions(predictions)
+        self.predictions = predictions
+    }
+
+    func didZonePredict(predictions: [ZonePrediction]) {
+        self.herowDataHolder.saveZonesPredictions(predictions)
+        self.zonesPredictions = predictions
     }
 
     func reset(completion: @escaping ()->()) {
@@ -284,6 +295,7 @@ class UserInfoManager: UserInfoManagerProtocol {
         self.locationStatus = nil
         self.accuracyStatus = nil
         self.notificationStatus = nil
+        self.predictions = nil
     }
 
 }

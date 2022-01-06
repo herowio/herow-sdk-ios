@@ -104,7 +104,7 @@ class NodeCoreData: NSManagedObject {
           let day =   loc.time.recurencyDay
           //  let slot = loc.time.slot
             var value = self.recurencies[day.rawValue()] ?? 0
-            print("conmputed recurencie \(day)")
+            print("conmputed recurencie \( day)")
             value = value + 1
             self.recurencies[day.rawValue()] = value
         })

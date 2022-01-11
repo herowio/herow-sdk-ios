@@ -322,7 +322,7 @@ class HerowQuadTreeNode: QuadTreeNode {
         var densities =  self.densities ?? [String: Double] ()
         tags[LivingTag.home.rawValue] = 0.0
         tags[LivingTag.work.rawValue] = 0.0
-        tags[LivingTag.work.rawValue] = 0.0
+        tags[LivingTag.school.rawValue] = 0.0
         tags[LivingTag.shopping.rawValue] = 0.0
         densities[LivingTag.home.rawValue] = 0.0
         densities[LivingTag.school.rawValue] = 0.0
@@ -876,12 +876,6 @@ class HerowQuadTreeNode: QuadTreeNode {
       //  self.resetRecurrencies()
     }
 }
-
-
-
-
-
-
 
 public class HerowQuadTreeLocation: QuadTreeLocation {
     public var lat: Double

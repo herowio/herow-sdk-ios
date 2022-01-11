@@ -27,7 +27,7 @@ platform :ios, '11.0'
 
 target 'YourtTarget' do
   use_frameworks!
-  pod 'Herow', '~> 7.2.0'
+  pod 'Herow', '~> 7.2.1'
   # Pods for QuickComplete
 
   # Pods for testing

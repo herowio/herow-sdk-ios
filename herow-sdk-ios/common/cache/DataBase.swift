@@ -8,6 +8,8 @@
 import Foundation
 import CoreLocation
 protocol DataBase {
+
+    func registerCrashListener(_ listener: CoreDataManagerCrashListener)
     func saveZonesInBase(items: [Zone], completion: (()->())?)
     func getZonesInBase(_ idList: [String]?) -> [Zone]
     func getZonesInBase() -> [Zone]

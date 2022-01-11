@@ -31,6 +31,8 @@ extension PermissionsManagerProtocol {
             }
         }
     }
+
+    
 }
 @objc public class PermissionsManager: NSObject, PermissionsManagerProtocol , CLLocationManagerDelegate {
     let userInfoManager: UserInfoManagerProtocol

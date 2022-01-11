@@ -9,21 +9,36 @@ import Foundation
 import CoreData
 import CoreLocation
 
+@objc public protocol CoreDataManagerCrashListener: AnyObject {
+   func  didReceiveCoreDataCrash(_ error : Error)
+}
 class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping,T: QuadTreeNode, L: QuadTreeLocation, K: PeriodProtocol>: DataBase {
 
-
+    func registerCrashListener(_ listener: CoreDataManagerCrashListener) {
+        self.crashlistenners.append(WeakContainer(value: listener))
+    }
     func getLocationsNumber() -> Int {
         return getLocationsNumber(context: self.bgContext)
     }
 
+    var crashlistenners = [WeakContainer<CoreDataManagerCrashListener>]()
     lazy var persistentContainer: NSPersistentContainer = {
         let messageKitBundle = Bundle(for: Self.self)
         let modelURL = messageKitBundle.url(forResource: StorageConstants.dataModelName, withExtension: "momd")!
+        let storeDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         let managedObjectModel =  NSManagedObjectModel(contentsOf: modelURL)
         let container = NSPersistentContainer(name: StorageConstants.dataModelName, managedObjectModel: managedObjectModel!)
+         let url = storeDirectory.appendingPathComponent("\(StorageConstants.dataModelName).sqlite")
+        let description = NSPersistentStoreDescription(url: url)
+        description.shouldInferMappingModelAutomatically = true
+        description.shouldMigrateStoreAutomatically = true
+        description.setOption(FileProtectionType.none as NSObject, forKey: NSPersistentStoreFileProtectionKey)
+        container.persistentStoreDescriptions = [description]
         container.loadPersistentStores { (storeDescription, error) in
-            if let err = error{
-                fatalError("❌ Loading of store failed:\(err)")
+            if let err = error {
+                for listener in self.crashlistenners {
+                    listener.get()?.didReceiveCoreDataCrash(err)
+                }
             }
         }
         return container

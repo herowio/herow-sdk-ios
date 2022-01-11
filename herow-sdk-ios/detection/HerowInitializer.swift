@@ -10,6 +10,7 @@ import CoreLocation
 import UIKit
 
 @objc public class HerowInitializer: NSObject, ResetDelegate {
+    public  static var coreDataListeners = [CoreDataManagerCrashListener]()
     @objc public static let instance = HerowInitializer()
     private var appStateDetector = AppStateDetector()
     private var apiManager: APIManager
@@ -28,10 +29,14 @@ import UIKit
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
     private var predictionStore: PredictionStoreProtocol
-    private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>()
+    private var db:  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>
 
     internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol? = NotificationDelegateHolder.shared.useNotificationCenter ? UNUserNotificationCenter.current() : nil) {
         eventDispatcher = EventDispatcher()
+        db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>()
+        for listener in HerowInitializer.coreDataListeners {
+            db.registerCrashListener(listener)
+        }
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
@@ -338,6 +343,12 @@ import UIKit
             DispatchQueue.main.async {
                 completion(zones)
             }
+        }
+    }
+
+    @objc static public func registerCoreDataCrashListener(_ listener: CoreDataManagerCrashListener) {
+        if !HerowInitializer.coreDataListeners.contains(where: { $0 === listener }) {
+            HerowInitializer.coreDataListeners.append(listener)
         }
     }
 

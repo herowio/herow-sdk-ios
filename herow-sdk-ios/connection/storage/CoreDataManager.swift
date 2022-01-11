@@ -18,9 +18,15 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         let modelURL = messageKitBundle.url(forResource: StorageConstants.dataModelName, withExtension: "momd")!
         let managedObjectModel =  NSManagedObjectModel(contentsOf: modelURL)
         let container = NSPersistentContainer(name: StorageConstants.dataModelName, managedObjectModel: managedObjectModel!)
+        let url = storeDirectory.appendingPathComponent("\(StorageConstants.dataModelName).sqlite")
+        let description = NSPersistentStoreDescription(url: url)
+        description.shouldInferMappingModelAutomatically = true
+        description.shouldMigrateStoreAutomatically = true
+        description.setOption(FileProtectionType.none as NSObject, forKey: NSPersistentStoreFileProtectionKey)
+        container.persistentStoreDescriptions = [description]
         container.loadPersistentStores { (storeDescription, error) in
             if let err = error{
-                fatalError("❌ Loading of store failed:\(err)")
+               print("❌ Loading of store failed:\(err)")
             }
         }
         return container

@@ -18,6 +18,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         let modelURL = messageKitBundle.url(forResource: StorageConstants.dataModelName, withExtension: "momd")!
         let managedObjectModel =  NSManagedObjectModel(contentsOf: modelURL)
         let container = NSPersistentContainer(name: StorageConstants.dataModelName, managedObjectModel: managedObjectModel!)
+        let storeDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         let url = storeDirectory.appendingPathComponent("\(StorageConstants.dataModelName).sqlite")
         let description = NSPersistentStoreDescription(url: url)
         description.shouldInferMappingModelAutomatically = true

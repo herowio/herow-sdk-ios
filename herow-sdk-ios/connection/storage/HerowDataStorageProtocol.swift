@@ -53,7 +53,9 @@ public protocol HerowDataStorageProtocol: ResetDelegate {
     func getLastPredictions() -> [Prediction]?
     func saveZonesPredictions( _ predictions: [ZonePrediction])
     func getLastZonesPredictions() -> [ZonePrediction]?
-    
+    func saveTagsPredictions(_ predictions: [TagPrediction])
+    func getLastTagPredictions() -> [TagPrediction]?
+
 
     //LiveMoment
     func saveLiveMomentLastSaveDate(_ date: Date)

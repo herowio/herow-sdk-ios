@@ -250,13 +250,17 @@ extension QuadTreeNode {
     }
 
   public  func getLocationPattern() -> LocationPattern {
-        let count: Double  = Double(self.getCount())
-        var pattern = LocationPattern()
-        for (key, value) in self.recurencies {
-            pattern[key.rawValue()] = Double(value) / count
-        }
-        return pattern
+      return getRawLocationPattern().filtered()
     }
+
+    public  func getRawLocationPattern() -> LocationPattern {
+          let count: Double  = Double(self.getCount())
+          var pattern = LocationPattern()
+          for (key, value) in self.recurencies {
+              pattern[key.rawValue()] = Decimal((Double(value) / count).round(to: 2))
+          }
+        return pattern
+      }
 
     public func resetRecurrencies() {
         for l in getLocations() {

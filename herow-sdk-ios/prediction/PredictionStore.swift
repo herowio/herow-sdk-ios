@@ -10,6 +10,7 @@ import CoreLocation
 
 protocol PredictionStoreListener: AnyObject {
     func didPredict(predictions: [Prediction])
+    func didPredictionsForTags(predictions: [TagPrediction])
     func didZonePredict(predictions: [ZonePrediction])
 }
 
@@ -19,15 +20,19 @@ protocol PredictionStoreProtocol: AnyObject, LiveMomentStoreListener {
 }
 
 
-public typealias LocationPattern = [String : Double]
+public typealias LocationPattern = [String : Decimal]
 
 extension LocationPattern {
-    func sum() -> Double {
-        var sum = 0.0
+    func sum() -> Decimal {
+        var sum: Decimal = 0.0
         for (_ ,value) in self {
             sum = sum + value
         }
         return sum
+    }
+
+    func filtered() -> LocationPattern {
+        return self.filter { $0.value > 0.1 }
     }
 
     func snakeCaseValue() -> LocationPattern {
@@ -67,13 +72,75 @@ public struct Prediction: Codable {
     }
 }
 
+private struct TagObject {
+    var tag: String
+    var new = true
+    var locations: [QuadTreeLocation]
+    var recurencies =  [RecurencyDay: Int]()
+    mutating func addLocation(_ loc: QuadTreeLocation) {
+         self.locations.append(loc)
+        computeRecurency(loc)
+    }
+
+    mutating func addLocations(_ locs: [QuadTreeLocation]) {
+        for loc in locs {
+            addLocation(loc)
+        }
+    }
+
+    public mutating func computeRecurency(_ loc: QuadTreeLocation) {
+        let day = loc.time.recurencyDay
+        var value: Int = self.recurencies[day] ?? 0
+        value = value + 1
+        self.recurencies[day] = value
+    }
+
+    public  func getLocationPattern() -> LocationPattern {
+        let count: Double  = Double( self.locations.count)
+        var pattern = LocationPattern()
+        for (key, value) in self.recurencies {
+            pattern[key.rawValue()] = Decimal((Double(value) / count).round(to: 2))
+        }
+        return pattern.filtered()
+    }
+
+    func toTagPrediction() -> TagPrediction {
+        return TagPrediction(tag: self.tag, pattern: getLocationPattern())
+    }
+}
+
+public struct TagPrediction: Codable {
+    var tag: String
+    var pattern: LocationPattern
+
+    enum CodingKeys: String, CodingKey {
+        case tag
+        case pattern
+    }
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(tag, forKey: .tag)
+        try container.encode(pattern.snakeCaseValue() , forKey: .pattern)
+    }
+
+
+    func printValue()  {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        guard  let data = try? encoder.encode(self) else {
+            return
+        }
+       // print("Predictions for shopping sum : \(self.pattern.sum())")
+        print(String(decoding: data, as: UTF8.self))
+    }
+}
 
 public struct ZonePrediction: Codable {
     var zoneHash: String
     var pattern: LocationPattern
 
     enum CodingKeys: String, CodingKey {
-        case zoneHash
+        case zoneHash = "id"
         case pattern
 
     }
@@ -98,7 +165,30 @@ public struct ZonePrediction: Codable {
 
 }
 
+extension Array where Element == TagPrediction  {
+    func printValue()  {
+        guard let data = self.encode() else {
+            return
+        }
+        print(String(decoding: data, as: UTF8.self))
+    }
 
+    func encode() -> Data? {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        guard  let data = try? encoder.encode(self) else {
+            return nil
+        }
+        return data
+    }
+
+    static func decode(_ data: Data) -> [TagPrediction]? {
+        let decoded = try? JSONDecoder().decode([TagPrediction].self, from: data)
+        return decoded
+    }
+
+
+}
 
  extension Array where Element == Prediction  {
      func printValue()  {
@@ -203,10 +293,12 @@ class PredictionStore: PredictionStoreProtocol{
         if !predictions.isEmpty {
             for listener in listeners {
                 listener.get()?.didPredict(predictions: predictions)
+                listener.get()?.didPredictionsForTags(predictions:  processTagsPredictions(shops: shoppings))
             }
         }
 
-        self.database.zonesStats { zonesPredictions in
+
+        self.database.zonesStats { [self] zonesPredictions in
             if !zonesPredictions.isEmpty {
                 for listener in self.listeners {
                     listener.get()?.didZonePredict(predictions: zonesPredictions)
@@ -214,6 +306,28 @@ class PredictionStore: PredictionStoreProtocol{
             }
         }
     }
+
+    func processTagsPredictions(shops: [QuadTreeNode]) -> [TagPrediction] {
+        var tagsObjects = [TagObject]()
+        for shop in shops {
+            for poi in shop.getPois() {
+                for tag in poi.getTags() {
+                    var currentTag = tagsObjects.filter {
+                        $0.tag == tag
+                    }.first ?? TagObject(tag: tag, locations: [QuadTreeLocation]())
+                    currentTag.addLocations(shop.getLocations())
+                    if currentTag.new {
+                        currentTag.new = false
+                        tagsObjects.append(currentTag)
+                    }
+                }
+            }
+        }
+        return tagsObjects.map {
+            $0.toTagPrediction()
+        }
+    }
+
 
     func didChangeNode(node: QuadTreeNode) {
         //do nothing

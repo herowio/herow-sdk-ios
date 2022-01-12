@@ -344,6 +344,20 @@ public class HerowDataStorage: HerowDataStorageProtocol {
         }
     }
 
+    public func saveTagsPredictions(_ predictions: [TagPrediction]) {
+        if let data = predictions.encode() {
+            dataHolder.putData(key: HerowConstants.tagPredictionsKey, value: data)
+            dataHolder.apply()
+        }
+    }
+
+    public func getLastTagPredictions() -> [TagPrediction]? {
+        guard let data = dataHolder.getData(key: HerowConstants.tagPredictionsKey) else {
+            return nil
+        }
+        return [TagPrediction].decode(data)
+    }
+
     public func getLastPredictions() -> [Prediction]? {
         guard let data = dataHolder.getData(key: HerowConstants.predictionsKey) else {
             return nil

@@ -45,8 +45,6 @@ protocol UserInfoManagerProtocol: AppStateDelegate, ResetDelegate, PredictionSto
 }
 class UserInfoManager: UserInfoManagerProtocol {
 
-
-
     private var customId : String?
     private var idfv: String?
     private var idfa: String?
@@ -56,7 +54,8 @@ class UserInfoManager: UserInfoManagerProtocol {
     private var locationStatus: String?
     private var accuracyStatus: String?
     private var notificationStatus: String?
-    private var predictions: [Prediction]?
+  //  private var predictions: [Prediction]?
+    private var predictions: [TagPrediction]?
     private var zonesPredictions: [ZonePrediction]?
     weak  var  userInfoListener: UserInfoListener?
     let herowDataHolder: HerowDataStorageProtocol
@@ -222,7 +221,7 @@ class UserInfoManager: UserInfoManagerProtocol {
         if  let herowId = getHerowId() {
             GlobalLogger.shared.registerHerowId(herowId: herowId)
         }
-        self.predictions = self.herowDataHolder.getLastPredictions()
+        self.predictions = self.herowDataHolder.getLastTagPredictions()
         self.zonesPredictions = self.herowDataHolder.getLastZonesPredictions()
     }
 
@@ -276,12 +275,17 @@ class UserInfoManager: UserInfoManagerProtocol {
 
     func didPredict(predictions: [Prediction]) {
         self.herowDataHolder.savePredictions(predictions)
-        self.predictions = predictions
+      //  self.predictions = predictions
     }
 
     func didZonePredict(predictions: [ZonePrediction]) {
         self.herowDataHolder.saveZonesPredictions(predictions)
         self.zonesPredictions = predictions
+    }
+
+    func didPredictionsForTags(predictions: [TagPrediction]) {
+        self.herowDataHolder.saveTagsPredictions(predictions)
+        self.predictions = predictions
     }
 
     func reset(completion: @escaping ()->()) {

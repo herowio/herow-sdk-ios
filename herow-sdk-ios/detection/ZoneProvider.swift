@@ -74,8 +74,13 @@ class SelectionContainer {
 
 extension Double {
     func round(to places: Int) -> Double {
-        let divisor = pow(10.0, Double(places))
-        return (self * divisor).rounded() / divisor
+        return Double(String(format: "%.\(places)f", self))!
+    }
+}
+
+extension Float {
+    func round(to places: Int) -> Float {
+        return Float(String(format: "%.\(places)f", self))!
     }
 }
 

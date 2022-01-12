@@ -32,6 +32,7 @@ class HerowConstants {
     static let notificationStatusKey: String = "com.herow.sdk.user.notification.status"
     static let userDefaultsName: String = "com.herow.sdk.userDefaultsName"
     static let predictionsKey: String = "com.herow.sdk.user.predictions"
+    static let tagPredictionsKey: String = "com.herow.sdk.user.tagpredictions"
     static let zonePredictionsKey: String = "com.herow.sdk.user.zonespredictions"
     static let liveMomentSavingDate: String = "com.herow.sdk.liveMomentSavingDate"
 }

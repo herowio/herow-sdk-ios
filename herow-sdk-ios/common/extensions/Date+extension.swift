@@ -72,12 +72,12 @@ public  enum RecurencyDay: Codable, Hashable {
 
 
 public  enum RecurencySlot: String, Codable {
-    case earlyMorning
-    case lateMorning
-    case lunchTime
-    case earlyAfterNoon
-    case lateAfterNoon
-    case evening
+    case earlyMorning = "early_morning"
+    case lateMorning = "late_morning"
+    case lunchTime = "lunch_time"
+    case earlyAfterNoon = "early_afterNoon"
+    case lateAfterNoon = "late_afterNoon"
+    case evening 
     case night
     case unknown
 }

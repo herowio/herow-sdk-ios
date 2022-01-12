@@ -1380,9 +1380,9 @@ class ZoneWithLoc {
         let count: Double  = Double( self.locations.count)
         var pattern = LocationPattern()
         for (key, value) in self.recurencies {
-            pattern[key.rawValue()] = Double(value) / count
+            pattern[key.rawValue()] = Decimal((Double(value) / count).round(to: 2))
         }
-        return pattern
+        return pattern.filtered()
     }
 }
 

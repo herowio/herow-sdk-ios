@@ -194,7 +194,7 @@ public struct UserInfo: Codable {
     var offset: Int = 3600000
     var optins: [Optin]
     var location: LocationOptin
-    var predictions: [Prediction]?
+    var predictions: [TagPrediction]?
     var zonesPredictions: [ZonePrediction]?
 }
 

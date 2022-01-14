@@ -72,13 +72,24 @@ class SelectionContainer {
 }
 
 
-extension Double {
+public extension Double {
     func round(to places: Int) -> Double {
         return Double(String(format: "%.\(places)f", self))!
     }
 }
 
-extension Float {
+public extension Decimal {
+    var doubleValue:Double {
+        return NSDecimalNumber(decimal:self).doubleValue
+    }
+
+    func round(to places: Int) -> Decimal {
+        let divisor = pow(10.0, Double(places))
+        return Decimal((self.doubleValue * divisor).rounded() / divisor)
+    }
+}
+
+public extension Float {
     func round(to places: Int) -> Float {
         return Float(String(format: "%.\(places)f", self))!
     }

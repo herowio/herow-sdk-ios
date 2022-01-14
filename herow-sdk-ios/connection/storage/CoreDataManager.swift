@@ -1348,7 +1348,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                     }
                 }
             }
-            completion(zonesWithLoc.map {$0.getPrediction()})
+            completion(zonesWithLoc.map {$0.getPrediction()}.filter {
+                !$0.pattern.isEmpty
+            })
         }
     }
 }

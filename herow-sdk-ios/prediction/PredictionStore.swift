@@ -35,9 +35,11 @@ extension LocationPattern {
         return self.filter { $0.value > 0.1 }
     }
 
+
     func snakeCaseValue() -> LocationPattern {
       return  Dictionary(uniqueKeysWithValues:
-                            self.map { key, value in (key.replacingOccurrences(of: " ", with: "_"), value) })
+                            self.map { key, value in
+          return (key.replacingOccurrences(of: " ", with: "_"), value.round(to:2)) })
     }
 }
 
@@ -278,8 +280,23 @@ class PredictionStore: PredictionStoreProtocol{
             return
         }
 
+        for listener in listeners {
+                listener.get()?.didPredict(predictions: processShoppingZonesPredictions(shops: shoppings))
+                listener.get()?.didPredictionsForTags(predictions:  processTagsPredictions(shops: shoppings))
+        }
+
+        self.database.zonesStats { [unowned self] zonesPredictions in
+            if !zonesPredictions.isEmpty {
+                for listener in self.listeners {
+                    listener.get()?.didZonePredict(predictions: zonesPredictions)
+                }
+            }
+        }
+    }
+
+    func processShoppingZonesPredictions(shops: [QuadTreeNode]) -> [Prediction] {
         var predictions = [Prediction]()
-        for shop in shoppings {
+        for shop in shops {
             let coordinates = shop.getRect().circle().center
             var allPois = [Poi]()
             allPois.append(contentsOf: shop.getPois())
@@ -290,21 +307,7 @@ class PredictionStore: PredictionStoreProtocol{
             predictions.append(Prediction(pois: (allPois as? [HerowPoi]) ?? [], coordinates: CodableCoordinates(coordinates),pattern: shop.getLocationPattern()))
             }
         }
-        if !predictions.isEmpty {
-            for listener in listeners {
-                listener.get()?.didPredict(predictions: predictions)
-                listener.get()?.didPredictionsForTags(predictions:  processTagsPredictions(shops: shoppings))
-            }
-        }
-
-
-        self.database.zonesStats { [self] zonesPredictions in
-            if !zonesPredictions.isEmpty {
-                for listener in self.listeners {
-                    listener.get()?.didZonePredict(predictions: zonesPredictions)
-                }
-            }
-        }
+        return predictions
     }
 
     func processTagsPredictions(shops: [QuadTreeNode]) -> [TagPrediction] {
@@ -325,6 +328,8 @@ class PredictionStore: PredictionStoreProtocol{
         }
         return tagsObjects.map {
             $0.toTagPrediction()
+        }.filter {
+            !$0.pattern.isEmpty
         }
     }
 

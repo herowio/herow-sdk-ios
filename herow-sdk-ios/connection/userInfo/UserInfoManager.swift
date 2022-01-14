@@ -274,18 +274,23 @@ class UserInfoManager: UserInfoManagerProtocol {
     }
 
     func didPredict(predictions: [Prediction]) {
+        if !predictions.isEmpty {
         self.herowDataHolder.savePredictions(predictions)
-      //  self.predictions = predictions
+        }
     }
 
     func didZonePredict(predictions: [ZonePrediction]) {
+        if !predictions.isEmpty {
         self.herowDataHolder.saveZonesPredictions(predictions)
         self.zonesPredictions = predictions
+        }
     }
 
     func didPredictionsForTags(predictions: [TagPrediction]) {
+        if !predictions.isEmpty {
         self.herowDataHolder.saveTagsPredictions(predictions)
         self.predictions = predictions
+        }
     }
 
     func reset(completion: @escaping ()->()) {

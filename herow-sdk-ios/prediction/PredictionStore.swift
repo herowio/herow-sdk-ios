@@ -43,17 +43,30 @@ extension LocationPattern {
     }
 }
 
-public struct Prediction: Codable {
+
+public protocol Predictable: Codable {
+}
+
+extension Predictable  {
+    func printValue()  {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        guard  let data = try? encoder.encode(self) else {
+            return
+        }
+        print(String(decoding: data, as: UTF8.self))
+    }
+}
+
+
+public struct Prediction: Predictable {
     var pois: [HerowPoi]
     var coordinates: CodableCoordinates
     var pattern: LocationPattern
-
-
     enum CodingKeys: String, CodingKey {
         case pois
         case coordinates
         case pattern
-
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -61,16 +74,6 @@ public struct Prediction: Codable {
         try container.encode(pois, forKey: .pois)
         try container.encode(coordinates, forKey: .coordinates)
         try container.encode(pattern.snakeCaseValue() , forKey: .pattern)
-    }
-
-    func printValue()  {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        guard  let data = try? encoder.encode(self) else {
-            return
-        }
-       // print("Predictions for shopping sum : \(self.pattern.sum())")
-        print(String(decoding: data, as: UTF8.self))
     }
 }
 
@@ -111,7 +114,7 @@ private struct TagObject {
     }
 }
 
-public struct TagPrediction: Codable {
+public struct TagPrediction: Predictable {
     var tag: String
     var pattern: LocationPattern
 
@@ -124,20 +127,9 @@ public struct TagPrediction: Codable {
         try container.encode(tag, forKey: .tag)
         try container.encode(pattern.snakeCaseValue() , forKey: .pattern)
     }
-
-
-    func printValue()  {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        guard  let data = try? encoder.encode(self) else {
-            return
-        }
-       // print("Predictions for shopping sum : \(self.pattern.sum())")
-        print(String(decoding: data, as: UTF8.self))
-    }
 }
 
-public struct ZonePrediction: Codable {
+public struct ZonePrediction: Predictable {
     var zoneHash: String
     var pattern: LocationPattern
 
@@ -151,21 +143,8 @@ public struct ZonePrediction: Codable {
         try container.encode(zoneHash, forKey: .zoneHash)
         try container.encode(pattern.snakeCaseValue() , forKey: .pattern)
     }
-
-    
-    
-
-    func printValue()  {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = .prettyPrinted
-        guard  let data = try? encoder.encode(self) else {
-            return
-        }
-       // print("Predictions for shopping sum : \(self.pattern.sum())")
-        print(String(decoding: data, as: UTF8.self))
-    }
-
 }
+
 
 extension Array where Element == TagPrediction  {
     func printValue()  {
@@ -188,8 +167,6 @@ extension Array where Element == TagPrediction  {
         let decoded = try? JSONDecoder().decode([TagPrediction].self, from: data)
         return decoded
     }
-
-
 }
 
  extension Array where Element == Prediction  {
@@ -213,8 +190,6 @@ extension Array where Element == TagPrediction  {
          let decoded = try? JSONDecoder().decode([Prediction].self, from: data)
          return decoded
      }
-
-
  }
 
 extension Array where Element == ZonePrediction  {
@@ -238,8 +213,6 @@ extension Array where Element == ZonePrediction  {
         let decoded = try? JSONDecoder().decode([ZonePrediction].self, from: data)
         return decoded
     }
-
-
 }
 
 
@@ -248,10 +221,14 @@ class PredictionStore: PredictionStoreProtocol{
     var listeners =  [WeakContainer<PredictionStoreListener>]()
     var database : DataBase
 
-
-
     init( dataBase: DataBase) {
         self.database = dataBase
+    }
+
+    deinit {
+        for listener in listeners.compactMap({$0.get()}) {
+            self.unregisterListener(listener: listener)
+        }
     }
     
     func registerListener(listener: PredictionStoreListener) {
@@ -271,8 +248,6 @@ class PredictionStore: PredictionStoreProtocol{
     func liveMomentStoreStartComputing() {
         //do nothing
     }
-
-
 
     func didCompute(rects: [NodeDescription]?, home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?, others: [QuadTreeNode]?, neighbours: [QuadTreeNode]?, periods: [PeriodProtocol]) {
 
@@ -333,7 +308,6 @@ class PredictionStore: PredictionStoreProtocol{
         }
     }
 
-
     func didChangeNode(node: QuadTreeNode) {
         //do nothing
     }
@@ -341,5 +315,4 @@ class PredictionStore: PredictionStoreProtocol{
     func getFirstLiveMoments(home: QuadTreeNode?, work: QuadTreeNode?, school: QuadTreeNode?, shoppings: [QuadTreeNode]?) {
         //do nothing
     }
-
 }

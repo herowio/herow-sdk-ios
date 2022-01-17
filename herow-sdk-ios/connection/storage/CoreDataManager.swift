@@ -12,6 +12,7 @@ import CoreLocation
 @objc public protocol CoreDataManagerCrashListener: AnyObject {
    func  didReceiveCoreDataCrash(_ error : Error)
 }
+
 class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping,T: QuadTreeNode, L: QuadTreeLocation, K: PeriodProtocol>: DataBase {
 
     func registerCrashListener(_ listener: CoreDataManagerCrashListener) {
@@ -479,7 +480,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     //MARK: QUADTREE
-
     func periodeForLocation(_ location: LocationCoreData , context: NSManagedObjectContext) -> Period? {
 
         var result: Period?
@@ -559,8 +559,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         save()
     }
 
-
-
     func deleteDuplicatesForLocation(_ location: LocationCoreData , context: NSManagedObjectContext)  {
         context.performAndWait {
             let time = location.time as NSDate
@@ -614,7 +612,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return result
     }
 
-
     func resetDynamicValuesForNodes(completion: @escaping () ->()) {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
@@ -637,7 +634,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
     }
 
-
     func feedAllRecurencies(completion: @escaping () ->()) {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
@@ -659,10 +655,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 completion()
             }
         }
-
-
     }
-
 
     func getLocations(completion: @escaping ([QuadTreeLocation]) ->() )  {
         var contextToUse = self.bgContext
@@ -681,8 +674,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
     }
 
-
-
     func transFormeLocations(_ coreDataLocations:Set<LocationCoreData>?) -> [QuadTreeLocation] {
         return coreDataLocations?.map {
             let p =  L(lat: $0.lat, lng: $0.lng, time: $0.time)
@@ -690,7 +681,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             return  p
         }.sorted {$0.time > $1.time} ??  [QuadTreeLocation]()
     }
-
 
     func removePeriod( period: PeriodProtocol, competion: @escaping ()->()) {
         var contextToUse = self.bgContext
@@ -714,12 +704,12 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
 
     }
+
     func getPeriods(completion: @escaping ([PeriodProtocol]) ->() )  {
         var contextToUse = self.bgContext
         if Thread.isMainThread {
             contextToUse = self.context
         }
-
         contextToUse.perform {
             var periods =  [PeriodProtocol]()
             let periodsCoreData = self.getPeriods(contextToUse)
@@ -749,7 +739,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         }
     }
 
-
     func getPeriods(_ context : NSManagedObjectContext) -> [Period] {
         var result = [Period]()
 
@@ -762,9 +751,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
         return result
     }
-
-
-
 
     func unlikededlocation(_ context : NSManagedObjectContext) -> [LocationCoreData] {
         var result = [LocationCoreData]()
@@ -780,7 +766,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return result.filter{
             $0.containers.count == 0
         }
-
     }
 
     func reassignReccurenciesLocations(_ completion: @escaping ()->()) {
@@ -889,7 +874,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     func createQuadTreeRoot( completion: (()->())? = nil) {
-       // self.reassignReccurenciesLocations { [unowned self] in
             if self.getCoreDataQuadTreeRoot() != nil  {
                 completion?()
                 return
@@ -899,8 +883,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             self.saveQuadTree(root) {
                 completion?()
             }
-      //  }
-
     }
 
     func reloadNewPois(completion: (()->())? = nil) {
@@ -966,7 +948,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     }
 
     private  func getCoreDataQuadTreeRoot() -> NodeCoreData? {
-
         return getCoreDataQuadTree("\(LeafType.root.rawValue)")
     }
 
@@ -1038,25 +1019,18 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         return node
     }
 
-    
-
-
     private func recursiveInit(_ node : NodeCoreData?)  -> QuadTreeNode?{
         guard let node = node else {
             return nil
         }
-
         var result : QuadTreeNode?
         var context = self.bgContext
         if Thread.isMainThread {
-            
             context = self.context
         }
-
         context.performAndWait {
-
             var mylocations = [L]()
-            
+
             let  rect: Rect = Rect(originLat: node.originLat, endLat: node.endLat, originLng: node.originLng, endLng: node.endLng)
             var array : [PoiCoreData] =   getPoisCoreData()
 
@@ -1098,9 +1072,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             let tags = node.nodeTags
             let densities = node.nodeDensities
             let recurencies = node.getRecurencies()
-
-
-
             result =  T(id:treeId, locations: mylocations, leftUp: leftUp, rightUp:rightUp, leftBottom: leftBottom, rightBottom: rightBottom, tags: tags,densities: densities, rect: rect, pois: pois)
             result?.recurencies = recurencies
             result?.liveMomentTypes = node.liveMomentTypes.compactMap {
@@ -1142,9 +1113,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
             self.reloadPoisForNode(nodeCoreData)
             nodeCoreData.treeId = node.getTreeId()
-            if node.getTreeId() == "02133312344113212132" {
-                print ("stop")
-            }
             nodeCoreData.nodeTags = node.getTags() ?? [String: Double]()
             nodeCoreData.nodeDensities = node.getDensities() ?? [String: Double]()
             nodeCoreData.originLat = node.getRect().originLat
@@ -1178,8 +1146,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                     _ = self.periodeForLocation(newLocation, context: context)
                 }
             }
-
-
             let bottomLeftNode = node.getLeftBottomChild()
             let bottomRightNode = node.getRightBottomChild()
             let upRightNode = node.getRightUpChild()
@@ -1268,21 +1234,9 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
     func getLocationsNumber(context: NSManagedObjectContext) -> Int {
         var count = 0
         context.performAndWait {
-           /* let fetchRequest =
-                NSFetchRequest<LocationCoreData>(entityName: StorageConstants.LocationCoreDataEntityName)
-
-            let locations = try? context.fetch(fetchRequest)
-
-            if let locations = locations {
-                count = locations.count
-            }*/
-
             let locations = getLocations(context)
             count = locations.count
-
-
             GlobalLogger.shared.debug("Coredata Analyse : locationCount: \(count)")
-
             let periods = getPeriods(context)
             GlobalLogger.shared.debug("Coredata Analyse : periods count: \(periods.count)")
             for period in periods {
@@ -1291,7 +1245,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             }
             let periodlocations: [[LocationCoreData]] = Array(periods.map{Array($0.locations ?? Set<LocationCoreData>())})
             GlobalLogger.shared.debug("Coredata Analyse : locations from period locationCount: \(Array(periodlocations.joined()).count)")
-
         }
         return count
     }
@@ -1324,10 +1277,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         var zonesWithLoc = [ZoneWithLoc]()
         let zones = getZonesInBase()
         getLocations { locs in
-            var i = 1
             for loc in locs {
-                print( "\(i) zonesStats treatment")
-                i = i + 1
                 let zonesToMatch = zones.filter {
                     $0.contains(loc)
                 }
@@ -1335,7 +1285,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                     let zonesToFeed = zonesWithLoc.filter {
                         $0.zone.getHash() == zone.getHash()
                     }
-
                     if zonesToFeed.isEmpty {
                         let new = ZoneWithLoc(zone: zone, locations: [loc])
                         new.computeRecurency(loc)

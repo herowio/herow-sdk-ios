@@ -10,6 +10,8 @@ import CoreLocation
 import UIKit
 
 @objc public class HerowInitializer: NSObject, ResetDelegate {
+
+
     public  static var coreDataListeners = [CoreDataManagerCrashListener]()
     @objc public static let instance = HerowInitializer()
     private var appStateDetector = AppStateDetector()
@@ -29,6 +31,7 @@ import UIKit
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
     private var predictionStore: PredictionStoreProtocol
+    private var redirectionCatcher: RedirectionsCatcher
     private var db:  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>
 
     internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol? = NotificationDelegateHolder.shared.useNotificationCenter ? UNUserNotificationCenter.current() : nil) {
@@ -37,6 +40,8 @@ import UIKit
         for listener in HerowInitializer.coreDataListeners {
             db.registerCrashListener(listener)
         }
+
+
         dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
         herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
         connectionInfo = ConnectionInfo()
@@ -66,6 +71,8 @@ import UIKit
         cacheManager.registerCacheListener(listener: zoneProvider)
         detectionEngine.registerDetectionListener(listener: zoneProvider)
         analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
+        redirectionCatcher = RedirectionsCatcher()
+        analyticsManager.registerListener(listener: redirectionCatcher)
         liveMomentStore?.registerLiveMomentStoreListener(analyticsManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
@@ -198,6 +205,11 @@ import UIKit
         return URLType.getProdCustomURL()
     }
 
+    //MARK: REDIRECTIONS MANAGEMENT
+    @objc public func registerRedirectionsListener(listener: RedirectionsListener) {
+       redirectionCatcher.registerRedirectionsListener(listener)
+   }
+
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {
        eventDispatcher.registerListener(listener)
@@ -329,6 +341,8 @@ import UIKit
             completion()
         }
     }
+
+   
 
     @objc public func getHerowZoneForId(id: String) -> HerowZone? {
         guard let zone =  cacheManager.getZones(ids: [id]).first else { return nil }

@@ -36,7 +36,7 @@ extension LocationPattern {
     }
 
 
-    func snakeCaseValue() -> LocationPattern {
+    public func snakeCaseValue() -> LocationPattern {
       return  Dictionary(uniqueKeysWithValues:
                             self.map { key, value in
           return (key.replacingOccurrences(of: " ", with: "_"), value.round(to:2)) })

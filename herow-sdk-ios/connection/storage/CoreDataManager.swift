@@ -1297,6 +1297,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                     }
                 }
             }
+    
             completion(zonesWithLoc.map {$0.getPrediction()}.filter {
                 !$0.pattern.isEmpty
             })
@@ -1328,12 +1329,16 @@ class ZoneWithLoc {
     }
 
     public  func getLocationPattern() -> LocationPattern {
+        return getRawLocationPattern().filtered()
+    }
+
+    public  func getRawLocationPattern() -> LocationPattern {
         let count: Double  = Double( self.locations.count)
         var pattern = LocationPattern()
         for (key, value) in self.recurencies {
             pattern[key.rawValue()] = Decimal((Double(value) / count).round(to: 2))
         }
-        return pattern.filtered()
+        return pattern
     }
 }
 

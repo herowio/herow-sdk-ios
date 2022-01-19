@@ -36,7 +36,7 @@ public protocol Access: Codable {
     init(id: String, name: String, address: String)
 }
 
- protocol Campaign {
+ public protocol Campaign {
 
     func getId() -> String
     func getName() -> String

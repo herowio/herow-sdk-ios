@@ -32,7 +32,31 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
     private var backgroundTaskEvent = UIBackgroundTaskIdentifier.invalid
     private var appState: String = "bg"
     private let allowedEvents = [Event.GEOFENCE_ENTER, Event.GEOFENCE_EXIT, Event.GEOFENCE_VISIT]
+    private var  listeners = [WeakContainer<AnalyticsManagerListener>]()
 
+
+
+    func registerListener(listener: AnalyticsManagerListener) {
+      let first = listeners.first {
+          ($0.get() === listener) == true
+      }
+      if first == nil {
+          listeners.append(WeakContainer<AnalyticsManagerListener>(value: listener))
+      }
+  }
+
+    func unregisterListener(listener: AnalyticsManagerListener) {
+      listeners = listeners.filter {
+          ($0.get() === listener) == false
+      }
+  }
+
+    deinit {
+        for listener in listeners.compactMap({$0.get()}) {
+            unregisterListener(listener: listener)
+        }
+    }
+    
     init(apiManager: APIManagerProtocol, cacheManager:  CacheManagerProtocol, dataStorage: HerowDataStorageProtocol?) {
         self.apiManager = apiManager
         self.cacheManager =  cacheManager

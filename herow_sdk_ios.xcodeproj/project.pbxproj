@@ -91,6 +91,7 @@
 		6D40A29725BEFA150025268E /* Zone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A29625BEFA150025268E /* Zone.swift */; };
 		6D40A29E25BEFC270025268E /* ZoneCoreData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A29D25BEFC270025268E /* ZoneCoreData.swift */; };
 		6D47FEBD25DBF6F5006C8A41 /* MockLocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D47FEBC25DBF6F5006C8A41 /* MockLocationManager.swift */; };
+		6D5038CC2798488800746296 /* RedirectionsCatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D5038CB2798488800746296 /* RedirectionsCatcher.swift */; };
 		6D5B7DBA263808CF00BD3647 /* ValidityFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D5B7DB9263808CF00BD3647 /* ValidityFilter.swift */; };
 		6D60E6DF25DC26F800AC6291 /* CacheManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D60E6DE25DC26F800AC6291 /* CacheManagerTests.swift */; };
 		6D72C5AC26FC99B0006B3ADD /* ProximityFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D72C5AB26FC99B0006B3ADD /* ProximityFilter.swift */; };
@@ -219,6 +220,7 @@
 		6D40A29625BEFA150025268E /* Zone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Zone.swift; sourceTree = "<group>"; };
 		6D40A29D25BEFC270025268E /* ZoneCoreData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoneCoreData.swift; sourceTree = "<group>"; };
 		6D47FEBC25DBF6F5006C8A41 /* MockLocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockLocationManager.swift; sourceTree = "<group>"; };
+		6D5038CB2798488800746296 /* RedirectionsCatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedirectionsCatcher.swift; sourceTree = "<group>"; };
 		6D5B7DB9263808CF00BD3647 /* ValidityFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValidityFilter.swift; sourceTree = "<group>"; };
 		6D60E6DE25DC26F800AC6291 /* CacheManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManagerTests.swift; sourceTree = "<group>"; };
 		6D72C5AB26FC99B0006B3ADD /* ProximityFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProximityFilter.swift; sourceTree = "<group>"; };
@@ -633,6 +635,7 @@
 				6DAE9580262D729300954897 /* filters */,
 				6DAE957C262D727800954897 /* NotificationManager.swift */,
 				6DAE96A8262DB80A00954897 /* NotificationDelegateDispatcher.swift */,
+				6D5038CB2798488800746296 /* RedirectionsCatcher.swift */,
 			);
 			path = action;
 			sourceTree = "<group>";
@@ -901,6 +904,7 @@
 				6D0747FD25B72FFB005E08F8 /* TimeProviderForTests.swift in Sources */,
 				6D07480925B72FFB005E08F8 /* BatteryUtils.swift in Sources */,
 				6DAE95E8262D870000954897 /* NotificationManager.swift in Sources */,
+				6D5038CC2798488800746296 /* RedirectionsCatcher.swift in Sources */,
 				6DAE96A9262DB80A00954897 /* NotificationDelegateDispatcher.swift in Sources */,
 				6D79A1FE25C14F4F0048CAF0 /* ZoneProvider.swift in Sources */,
 				6D5B7DBA263808CF00BD3647 /* ValidityFilter.swift in Sources */,

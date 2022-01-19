@@ -342,7 +342,9 @@ import UIKit
         }
     }
 
-   
+    @objc public func getPatternForId(id: String) -> LocationPattern? {
+        self.herowDataHolder.getLastZonesPredictions()?.filter {$0.zoneHash == id}.map {$0.pattern}.first
+    }
 
     @objc public func getHerowZoneForId(id: String) -> HerowZone? {
         guard let zone =  cacheManager.getZones(ids: [id]).first else { return nil }

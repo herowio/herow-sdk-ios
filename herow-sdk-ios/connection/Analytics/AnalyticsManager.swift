@@ -17,6 +17,11 @@ protocol AnalyticsManagerProtocol:   EventListener, DetectionEngineListener, Cli
     func createlogEvent( event: Event,  info: ZoneInfo)
 }
 
+public protocol AnalyticsManagerListener: AnyObject {
+    func didOpenNotificationForCampaign(_ campaign: Campaign, zoneID: String)
+    func didCreateNotificationForCampaign(_ campaign: Campaign, zoneID: String, zoneInfo: ZoneInfo)
+}
+
 class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
 
     private var dataStorage: HerowDataStorageProtocol?

@@ -197,6 +197,10 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
             apiManager.pushLog(data, SubType.REDIRECT.rawValue) {}
         }
 
+        for listener in listeners {
+            listener.get()?.didOpenNotificationForCampaign(campaign, zoneID: zoneID)
+        }
+
     }
 
 }

@@ -8,6 +8,39 @@
 import Foundation
 import CoreLocation
 import UIKit
+/*
+
+ private var redirectionCatcher: RedirectionsCatcher
+ private var db:  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>
+
+ internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol? = NotificationDelegateHolder.shared.useNotificationCenter ? UNUserNotificationCenter.current() : nil) {
+ @@ -37,6 +40,8 @@ import UIKit
+ for listener in HerowInitializer.coreDataListeners {
+ db.registerCrashListener(listener)
+ }
+ +
+ +
+ dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
+ herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
+ connectionInfo = ConnectionInfo()
+ @@ -66,6 +71,8 @@ import UIKit
+ cacheManager.registerCacheListener(listener: zoneProvider)
+ detectionEngine.registerDetectionListener(listener: zoneProvider)
+ analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
+ +        redirectionCatcher = RedirectionsCatcher()
+ +        analyticsManager.registerListener(listener: redirectionCatcher)
+ liveMomentStore?.registerLiveMomentStoreListener(analyticsManager)
+ appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
+ appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
+ @@ -198,6 +205,11 @@ import UIKit
+ return URLType.getProdCustomURL()
+ }
+
+ +    //MARK: REDIRECTIONS MANAGEMENT
+ +    @objc public func registerRedirectionsListener(listener: RedirectionsListener) {
+ +       redirectionCatcher.registerRedirectionsListener(listener)
+ +   }
+ */
 
 @objc public class HerowInitializer: NSObject, ResetDelegate {
     @objc public static let instance = HerowInitializer()
@@ -26,7 +59,7 @@ import UIKit
     private let analyticsManager: AnalyticsManagerProtocol
     private let fuseManager: FuseManager
     private var notificationManager: NotificationManager
-
+    private var redirectionCatcher: RedirectionsCatcher
     private var db =  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping>()
 
     internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol? = NotificationDelegateHolder.shared.useNotificationCenter ? UNUserNotificationCenter.current() : nil) {
@@ -56,16 +89,18 @@ import UIKit
         cacheManager.registerCacheListener(listener: zoneProvider)
         detectionEngine.registerDetectionListener(listener: zoneProvider)
         analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
+        redirectionCatcher = RedirectionsCatcher()
+        analyticsManager.registerListener(listener: redirectionCatcher)
 
         appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
         appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
-       
+
         detectionEngine.registerDetectionListener(listener: analyticsManager)
         detectionEngine.registerClickAndCollectListener(listener: analyticsManager)
-     
+
         notificationManager = NotificationManager(cacheManager: cacheManager, notificationCenter:  notificationCenter, herowDataStorage: herowDataHolder)
-     
-       
+
+
         super.init()
 
         registerEventListener(listener: analyticsManager)
@@ -119,6 +154,11 @@ import UIKit
             completion(customID)
         }
     }
+
+    //MARK: REDIRECTIONS MANAGEMENT
+    @objc public func registerRedirectionsListener(listener: RedirectionsListener) {
+        redirectionCatcher.registerRedirectionsListener(listener)
+    }
     //MARK: CUSTOM URLS MANAGEMENT
 
     func resetUrls() {
@@ -145,26 +185,26 @@ import UIKit
 
 
     @objc public func isNotificationsOnExactZoneEntry() -> Bool {
-          return  herowDataHolder.useExactEntry()
-        }
+        return  herowDataHolder.useExactEntry()
+    }
 
     @objc public func setProdCustomURL(_ url: String) {
         URLType.setProdCustomURL(url)
         if self.connectionInfo.platform == .prod {
-        resetUrls()
+            resetUrls()
         }
     }
 
     @objc public func setPreProdCustomURL(_ url: String) {
         URLType.setPreProdCustomURL(url)
         if self.connectionInfo.platform == .preprod {
-        resetUrls()
+            resetUrls()
         }
     }
 
     @objc public func removeCustomURL() {
         URLType.removeCustomURLS()
-       resetUrls()
+        resetUrls()
     }
 
     @objc public func useCustomURL() -> Bool {
@@ -180,9 +220,9 @@ import UIKit
 
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {
-       eventDispatcher.registerListener(listener)
-   }
-   
+        eventDispatcher.registerListener(listener)
+    }
+
     //MARK: CLICKANDCOLLECT MANAGEMENT
     @objc public func isOnClickAndCollect() -> Bool {
         return detectionEngine.getIsOnClickAndCollect()
@@ -228,7 +268,7 @@ import UIKit
             let now = Date()
             let limit = Date(timeInterval: StorageConstants.timeIntervalLimit, since: activation)
             let delay =
-                (now <  limit ) ? DateInterval(start: now, end: limit).duration : 0
+            (now <  limit ) ? DateInterval(start: now, end: limit).duration : 0
             return delay
         }
         return 0

@@ -15,6 +15,8 @@ protocol AnalyticsManagerProtocol:   EventListener, DetectionEngineListener, Cli
 
     func createlogContex(_ location: CLLocation)
     func createlogEvent( event: Event,  info: ZoneInfo)
+    func registerListener(listener: AnalyticsManagerListener)
+    func unregisterListener(listener: AnalyticsManagerListener)
 }
 
 public protocol AnalyticsManagerListener: AnyObject {

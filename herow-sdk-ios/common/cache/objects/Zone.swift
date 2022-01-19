@@ -58,7 +58,7 @@ public protocol Access: Codable {
          notification: Notification?, startHour: String?, stopHour: String?)
 }
 
- protocol Notification {
+public  protocol Notification {
 
     func getTitle() -> String
     func getDescription() -> String

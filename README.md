@@ -256,7 +256,7 @@ HerowInitializer.instance.getPermissionsManager().requestIDFA(completion: nil)
 # DeepLink 
 You can catch deeplinks from notifications you just open
 You must declare the Uri to your application like this
-[https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app(https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app)
+[https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app](https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app)
 
 and update your appDelegate method
 ```        

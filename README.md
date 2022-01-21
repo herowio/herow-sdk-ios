@@ -253,7 +253,34 @@ HerowInitializer.instance.getPermissionsManager().requestIDFA(completion: nil)
 >Note: 
 >This method has no effect on the core SDK features and is therefore **not mandatory**.
 
+# DeepLink 
+You can catch deeplinks from notifications you just open
+You must declare the Uri to your application like this
+[https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app(https://developer.apple.com/documentation/xcode/defining-a-custom-url-scheme-for-your-app)
 
+and update your appDelegate method
+```        
+ func application(_ app: UIApplication, open url: URL,
+                     options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        if let scheme = url.scheme,
+            scheme.localizedCaseInsensitiveCompare("your sheme") == .orderedSame,
+            let view = url.host {
+            var parameters: [String: String] = [:]
+            URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?.forEach {
+                parameters[$0.name] = $0.value
+            }
+	  
+            redirect(to: view, with: parameters)
+        }
+        return true
+    }
+    
+    func redirect( to: String, with parameters: [String: String]) {
+        // do redirection
+	// do whatever you want with this informations
+    }
+
+```
 # Debug Mode
 You can now follow the execution logs with this method.
 

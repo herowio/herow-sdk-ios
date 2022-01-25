@@ -36,7 +36,7 @@ class APIManagerTests: XCTestCase, ConfigListener  {
                                                customId: "customId", lang: "lang",
                                                offset: 3600,
                                                optins:[Optin.optinDataOk],
-                                               location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue))
+                                               location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue), predictions: UserInfoPrediction(tags: [], zones:  []))
 
 
 
@@ -67,7 +67,7 @@ class APIManagerTests: XCTestCase, ConfigListener  {
                                                customId: "customId", lang: "lang",
                                                offset: 3600,
                                                optins:[Optin.optinDataOk],
-                                               location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue))
+                                               location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue), predictions: UserInfoPrediction(tags: [], zones: []))
 
 
 
@@ -95,7 +95,7 @@ class APIManagerTests: XCTestCase, ConfigListener  {
                                                    customId: "customId", lang: "lang",
                                                    offset: 3600,
                                                    optins:[Optin.optinDataOk],
-                                                   location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue))
+                                                   location: LocationOptin(status: LocationOptinStatusEnum.WHILE_IN_USE.rawValue, precision: LocationOptinPrecisionEnum.FINE.rawValue), predictions: UserInfoPrediction(tags: [], zones: []))
 
 
 

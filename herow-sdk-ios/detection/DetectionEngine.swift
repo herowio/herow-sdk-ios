@@ -138,7 +138,11 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     func initBackgroundCapabilities() {
-        self.locationManager.allowsBackgroundLocationUpdates =  authorizationStatus() != .authorizedAlways ? false : configureBackgroundLocationUpdates()
+        self.locationManager.allowsBackgroundLocationUpdates =   authorizationStatus() == .authorizedAlways ? configureBackgroundLocationUpdates() : false
+        self.showsBackgroundLocationIndicator =  authorizationStatus() == .authorizedAlways
+        if authorizationStatus() == .authorizedAlways {
+            startWorking()
+        }
     }
 
     public func requestAlwaysAuthorization() {
@@ -160,6 +164,11 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             self.dataHolder.apply()
             if( authorizationStatus() != .authorizedAlways) {
                 self.locationManager.allowsBackgroundLocationUpdates = value
+                if value {
+                self.startWorking()
+                } else {
+                    self.stopWorking()
+                }
             }
             self.showsBackgroundLocationIndicator = value
             self.updateClickAndCollectState()
@@ -291,12 +300,15 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
     }
 
     public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+
         GlobalLogger.shared.debug("locationManager didChangeAuthorization \( String(describing: status.rawValue))")
+        initBackgroundCapabilities()
     }
 
     @available(iOS 14.0, *)
     public func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         GlobalLogger.shared.debug("locationManager didChangeAuthorization \( String(describing: CLLocationManager.authorizationStatus().rawValue)) precision \(manager.accuracyAuthorization.rawValue)")
+        initBackgroundCapabilities()
     }
 
     private func didStartClickAndCollect() {
@@ -496,6 +508,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     public func onAppInForeground() {
         locationValidator.onAppInForeground()
+        initBackgroundCapabilities()
     }
 
     public func onAppInBackground() {

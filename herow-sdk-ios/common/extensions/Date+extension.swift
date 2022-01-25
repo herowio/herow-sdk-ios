@@ -75,8 +75,8 @@ public  enum RecurencySlot: String, Codable {
     case earlyMorning = "early_morning"
     case lateMorning = "late_morning"
     case lunchTime = "lunch_time"
-    case earlyAfterNoon = "early_afterNoon"
-    case lateAfterNoon = "late_afterNoon"
+    case earlyAfterNoon = "early_afternoon"
+    case lateAfterNoon = "late_afternoon"
     case evening 
     case night
     case unknown

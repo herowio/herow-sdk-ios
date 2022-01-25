@@ -54,7 +54,6 @@ class UserInfoManager: UserInfoManagerProtocol {
     private var locationStatus: String?
     private var accuracyStatus: String?
     private var notificationStatus: String?
-  //  private var predictions: [Prediction]?
     private var predictions: [TagPrediction]?
     private var zonesPredictions: [ZonePrediction]?
     weak  var  userInfoListener: UserInfoListener?
@@ -265,8 +264,8 @@ class UserInfoManager: UserInfoManagerProtocol {
                                 offset: offset,
                                 optins:[optin],
                                 location: localisation,
-                                predictions: self.predictions,
-                                zonesPredictions: self.zonesPredictions
+                                predictions: UserInfoPrediction(tags: self.predictions ?? [], zones: self.zonesPredictions ?? [])
+
                                 
         )
 

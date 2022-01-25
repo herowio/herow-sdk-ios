@@ -8,13 +8,21 @@
 import Foundation
 import CoreLocation
 
+struct Moments: Codable {
+    var home: Double
+    var office: Double
+    var shopping: Double
+    var other: Double
+}
 class LogDataContext: LogData {
 
     var location :CLLocation
+    var moments: Moments?
     var clickAndCollect: Bool
-    init( appState: String, location: CLLocation, cacheManager: CacheManagerProtocol,dataStorage: HerowDataStorageProtocol? ,clickAndCollect: Bool) {
+    init( appState: String, location: CLLocation, cacheManager: CacheManagerProtocol,dataStorage: HerowDataStorageProtocol? ,clickAndCollect: Bool, moments: Moments? = nil) {
         self.clickAndCollect = clickAndCollect
         self.location = location
+        self.moments = moments
         super.init(appState: appState, cacheManager: cacheManager, dataStorage: dataStorage)
     }
 
@@ -30,7 +38,7 @@ class LogDataContext: LogData {
             return NearbyPlace(placeId: $0.getHash(), distance: distance, radius: $0.getRadius(), lat: $0.getLat(), lng: $0.getLng(),confidence: nil )
         } ?? [NearbyPlace]()
 
-        let logData = LogDataContextStruct(location: location, pois: pois, places: places, appState: self.appState, subtype: self.clickAndCollect ?  SubType.CONTEXT_REALTIME.rawValue : SubType.CONTEXT.rawValue, dataStorage: self.dataStorage)
+        let logData = LogDataContextStruct(location: location, pois: pois, places: places, appState: self.appState, subtype: self.clickAndCollect ?  SubType.CONTEXT_REALTIME.rawValue : SubType.CONTEXT.rawValue, dataStorage: self.dataStorage, moments: self.moments)
 
         let log = Log(data: logData)
         return  log.encode()
@@ -76,11 +84,13 @@ class LogDataContextStruct: LogDataStruct {
     let lastLocation: CLLocation?
     let nearbyPois: [NearbyPoi]
     let nearbyPlaces: [NearbyPlace]
+    let moments: Moments?
 
-    init( location: CLLocation, pois: [NearbyPoi], places: [NearbyPlace],appState: String, subtype: String, dataStorage: HerowDataStorageProtocol?)  {
+    init( location: CLLocation, pois: [NearbyPoi], places: [NearbyPlace],appState: String, subtype: String, dataStorage: HerowDataStorageProtocol?, moments : Moments? = nil)  {
         self.lastLocation = location
         self.nearbyPois = pois
         self.nearbyPlaces = places
+        self.moments = moments
         super.init(appState: appState, subtype: subtype, dataStorage: dataStorage)
 
     }
@@ -89,13 +99,14 @@ class LogDataContextStruct: LogDataStruct {
         case lastLocation
         case nearbyPois
         case nearbyPlaces = "nearby_places"
-
+        case moments
     }
 
     public override func encode(to encoder: Encoder) throws {
         try super.encode(to: encoder)
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encodeIfPresent(lastLocation, forKey: .lastLocation)
+        try container.encodeIfPresent(moments, forKey: .moments)
         try container.encode(nearbyPois, forKey: .nearbyPois)
         try container.encode(nearbyPlaces, forKey: .nearbyPlaces)
     }

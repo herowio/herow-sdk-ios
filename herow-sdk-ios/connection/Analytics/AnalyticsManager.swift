@@ -106,10 +106,10 @@ class AnalyticsManager: NSObject, AnalyticsManagerProtocol {
         let workConfidence = computeWorkConfidence(location)
         let schoolConfidence = computeSchoolConfidence(location)
         let shopConfidence = computeShoppingConfidence(location)
-
+        let moments = Moments(home: homeConfidence, office: workConfidence, shopping: shopConfidence, other: schoolConfidence)
         GlobalLogger.shared.info("AnalyticsManager compute confidence : Home: \(homeConfidence) Work: \(workConfidence) School: \(schoolConfidence) Shop: \(shopConfidence)")
         //TODO:  insert confidence into log
-        let logContext = LogDataContext(appState: appState, location: location, cacheManager: cacheManager, dataStorage:  self.dataStorage, clickAndCollect: onClickAndCollect )
+        let logContext = LogDataContext(appState: appState, location: location, cacheManager: cacheManager, dataStorage:  self.dataStorage, clickAndCollect: onClickAndCollect,moments: moments )
         if let data = logContext.getData() {
             apiManager.pushLog(data, SubType.CONTEXT.rawValue) {
                 if self.backgroundTaskContext != .invalid {

@@ -185,6 +185,11 @@ public struct User {
     }
 }
 
+
+public struct UserInfoPrediction: Codable {
+    var tags: [TagPrediction]
+    var zones: [ZonePrediction]
+}
 public struct UserInfo: Codable {
     var adId: String?
     var adStatus: Bool
@@ -194,8 +199,8 @@ public struct UserInfo: Codable {
     var offset: Int = 3600000
     var optins: [Optin]
     var location: LocationOptin
-    var predictions: [TagPrediction]?
-    var zonesPredictions: [ZonePrediction]?
+    var predictions: UserInfoPrediction
+  //  var zonesPredictions: [ZonePrediction]?
 }
 
 

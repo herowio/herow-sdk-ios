@@ -240,7 +240,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     public func getUserInfoIfNeeded(completion: (() -> Void)? = nil) {
         if self.herowDataStorage.userInfoWaitingForUpdate()  {
             GlobalLogger.shared.debug("APIManager - should get userInfo")
-            self.getUserInfo(completion: { userInfo, error in
+            self.getUserInfo(completion: {  [unowned self ] userInfo, error in
                 if let userInfo = userInfo  {
                     self.herowDataStorage.saveUserInfo(userInfo)
                     self.herowDataStorage.saveUserInfoWaitingForUpdate(false)
@@ -258,7 +258,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     }
 
     private func getAndSaveToken( completion: @escaping (APIToken?, NetworkError?) -> Void) {
-        getToken() { token, error in
+        getToken() {   [unowned self ] token, error in
             var tempToken = token
             if let token = token {
                 self.herowDataStorage.saveToken(token)
@@ -303,7 +303,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             completion?(nil, .invalidInPut)
             return
         }
-        getTokenIfNeeded {
+        getTokenIfNeeded { [unowned self ] in
 
                 self.configWorker.headers = RequestHeaderCreator.createHeaders(sdk:  user.login, token: self.herowDataStorage.getToken()?.accessToken,herowId: herowid)
                 self.configWorker.getData() {
@@ -333,7 +333,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             completion?(nil, .invalidInPut)
             return
         }
-        getTokenIfNeeded {
+        getTokenIfNeeded {  [unowned self ] in
             self.userInfogWorker.headers = RequestHeaderCreator.createHeaders(sdk:  user.login, token: self.herowDataStorage.getToken()?.accessToken)
             self.userInfogWorker.putData(param:self.userInfoParam()) { userInfo, error in
                 if let userInfo = userInfo {
@@ -363,6 +363,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
         }
         cacheLoading = true
         authenticationFlow  {
+            [unowned self ] in
             guard let user = self.user, let herowid = self.herowDataStorage.getUserInfo()?.herowId else {
                 completion?(nil, .invalidInPut)
                 return
@@ -408,7 +409,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
             completion?()
             return
         }
-        authenticationFlow  {
+        authenticationFlow  {  [unowned self ] in
             self.logWorker.headers = RequestHeaderCreator.createHeaders(sdk: user.login, token:self.herowDataStorage.getToken()?.accessToken, herowId: herowid)
 
             self.logWorker.postData(param: log) {
@@ -495,7 +496,7 @@ public class APIManager: NSObject, APIManagerProtocol, DetectionEngineListener, 
     public func onLocationUpdate(_ location: CLLocation, from: UpdateType) {
         let currentGeoHash = GeoHashHelper.encodeBase32(lat: location.coordinate.latitude, lng: location.coordinate.longitude)[0...3]
         GlobalLogger.shared.debug("APIManager - onLocationUpdate")
-        getConfigIfNeeded {
+        getConfigIfNeeded {  [unowned self ] in
             self.getUserInfoIfNeeded {
                 self.getCache(geoHash: String(currentGeoHash))
             }

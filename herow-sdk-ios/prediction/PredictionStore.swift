@@ -122,6 +122,7 @@ public struct TagPrediction: Predictable {
         case tag
         case pattern
     }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(tag, forKey: .tag)
@@ -136,8 +137,8 @@ public struct ZonePrediction: Predictable {
     enum CodingKeys: String, CodingKey {
         case zoneHash = "id"
         case pattern
-
     }
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(zoneHash, forKey: .zoneHash)
@@ -257,7 +258,7 @@ class PredictionStore: PredictionStoreProtocol{
 
         for listener in listeners {
                 listener.get()?.didPredict(predictions: processShoppingZonesPredictions(shops: shoppings))
-                listener.get()?.didPredictionsForTags(predictions:  processTagsPredictions(shops: shoppings))
+                listener.get()?.didPredictionsForTags(predictions: processTagsPredictions(shops: shoppings))
         }
 
         self.database.zonesStats { [unowned self] zonesPredictions in

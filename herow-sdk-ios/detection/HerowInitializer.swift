@@ -60,6 +60,7 @@ import UIKit
         cacheManager.registerCacheListener(listener: geofenceManager)
         detectionEngine.registerDetectionListener(listener: fuseManager)
         detectionEngine.registerDetectionListener(listener: geofenceManager)
+
         if let liveMomentStore = liveMomentStore {
             detectionEngine.registerDetectionListener(listener: liveMomentStore)
             appStateDetector.registerAppStateDelegate(appStateDelegate: liveMomentStore)
@@ -87,7 +88,7 @@ import UIKit
         self.predictionStore.registerListener(listener: userInfoManager)
        
         super.init()
-
+        restoreShowsBackgroundLocationIndicatorOnAlwaysPermission()
         registerEventListener(listener: analyticsManager)
         detectionEngine.registerDetectionListener(listener: apiManager)
         registerEventListener(listener: notificationManager)
@@ -210,6 +211,8 @@ import UIKit
        redirectionCatcher.registerRedirectionsListener(listener)
    }
 
+
+
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {
        eventDispatcher.registerListener(listener)
@@ -220,6 +223,21 @@ import UIKit
 
     }
     //MARK: CLICKANDCOLLECT MANAGEMENT
+
+    @objc public func showsBackgroundLocationIndicatorOnAlwaysPermission(_ value: Bool) {
+        dataHolder.putBoolean(key: "showsBackgroundLocationIndicator", value: value)
+        detectionEngine.showsBackgroundLocationIndicator = value
+    }
+
+    @objc public func getShowsBackgroundLocationIndicatorOnAlwaysPermission() -> Bool {
+       let value =  dataHolder.getBoolean(key: "showsBackgroundLocationIndicator")
+        return value
+    }
+    private func restoreShowsBackgroundLocationIndicatorOnAlwaysPermission() {
+        let value =  dataHolder.getBoolean(key: "showsBackgroundLocationIndicator")
+        detectionEngine.showsBackgroundLocationIndicator = value
+    }
+
     @objc public func isOnClickAndCollect() -> Bool {
         return detectionEngine.getIsOnClickAndCollect()
     }

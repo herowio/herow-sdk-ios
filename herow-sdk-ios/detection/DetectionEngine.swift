@@ -140,7 +140,6 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     func initBackgroundCapabilities() {
         self.locationManager.allowsBackgroundLocationUpdates =   authorizationStatus() == .authorizedAlways ? configureBackgroundLocationUpdates() : false
-        self.showsBackgroundLocationIndicator =  authorizationStatus() == .authorizedAlways
         if authorizationStatus() == .authorizedAlways {
             startWorking()
         }

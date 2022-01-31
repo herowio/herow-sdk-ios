@@ -492,11 +492,13 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     func startWorking() {
         self.startUpdatingLocation()
+        self.startMonitoringVisits()
         self.startMonitoringSignificantLocationChanges()
     }
 
     func stopWorking() {
         self.stopUpdatingLocation()
+        self.stopMonitoringVisits()
         self.stopMonitoringSignificantLocationChanges()
     }
 

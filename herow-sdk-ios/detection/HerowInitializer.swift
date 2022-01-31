@@ -117,6 +117,7 @@ import UIKit
     }
 
     @objc public func synchronize(completion:(()->())? = nil) {
+        detectionEngine.startWorking()
         self.apiManager.authenticationFlow {
             completion?()
         }

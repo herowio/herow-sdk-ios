@@ -8,39 +8,7 @@
 import Foundation
 import CoreLocation
 import UIKit
-/*
 
- private var redirectionCatcher: RedirectionsCatcher
- private var db:  CoreDataManager<HerowZone, HerowAccess, HerowPoi, HerowCampaign, HerowNotification, HerowCapping, HerowQuadTreeNode, HerowQuadTreeLocation, HerowPeriod>
-
- internal  init(locationManager: LocationManager = CLLocationManager(),notificationCenter: NotificationCenterProtocol? = NotificationDelegateHolder.shared.useNotificationCenter ? UNUserNotificationCenter.current() : nil) {
- @@ -37,6 +40,8 @@ import UIKit
- for listener in HerowInitializer.coreDataListeners {
- db.registerCrashListener(listener)
- }
- +
- +
- dataHolder = DataHolderUserDefaults(suiteName: "HerowInitializer")
- herowDataHolder = HerowDataStorage(dataHolder: dataHolder)
- connectionInfo = ConnectionInfo()
- @@ -66,6 +71,8 @@ import UIKit
- cacheManager.registerCacheListener(listener: zoneProvider)
- detectionEngine.registerDetectionListener(listener: zoneProvider)
- analyticsManager = AnalyticsManager(apiManager: apiManager, cacheManager: cacheManager, dataStorage: herowDataHolder)
- +        redirectionCatcher = RedirectionsCatcher()
- +        analyticsManager.registerListener(listener: redirectionCatcher)
- liveMomentStore?.registerLiveMomentStoreListener(analyticsManager)
- appStateDetector.registerAppStateDelegate(appStateDelegate: analyticsManager)
- appStateDetector.registerAppStateDelegate(appStateDelegate: detectionEngine)
- @@ -198,6 +205,11 @@ import UIKit
- return URLType.getProdCustomURL()
- }
-
- +    //MARK: REDIRECTIONS MANAGEMENT
- +    @objc public func registerRedirectionsListener(listener: RedirectionsListener) {
- +       redirectionCatcher.registerRedirectionsListener(listener)
- +   }
- */
 
 @objc public class HerowInitializer: NSObject, ResetDelegate {
     @objc public static let instance = HerowInitializer()
@@ -85,6 +53,7 @@ import UIKit
         detectionEngine.registerDetectionListener(listener: geofenceManager)
 
 
+
         zoneProvider = ZoneProvider(cacheManager: cacheManager, eventDisPatcher: eventDispatcher)
         cacheManager.registerCacheListener(listener: zoneProvider)
         detectionEngine.registerDetectionListener(listener: zoneProvider)
@@ -102,7 +71,7 @@ import UIKit
 
 
         super.init()
-
+        restoreShowsBackgroundLocationIndicatorOnAlwaysPermission()
         registerEventListener(listener: analyticsManager)
         detectionEngine.registerDetectionListener(listener: apiManager)
         registerEventListener(listener: notificationManager)
@@ -218,12 +187,33 @@ import UIKit
         return URLType.getProdCustomURL()
     }
 
+
+    //MARK: REDIRECTIONS MANAGEMENT
+    @objc public func registerRedirectionsListener(listener: RedirectionsListener) {
+       redirectionCatcher.registerRedirectionsListener(listener)
+   }
+
     //MARK: EVENTLISTENERS MANAGEMENT
     @objc public func registerEventListener(listener: EventListener) {
         eventDispatcher.registerListener(listener)
     }
 
     //MARK: CLICKANDCOLLECT MANAGEMENT
+
+    @objc public func showsBackgroundLocationIndicatorOnAlwaysPermission(_ value: Bool) {
+        dataHolder.putBoolean(key: "showsBackgroundLocationIndicator", value: value)
+        detectionEngine.showsBackgroundLocationIndicator = value
+    }
+
+    @objc public func getShowsBackgroundLocationIndicatorOnAlwaysPermission() -> Bool {
+       let value =  dataHolder.getBoolean(key: "showsBackgroundLocationIndicator")
+        return value
+    }
+    private func restoreShowsBackgroundLocationIndicatorOnAlwaysPermission() {
+        let value =  dataHolder.getBoolean(key: "showsBackgroundLocationIndicator")
+        detectionEngine.showsBackgroundLocationIndicator = value
+    }
+
     @objc public func isOnClickAndCollect() -> Bool {
         return detectionEngine.getIsOnClickAndCollect()
     }

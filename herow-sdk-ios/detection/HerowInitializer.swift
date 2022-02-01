@@ -116,8 +116,14 @@ import UIKit
         return self
     }
 
+   private func restoreConfig() {
+        if let config = self.herowDataHolder.getConfig() {
+            detectionEngine.didRecievedConfig(config)
+
+        }
+    }
     @objc public func synchronize(completion:(()->())? = nil) {
-        detectionEngine.startWorking()
+        restoreConfig()
         self.apiManager.authenticationFlow {
             completion?()
         }

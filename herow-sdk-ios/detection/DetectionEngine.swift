@@ -140,6 +140,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     func initBackgroundCapabilities() {
         self.locationManager.allowsBackgroundLocationUpdates =   authorizationStatus() == .authorizedAlways ? configureBackgroundLocationUpdates() : false
+
         if authorizationStatus() == .authorizedAlways {
             startWorking()
         }
@@ -268,6 +269,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
             isUpdatingPosition = true
             updateClickAndCollectState()
             locationManager.startUpdatingLocation()
+            locationManager.startMonitoringSignificantLocationChanges()
         }
     }
 
@@ -275,6 +277,7 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
         isUpdatingPosition = false
         updateClickAndCollectState()
         locationManager.stopUpdatingLocation()
+        locationManager.stopMonitoringSignificantLocationChanges()
     }
 
     public func startMonitoringVisits() {
@@ -453,20 +456,13 @@ public class DetectionEngine: NSObject, LocationManager, CLLocationManagerDelega
 
     public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         GlobalLogger.shared.debug("enter in region \(region) - start updating location")
-        if LocationUtils.isGeofenceRegion(region) {
             extractLocationAfterRegionUpdate()
-        } else {
-            GlobalLogger.shared.debug("it's not a geofence region - we do not extract a location")
-        }
+
     }
 
     public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         GlobalLogger.shared.debug("exit from region \(region) - start updating location")
-        if LocationUtils.isGeofenceRegion(region) {
-            extractLocationAfterRegionUpdate()
-        } else {
-            GlobalLogger.shared.debug("it's not a geofence region - we do not extract a location")
-        }
+        extractLocationAfterRegionUpdate()
     }
 
     func didRecievedConfig(_ config: APIConfig) {

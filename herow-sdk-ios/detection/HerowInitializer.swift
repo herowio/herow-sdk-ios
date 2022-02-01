@@ -125,10 +125,7 @@ import UIKit
         }
     }
 
-    //MARK: REDIRECTIONS MANAGEMENT
-    @objc public func registerRedirectionsListener(listener: RedirectionsListener) {
-        redirectionCatcher.registerRedirectionsListener(listener)
-    }
+   
     //MARK: CUSTOM URLS MANAGEMENT
 
     func resetUrls() {

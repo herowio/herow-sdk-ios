@@ -14,6 +14,10 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
 
 
     lazy var persistentContainer: NSPersistentContainer = {
+        return getContainer()
+    }()
+
+    private func getContainer(retry: Bool = true) -> NSPersistentContainer {
         let messageKitBundle = Bundle(for: Self.self)
         let modelURL = messageKitBundle.url(forResource: StorageConstants.dataModelName, withExtension: "momd")!
         let managedObjectModel =  NSManagedObjectModel(contentsOf: modelURL)
@@ -25,13 +29,29 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         description.shouldMigrateStoreAutomatically = true
         description.setOption(FileProtectionType.none as NSObject, forKey: NSPersistentStoreFileProtectionKey)
         container.persistentStoreDescriptions = [description]
-        container.loadPersistentStores { (storeDescription, error) in
+        container.loadPersistentStores { [unowned self] (storeDescription, error) in
             if let err = error{
                print("❌ Loading of store failed:\(err)")
+                if retry {
+                    self.deleteDB()
+                }
             }
         }
         return container
-    }()
+    }
+
+    private func deleteDB() {
+
+        let storeDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        let url = storeDirectory.appendingPathComponent("\(StorageConstants.dataModelName).sqlite")
+        do {
+        try persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: url, ofType: "sqlite", options: nil)
+            _ = getContainer(retry: false)
+        } catch {
+            print("❌ deleteDB of store failed")
+        }
+
+    }
 
     lazy var context: NSManagedObjectContext = {
         let context = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)

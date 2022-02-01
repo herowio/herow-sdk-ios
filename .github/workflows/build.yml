@@ -16,7 +16,7 @@ jobs:
           path: secrets
     - name: copy platform-secrets.plits
       run: cp secrets/platform-secrets.plist ./herow-sdk-ios/connection/platform-secrets.plist;
-       echo "RELEASE_VERSION=v$(/usr/libexec/PlistBuddy -c "Print :CFBundleShortVersionString" herow-sdk-ios/Info.plist)" >> $GITHUB_ENV
+       echo "RELEASE_VERSION=v$(/usr/libexec/PlistBuddy -c "Print :sdkVersionText" herow-sdk-ios/Info.plist)" >> $GITHUB_ENV
     - name: pod installation
       run: | 
           rm -rf Pods;

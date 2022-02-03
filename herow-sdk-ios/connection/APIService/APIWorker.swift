@@ -108,23 +108,15 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         }
 
         guard let url = URL(string: buildURL(endPoint: endPoint)) else {
-<<<<<<< HEAD
             GlobalLogger.shared.warning("APIWorker - \(self.endPoint.value) response: \(NetworkError.badUrl)")
-            completion(Result.failure(NetworkError.badUrl))
-=======
             completion?(Result.failure(NetworkError.badUrl))
->>>>>>> 7bbe320 (Update apiworker)
+
             return
         }
 
         if currentTask != nil && allowMultiOperation == false {
-<<<<<<< HEAD
-            GlobalLogger.shared.warning("APIWorker - \(self.endPoint.value) response: \(NetworkError.workerStillWorking)")
-            completion(Result.failure(NetworkError.workerStillWorking))
-=======
             GlobalLogger.shared.error("APIWorker - \(self.endPoint.value) response: \(NetworkError.workerStillWorking)")
             completion?(Result.failure(NetworkError.workerStillWorking))
->>>>>>> 7bbe320 (Update apiworker)
             return
         }
 
@@ -134,13 +126,8 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 withName: "herow.io.APIWorker.backgroundTaskID" + url.absoluteString,
                 expirationHandler: {
                     if self.backgroundTaskId != .invalid {
-<<<<<<< HEAD
-                        GlobalLogger.shared.warning("APIWorker - \(self.endPoint.value) response: \n\(NetworkError.backgroundTaskExpiration)")
-                        completion(Result.failure(NetworkError.backgroundTaskExpiration))
-=======
                         GlobalLogger.shared.error("APIWorker - \(self.endPoint.value) response: \n\(NetworkError.backgroundTaskExpiration)")
                         self.completion?(Result.failure(NetworkError.backgroundTaskExpiration))
->>>>>>> 7bbe320 (Update apiworker)
                     }
                 })
             }
@@ -180,13 +167,8 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                                     self?.completion?(Result.success(responseObject as! T))
                                 return
                                 } else {
-<<<<<<< HEAD
-                                    GlobalLogger.shared.error("APIWorker - \(url) fail : responseObject nil")
-                                    completion(Result.failure(NetworkError.noData))
-=======
                                     GlobalLogger.shared.verbose("APIWorker - \(url) fail : responseObject nil")
                                     self?.completion?(Result.failure(NetworkError.noData))
->>>>>>> 7bbe320 (Update apiworker)
                                     return
                                 }
                             }
@@ -210,13 +192,8 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 queue.addOperation(block)
             }
         } else {
-<<<<<<< HEAD
-            GlobalLogger.shared.warning("APIWorker - \(url) \(NetworkError.requestExistsInQueue)")
-            completion(Result.failure(NetworkError.requestExistsInQueue))
-=======
             GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.requestExistsInQueue)")
             completion?(Result.failure(NetworkError.requestExistsInQueue))
->>>>>>> 7bbe320 (Update apiworker)
         }
     }
 

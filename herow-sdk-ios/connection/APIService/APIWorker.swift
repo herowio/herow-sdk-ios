@@ -41,6 +41,8 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     private var backgroundTaskId: UIBackgroundTaskIdentifier =  UIBackgroundTaskIdentifier.invalid
     private var allowMultiOperation: Bool = false
     private var ready = false
+    private var blockOPeration : BlockOperation?
+    private var completion: ((Result<ResponseType, Error>) -> Void)?
     internal init(urlType: URLType, endPoint: EndPoint = .undefined, allowMultiOperation: Bool = false) {
         self.baseURL = urlType.value
         self.endPoint = endPoint
@@ -88,8 +90,8 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
     internal  func doMethod<ResponseType: Decodable>( _ type: ResponseType.Type,method: Method, param: Data? = nil, endPoint: EndPoint = .undefined, callback: ((Result<ResponseType, Error>) -> Void)?)  {
 
         var task: URLSessionDataTask?
-        let completion: (Result<ResponseType, Error>) -> Void = {result in
-            callback?(result)
+        self.completion = {result in
+            callback?(result as! Result<ResponseType, Error>)
             self.queue.cancelAllOperations()
             self.currentTask = nil
             if self.backgroundTaskId != .invalid {
@@ -102,18 +104,18 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
         if !Reachability.isConnectedToNetwork() {
             GlobalLogger.shared.error("APIWorker - \(self.endPoint.value) response: \(NetworkError.noNetwork)")
 
-            completion(Result.failure(NetworkError.noNetwork))
+            completion?(Result.failure(NetworkError.noNetwork))
             return
         }
 
         guard let url = URL(string: buildURL(endPoint: endPoint)) else {
-            completion(Result.failure(NetworkError.badUrl))
+            completion?(Result.failure(NetworkError.badUrl))
             return
         }
 
         if currentTask != nil && allowMultiOperation == false {
             GlobalLogger.shared.error("APIWorker - \(self.endPoint.value) response: \(NetworkError.workerStillWorking)")
-            completion(Result.failure(NetworkError.workerStillWorking))
+            completion?(Result.failure(NetworkError.workerStillWorking))
             return
         }
 
@@ -124,11 +126,11 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 expirationHandler: {
                     if self.backgroundTaskId != .invalid {
                         GlobalLogger.shared.error("APIWorker - \(self.endPoint.value) response: \n\(NetworkError.backgroundTaskExpiration)")
-                        completion(Result.failure(NetworkError.backgroundTaskExpiration))
+                        self.completion?(Result.failure(NetworkError.backgroundTaskExpiration))
                     }
                 })
             }
-            let blockOPeration = BlockOperation { [weak self] in
+            blockOPeration = BlockOperation { [weak self] in
                 var request = URLRequest(url: url, cachePolicy: .reloadIgnoringCacheData, timeoutInterval: 30)
                 request.allHTTPHeaderFields = self?.headers
                 request.httpMethod = method.rawValue
@@ -138,19 +140,19 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
 
                 task = self?.session.dataTask(with: request, completionHandler: { [weak self] (data, response, error) in
                     if let _ = error {
-                        completion(Result.failure(NetworkError.badUrl))
+                        self?.completion?(Result.failure(NetworkError.badUrl))
                         return
                     }
                     guard let response = response as? HTTPURLResponse  else {
                         GlobalLogger.shared.error(NetworkError.invalidResponse)
-                        completion(Result.failure(NetworkError.invalidResponse))
+                        self?.completion?(Result.failure(NetworkError.invalidResponse))
                         return
                     }
                     let statusCode = response.statusCode
                     self?.statusCodeListener?.didReceiveResponse(statusCode)
                     if (HttpStatusCode.HTTP_OK..<HttpStatusCode.HTTP_MULT_CHOICE) ~= statusCode {
                         guard let data = data  else {
-                            completion(Result.failure(NetworkError.noData))
+                            self?.completion?(Result.failure(NetworkError.noData))
                             return
                         }
                         do {
@@ -161,35 +163,36 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                                 if let responseObject  = try self?.decoder.decode(type, from: data) {
                                     GlobalLogger.shared.verbose("APIWorker - \(url) success : \(statusCode) headers:\(( request.allHTTPHeaderFields) ?? [String:String]() ), response:\(responseObject)")
                                     
-                                completion(Result.success(responseObject))
+                                    self?.completion?(Result.success(responseObject as! T))
                                 return
                                 } else {
                                     GlobalLogger.shared.verbose("APIWorker - \(url) fail : responseObject nil")
-                                    completion(Result.failure(NetworkError.noData))
+                                    self?.completion?(Result.failure(NetworkError.noData))
                                     return
                                 }
                             }
                             let voidResponse = NoReply()
-                            completion(Result.success(voidResponse as! ResponseType))
+                            self?.completion?(Result.success(voidResponse as! T))
                         } catch {
                             GlobalLogger.shared.error(NetworkError.serialization)
-                            completion(Result.failure(NetworkError.serialization))
+                            self?.completion?(Result.failure(NetworkError.serialization))
 
                         }
                     } else {
                         GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.invalidStatusCode) : \(statusCode) headers:\((self?.headers) ?? [String:String]() )")
-                        completion(Result.failure(NetworkError.invalidStatusCode))
+                        self?.completion?(Result.failure(NetworkError.invalidStatusCode))
 
                     }
                 })
                 task?.resume()
                 self?.currentTask = task
-               // self?.currentTask?.resume()
             }
-            queue.addOperation(blockOPeration)
+            if let block = blockOPeration {
+                queue.addOperation(block)
+            }
         } else {
             GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.requestExistsInQueue)")
-            completion(Result.failure(NetworkError.requestExistsInQueue))
+            completion?(Result.failure(NetworkError.requestExistsInQueue))
         }
     }
 

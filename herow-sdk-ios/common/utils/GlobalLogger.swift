@@ -59,7 +59,7 @@ public enum MessageType: String {
 
     private func log(_ message: Any) {
         if debug {
-            // print(String(describing:message))
+             print(String(describing:message))
         }
     }
 

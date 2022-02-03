@@ -22,6 +22,36 @@
         <attribute name="count" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="razDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
     </entity>
+    <entity name="LocationContainer" representedClassName="LocationContainer" syncable="YES">
+        <attribute name="type" optional="YES" attributeType="String"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationCoreData" inverseName="containers" inverseEntity="LocationCoreData"/>
+        <relationship name="period" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Period" inverseName="containers" inverseEntity="Period"/>
+    </entity>
+    <entity name="LocationCoreData" representedClassName="LocationCoreData" syncable="YES">
+        <attribute name="isNearToPoi" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="containers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationContainer" inverseName="locations" inverseEntity="LocationContainer"/>
+        <relationship name="node" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="locations" inverseEntity="NodeCoreData"/>
+        <relationship name="period" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Period" inverseName="locations" inverseEntity="Period"/>
+    </entity>
+    <entity name="NodeCoreData" representedClassName="NodeCoreData" syncable="YES">
+        <attribute name="endLat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="endLng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="liveMomentTypes" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;Int&gt;"/>
+        <attribute name="nodeDensities" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String:Double]"/>
+        <attribute name="nodeTags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String:Double]"/>
+        <attribute name="originLat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="originLng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="recurencies" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String:Int64]"/>
+        <attribute name="treeId" optional="YES" attributeType="String"/>
+        <attribute name="type" optional="YES" attributeType="String"/>
+        <relationship name="childs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="parent" inverseEntity="NodeCoreData"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationCoreData" inverseName="node" inverseEntity="LocationCoreData"/>
+        <relationship name="parent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="childs" inverseEntity="NodeCoreData"/>
+        <relationship name="pois" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="PoiCoreData" inverseName="nodes" inverseEntity="PoiCoreData"/>
+    </entity>
     <entity name="NotificationCoreData" representedClassName="NotificationCoreData" syncable="YES">
         <attribute name="content" optional="YES" attributeType="String"/>
         <attribute name="image" optional="YES" attributeType="String"/>
@@ -31,11 +61,18 @@
         <attribute name="uri" optional="YES" attributeType="String"/>
         <relationship name="campaigns" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CampaignCoreData" inverseName="notification" inverseEntity="CampaignCoreData"/>
     </entity>
+    <entity name="Period" representedClassName="Period" syncable="YES">
+        <attribute name="end" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="start" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="containers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationContainer" inverseName="period" inverseEntity="LocationContainer"/>
+        <relationship name="locations" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="LocationCoreData" inverseName="period" inverseEntity="LocationCoreData"/>
+    </entity>
     <entity name="PoiCoreData" representedClassName="PoiCoreData" syncable="YES">
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="lat" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="lng" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="tags" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;String&gt;"/>
+        <relationship name="nodes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="NodeCoreData" inverseName="pois" inverseEntity="NodeCoreData"/>
     </entity>
     <entity name="ZoneCoreData" representedClassName=".ZoneCoreData" syncable="YES">
         <attribute name="campaigns" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="Array&lt;String&gt;"/>
@@ -49,8 +86,12 @@
         <element name="AccessCoreData" positionX="-54" positionY="45" width="128" height="89"/>
         <element name="CampaignCoreData" positionX="-36" positionY="63" width="128" height="164"/>
         <element name="CappingCoreData" positionX="-45" positionY="144" width="128" height="74"/>
+        <element name="LocationContainer" positionX="-36" positionY="126" width="128" height="74"/>
+        <element name="LocationCoreData" positionX="-36" positionY="117" width="128" height="134"/>
+        <element name="NodeCoreData" positionX="-27" positionY="72" width="128" height="239"/>
         <element name="NotificationCoreData" positionX="-27" positionY="54" width="128" height="134"/>
-        <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="89"/>
+        <element name="Period" positionX="-36" positionY="126" width="128" height="89"/>
+        <element name="PoiCoreData" positionX="-45" positionY="45" width="128" height="104"/>
         <element name="ZoneCoreData" positionX="-63" positionY="-18" width="128" height="119"/>
     </elements>
 </model>

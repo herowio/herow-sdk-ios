@@ -80,7 +80,6 @@
 		6D40A22325BC07C80025268E /* HerowDataStorageProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */; };
 		6D40A25B25BED02B0025268E /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A25A25BED02B0025268E /* CoreDataManager.swift */; };
 		6D40A26525BED2B60025268E /* StorageConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A26425BED2B60025268E /* StorageConstants.swift */; };
-		6D40A26A25BED3BD0025268E /* HerowDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A26825BED3BD0025268E /* HerowDataModel.xcdatamodeld */; };
 		6D40A26E25BEF4860025268E /* APIZone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A26D25BEF4860025268E /* APIZone.swift */; };
 		6D40A27225BEF4AB0025268E /* APICampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A27125BEF4AB0025268E /* APICampaign.swift */; };
 		6D40A27625BEF4D70025268E /* APIAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D40A27525BEF4D70025268E /* APIAccess.swift */; };
@@ -115,6 +114,7 @@
 		6DAE9582262D72AC00954897 /* NotificationFIlter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DAE9581262D72AC00954897 /* NotificationFIlter.swift */; };
 		6DAE95E8262D870000954897 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DAE957C262D727800954897 /* NotificationManager.swift */; };
 		6DAE96A9262DB80A00954897 /* NotificationDelegateDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DAE96A8262DB80A00954897 /* NotificationDelegateDispatcher.swift */; };
+		6DC12F1B27ABE6F000EB01DE /* HerowDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6DC12F1927ABE6F000EB01DE /* HerowDataModel.xcdatamodeld */; };
 		6DE3D3872632BD6A00EC3C42 /* String+regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE3D3862632BD6A00EC3C42 /* String+regex.swift */; };
 		6DE7559225F0E57D003C0252 /* GeoHashHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE7559125F0E57D003C0252 /* GeoHashHelperTests.swift */; };
 		6DE7559725F0E6E8003C0252 /* FileUtilsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE7559625F0E6E8003C0252 /* FileUtilsTests.swift */; };
@@ -209,7 +209,6 @@
 		6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HerowDataStorageProtocol.swift; sourceTree = "<group>"; };
 		6D40A25A25BED02B0025268E /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		6D40A26425BED2B60025268E /* StorageConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageConstants.swift; sourceTree = "<group>"; };
-		6D40A26925BED3BD0025268E /* HerowDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HerowDataModel.xcdatamodel; sourceTree = "<group>"; };
 		6D40A26D25BEF4860025268E /* APIZone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIZone.swift; sourceTree = "<group>"; };
 		6D40A27125BEF4AB0025268E /* APICampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICampaign.swift; sourceTree = "<group>"; };
 		6D40A27525BEF4D70025268E /* APIAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIAccess.swift; sourceTree = "<group>"; };
@@ -244,6 +243,8 @@
 		6DAE957C262D727800954897 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		6DAE9581262D72AC00954897 /* NotificationFIlter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationFIlter.swift; sourceTree = "<group>"; };
 		6DAE96A8262DB80A00954897 /* NotificationDelegateDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDelegateDispatcher.swift; sourceTree = "<group>"; };
+		6DC12F1A27ABE6F000EB01DE /* HerowDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HerowDataModel.xcdatamodel; sourceTree = "<group>"; };
+		6DC12F1C27ABE70400EB01DE /* HerowDataModel 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "HerowDataModel 2.xcdatamodel"; sourceTree = "<group>"; };
 		6DE3D3862632BD6A00EC3C42 /* String+regex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+regex.swift"; sourceTree = "<group>"; };
 		6DE7559125F0E57D003C0252 /* GeoHashHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeoHashHelperTests.swift; sourceTree = "<group>"; };
 		6DE7559625F0E6E8003C0252 /* FileUtilsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileUtilsTests.swift; sourceTree = "<group>"; };
@@ -541,10 +542,10 @@
 		6D40A25925BECFC60025268E /* storage */ = {
 			isa = PBXGroup;
 			children = (
+				6DC12F1927ABE6F000EB01DE /* HerowDataModel.xcdatamodeld */,
 				6D79A19525BF69160048CAF0 /* HerowEntities */,
 				6D40A22225BC07C80025268E /* HerowDataStorageProtocol.swift */,
 				6D40A29C25BEFC140025268E /* CoreDataEntities */,
-				6D40A26825BED3BD0025268E /* HerowDataModel.xcdatamodeld */,
 				6D40A25A25BED02B0025268E /* CoreDataManager.swift */,
 				6D40A26425BED2B60025268E /* StorageConstants.swift */,
 			);
@@ -920,7 +921,6 @@
 				6D40A22325BC07C80025268E /* HerowDataStorageProtocol.swift in Sources */,
 				6DFA76062636F422000254E2 /* TimeSlotFilter.swift in Sources */,
 				6DFA763826374839000254E2 /* RecurencyFilter.swift in Sources */,
-				6D40A26A25BED3BD0025268E /* HerowDataModel.xcdatamodeld in Sources */,
 				6D07480D25B72FFB005E08F8 /* GenericHolder.swift in Sources */,
 				6D79A20E25C159DE0048CAF0 /* LocationUtils.swift in Sources */,
 				6D72C5AC26FC99B0006B3ADD /* ProximityFilter.swift in Sources */,
@@ -975,6 +975,7 @@
 				6D7DF5AC2638668F008E164E /* CappingFilter.swift in Sources */,
 				6D07480025B72FFB005E08F8 /* ResetDelegate.swift in Sources */,
 				6D97C27325DD5958007AC150 /* StringUtils.swift in Sources */,
+				6DC12F1B27ABE6F000EB01DE /* HerowDataModel.xcdatamodeld in Sources */,
 				6D7DF5AA2638506F008E164E /* HerowCapping.swift in Sources */,
 				6D33409D25C81D110011CBAB /* LogDataEvent.swift in Sources */,
 				6D07481025B72FFB005E08F8 /* DispatchQueueUtils.swift in Sources */,
@@ -1304,12 +1305,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		6D40A26825BED3BD0025268E /* HerowDataModel.xcdatamodeld */ = {
+		6DC12F1927ABE6F000EB01DE /* HerowDataModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				6D40A26925BED3BD0025268E /* HerowDataModel.xcdatamodel */,
+				6DC12F1C27ABE70400EB01DE /* HerowDataModel 2.xcdatamodel */,
+				6DC12F1A27ABE6F000EB01DE /* HerowDataModel.xcdatamodel */,
 			);
-			currentVersion = 6D40A26925BED3BD0025268E /* HerowDataModel.xcdatamodel */;
+			currentVersion = 6DC12F1C27ABE70400EB01DE /* HerowDataModel 2.xcdatamodel */;
 			path = HerowDataModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

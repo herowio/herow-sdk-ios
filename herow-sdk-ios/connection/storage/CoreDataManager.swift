@@ -13,23 +13,29 @@ import CoreLocation
 class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q: Capping>: DataBase {
 
 
+    private  var  _persistentContainer: NSPersistentContainer?
     lazy var persistentContainer: NSPersistentContainer = {
         return getContainer()
     }()
 
-    private func getContainer(retry: Bool = true) -> NSPersistentContainer {
+    private func getContainer() -> NSPersistentContainer {
         let messageKitBundle = Bundle(for: Self.self)
         let modelURL = messageKitBundle.url(forResource: StorageConstants.dataModelName, withExtension: "momd")!
         let managedObjectModel =  NSManagedObjectModel(contentsOf: modelURL)
-        let container = NSPersistentContainer(name: StorageConstants.dataModelName, managedObjectModel: managedObjectModel!)
+        _persistentContainer = NSPersistentContainer(name: StorageConstants.dataModelName, managedObjectModel: managedObjectModel!)
+        reload(container: _persistentContainer)
+        return _persistentContainer!
+    }
+
+    private func reload(container : NSPersistentContainer? ,_ retry: Bool = true) {
         let storeDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         let url = storeDirectory.appendingPathComponent("\(StorageConstants.dataModelName).sqlite")
         let description = NSPersistentStoreDescription(url: url)
         description.shouldInferMappingModelAutomatically = true
         description.shouldMigrateStoreAutomatically = true
         description.setOption(FileProtectionType.none as NSObject, forKey: NSPersistentStoreFileProtectionKey)
-        container.persistentStoreDescriptions = [description]
-        container.loadPersistentStores { [unowned self] (storeDescription, error) in
+        container?.persistentStoreDescriptions = [description]
+        container?.loadPersistentStores { [unowned self] (storeDescription, error) in
             if let err = error{
                print("❌ Loading of store failed:\(err)")
                 if retry {
@@ -37,7 +43,6 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
                 }
             }
         }
-        return container
     }
 
     private func deleteDB() {
@@ -45,8 +50,8 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         let storeDirectory = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
         let url = storeDirectory.appendingPathComponent("\(StorageConstants.dataModelName).sqlite")
         do {
-        try persistentContainer.persistentStoreCoordinator.destroyPersistentStore(at: url, ofType: "sqlite", options: nil)
-            _ = getContainer(retry: false)
+            try _persistentContainer?.persistentStoreCoordinator.destroyPersistentStore(at: url, ofType: "sqlite", options: nil)
+            reload(container:_persistentContainer, false)
         } catch {
             print("❌ deleteDB of store failed")
         }

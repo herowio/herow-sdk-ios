@@ -37,7 +37,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
         container?.persistentStoreDescriptions = [description]
         container?.loadPersistentStores { [unowned self] (storeDescription, error) in
             if let err = error{
-               print("❌ Loading of store failed:\(err)")
+                GlobalLogger.shared.error("❌ Loading of store failed:\(err)")
                 if retry {
                     self.deleteDB()
                 }
@@ -53,7 +53,7 @@ class CoreDataManager<Z: Zone, A: Access,P: Poi,C: Campaign, N: Notification, Q:
             try _persistentContainer?.persistentStoreCoordinator.destroyPersistentStore(at: url, ofType: "sqlite", options: nil)
             reload(container:_persistentContainer, false)
         } catch {
-            print("❌ deleteDB of store failed")
+            GlobalLogger.shared.error("❌ deleteDB of store failed")
         }
 
     }

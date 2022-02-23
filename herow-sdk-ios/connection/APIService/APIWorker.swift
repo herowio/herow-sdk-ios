@@ -188,7 +188,11 @@ internal class APIWorker<T: Decodable>: APIWorkerProtocol {
                 self?.currentTask = task
             }
             if let block = blockOPeration {
+                if !queue.operations.contains (block) {
                 queue.addOperation(block)
+                } else {
+                    GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.requestExistsInQueue)")
+                }
             }
         } else {
             GlobalLogger.shared.error("APIWorker - \(url) \(NetworkError.requestExistsInQueue)")
